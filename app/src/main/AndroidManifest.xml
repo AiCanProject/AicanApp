@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aican.aicanapp">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AicanApp">
+        <activity android:name=".specificactivities.PhCalibrateActivity"
+            android:parentActivityName=".specificactivities.PhActivity"/>
+        <activity android:name=".specificactivities.PhActivity" />
+        <activity android:name=".AddDevice.AddDeviceOption" />
+        <activity android:name=".specificactivities.TemperatureActivity" />
+        <activity android:name=".Dashboard.Dashboard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".Authentication.LoginActivity"></activity>
+        <activity android:name=".Authentication.SignUpActivity" />
+        <activity android:name=".specificactivities.PumpCalibrateActivity" />
+        <activity android:name=".specificactivities.PumpActivity" />
+        <activity android:name=".AddDevice.ScanQrActivity" />
+
+<!--        <service-->
+<!--            android:name=".graph.ForegroundService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true"-->
+<!--            android:permission="android.permission.BIND_JOB_SERVICE" />-->
+    </application>
+
+</manifest>

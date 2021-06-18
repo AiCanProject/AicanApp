@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingVertical="24dp">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Speed(mL/Min)"
+                android:textColor="@color/black"
+                android:layout_gravity="center_horizontal"
+                android:textSize="14sp" />
+
+            <com.aican.aicanapp.pumpController.VerticalSlider
+                android:id="@+id/speedController"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:invert="false" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingVertical="12dp"
+            android:gravity="bottom">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:id="@+id/rlStart"
+                android:layout_centerHorizontal="true">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_centerInParent="true"
+                    android:background="@color/colorPrimary"
+                    android:theme="@style/CircularImageView"
+                    android:id="@+id/ivStartBtn"/>
+                <TextView
+                    android:id="@+id/tvStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="start"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/white"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchClockwise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clockwise"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/blueDarkAlpha"
+                android:theme="@style/Switch"
+                android:layout_below="@id/rlStart"/>
+
+            <Button
+                android:id="@+id/calibrateBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Calibrate"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/switchClockwise"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Volume(mL)"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <com.aican.aicanapp.pumpController.VerticalSlider
+                android:id="@+id/volController"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:invert="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:layout_marginBottom="20dp" />
+
+</LinearLayout>

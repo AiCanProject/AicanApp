@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF9E5E</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#121212</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="main1">#FF8635</color>
+    <color name="main2">#FF9E5D</color>
+    <color name="tempcolor">#FF805F</color>
+    <color name="coolingcolor">#47C2EC</color>
+    <color name="phcolor">#4A6EFF</color>
+    <color name="pumpcolor">#44ED8E</color>
+
+
+    <color name="black_force">#FF000000</color>
+    <color name="grey_dark_force">#263747</color>
+    <color name="grey_light_force">#b0bec5</color>
+    <color name="grey_light_lighter_force">#eceff1</color>
+    <color name="white_force">#FFFFFFFF</color>
+    <color name="blue_force">#4fc3f7</color>
+    <color name="blue_dark_force">#0093c4</color>
+    <color name="blue_light_force">#b3e5fc</color>
+    <color name="grey_force">#808e95</color>
+
+
+    <color name="blue">#4fc3f7</color>
+    <color name="blue_dark">#0093c4</color>
+    <color name="blue_light">#b3e5fc</color>
+
+    <color name="red">#d50000</color>
+
+    <color name="green">#00c853</color>
+    <color name="lightWhite">#f2f5f8</color>
+
+    <color name="grey_light_lighter">#eceff1</color>
+    <color name="grey_light">#b0bec5</color>
+    <color name="grey">#808e95</color>
+    <color name="grey_dark">#263747</color>
+
+    <color name="orange_light">#fff3e0</color>
+    <color name="orange">#ffb74d</color>
+
+    <color name="colorPrimary">#FF8635</color>
+    <color name="colorPrimaryAlpha">#FDA367</color>
+    <color name="colorPrimaryDark">#04062C</color>
+    <color name="colorAccent">#00B3E4</color>
+    <color name="secondaryAccent">#D10A7F</color>
+    <color name="primaryText">#ffffff</color>
+    <color name="warningText">#CCffffff</color>
+    <color name="warningColor">#F9DA0A</color>
+    <color name="secondaryText">#30ffffff</color>
+    <color name="scaleColor">#33ffff</color>
+    <color name="background">#04062C</color>
+    <color name="divider">#1Affffff</color>
+    <color name="pink">#FC969E</color>
+    <color name="blueLight">#6671E6</color>
+    <color name="blueDark">#433A7F</color>
+    <color name="blueDarkAlpha">#90433A7F</color>
+
+
+    <color name="ph0">#ee1c25</color>
+    <color name="ph1">#f26724</color>
+    <color name="ph2">#f9c511</color>
+    <color name="ph3">#f5ed1c</color>
+    <color name="ph4">#b5d333</color>
+    <color name="ph5">#84c341</color>
+    <color name="ph6">#4db749</color>
+    <color name="ph7">#33a94b</color>
+    <color name="ph8">#22b46b</color>
+    <color name="ph9">#0ab8b6</color>
+    <color name="ph10">#4690cd</color>
+    <color name="ph11">#3853a4</color>
+    <color name="ph12">#5a51a2</color>
+    <color name="ph13">#63459d</color>
+    <color name="ph14">#462c83</color>
+
+</resources>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="350dp"
+android:layout_height="200dp"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+app:cardCornerRadius="24dp"
+android:layout_margin="10dp"
+android:id="@+id/pump_Cardview"
+app:cardElevation="10dp">
+
+<RelativeLayout
+    android:id="@+id/background_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/pump_custom_bg"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/image_ll"
+        android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/pump_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/pump_logo"
+        android:layout_centerVertical="true"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/black_force"
+            android:layout_marginStart="10dp"
+            android:textOff="OFF"
+            android:textOn="ON"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pump_image"
+            android:layout_toStartOf="@id/pump_image"
+            android:thumb="@drawable/sw_thumb"
+            app:track="@drawable/sw_track"
+            app:showText="true" />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/custom_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Custom Device Name"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:paddingHorizontal="30dp"
+        android:layout_toLeftOf="@id/image_ll"
+        android:paddingTop="10dp"/>
+
+
+    <TextView
+        android:id="@+id/mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/custom_device_name"
+        android:text="Mode : Dose"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="30dp"
+        android:layout_toLeftOf="@id/image_ll"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mode"
+        android:text="Vol: 50mL"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="30dp"
+        android:layout_toLeftOf="@id/image_ll"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:text="Speed: 10mL/Min"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="30dp"
+        android:layout_toLeftOf="@id/image_ll"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView3"
+        android:text="Direction: ClockWise"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="30dp"
+        android:layout_toLeftOf="@id/image_ll"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+
+
+</RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

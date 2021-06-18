@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "172941175818",
+    "firebase_url": "https://labappusers-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "labappusers",
+    "storage_bucket": "labappusers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172941175818:android:baba92bbc5bf73f3d6c3f3",
+        "android_client_info": {
+          "package_name": "com.aican.aicanapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172941175818-k1q1plmdht84m6lag73f2ntgrs3i5ng4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCclyBT0kF5pNxRoMbd2bstvOunh4Fjcbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172941175818-k1q1plmdht84m6lag73f2ntgrs3i5ng4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

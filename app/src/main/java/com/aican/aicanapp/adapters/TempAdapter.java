@@ -1,0 +1,68 @@
+package com.aican.aicanapp.adapters;
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.*;
+
+public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterViewHolder> {
+
+    private String[] temps;  // Store data here in list or array from backend
+    private String deviceId; // unique device id
+    Context context;
+
+    public TempAdapter(Context context,String[] temps) {
+        this.temps = temps;
+        this.context = context;
+    }
+
+    @Override
+    public TempAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(R.layout.temp_item,parent,false);
+        return new TempAdapterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(TempAdapter.TempAdapterViewHolder holder, int position) {
+
+        holder.temperature.setText(temps[position]);
+        deviceId = Integer.toString(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String deviceIdStr;
+                deviceIdStr = "temp " + deviceId;
+                Intent toTemp = new Intent(context, TemperatureActivity.class);
+                toTemp.putExtra("deviceId",deviceIdStr);
+                toTemp.putExtra("deviceTemp",temps[position]);
+                context.startActivity(toTemp);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return temps.length;
+    }
+
+    public class TempAdapterViewHolder extends RecyclerView.ViewHolder{
+
+        private TextView temperature, tempDevice;
+
+        //Viewholder-----------------------------------------------------------------------------------------
+        public TempAdapterViewHolder(View itemView) {
+            super(itemView);
+            temperature = itemView.findViewById(R.id.ph);
+
+        }
+        //Viewholder-----------------------------------------------------------------------------------------
+    }
+}

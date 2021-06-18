@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tabLayout">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItemPh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PH" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItemTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temp" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItemEC"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EC" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItemTDS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TDS" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
+    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--    xmlns:tools="http://schemas.android.com/tools"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="match_parent"-->
+    <!--    android:id="@+id/fragment_container"-->
+    <!--    tools:context=".specificactivities.PhActivity">-->
+
+
+    <!--</FrameLayout>-->

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">AicanApp</string>
+    <string name="background_transition">backgound_transition</string>
+    <string name="title_transition">titile_transition</string>
+    <string name="room_transition">room_transition</string>
+    <string name="room_name_transition">room_name_transition</string>
+    <string name="advanced_controls_transition">advanced_controls_transition</string>
+
+
+    <string name="return_temperature">Return temperature</string>
+    <string name="current_humidity">Current humidity</string>
+    <string name="warning_message"><![CDATA[<font color=#F9DA0A>•</font> - extreme humidity levels.
+Use precaution for set-points outside of 30%-80%]]></string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
