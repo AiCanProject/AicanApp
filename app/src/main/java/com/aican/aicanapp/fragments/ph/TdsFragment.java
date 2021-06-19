@@ -1,5 +1,6 @@
 package com.aican.aicanapp.fragments.ph;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.EcTdsCalibrateActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +27,7 @@ import java.util.Random;
 public class TdsFragment extends Fragment {
 
     TextView tvEcCurr, tvEcNext;
+    Button btnCalibrate;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -39,6 +43,12 @@ public class TdsFragment extends Fragment {
 
         tvEcCurr = view.findViewById(R.id.tvTds);
         tvEcNext = view.findViewById(R.id.tvTdsNext);
+        btnCalibrate = view.findViewById(R.id.calibrateBtn);
+
+        btnCalibrate.setOnClickListener(v->{
+            Intent intent = new Intent(requireContext(), EcTdsCalibrateActivity.class);
+            startActivity(intent);
+        });
 
         CountDownTimer t = new CountDownTimer(15000,3000) {
             @Override

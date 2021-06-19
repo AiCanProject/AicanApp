@@ -1,5 +1,6 @@
 package com.aican.aicanapp.specificactivities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.TypedValue;
@@ -37,8 +38,11 @@ public class PumpCalibrateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calibrate);
+        setContentView(R.layout.activity_pump_calibrate);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
 
         ivStartBtn = findViewById(R.id.ivStartBtn);
         startLayout = findViewById(R.id.startLayout);

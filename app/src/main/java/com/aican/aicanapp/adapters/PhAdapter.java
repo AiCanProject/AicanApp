@@ -32,7 +32,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
     @Override
     public void onBindViewHolder(PhAdapter.PhAdapterViewHolder holder, int position) {
-        holder.ph.setText(phs[position]);
+//        holder.ph.setText(phs[position]);
         deviceId = Integer.toString(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,11 +48,20 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     }
 
     public class PhAdapterViewHolder extends RecyclerView.ViewHolder{
-        private TextView ph;
+        private TextView ph, ec, temp, tds;
         //Viewholder-----------------------------------------------------------------------------------------
         public PhAdapterViewHolder(View itemView) {
             super(itemView);
             ph = itemView.findViewById(R.id.ph);
+            ec = itemView.findViewById(R.id.ec);
+            temp = itemView.findViewById(R.id.temp);
+            tds = itemView.findViewById(R.id.tds);
+
+            ph.setText("pH: 14");
+            ec.setText("EC: 10.00");
+            temp.setText("Temp: 99");
+            tds.setText("TDS: 9999");
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

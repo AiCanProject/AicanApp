@@ -14,8 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AicanApp">
-        <activity android:name=".specificactivities.PhCalibrateActivity"
-            android:parentActivityName=".specificactivities.PhActivity"/>
+        <activity android:name=".specificactivities.EcTdsCalibrateActivity"></activity>
+        <activity
+            android:name=".specificactivities.PhCalibrateActivity"
+            android:parentActivityName=".specificactivities.PhActivity" />
         <activity android:name=".specificactivities.PhActivity" />
         <activity android:name=".AddDevice.AddDeviceOption" />
         <activity android:name=".specificactivities.TemperatureActivity" />
@@ -27,17 +29,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".Authentication.LoginActivity"></activity>
+        <activity android:name=".Authentication.LoginActivity" />
         <activity android:name=".Authentication.SignUpActivity" />
         <activity android:name=".specificactivities.PumpCalibrateActivity" />
         <activity android:name=".specificactivities.PumpActivity" />
         <activity android:name=".AddDevice.ScanQrActivity" />
-
-<!--        <service-->
-<!--            android:name=".graph.ForegroundService"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true"-->
-<!--            android:permission="android.permission.BIND_JOB_SERVICE" />-->
     </application>
 
 </manifest>
