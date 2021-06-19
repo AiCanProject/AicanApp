@@ -193,14 +193,14 @@ class PhView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private var targetPh = currentPh
-    fun moveTo(ph: Int) {
-        targetPh = ph.toFloat()
+    fun moveTo(ph: Float) {
+        targetPh = ph
         invalidate()
     }
 
-    fun setCurrentPh(ph: Int){
-        currentPh = ph.toFloat()
-        targetPh = ph.toFloat()
+    fun setCurrentPh(ph: Float){
+        currentPh = ph
+        targetPh = ph
         invalidate()
     }
 

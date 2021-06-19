@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ph_Cardview"
     android:layout_width="350dp"
-    android:layout_height="200dp"
+    android:layout_height="210dp"
     android:layout_margin="10dp"
     app:cardCornerRadius="24dp"
     app:cardElevation="10dp">
@@ -36,79 +36,77 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/current_temp_text"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_alignParentStart="true"-->
-<!--            android:layout_toLeftOf="@id/temp_image"-->
-<!--            android:paddingHorizontal="30dp"-->
-<!--            android:text="Current pH Value"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="14dp" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/current_temp_text"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_alignParentStart="true"-->
+        <!--            android:layout_toLeftOf="@id/temp_image"-->
+        <!--            android:paddingHorizontal="30dp"-->
+        <!--            android:text="Current pH Value"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:textSize="14dp" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/ph"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/custom_device_name"-->
-<!--            android:paddingHorizontal="30dp"-->
-<!--            android:text="12"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:textSize="55dp"-->
-<!--            android:textStyle="bold" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/ph"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_below="@id/custom_device_name"-->
+        <!--            android:paddingHorizontal="30dp"-->
+        <!--            android:text="12"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:textSize="55dp"-->
+        <!--            android:textStyle="bold" />-->
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/custom_device_name"
             android:layout_marginStart="26dp"
-            android:layout_marginTop="24dp">
-            <LinearLayout
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ph"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/ph"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="pH: 10"
-                    android:textSize="20sp"/>
+                android:text="pH: 10"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/ec"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="EC: 10.00"
-                    android:textSize="20sp"/>
-            </LinearLayout>
-
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/ec"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginStart="12dp">
-                <TextView
-                    android:id="@+id/temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Temp: 10"
-                    android:textSize="20sp"/>
+                android:text="EC: 10.00"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"/>
 
-                <TextView
-                    android:id="@+id/tds"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="TDS: 9999"
-                    android:textSize="20sp"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temp: 10"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/tds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TDS: 9999"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold" />
         </LinearLayout>
+
 
     </RelativeLayout>
 

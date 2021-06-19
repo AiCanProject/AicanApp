@@ -58,9 +58,9 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             tds = itemView.findViewById(R.id.tds);
 
             ph.setText("pH: 14");
-            ec.setText("EC: 10.00");
-            temp.setText("Temp: 99");
-            tds.setText("TDS: 9999");
+            ec.setText("EC: 10.00 mS/cm");
+            temp.setText("Temp: 99°C");
+            tds.setText("TDS: 9999 ppm");
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

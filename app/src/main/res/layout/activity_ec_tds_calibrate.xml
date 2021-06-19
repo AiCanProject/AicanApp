@@ -19,43 +19,19 @@
         app:titleTextColor="@color/white" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilBuffer"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Buffer"
         app:layout_constraintBottom_toTopOf="@id/line_chart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3">
+        app:layout_constraintVertical_bias="0.2">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etBuffer"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="99"
-            android:textAlignment="center"
-            android:textColor="@color/blueDark"
-            android:textSize="56sp"
-            android:maxLength="2"
-            android:maxLines="1"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="TDS"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etTds"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:text="9999"
@@ -66,6 +42,29 @@
             android:maxLines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="TDS"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilBuffer"
+        android:layout_marginTop="4dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTds"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:text="9999"
+            android:textAlignment="center"
+            android:textColor="@color/blueDark"
+            android:textSize="56sp"
+            android:maxLength="4"
+            android:maxLines="1"
+            android:enabled="false"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,28 +73,14 @@
         app:layout_constraintBottom_toTopOf="@id/line_chart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintVertical_bias="0.92"
         android:visibility="visible">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvTimer"
-            android:text="01:30"
-            android:textSize="22sp"
-            android:textColor="@color/black"
-            android:visibility="invisible"
-            tools:visibility="visible"
-            android:layout_alignStart="@id/ivStartBtn"
-            android:layout_alignEnd="@id/ivStartBtn"
-            android:textAlignment="center"
-            android:layout_marginBottom="4dp"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="130dp"
             android:layout_height="130dp"
             app:srcCompat="@color/colorPrimary"
-            android:layout_below="@id/tvTimer"
             android:theme="@style/CircularImageView"
             android:id="@+id/ivStartBtn"/>
 
@@ -109,6 +94,7 @@
             android:layout_alignTop="@id/ivStartBtn">
 
             <TextView
+                android:id="@+id/tvStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="start"
@@ -127,7 +113,7 @@
         app:layout_constraintBottom_toTopOf="@id/line_chart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.85"
+        app:layout_constraintVertical_bias="0.9"
         android:id="@+id/rlCoefficient"
         android:visibility="invisible">
         <TextView

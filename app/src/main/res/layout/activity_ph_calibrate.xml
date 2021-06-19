@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:background="@color/main1"
         android:textAlignment="center"
-        app:title="CALIBRATE PH"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="CALIBRATE PH"
         app:titleTextColor="@color/white" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -41,90 +41,160 @@
         android:id="@+id/next_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:background="#00000000"
         android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"
-        android:textColor="#000"
         android:padding="10dp"
         android:text="Next"
-        android:layout_gravity="end"
-        app:layout_constraintTop_toBottomOf="@id/main_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="#000"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_toolbar"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/phLabelTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-light"
-        android:text="Current PH"
+        android:text="Buffer"
         android:textAllCaps="true"
-        android:layout_marginTop="90dp"
         android:textColor="@color/blueDarkAlpha"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_toolbar"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        />
+        app:layout_constraintTop_toBottomOf="@id/main_toolbar" />
 
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/phTextView"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
+    <!--        android:id="@+id/phTextView"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="65dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginEnd="40dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"-->
+    <!--        app:layout_constraintVertical_chainStyle="packed"-->
+    <!--        app:suffix=""/>-->
+    <FrameLayout
+        android:id="@+id/flBuffer"
+        android:layout_width="wrap_content"
+        android:layout_height="76dp"
         app:layout_constraintStart_toStartOf="@id/phLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:suffix=""/>
+        app:layout_constraintTop_toBottomOf="@id/phLabelTextView">
+
+        <TextView
+            android:id="@+id/tvBufferCurr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="00"
+            android:textColor="@color/blueDark"
+            android:textSize="56sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvBufferNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="56sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit"
-        app:layout_constraintStart_toStartOf="@id/phTextView"
-        app:layout_constraintTop_toBottomOf="@id/phTextView"
-        android:textColor="@color/blueDark"
-        android:textAllCaps="true"
-        android:textSize="14sp"
         android:drawablePadding="4dp"
         android:padding="2dp"
+        android:text="Edit"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDark"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="4dp"
+        app:drawableStartCompat="@drawable/ic_edit"
         app:drawableTint="@color/blueDark"
-        app:drawableStartCompat="@drawable/ic_edit" />
+        app:layout_constraintStart_toEndOf="@id/flBuffer"
+        app:layout_constraintBottom_toBottomOf="@id/flBuffer" />
 
     <TextView
-        android:id="@+id/tvCoefficient"
+        android:id="@+id/tvCurrPh"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Current PH"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDarkAlpha"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline5"
+        app:layout_constraintTop_toBottomOf="@id/flBuffer" />
+
+<!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
+<!--        android:id="@+id/plvCoefficient"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="65dp"-->
+<!--        android:layout_marginTop="18dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        android:visibility="invisible"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tvCoefficient"-->
+<!--        app:layout_constraintVertical_chainStyle="packed"-->
+<!--        app:suffix=""-->
+<!--        tools:visibility="visible" />-->
+    <TextView
+        android:id="@+id/tvPh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="00.00"
+        android:textColor="@color/blueDark"
+        android:textSize="56sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/tvCurrPh"
+        app:layout_constraintStart_toStartOf="@id/tvCurrPh"/>
+
+    <TextView
+        android:id="@+id/tvCoefficientLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-light"
         android:text="Coefficient"
         android:textAllCaps="true"
-        android:layout_marginTop="36dp"
         android:textColor="@color/blueDarkAlpha"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phTextView"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tvPh"
+        tools:visibility="visible" />
 
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/plvCoefficient"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/phLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/tvCoefficient"
-        app:layout_constraintVertical_chainStyle="packed"
+    <TextView
+        android:id="@+id/tvCoefficient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="00"
+        android:textColor="@color/blueDark"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:visibility="invisible"
         tools:visibility="visible"
-        app:suffix=""/>
+        app:layout_constraintTop_toBottomOf="@id/tvCoefficientLabel"
+        app:layout_constraintStart_toStartOf="@id/tvCoefficientLabel"/>
+
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
@@ -136,19 +206,19 @@
 
 
     <TextView
+        android:id="@+id/tvTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tvTimer"
+        android:layout_marginBottom="8dp"
         android:text="01:30"
-        app:layout_constraintTop_toTopOf="@id/startBtn"
-        app:layout_constraintStart_toEndOf="@id/startBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/startBtn"
-        android:textSize="22sp"
         android:textColor="@color/black"
+        android:textSize="22sp"
         android:visibility="invisible"
-        tools:visibility="visible"
-        android:layout_marginBottom="8dp"/>
+        app:layout_constraintBottom_toBottomOf="@id/startBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/startBtn"
+        app:layout_constraintTop_toTopOf="@id/startBtn"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/startBtn"
@@ -156,11 +226,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Start"
-        app:layout_constraintStart_toStartOf="@id/phTextView"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/line_chart"
-        android:layout_marginBottom="24dp"
-        android:textColor="@color/white" />
+        app:layout_constraintStart_toStartOf="@id/flBuffer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

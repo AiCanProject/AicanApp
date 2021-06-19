@@ -24,7 +24,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
     TextInputEditText etBuffer,etTds;
     RelativeLayout startLayout, rlCoefficient;
     ImageView ivStartBtn;
-    TextView tvTimer,tvCoefficient;
+    TextView tvStart, tvCoefficient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +46,14 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         startLayout = findViewById(R.id.startLayout);
         rlCoefficient = findViewById(R.id.rlCoefficient);
         ivStartBtn = findViewById(R.id.ivStartBtn);
-        tvTimer = findViewById(R.id.tvTimer);
         tvCoefficient = findViewById(R.id.tvCoefficient);
+        tvStart = findViewById(R.id.tvStart);
 
 
         ivStartBtn.setOnClickListener(v->{
             ivStartBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryAlpha));
             ivStartBtn.setEnabled(false);
-            tvTimer.setVisibility(View.VISIBLE);
+            tvStart.setVisibility(View.VISIBLE);
 
             CountDownTimer timer = new CountDownTimer(5000, 1000) {
                 @Override
@@ -62,7 +62,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
                     int min = (int)millisUntilFinished/60;
                     int sec = (int)millisUntilFinished%60;
                     String time = String.format("%02d:%02d", min, sec);
-                    tvTimer.setText(time);
+                    tvStart.setText(time);
                 }
 
                 @Override

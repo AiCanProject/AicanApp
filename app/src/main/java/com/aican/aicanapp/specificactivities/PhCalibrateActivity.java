@@ -14,6 +14,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -28,12 +30,12 @@ import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACK
 public class PhCalibrateActivity extends AppCompatActivity {
 
     PhView phView;
-    ProgressLabelView phTextView, plvCoefficient;
+//    ProgressLabelView phTextView, plvCoefficient;
     Button btnStart,btnNext;
-    TextView tvTimer, tvCoefficient;
+    TextView tvTimer, tvCoefficient, tvBufferCurr, tvBufferNext, tvPh, tvCoefficientLabel;
     Toolbar toolbar;
 
-    int[] buffers = new int[]{2,4,7,9,11};
+    float[] buffers = new float[]{2.0F,4.0F,7.0F,9.0F,11.0F};
     int currentBuf = 0;
 
     @Override
@@ -52,26 +54,31 @@ public class PhCalibrateActivity extends AppCompatActivity {
         }
 
         phView = findViewById(R.id.phView);
-        phTextView = findViewById(R.id.phTextView);
+//        phTextView = findViewById(R.id.phTextView);
         btnStart = findViewById(R.id.startBtn);
         btnNext = findViewById(R.id.next_btn);
         tvTimer = findViewById(R.id.tvTimer);
-        plvCoefficient = findViewById(R.id.plvCoefficient);
+//        plvCoefficient = findViewById(R.id.plvCoefficient);
         tvCoefficient = findViewById(R.id.tvCoefficient);
         toolbar = findViewById(R.id.main_toolbar);
+        tvBufferCurr = findViewById(R.id.tvBufferCurr);
+        tvBufferNext = findViewById(R.id.tvBufferNext);
+        tvPh = findViewById(R.id.tvPh);
+        tvCoefficientLabel = findViewById(R.id.tvCoefficientLabel);
 
 //        setSupportActionBar(toolbar);
 //        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        phTextView.setAnimationDuration(0);
-        phTextView.setProgress(buffers[0]);
-        phTextView.setAnimationDuration(800);
-        plvCoefficient.setAnimationDuration(0);
+//        phTextView.setAnimationDuration(0);
+//        phTextView.setProgress(buffers[0]);
+//        phTextView.setAnimationDuration(800);
+//        plvCoefficient.setAnimationDuration(0);
+        tvBufferCurr.setText(String.valueOf(buffers[0]));
 
         phView.setCurrentPh(buffers[0]);
 
-        phTextView.setTextColor(getAttr(R.attr.primaryTextColor));
-        plvCoefficient.setTextColor(getAttr(R.attr.primaryTextColor));
+//        phTextView.setTextColor(getAttr(R.attr.primaryTextColor));
+//        plvCoefficient.setTextColor(getAttr(R.attr.primaryTextColor));
 
         btnStart.setOnClickListener(v->{
             btnStart.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryAlpha));
@@ -97,9 +104,9 @@ public class PhCalibrateActivity extends AppCompatActivity {
                         }
                         btnNext.setVisibility(View.VISIBLE);
 
+                        tvCoefficientLabel.setVisibility(View.VISIBLE);
+                        tvCoefficient.setText("10");
                         tvCoefficient.setVisibility(View.VISIBLE);
-                        plvCoefficient.setProgress(10);
-                        plvCoefficient.setVisibility(View.VISIBLE);
                     });
                 }
             };
@@ -120,10 +127,10 @@ public class PhCalibrateActivity extends AppCompatActivity {
             btnStart.setEnabled(true);
 
             phView.moveTo(buffers[currentBuf]);
-            phTextView.setProgress(buffers[currentBuf]);
+            updateBufferValue((float)buffers[currentBuf]);
 
             tvCoefficient.setVisibility(View.INVISIBLE);
-            plvCoefficient.setVisibility(View.INVISIBLE);
+            tvCoefficientLabel.setVisibility(View.INVISIBLE);
 
         });
     }
@@ -133,5 +140,37 @@ public class PhCalibrateActivity extends AppCompatActivity {
         getTheme().resolveAttribute(attrRes,typedValue,true);
 
         return typedValue.data;
+    }
+    
+    private void updateBufferValue(Float value){
+        String newValue = String.valueOf(value);
+        tvBufferNext.setText(newValue);
+
+        Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        Animation slideInBottom = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
+
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tvBufferCurr.setVisibility(View.INVISIBLE);
+                TextView t = tvBufferCurr;
+                tvBufferCurr = tvBufferNext;
+                tvBufferNext = t;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        tvBufferCurr.startAnimation(fadeOut);
+        tvBufferNext.setVisibility(View.VISIBLE);
+        tvBufferNext.startAnimation(slideInBottom);
     }
 }
