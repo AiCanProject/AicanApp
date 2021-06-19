@@ -13,8 +13,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.PhViewPagerAdapter;
-import com.aican.aicanapp.fragments.ph.PhFragment;
-import com.aican.aicanapp.fragments.ph.TempFragment;
+import com.aican.aicanapp.fragments.ph.*;
 import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -50,8 +49,8 @@ public class PhActivity extends AppCompatActivity {
         fragments = new ArrayList<>();
         fragments.add(new PhFragment());
         fragments.add(new TempFragment());
-        fragments.add(new PhFragment());
-        fragments.add(new PhFragment());
+        fragments.add(new EcFragment());
+        fragments.add(new TdsFragment());
         phViewPagerAdapter = new PhViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
         viewPager.setAdapter(phViewPagerAdapter);
 

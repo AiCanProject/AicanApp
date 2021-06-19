@@ -81,6 +81,20 @@
         app:suffix=""/>
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        app:layout_constraintStart_toStartOf="@id/phTextView"
+        app:layout_constraintTop_toBottomOf="@id/phTextView"
+        android:textColor="@color/blueDark"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        android:drawablePadding="4dp"
+        android:padding="2dp"
+        app:drawableTint="@color/blueDark"
+        app:drawableStartCompat="@drawable/ic_edit" />
+
+    <TextView
         android:id="@+id/tvCoefficient"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -89,7 +103,7 @@
         android:fontFamily="sans-serif-light"
         android:text="Coefficient"
         android:textAllCaps="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="36dp"
         android:textColor="@color/blueDarkAlpha"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/phTextView"
