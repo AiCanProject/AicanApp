@@ -50,9 +50,10 @@
             android:weightSum="4">
 
             <TextView
+                android:id="@+id/tvTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Temperature Controllers"
+                android:text="Oil Bath Controllers"
                 android:textSize="16sp"
                 android:textColor="@color/black_force"
                 android:textAllCaps="true"
@@ -67,9 +68,10 @@
                 android:paddingTop="5dp"/>
 
             <TextView
+                android:id="@+id/tvCooling"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cooling"
+                android:text="Laboratory Chiller"
                 android:textColor="@color/black_force"
                 android:textSize="16sp"
                 android:textAllCaps="true"
@@ -84,9 +86,10 @@
                 android:paddingTop="5dp"/>
 
             <TextView
+                android:id="@+id/tvPh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="EcPh"
+                android:text="pH Meter"
                 android:textColor="@color/black_force"
                 android:textSize="16sp"
                 android:textAllCaps="true"
@@ -101,9 +104,10 @@
                 android:paddingTop="5dp"/>
 
             <TextView
+                android:id="@+id/tvPump"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Peristatical Pumps"
+                android:text="Peristaltic Pump"
                 android:textSize="16sp"
                 android:textColor="@color/black_force"
                 android:textAllCaps="true"

@@ -2,6 +2,7 @@ package com.aican.aicanapp.AddDevice;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Build;
@@ -21,9 +22,14 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
 import com.bumptech.glide.Glide;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.mlkit.vision.barcode.Barcode;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
@@ -159,9 +165,16 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
         if (cameraProvider != null && analyzer != null) {
             cameraProvider.unbind(analyzer);
         }
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent(this, AddDeviceActivity.class);
-//        startActivity(intent);
+        linkDeviceOnFirebase(result);
+        Intent intent = new Intent(this, Dashboard.class);
+        startActivity(intent);
+    }
+
+    private void linkDeviceOnFirebase(String deviceId) {
+        String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
+        if(uid==null) return;
+        DatabaseReference ref = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
+        ref.child("USERS").child(uid).child("DEVICES").push().setValue(deviceId);
     }
 
     private class ImageScanner implements ImageAnalysis.Analyzer {
