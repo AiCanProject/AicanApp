@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <com.aican.aicanapp.ph.PhView
         android:id="@+id/phView"
@@ -57,7 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-light"
         android:text="Buffer"
@@ -81,7 +81,7 @@
     <FrameLayout
         android:id="@+id/flBuffer"
         android:layout_width="wrap_content"
-        android:layout_height="76dp"
+        android:layout_height="68dp"
         app:layout_constraintStart_toStartOf="@id/phLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/phLabelTextView">
 
@@ -92,7 +92,7 @@
             android:layout_gravity="center"
             android:text="00"
             android:textColor="@color/blueDark"
-            android:textSize="56sp"
+            android:textSize="48sp"
             android:textStyle="bold" />
 
         <TextView
@@ -102,13 +102,14 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="56sp"
+            android:textSize="48sp"
             android:textStyle="bold"
             android:visibility="invisible" />
 
     </FrameLayout>
 
     <TextView
+        android:id="@+id/tvEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
@@ -129,7 +130,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-light"
         android:text="Current PH"
@@ -159,7 +160,7 @@
         android:layout_gravity="center"
         android:text="00.00"
         android:textColor="@color/blueDark"
-        android:textSize="56sp"
+        android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/tvCurrPh"
         app:layout_constraintStart_toStartOf="@id/tvCurrPh"/>
@@ -200,10 +201,16 @@
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/graphOptions"
         app:layout_constraintStart_toStartOf="parent" />
-
+    <include
+        android:id="@+id/graphOptions"
+        layout="@layout/graph_options"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvTimer"
@@ -225,12 +232,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvCoefficient"
         android:backgroundTint="@color/colorPrimary"
         android:text="Start"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
         app:layout_constraintStart_toStartOf="@id/flBuffer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

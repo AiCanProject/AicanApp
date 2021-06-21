@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.AddDevice.AddDeviceOption;
+import com.aican.aicanapp.Authentication.LoginActivity;
 import com.aican.aicanapp.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
@@ -26,6 +28,7 @@ import com.aican.aicanapp.dataClasses.CoolingDevice;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
+import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
@@ -34,6 +37,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +70,8 @@ public class Dashboard extends AppCompatActivity {
     //---------------------------------------------------------------------------------
     private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView;
     private FloatingActionButton addNewDevice;
-    private TextView tvTemp,tvCooling, tvPump, tvPh;
+    private TextView tvTemp,tvCooling, tvPump, tvPh, tvName, tvConnectDevice;
+    private ImageView ivLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,9 @@ public class Dashboard extends AppCompatActivity {
         tvCooling = findViewById(R.id.tvCooling);
         tvPh = findViewById(R.id.tvPh);
         tvPump = findViewById(R.id.tvPump);
+        tvName = findViewById(R.id.tvName);
+        ivLogout = findViewById(R.id.ivLogout);
+        tvConnectDevice = findViewById(R.id.tvConnectDevice);
         
 
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
@@ -101,8 +109,18 @@ public class Dashboard extends AppCompatActivity {
                 startActivity(toAddDevice);
             }
         });
+        ivLogout.setOnClickListener(v->{
+            FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
+        tvConnectDevice.setOnClickListener(v->{
+            startActivity(new Intent(this, ConnectDeviceActivity.class));
+        });
 
         //----------------------------------------
+        setUpNavDrawer();
         setUpToolBar();
         setUpTemp();
         setUpCooling();
@@ -110,6 +128,15 @@ public class Dashboard extends AppCompatActivity {
         setUpPump();
         //----------------------------------------
 
+    }
+
+    private void setUpNavDrawer() {
+        String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
+        FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this))
+                .collection("NAMES").document(uid).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    tvName.setText(documentSnapshot.get("NAME",String.class));
+                });
     }
 
     @Override
@@ -330,5 +357,10 @@ public class Dashboard extends AppCompatActivity {
 //                }
 //            });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 }

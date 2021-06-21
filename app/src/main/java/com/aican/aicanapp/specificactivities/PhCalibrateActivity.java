@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.github.mikephil.charting.charts.LineChart;
@@ -50,7 +51,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
     PhView phView;
 //    ProgressLabelView phTextView, plvCoefficient;
     Button btnStart,btnNext;
-    TextView tvTimer, tvCoefficient, tvBufferCurr, tvBufferNext, tvPh, tvCoefficientLabel;
+    TextView tvTimer, tvCoefficient, tvBufferCurr, tvBufferNext, tvPh, tvCoefficientLabel, tvEdit;
     Toolbar toolbar;
     LineChart lineChart;
 
@@ -98,6 +99,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
         tvPh = findViewById(R.id.tvPh);
         tvCoefficientLabel = findViewById(R.id.tvCoefficientLabel);
         lineChart = findViewById(R.id.line_chart);
+        tvEdit = findViewById(R.id.tvEdit);
 
 //        setSupportActionBar(toolbar);
 //        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -118,7 +120,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
             btnStart.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryAlpha));
             btnStart.setEnabled(false);
             tvTimer.setVisibility(View.VISIBLE);
-            CountDownTimer timer = new CountDownTimer(5000, 1000) {
+            CountDownTimer timer = new CountDownTimer(120000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     millisUntilFinished/=1000;
@@ -166,6 +168,14 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
         });
 
+        tvEdit.setOnClickListener(v->{
+            EditPhBufferDialog dialog = new EditPhBufferDialog(ph->{
+                updateBufferValue(ph);
+                deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(ph);
+            });
+            dialog.show(getSupportFragmentManager(), null);
+        });
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         setupGraph();
@@ -187,7 +197,6 @@ public class PhCalibrateActivity extends AppCompatActivity {
         LineData data = new LineData(dataSets);
         lineChart.setData(data);
         lineChart.invalidate();
-
         lineChart.setDrawGridBackground(true);
         lineChart.setDrawBorders(true);
     }
@@ -304,7 +313,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
             while (running){
                 publishProgress();
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

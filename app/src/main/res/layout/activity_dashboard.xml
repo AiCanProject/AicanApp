@@ -146,58 +146,88 @@
         android:layout_gravity = "start"
         android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"
+        tools:layout_gravity="">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/main2"
-                android:padding="5dp">
+                android:padding="8dp">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/sample_image"
+                    android:id="@+id/iv"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/profile_pic_placeholder"
                     android:padding="5dp"/>
                 <TextView
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="UserName"
                     android:padding="3dp"
+                    android:textStyle="bold"
+                    android:textSize="24sp"
+                    android:layout_marginStart="4dp"
+                    android:layout_below="@id/iv"
+                    android:layout_marginTop="8dp"
                     android:textColor="@color/white"/>
 
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="725dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="horizontal"
-                android:padding="5dp"
-                android:layout_gravity="center"
-                android:background="#505050">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="50dp"
-                    android:src="@drawable/settings_ic"/>
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingLeft="80dp"
-                    android:layout_height="wrap_content"/>
+                    android:id="@+id/ivLogout"
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_logout"
+                    app:tint="@color/white"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"/>
+            </RelativeLayout>
 
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvConnectDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Setup Device"
+                android:textColor="@color/black"
+                android:paddingVertical="16dp"
+                android:paddingHorizontal="22dp"
+                android:textSize="18sp"/>
+
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1"/>-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="100dp"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:padding="5dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:background="#505050">-->
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingTop="10dp"-->
+<!--                    android:paddingLeft="50dp"-->
+<!--                    android:src="@drawable/settings_ic"/>-->
+<!--                <androidx.appcompat.widget.SwitchCompat-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:paddingTop="10dp"-->
+<!--                    android:paddingLeft="80dp"-->
+<!--                    android:layout_height="wrap_content"/>-->
+
+<!--            </LinearLayout>-->
 
         </LinearLayout>
 

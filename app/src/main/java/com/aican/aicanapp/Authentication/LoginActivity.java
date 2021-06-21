@@ -136,7 +136,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(this, Dashboard.class));
     }
 
-//    private void getUserFirebaseAccount(String uid) {
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
+
+    //    private void getUserFirebaseAccount(String uid) {
 //        database.child("Users").child(uid).get().addOnSuccessListener(dataSnapshot -> {
 //            setupAccount(dataSnapshot.getValue(String.class));
 //        });

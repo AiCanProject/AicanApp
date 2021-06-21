@@ -34,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
 
@@ -88,20 +89,21 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
             ivStartBtn.setEnabled(false);
             tvStart.setVisibility(View.VISIBLE);
 
-            CountDownTimer timer = new CountDownTimer(5000, 1000) {
+            CountDownTimer timer = new CountDownTimer(120000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     millisUntilFinished/=1000;
                     int min = (int)millisUntilFinished/60;
                     int sec = (int)millisUntilFinished%60;
-                    String time = String.format("%02d:%02d", min, sec);
+                    String time = String.format(Locale.UK,"%02d:%02d", min, sec);
                     tvStart.setText(time);
                 }
 
                 @Override
                 public void onFinish() {
                     deviceRef.child("UI").child("EC").child("EC_CAL").child("VAL_1").get().addOnSuccessListener(snapshot -> {
-                       float coeff = snapshot.getValue(Float.class);
+                       Float coeff = snapshot.getValue(Float.class);
+                       if(coeff == null) return;
                        tvCoefficient.setText(String.valueOf(coeff));
                        startLayout.setVisibility(View.INVISIBLE);
                        rlCoefficient.setVisibility(View.VISIBLE);
@@ -185,7 +187,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
             while (running){
                 publishProgress();
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -201,6 +203,10 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
             long seconds = (System.currentTimeMillis()-start)/1000;
             LineData data = lineChart.getData();
             data.addEntry(new Entry(seconds, tds), 0);
+
+            if(data.getXMax()-data.getXMin()>60){
+                lineChart.getXAxis().setAxisMinimum(data.getXMax()-60);
+            }
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();

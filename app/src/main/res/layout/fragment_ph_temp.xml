@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <com.aican.aicanapp.ph.TempView
         android:id="@+id/tempView"
@@ -85,7 +85,15 @@
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/graphOptions"
+        app:layout_constraintStart_toStartOf="parent" />
+    <include
+        android:id="@+id/graphOptions"
+        layout="@layout/graph_options"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

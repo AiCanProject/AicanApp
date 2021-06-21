@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AicanApp</string>
+    <string name="app_name">Lab 4.0</string>
     <string name="background_transition">backgound_transition</string>
     <string name="title_transition">titile_transition</string>
     <string name="room_transition">room_transition</string>

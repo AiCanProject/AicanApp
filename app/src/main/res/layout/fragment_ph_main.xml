@@ -169,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.4" />
 
     <com.aican.aicanapp.ph.PhView
         android:id="@+id/phView"
@@ -240,15 +240,6 @@
     </FrameLayout>
 
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
     <Button
         android:id="@+id/calibrateBtn"
         android:layout_width="wrap_content"
@@ -261,4 +252,20 @@
         app:layout_constraintBottom_toTopOf="@id/line_chart"
         android:layout_marginBottom="24dp"
         android:textColor="@color/white" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:layout_constraintBottom_toTopOf="@id/graphOptions"
+        app:layout_constraintStart_toStartOf="parent" />
+    <include
+        android:id="@+id/graphOptions"
+        layout="@layout/graph_options"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

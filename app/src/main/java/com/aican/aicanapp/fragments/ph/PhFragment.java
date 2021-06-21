@@ -1,7 +1,11 @@
 package com.aican.aicanapp.fragments.ph;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -12,7 +16,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
@@ -20,12 +26,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.MainActivity;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
 import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -37,10 +46,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.opencsv.CSVWriter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -53,6 +66,7 @@ public class PhFragment extends Fragment {
     LineChart lineChart;
 
     DatabaseReference deviceRef;
+    LinearLayout llStart, llStop, llClear, llExport;
 
     float ph = 0;
     FillGraphDataTask fillGraphDataTask;
@@ -75,6 +89,11 @@ public class PhFragment extends Fragment {
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
         lineChart = view.findViewById(R.id.line_chart);
+        llStart = view.findViewById(R.id.llStart);
+        llStop = view.findViewById(R.id.llStop);
+        llClear = view.findViewById(R.id.llClear);
+        llExport = view.findViewById(R.id.llExport);
+        
 
 //        phTextView.setAnimationDuration(0);
 //        phTextView.setProgress(7);
@@ -112,6 +131,83 @@ public class PhFragment extends Fragment {
 
         lineChart.setDrawGridBackground(true);
         lineChart.setDrawBorders(true);
+        Description d = new Description();
+        d.setText("pH Graph");
+        lineChart.setDescription(d);
+
+        llStart.setOnClickListener(v->{
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+            startLogging();
+        });
+        llStop.setOnClickListener(v->{
+            llStart.setVisibility(View.VISIBLE);
+            llStop.setVisibility(View.INVISIBLE);
+            llClear.setVisibility(View.VISIBLE);
+            llExport.setVisibility(View.VISIBLE);
+            stopLogging();
+        });
+        llClear.setOnClickListener(v->{
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+            clearLogs();
+        });
+        llExport.setOnClickListener(v->{
+            exportLogs();
+        });
+    }
+
+    private void exportLogs() {
+        if(!checkStoragePermission()){
+            return;
+        }
+        String csv = (requireContext().getExternalFilesDir(null).getAbsolutePath() + "/"+System.currentTimeMillis()+".csv");
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(csv));
+
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[]{"X", "Y"});
+            for(int i=0; i<logs.size(); i++)
+            {
+                String[] s = {String.valueOf(logs.get(i).getX()), String.valueOf(logs.get(i).getY())};
+                data.add(s);
+            }
+            writer.writeAll(data); // data is adding to csv
+            Toast.makeText(requireContext(),"Exported",Toast.LENGTH_LONG).show();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(requireContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                requireActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void clearLogs() {
+        logs.clear();
+    }
+
+    private void stopLogging() {
+        isLogging = false;
+    }
+
+    ArrayList<Entry> logs = new ArrayList<>();
+    private boolean isLogging = false;
+    private void startLogging() {
+//        Context context = requireContext();
+//        Intent intent = new Intent(context, ForegroundService.class);
+//        ForegroundService.enqueueWork(context, intent);
+        logs.clear();
+        isLogging = true;
     }
 
     @Override
@@ -119,6 +215,8 @@ public class PhFragment extends Fragment {
         super.onResume();
         fillGraphDataTask= new FillGraphDataTask();
         fillGraphDataTask.execute();
+//        Intent intent = new Intent(requireContext(), ForegroundService.class);
+//        if()
     }
 
     @Override
@@ -207,7 +305,7 @@ public class PhFragment extends Fragment {
             while (running){
                 publishProgress();
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -222,10 +320,14 @@ public class PhFragment extends Fragment {
 
             long seconds = (System.currentTimeMillis()-start)/1000;
             LineData data = lineChart.getData();
-            data.addEntry(new Entry(seconds, ph), 0);
+            Entry entry = new Entry(seconds, ph);
+            data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
+            if(isLogging){
+                logs.add(entry);
+            }
         }
 
         void stopRunning(){

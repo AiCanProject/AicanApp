@@ -21,6 +21,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.specificactivities.EcTdsCalibrateActivity;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -96,6 +97,10 @@ public class TdsFragment extends Fragment {
 
         lineChart.setDrawGridBackground(true);
         lineChart.setDrawBorders(true);
+
+        Description d = new Description();
+        d.setText("TDS Graph");
+        lineChart.setDescription(d);
     }
 
     @Override
@@ -180,7 +185,7 @@ public class TdsFragment extends Fragment {
             while (running){
                 publishProgress();
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -196,6 +201,10 @@ public class TdsFragment extends Fragment {
             long seconds = (System.currentTimeMillis()-start)/1000;
             LineData data = lineChart.getData();
             data.addEntry(new Entry(seconds, tds), 0);
+
+            if(data.getXMax()-data.getXMin()>60){
+                lineChart.getXAxis().setAxisMinimum(data.getXMax()-60);
+            }
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();

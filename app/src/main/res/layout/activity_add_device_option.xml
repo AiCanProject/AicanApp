@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Temperature\nController"
+                android:text="Oil Bath\nController"
                 android:textColor="@color/white"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
@@ -91,7 +91,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cooling\nController"
+                android:text="Laboratory\nChiller"
                 android:textColor="@color/white"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
@@ -124,7 +124,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ECPH\nController"
+                android:text="pH Meter"
                 android:textColor="@color/white"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
@@ -156,7 +156,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pump\nController"
+                android:text="Peristaltic\nPump"
                 android:textColor="@color/white"
                 android:textAlignment="center"
                 android:layout_gravity="center_horizontal"

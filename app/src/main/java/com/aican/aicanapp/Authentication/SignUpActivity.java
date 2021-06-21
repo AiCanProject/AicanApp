@@ -24,6 +24,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -34,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
     DatabaseReference database;
     EditText etEmail;
     EditText etPassword;
+    EditText etName;
     ImageView ivBackBtn;
     TextInputLayout tilName, tilEmail, tilPassword;
 
@@ -51,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
         tilName = findViewById(R.id.tilName);
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
+        etName = findViewById(R.id.etName);
 
         database = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
 
@@ -63,8 +68,9 @@ public class SignUpActivity extends AppCompatActivity {
                     .createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                     .addOnSuccessListener(authResult -> {
 //                        lookForAvailableAccounts(authResult.getUser().getUid());
-
-                        saveUid(authResult.getUser().getUid());
+                        String uid = authResult.getUser().getUid();
+                        saveName(uid);
+                        saveUid(uid);
                         startMainActivity();
                     })
                     .addOnFailureListener(exception -> {
@@ -126,6 +132,14 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void saveName(String uid) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("NAME", etName.getText().toString());
+        FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this))
+                .collection("NAMES").document(uid)
+                .set(map);
     }
 
     private void startMainActivity() {
