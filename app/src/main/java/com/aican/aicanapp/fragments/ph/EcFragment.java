@@ -1,6 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -15,11 +16,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.specificactivities.EcTdsCalibrateActivity;
+import com.aican.aicanapp.specificactivities.PhActivity;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
@@ -27,6 +42,14 @@ public class EcFragment extends Fragment {
 
     TextView tvEcCurr, tvEcNext;
     Button btnCalibrate;
+
+    DatabaseReference deviceRef;
+    Animation fadeOut;
+    Animation slideInBottom;
+
+    float ec = 0;
+    FillGraphDataTask fillGraphDataTask;
+    LineChart lineChart;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -42,26 +65,71 @@ public class EcFragment extends Fragment {
         tvEcCurr = view.findViewById(R.id.tvEc);
         tvEcNext = view.findViewById(R.id.tvEcNext);
         btnCalibrate = view.findViewById(R.id.calibrateBtn);
+        lineChart = view.findViewById(R.id.line_chart);
 
         btnCalibrate.setOnClickListener(v->{
             Intent intent = new Intent(requireContext(), EcTdsCalibrateActivity.class);
+            intent.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
             startActivity(intent);
         });
 
-        CountDownTimer t = new CountDownTimer(15000,3000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                updateValue(new Random().nextFloat()*100);
-            }
+        fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
+        slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 
-            @Override
-            public void onFinish() {
-
-            }
-        };
-        t.start();
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        setupGraph();
+        setupListeners();
     }
 
+    private void setupGraph() {
+        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(),"EC");
+
+        lineDataSet.setLineWidth(2);
+        lineDataSet.setCircleRadius(4);
+        lineDataSet.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(lineDataSet);
+
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+        lineChart.invalidate();
+
+        lineChart.setDrawGridBackground(true);
+        lineChart.setDrawBorders(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillGraphDataTask= new FillGraphDataTask();
+        fillGraphDataTask.execute();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        fillGraphDataTask.stopRunning();
+        fillGraphDataTask.cancel(true);
+    }
+
+    private void setupListeners() {
+        deviceRef.child("UI").child("EC").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                float ec = snapshot.getValue(Float.class);
+                updateValue(ec);
+                EcFragment.this.ec = ec;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
     private void updateValue(Float value){
         String newText = String.format(Locale.UK,"%02.2f",value);
         if(value<10){
@@ -69,31 +137,76 @@ public class EcFragment extends Fragment {
         }
         tvEcNext.setText(newText);
 
-        Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
-        Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
+        if(getContext()!=null){
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+                }
 
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    tvEcCurr.setVisibility(View.INVISIBLE);
+                    TextView t = tvEcCurr;
+                    tvEcCurr = tvEcNext;
+                    tvEcNext = t;
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                tvEcCurr.setVisibility(View.INVISIBLE);
-                TextView t = tvEcCurr;
-                tvEcCurr = tvEcNext;
-                tvEcNext = t;
-            }
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                }
+            });
 
-            }
-        });
-
-        tvEcCurr.startAnimation(fadeOut);
-        tvEcNext.setVisibility(View.VISIBLE);
-        tvEcNext.startAnimation(slideInBottom);
+            tvEcCurr.startAnimation(fadeOut);
+            tvEcNext.setVisibility(View.VISIBLE);
+            tvEcNext.startAnimation(slideInBottom);
+        }else{
+            tvEcCurr.setText(newText);
+        }
     }
+
+    class FillGraphDataTask extends AsyncTask<Void, Void, Void> {
+
+        Long start;
+        boolean running=true;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            start = System.currentTimeMillis();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            while (running){
+                publishProgress();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+            long seconds = (System.currentTimeMillis()-start)/1000;
+            LineData data = lineChart.getData();
+            data.addEntry(new Entry(seconds, ec), 0);
+            lineChart.notifyDataSetChanged();
+            data.notifyDataChanged();
+            lineChart.invalidate();
+        }
+
+        void stopRunning(){
+            running=false;
+        }
+    }
+
 }

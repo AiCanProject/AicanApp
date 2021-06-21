@@ -39,16 +39,47 @@
         app:layout_constraintStart_toEndOf="@id/guideline5"
         />
 
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/plvTemp"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
+<!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
+<!--        android:id="@+id/plvTemp"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="65dp"-->
+<!--        android:layout_marginTop="18dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"-->
+<!--        app:layout_constraintVertical_chainStyle="packed" />-->
+
+    <FrameLayout
+        android:id="@+id/flTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="94dp"
         app:layout_constraintStart_toStartOf="@id/phLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@id/phLabelTextView">
+
+        <TextView
+            android:id="@+id/tvTempCurr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="64sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTempNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="64sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"

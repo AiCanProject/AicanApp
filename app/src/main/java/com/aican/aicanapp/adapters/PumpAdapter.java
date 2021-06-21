@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.PumpDevice;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PumpActivity;
 
 import java.util.ArrayList;
@@ -97,6 +99,12 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             tvMode.setText(mode);
             tvSpeed.setText(speed);
             tvDir.setText(dir);
+
+            itemView.setOnClickListener(v->{
+                Intent intent = new Intent(itemView.getContext(), PumpActivity.class);
+                intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
+                itemView.getContext().startActivity(intent);
+            });
         }
 
         //Viewholder-----------------------------------------------------------------------------------------

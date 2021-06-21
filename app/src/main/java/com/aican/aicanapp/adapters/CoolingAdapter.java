@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
@@ -82,6 +83,12 @@ public class CoolingAdapter extends RecyclerView.Adapter<CoolingAdapter.CoolingA
             String tempString = String.format(Locale.UK, "%d°C", device.getTemp());
             tvName.setText(device.getName());
             cooling.setText(tempString);
+
+            itemView.setOnClickListener(v->{
+                Intent intent = new Intent(itemView.getContext(), TemperatureActivity.class);
+                intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
+                itemView.getContext().startActivity(intent);
+            });
         }
     }
     //viewHolder---------------------------------------------------------------------------

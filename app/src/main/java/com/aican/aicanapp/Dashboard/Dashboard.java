@@ -41,6 +41,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity {
 
+    public static final String KEY_DEVICE_ID="device_id";
+
     DatabaseReference primaryDatabase;
     String mUid;
 
@@ -106,9 +108,14 @@ public class Dashboard extends AppCompatActivity {
         setUpCooling();
         setUpPh();
         setUpPump();
-        refresh();
         //----------------------------------------
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
     }
 
     //Toolbar------------------------------------------------------------------------------------------------------
@@ -213,7 +220,8 @@ public class Dashboard extends AppCompatActivity {
                 .build();
 
         try {
-            FirebaseApp.initializeApp(this, firebaseOptions, deviceId);
+            FirebaseApp app = FirebaseApp.initializeApp(this, firebaseOptions, deviceId);
+            FirebaseDatabase.getInstance(app).setPersistenceEnabled(true);
         } catch (IllegalStateException e) {
             //Ignore
         }

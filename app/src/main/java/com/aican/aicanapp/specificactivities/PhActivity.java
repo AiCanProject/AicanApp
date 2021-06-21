@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.PhViewPagerAdapter;
 import com.aican.aicanapp.fragments.ph.*;
@@ -33,6 +34,8 @@ public class PhActivity extends AppCompatActivity {
     ArrayList<Fragment> fragments;
     PhViewPagerAdapter phViewPagerAdapter;
 
+    public static String DEVICE_ID = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
@@ -42,6 +45,11 @@ public class PhActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ph);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+        DEVICE_ID = getIntent().getStringExtra(Dashboard.KEY_DEVICE_ID);
+        if(DEVICE_ID==null){
+            throw new RuntimeException();
+        }
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);

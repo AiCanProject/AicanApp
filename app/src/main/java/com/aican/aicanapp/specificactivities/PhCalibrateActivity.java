@@ -1,12 +1,14 @@
 package com.aican.aicanapp.specificactivities;
 
 import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,10 +21,26 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.tempController.ProgressLabelView;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
@@ -34,9 +52,18 @@ public class PhCalibrateActivity extends AppCompatActivity {
     Button btnStart,btnNext;
     TextView tvTimer, tvCoefficient, tvBufferCurr, tvBufferNext, tvPh, tvCoefficientLabel;
     Toolbar toolbar;
+    LineChart lineChart;
 
     float[] buffers = new float[]{2.0F,4.0F,7.0F,9.0F,11.0F};
+    String[] bufferLabels = new String[]{"B_1","B_2","B_3","B_4","B_5"};
+    String[] coeffLabels = new String[]{"VAL_1","VAL_2","VAL_3","VAL_4","VAL_5"};
     int currentBuf = 0;
+
+    DatabaseReference deviceRef;
+    String deviceId;
+
+    float ph=0;
+    FillGraphDataTask fillGraphDataTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +80,11 @@ public class PhCalibrateActivity extends AppCompatActivity {
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
+        deviceId = getIntent().getStringExtra(Dashboard.KEY_DEVICE_ID);
+        if(deviceId==null){
+            throw new RuntimeException();
+        }
+
         phView = findViewById(R.id.phView);
 //        phTextView = findViewById(R.id.phTextView);
         btnStart = findViewById(R.id.startBtn);
@@ -65,6 +97,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
         tvBufferNext = findViewById(R.id.tvBufferNext);
         tvPh = findViewById(R.id.tvPh);
         tvCoefficientLabel = findViewById(R.id.tvCoefficientLabel);
+        lineChart = findViewById(R.id.line_chart);
 
 //        setSupportActionBar(toolbar);
 //        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -73,6 +106,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
 //        phTextView.setProgress(buffers[0]);
 //        phTextView.setAnimationDuration(800);
 //        plvCoefficient.setAnimationDuration(0);
+
         tvBufferCurr.setText(String.valueOf(buffers[0]));
 
         phView.setCurrentPh(buffers[0]);
@@ -99,18 +133,16 @@ public class PhCalibrateActivity extends AppCompatActivity {
                     runOnUiThread(()->{
                         tvTimer.setVisibility(View.INVISIBLE);
 
-                        if(currentBuf==buffers.length-1){
-                            btnNext.setText("Done");
-                        }
-                        btnNext.setVisibility(View.VISIBLE);
-
-                        tvCoefficientLabel.setVisibility(View.VISIBLE);
-                        tvCoefficient.setText("10");
-                        tvCoefficient.setVisibility(View.VISIBLE);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
+                            float coeff = dataSnapshot.getValue(Float.class);
+                            displayCoeffAndPrepareNext(coeff);
+                        });
                     });
                 }
             };
-            timer.start();
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(1).addOnSuccessListener(t->{
+                timer.start();
+            });
         });
 
         btnNext.setOnClickListener(v->{
@@ -127,11 +159,92 @@ public class PhCalibrateActivity extends AppCompatActivity {
             btnStart.setEnabled(true);
 
             phView.moveTo(buffers[currentBuf]);
-            updateBufferValue((float)buffers[currentBuf]);
+            updateBufferValue(buffers[currentBuf]);
 
             tvCoefficient.setVisibility(View.INVISIBLE);
             tvCoefficientLabel.setVisibility(View.INVISIBLE);
 
+        });
+
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+        setupGraph();
+        loadBuffers();
+        setupListeners();
+    }
+
+    private void setupGraph() {
+        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(),"pH");
+
+        lineDataSet.setLineWidth(2);
+        lineDataSet.setCircleRadius(4);
+        lineDataSet.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(lineDataSet);
+
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+        lineChart.invalidate();
+
+        lineChart.setDrawGridBackground(true);
+        lineChart.setDrawBorders(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fillGraphDataTask= new FillGraphDataTask();
+        fillGraphDataTask.execute();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        fillGraphDataTask.stopRunning();
+        fillGraphDataTask.cancel(true);
+    }
+
+    private void displayCoeffAndPrepareNext(float coeff) {
+        if(currentBuf==buffers.length-1){
+            btnNext.setText("Done");
+        }
+        btnNext.setVisibility(View.VISIBLE);
+
+        tvCoefficientLabel.setVisibility(View.VISIBLE);
+        tvCoefficient.setText(String.format(Locale.UK, "%.2f", coeff));
+        tvCoefficient.setVisibility(View.VISIBLE);
+    }
+
+    private void loadBuffers() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
+            buffers[0] = snapshot.child("B_1").getValue(Float.class);
+            buffers[1] = snapshot.child("B_2").getValue(Float.class);
+            buffers[2] = snapshot.child("B_3").getValue(Float.class);
+            buffers[3] = snapshot.child("B_4").getValue(Float.class);
+            buffers[4] = snapshot.child("B_5").getValue(Float.class);
+
+            tvBufferCurr.setText(String.valueOf(buffers[0]));
+            phView.setCurrentPh(buffers[0]);
+        });
+    }
+
+    private void setupListeners() {
+        deviceRef.child("UI").child("PH").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ph = snapshot.getValue(Float.class);
+                if(ph==null) return;
+                String phString = String.format(Locale.UK, "%.2f", ph);
+                tvPh.setText(phString);
+                PhCalibrateActivity.this.ph = ph;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
         });
     }
 
@@ -172,5 +285,48 @@ public class PhCalibrateActivity extends AppCompatActivity {
         tvBufferCurr.startAnimation(fadeOut);
         tvBufferNext.setVisibility(View.VISIBLE);
         tvBufferNext.startAnimation(slideInBottom);
+    }
+
+    class FillGraphDataTask extends AsyncTask<Void, Void, Void> {
+
+        Long start;
+        boolean running=true;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            start = System.currentTimeMillis();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            while (running){
+                publishProgress();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+            long seconds = (System.currentTimeMillis()-start)/1000;
+            LineData data = lineChart.getData();
+            data.addEntry(new Entry(seconds, ph), 0);
+            lineChart.notifyDataSetChanged();
+            data.notifyDataChanged();
+            lineChart.invalidate();
+        }
+
+        void stopRunning(){
+            running=false;
+        }
     }
 }

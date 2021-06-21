@@ -1,5 +1,6 @@
 package com.aican.aicanapp.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,8 +8,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.PhDevice;
+import com.aican.aicanapp.specificactivities.PhActivity;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -90,6 +93,12 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             temp.setText(tempString);
             tds.setText(tdsString);
             tvName.setText(device.getName());
+
+            itemView.setOnClickListener(v->{
+                Intent intent = new Intent(itemView.getContext(), PhActivity.class);
+                intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
+                itemView.getContext().startActivity(intent);
+            });
         }
 
         //Viewholder-----------------------------------------------------------------------------------------

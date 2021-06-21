@@ -58,6 +58,7 @@
                 android:textColor="@color/black_force"
                 android:textAllCaps="true"
                 android:paddingHorizontal="10dp"
+                android:visibility="gone"
                 android:paddingTop="10dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -76,7 +77,8 @@
                 android:textSize="16sp"
                 android:textAllCaps="true"
                 android:paddingTop="10dp"
-                android:paddingHorizontal="10dp"/>
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cooling_recyclerview"
@@ -94,7 +96,8 @@
                 android:textSize="16sp"
                 android:textAllCaps="true"
                 android:paddingHorizontal="10dp"
-                android:paddingTop="10dp"/>
+                android:paddingTop="10dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ph_recyclerview"
@@ -112,7 +115,8 @@
                 android:textColor="@color/black_force"
                 android:textAllCaps="true"
                 android:paddingTop="10dp"
-                android:paddingHorizontal="10dp"/>
+                android:paddingHorizontal="10dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pump_recyclerview"

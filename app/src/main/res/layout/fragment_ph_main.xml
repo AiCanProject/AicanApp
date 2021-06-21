@@ -198,17 +198,47 @@
         app:layout_constraintStart_toEndOf="@id/guideline5"
         />
 
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/phTextView"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
+<!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
+<!--        android:id="@+id/phTextView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="65dp"-->
+<!--        android:layout_marginTop="18dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"-->
+<!--        app:layout_constraintVertical_chainStyle="packed"-->
+<!--        app:suffix=""/>-->
+    <FrameLayout
+        android:id="@+id/flPh"
+        android:layout_width="wrap_content"
+        android:layout_height="94dp"
         app:layout_constraintStart_toStartOf="@id/phLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:suffix=""/>
+        app:layout_constraintTop_toBottomOf="@id/phLabelTextView">
+
+        <TextView
+            android:id="@+id/tvPhCurr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="64sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPhNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="64sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
@@ -227,7 +257,7 @@
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Calibrate"
-        app:layout_constraintStart_toStartOf="@id/phTextView"
+        app:layout_constraintStart_toStartOf="@id/flPh"
         app:layout_constraintBottom_toTopOf="@id/line_chart"
         android:layout_marginBottom="24dp"
         android:textColor="@color/white" />

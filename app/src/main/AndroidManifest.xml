@@ -22,14 +22,16 @@
         <activity android:name=".AddDevice.AddDeviceOption" />
         <activity android:name=".specificactivities.TemperatureActivity" />
         <activity android:name=".Dashboard.Dashboard">
+        </activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".Authentication.LoginActivity" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".Authentication.LoginActivity" />
         <activity android:name=".Authentication.SignUpActivity" />
         <activity android:name=".specificactivities.PumpCalibrateActivity" />
         <activity android:name=".specificactivities.PumpActivity" />

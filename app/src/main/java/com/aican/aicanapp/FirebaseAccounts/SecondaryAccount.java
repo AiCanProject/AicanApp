@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SecondaryAccount {
     private static final String api = "AIzaSyBaJcbF3nZ7cPlvD4Nix410QU4y5D7SkaE";
@@ -20,7 +21,8 @@ public class SecondaryAccount {
                 .build();
 
         try {
-            FirebaseApp.initializeApp(context, options, "secondary");
+            FirebaseApp app = FirebaseApp.initializeApp(context, options, "secondary");
+            FirebaseDatabase.getInstance(app).setPersistenceEnabled(true);
         } catch (IllegalStateException e) {
             //Ignore
         }
