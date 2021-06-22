@@ -40,6 +40,8 @@
         <activity android:name=".specificactivities.PumpCalibrateActivity" />
         <activity android:name=".specificactivities.PumpActivity" />
         <activity android:name=".AddDevice.ScanQrActivity" />
+
+        <service android:name=".graph.ForegroundService"/>
     </application>
 
 </manifest>

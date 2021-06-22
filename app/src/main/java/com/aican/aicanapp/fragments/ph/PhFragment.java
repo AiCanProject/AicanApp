@@ -1,13 +1,16 @@
 package com.aican.aicanapp.fragments.ph;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -33,6 +36,7 @@ import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
 import com.aican.aicanapp.tempController.ProgressLabelView;
+import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
@@ -69,7 +73,6 @@ public class PhFragment extends Fragment {
     LinearLayout llStart, llStop, llClear, llExport;
 
     float ph = 0;
-    FillGraphDataTask fillGraphDataTask;
 
 
     @Nullable
@@ -84,7 +87,6 @@ public class PhFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         phView = view.findViewById(R.id.phView);
-//        phTextView = view.findViewById(R.id.phTextView);
         calibrateBtn = view.findViewById(R.id.calibrateBtn);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
@@ -94,14 +96,8 @@ public class PhFragment extends Fragment {
         llClear = view.findViewById(R.id.llClear);
         llExport = view.findViewById(R.id.llExport);
         
-
-//        phTextView.setAnimationDuration(0);
-//        phTextView.setProgress(7);
-//        phTextView.setAnimationDuration(800);
-
         phView.setCurrentPh(7);
 
-//        phTextView.setTextColor(getAttr(R.attr.primaryTextColor));
 
         calibrateBtn.setOnClickListener(v->{
             Intent intent= new Intent(requireContext(), PhCalibrateActivity.class);
@@ -136,6 +132,10 @@ public class PhFragment extends Fragment {
         lineChart.setDescription(d);
 
         llStart.setOnClickListener(v->{
+            if(ForegroundService.isRunning()){
+                Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
+                return;
+            }
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
@@ -194,36 +194,111 @@ public class PhFragment extends Fragment {
 
     private void clearLogs() {
         logs.clear();
+        if(myService!=null){
+            myService.clearEntries();
+        }
     }
 
     private void stopLogging() {
         isLogging = false;
+        if(myService!=null){
+            myService.stopLogging(PhFragment.class);
+        }
     }
 
     ArrayList<Entry> logs = new ArrayList<>();
     private boolean isLogging = false;
     private void startLogging() {
-//        Context context = requireContext();
-//        Intent intent = new Intent(context, ForegroundService.class);
-//        ForegroundService.enqueueWork(context, intent);
         logs.clear();
         isLogging = true;
+
+        Context context = requireContext();
+        Intent intent = new Intent(context, ForegroundService.class);
+        DatabaseReference ref = deviceRef.child("Data").child("PH_VAL");
+        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, PhFragment.class, "ph");
+        requireActivity().startService(intent);
+        requireActivity().bindService(intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                if(service instanceof ForegroundService.MyBinder){
+                    myService = ((ForegroundService.MyBinder) service).getService();
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, 0);
     }
 
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
-        fillGraphDataTask= new FillGraphDataTask();
-        fillGraphDataTask.execute();
-//        Intent intent = new Intent(requireContext(), ForegroundService.class);
-//        if()
+
+        if(ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, PhFragment.class, "ph")){
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+
+            Intent intent = new Intent(requireContext(), ForegroundService.class);
+            requireActivity().bindService(intent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    if(service instanceof ForegroundService.MyBinder){
+                        myService = ((ForegroundService.MyBinder) service).getService();
+                        ArrayList<Entry> entries=myService.getEntries();
+                        logs.clear();
+                        logs.addAll(entries);
+
+                        lineChart.getLineData().clearValues();
+
+                        LineDataSet lineDataSet = new LineDataSet(logs,"pH");
+
+                        lineDataSet.setLineWidth(2);
+                        lineDataSet.setCircleRadius(4);
+                        lineDataSet.setValueTextSize(10);
+
+
+                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                        dataSets.add(lineDataSet);
+
+                        LineData data = new LineData(dataSets);
+                        lineChart.setData(data);
+                        lineChart.invalidate();
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+
+                }
+            },0);
+        }
+
+        long start = System.currentTimeMillis();
+        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
+            long seconds = (System.currentTimeMillis()-start)/1000;
+            LineData data = lineChart.getData();
+            Entry entry = new Entry(seconds, ph);
+            data.addEntry(entry, 0);
+            lineChart.notifyDataSetChanged();
+            data.notifyDataChanged();
+            lineChart.invalidate();
+            if(isLogging){
+                logs.add(entry);
+            }
+        });
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        fillGraphDataTask.stopRunning();
-        fillGraphDataTask.cancel(true);
+        plotGraphNotifier.stop();
     }
 
     private void setupListeners() {
@@ -288,51 +363,5 @@ public class PhFragment extends Fragment {
         return typedValue.data;
     }
 
-    class FillGraphDataTask extends AsyncTask<Void, Void, Void> {
-
-        Long start;
-        boolean running=true;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            start = System.currentTimeMillis();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            while (running){
-                publishProgress();
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-            long seconds = (System.currentTimeMillis()-start)/1000;
-            LineData data = lineChart.getData();
-            Entry entry = new Entry(seconds, ph);
-            data.addEntry(entry, 0);
-            lineChart.notifyDataSetChanged();
-            data.notifyDataChanged();
-            lineChart.invalidate();
-            if(isLogging){
-                logs.add(entry);
-            }
-        }
-
-        void stopRunning(){
-            running=false;
-        }
-    }
 
 }

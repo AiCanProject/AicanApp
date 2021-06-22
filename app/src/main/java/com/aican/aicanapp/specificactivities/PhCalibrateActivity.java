@@ -7,11 +7,17 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
@@ -19,14 +25,20 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
+import com.aican.aicanapp.fragments.ph.PhFragment;
+import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.tempController.ProgressLabelView;
+import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -37,10 +49,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.opencsv.CSVWriter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -54,6 +70,8 @@ public class PhCalibrateActivity extends AppCompatActivity {
     TextView tvTimer, tvCoefficient, tvBufferCurr, tvBufferNext, tvPh, tvCoefficientLabel, tvEdit;
     Toolbar toolbar;
     LineChart lineChart;
+    LinearLayout llStart, llStop, llClear, llExport;
+
 
     float[] buffers = new float[]{2.0F,4.0F,7.0F,9.0F,11.0F};
     String[] bufferLabels = new String[]{"B_1","B_2","B_3","B_4","B_5"};
@@ -65,7 +83,6 @@ public class PhCalibrateActivity extends AppCompatActivity {
     String deviceId;
 
     float ph=0;
-    FillGraphDataTask fillGraphDataTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,14 +118,14 @@ public class PhCalibrateActivity extends AppCompatActivity {
         tvCoefficientLabel = findViewById(R.id.tvCoefficientLabel);
         lineChart = findViewById(R.id.line_chart);
         tvEdit = findViewById(R.id.tvEdit);
+        llStart = findViewById(R.id.llStart);
+        llStop = findViewById(R.id.llStop);
+        llClear = findViewById(R.id.llClear);
+        llExport = findViewById(R.id.llExport);
 
 //        setSupportActionBar(toolbar);
 //        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-//        phTextView.setAnimationDuration(0);
-//        phTextView.setProgress(buffers[0]);
-//        phTextView.setAnimationDuration(800);
-//        plvCoefficient.setAnimationDuration(0);
 
         tvBufferCurr.setText(String.valueOf(buffers[0]));
 
@@ -201,20 +218,179 @@ public class PhCalibrateActivity extends AppCompatActivity {
         lineChart.invalidate();
         lineChart.setDrawGridBackground(true);
         lineChart.setDrawBorders(true);
+
+        Description d = new Description();
+        d.setText("pH Graph");
+        lineChart.setDescription(d);
+
+        llStart.setOnClickListener(v->{
+            if(ForegroundService.isRunning()){
+                Toast.makeText(this, "Another graph is logging", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+            startLogging();
+        });
+        llStop.setOnClickListener(v->{
+            llStart.setVisibility(View.VISIBLE);
+            llStop.setVisibility(View.INVISIBLE);
+            llClear.setVisibility(View.VISIBLE);
+            llExport.setVisibility(View.VISIBLE);
+            stopLogging();
+        });
+        llClear.setOnClickListener(v->{
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+            clearLogs();
+        });
+        llExport.setOnClickListener(v->{
+            exportLogs();
+        });
     }
 
+    private void exportLogs() {
+        if(!checkStoragePermission()){
+            return;
+        }
+        String csv = (getExternalFilesDir(null).getAbsolutePath() + "/"+System.currentTimeMillis()+".csv");
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(csv));
+
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[]{"X", "Y"});
+            for(int i=0; i<logs.size(); i++)
+            {
+                String[] s = {String.valueOf(logs.get(i).getX()), String.valueOf(logs.get(i).getY())};
+                data.add(s);
+            }
+            writer.writeAll(data); // data is adding to csv
+            Toast.makeText(this,"Exported",Toast.LENGTH_LONG).show();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void clearLogs() {
+        logs.clear();
+        if(myService!=null){
+            myService.clearEntries();
+        }
+    }
+
+    private void stopLogging() {
+        isLogging = false;
+        if(myService!=null){
+            myService.stopLogging(PhFragment.class);
+        }
+    }
+
+    ArrayList<Entry> logs = new ArrayList<>();
+    private boolean isLogging = false;
+    private void startLogging() {
+        logs.clear();
+        isLogging = true;
+
+        Context context = this;
+        Intent intent = new Intent(context, ForegroundService.class);
+        DatabaseReference ref = deviceRef.child("Data").child("PH_VAL");
+        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, PhFragment.class, null);
+        startService(intent);
+        bindService(intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                if(service instanceof ForegroundService.MyBinder){
+                    myService = ((ForegroundService.MyBinder) service).getService();
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, 0);
+    }
+
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
-        fillGraphDataTask= new FillGraphDataTask();
-        fillGraphDataTask.execute();
+
+        if(ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)){
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+
+            Intent intent = new Intent(this, ForegroundService.class);
+            bindService(intent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    if(service instanceof ForegroundService.MyBinder){
+                        myService = ((ForegroundService.MyBinder) service).getService();
+                        ArrayList<Entry> entries=myService.getEntries();
+                        logs.clear();
+                        logs.addAll(entries);
+
+                        lineChart.getLineData().clearValues();
+
+                        LineDataSet lineDataSet = new LineDataSet(logs,"pH");
+
+                        lineDataSet.setLineWidth(2);
+                        lineDataSet.setCircleRadius(4);
+                        lineDataSet.setValueTextSize(10);
+
+
+                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                        dataSets.add(lineDataSet);
+
+                        LineData data = new LineData(dataSets);
+                        lineChart.setData(data);
+                        lineChart.invalidate();
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+
+                }
+            },0);
+        }
+
+        long start = System.currentTimeMillis();
+        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
+            long seconds = (System.currentTimeMillis()-start)/1000;
+            LineData data = lineChart.getData();
+            Entry entry = new Entry(seconds, ph);
+            data.addEntry(entry, 0);
+            lineChart.notifyDataSetChanged();
+            data.notifyDataChanged();
+            lineChart.invalidate();
+            if(isLogging){
+                logs.add(entry);
+            }
+        });
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        fillGraphDataTask.stopRunning();
-        fillGraphDataTask.cancel(true);
+        plotGraphNotifier.stop();
     }
 
     private void displayCoeffAndPrepareNext(float coeff) {
@@ -298,46 +474,4 @@ public class PhCalibrateActivity extends AppCompatActivity {
         tvBufferNext.startAnimation(slideInBottom);
     }
 
-    class FillGraphDataTask extends AsyncTask<Void, Void, Void> {
-
-        Long start;
-        boolean running=true;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            start = System.currentTimeMillis();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            while (running){
-                publishProgress();
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-            long seconds = (System.currentTimeMillis()-start)/1000;
-            LineData data = lineChart.getData();
-            data.addEntry(new Entry(seconds, ph), 0);
-            lineChart.notifyDataSetChanged();
-            data.notifyDataChanged();
-            lineChart.invalidate();
-        }
-
-        void stopRunning(){
-            running=false;
-        }
-    }
 }
