@@ -1,19 +1,11 @@
 package com.aican.aicanapp.specificactivities;
 
-import androidx.annotation.AttrRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -29,13 +21,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
-import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -58,7 +56,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
 
@@ -293,13 +290,19 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
     private void stopLogging() {
         isLogging = false;
-        if(myService!=null){
+        if (myService != null) {
             myService.stopLogging(PhFragment.class);
         }
     }
 
     ArrayList<Entry> logs = new ArrayList<>();
     private boolean isLogging = false;
+    long start = 0;
+
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
+
     private void startLogging() {
         logs.clear();
         isLogging = true;
@@ -307,7 +310,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
         Context context = this;
         Intent intent = new Intent(context, ForegroundService.class);
         DatabaseReference ref = deviceRef.child("Data").child("PH_VAL");
-        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, PhFragment.class, null);
+        ForegroundService.setInitials(PhActivity.DEVICE_ID, ref, PhFragment.class, start, null);
         startService(intent);
         bindService(intent, new ServiceConnection() {
             @Override
@@ -324,26 +327,27 @@ public class PhCalibrateActivity extends AppCompatActivity {
         }, 0);
     }
 
-
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
 
-        if(ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)){
+        start = System.currentTimeMillis();
+
+        if (ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)) {
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
 
+            start = ForegroundService.start;
+
             Intent intent = new Intent(this, ForegroundService.class);
             bindService(intent, new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
-                    if(service instanceof ForegroundService.MyBinder){
+                    if (service instanceof ForegroundService.MyBinder) {
                         myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries=myService.getEntries();
+                        ArrayList<Entry> entries = myService.getEntries();
                         logs.clear();
                         logs.addAll(entries);
 
@@ -372,16 +376,15 @@ public class PhCalibrateActivity extends AppCompatActivity {
             },0);
         }
 
-        long start = System.currentTimeMillis();
-        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
-            long seconds = (System.currentTimeMillis()-start)/1000;
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, ph);
             data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
-            if(isLogging){
+            if (isLogging) {
                 logs.add(entry);
             }
         });

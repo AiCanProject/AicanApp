@@ -45,7 +45,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity {
 
-    public static final String KEY_DEVICE_ID="device_id";
+    public static final String KEY_DEVICE_ID = "device_id";
+    public static final int GRAPH_PLOT_DELAY = 15000;
 
     DatabaseReference primaryDatabase;
     String mUid;

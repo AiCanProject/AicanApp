@@ -5,9 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -15,13 +14,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 
-import com.aican.aicanapp.MainActivity;
+import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.R;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 
 public class ForegroundService extends Service {
@@ -58,25 +55,7 @@ public class ForegroundService extends Service {
         return START_NOT_STICKY;
     }
 
-    protected void onHandleWork(@NonNull Intent intent) {
-        Log.e("In", "onHandleWork");
-
-        Log.e("In", "Service Start");
-        String input = intent.getStringExtra("inputExtra");
-        createNotificationChannel();
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Foreground Service")
-                .setContentText(input)
-                .setContentIntent(pendingIntent)
-                .build();
-        startForeground(1, notification);
-
-        startLogging();
-
-        Log.e("In", "Service End");
-    }
+    public static long start = 0;
 
     public void onDestroy() {
         super.onDestroy();
@@ -114,16 +93,6 @@ public class ForegroundService extends Service {
     private static DatabaseReference currentRef = null;
     float value=0.0F;
     private ArrayList<Entry> entries = new ArrayList<>();
-//    FillGraphDataTask fillGraphDataTask;
-//    OnEntryAddedCallback onEntryAddedCallback;
-
-//    public void setOnEntryAddedCallback(OnEntryAddedCallback callback){
-//        this.onEntryAddedCallback = callback;
-//    }
-//
-//    public void removeOnEntryAddedCallback(){
-//        onEntryAddedCallback = null;
-//    }
 
     ValueEventListener valueEventListener = new ValueEventListener() {
         @Override
@@ -139,28 +108,48 @@ public class ForegroundService extends Service {
         }
     };
 
-    public static void setInitials(String deviceId, DatabaseReference ref, Class<?> c, @Nullable String type){
+    public static void setInitials(String deviceId, DatabaseReference ref, Class<?> c, long start, @Nullable String type) {
         ForegroundService.deviceId = deviceId;
         currentClass = c;
         ForegroundService.type = type;
         currentRef = ref;
+        ForegroundService.start = start;
     }
 
     PlotGraphNotifier plotGraphNotifier;
-    private void startLogging(){
-        if(isRunning) return;
+
+    protected void onHandleWork(@NonNull Intent intent) {
+        Log.e("In", "onHandleWork");
+
+        Log.e("In", "Service Start");
+        String input = intent.getStringExtra("inputExtra");
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, Dashboard.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Logging graph data")
+                .setContentText(input)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(1, notification);
+
+        startLogging();
+
+        Log.e("In", "Service End");
+    }
+
+    private void startLogging() {
+        if (isRunning) return;
         isRunning = true;
         value = 0F;
         entries.clear();
-//        fillGraphDataTask = new FillGraphDataTask();
         currentRef.addValueEventListener(valueEventListener);
-//        fillGraphDataTask.execute();
-        long start = System.currentTimeMillis();
-        plotGraphNotifier = new PlotGraphNotifier(2000, () -> {
-            long seconds = (System.currentTimeMillis()-start)/1000;
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            long seconds = (System.currentTimeMillis() - start) / 1000;
             Entry entry = new Entry(seconds, value);
             entries.add(entry);
-            Log.d(TAG, "on entry: ");
         });
     }
 
@@ -173,9 +162,6 @@ public class ForegroundService extends Service {
             currentRef.removeEventListener(valueEventListener);
         }
         plotGraphNotifier.stop();
-//        fillGraphDataTask.stopRunning();
-//        fillGraphDataTask.cancel(true);
-//        removeOnEntryAddedCallback();
         isRunning = false;
         stopSelf();
         return entries;
@@ -197,56 +183,4 @@ public class ForegroundService extends Service {
         return entries;
     }
 
-    class FillGraphDataTask extends AsyncTask<Void, Void, Void> {
-
-        Long start;
-        boolean running=true;
-//        OnEntryAddedCallback onEntryAddedCallback;
-
-//        public FillGraphDataTask(OnEntryAddedCallback onEntryAddedCallback) {
-//            this.onEntryAddedCallback = onEntryAddedCallback;
-//        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            start = System.currentTimeMillis();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.d(TAG, "doInBackground: ");
-            while (running){
-                publishProgress();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-            long seconds = (System.currentTimeMillis()-start)/1000;
-            Entry entry = new Entry(seconds, value);
-            entries.add(entry);
-            Log.d(TAG, "onProgressUpdate: "+entry.toString());
-//            if(onEntryAddedCallback!=null)
-//                onEntryAddedCallback.onEntryAdded(entry);
-//            LineData data = lineChart.getData();
-//            data.addEntry(new Entry(seconds, ph), 0);
-//            lineChart.notifyDataSetChanged();
-//            data.notifyDataChanged();
-//            lineChart.invalidate();
-        }
-
-        void stopRunning(){
-            running=false;
-        }
-    }
 }

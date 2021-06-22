@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +50,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class EcFragment extends Fragment {
 
@@ -194,13 +191,19 @@ public class EcFragment extends Fragment {
 
     private void stopLogging() {
         isLogging = false;
-        if(myService!=null){
+        if (myService != null) {
             myService.stopLogging(EcFragment.class);
         }
     }
 
     ArrayList<Entry> logs = new ArrayList<>();
     private boolean isLogging = false;
+    long start = 0;
+
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
+
     private void startLogging() {
         logs.clear();
         isLogging = true;
@@ -208,7 +211,7 @@ public class EcFragment extends Fragment {
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
         DatabaseReference ref = deviceRef.child("Data").child("EC_VAL");
-        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, EcFragment.class, "ec");
+        ForegroundService.setInitials(PhActivity.DEVICE_ID, ref, EcFragment.class, start, "ec");
         requireActivity().startService(intent);
         requireActivity().bindService(intent, new ServiceConnection() {
             @Override
@@ -225,26 +228,27 @@ public class EcFragment extends Fragment {
         }, 0);
     }
 
-
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
 
-        if(ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, EcFragment.class, "ec")){
+        start = System.currentTimeMillis();
+
+        if (ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, EcFragment.class, "ec")) {
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
 
+            start = ForegroundService.start;
+
             Intent intent = new Intent(requireContext(), ForegroundService.class);
             requireActivity().bindService(intent, new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
-                    if(service instanceof ForegroundService.MyBinder){
+                    if (service instanceof ForegroundService.MyBinder) {
                         myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries=myService.getEntries();
+                        ArrayList<Entry> entries = myService.getEntries();
                         logs.clear();
                         logs.addAll(entries);
 
@@ -273,16 +277,15 @@ public class EcFragment extends Fragment {
             },0);
         }
 
-        long start = System.currentTimeMillis();
-        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
-            long seconds = (System.currentTimeMillis()-start)/1000;
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, ec);
             data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
-            if(isLogging){
+            if (isLogging) {
                 logs.add(entry);
             }
         });

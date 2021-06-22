@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +50,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 
 public class TdsFragment extends Fragment {
@@ -192,13 +189,19 @@ public class TdsFragment extends Fragment {
 
     private void stopLogging() {
         isLogging = false;
-        if(myService!=null){
+        if (myService != null) {
             myService.stopLogging(TdsFragment.class);
         }
     }
 
     ArrayList<Entry> logs = new ArrayList<>();
     private boolean isLogging = false;
+    long start = 0;
+
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
+
     private void startLogging() {
         logs.clear();
         isLogging = true;
@@ -206,7 +209,7 @@ public class TdsFragment extends Fragment {
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
         DatabaseReference ref = deviceRef.child("Data").child("TDS_VAL");
-        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, TdsFragment.class, "tds");
+        ForegroundService.setInitials(PhActivity.DEVICE_ID, ref, TdsFragment.class, start, "tds");
         requireActivity().startService(intent);
         requireActivity().bindService(intent, new ServiceConnection() {
             @Override
@@ -223,19 +226,17 @@ public class TdsFragment extends Fragment {
         }, 0);
     }
 
-
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
-
+        start = System.currentTimeMillis();
         if(ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, TdsFragment.class, "tds")){
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
 
+            start = ForegroundService.start;
             Intent intent = new Intent(requireContext(), ForegroundService.class);
             requireActivity().bindService(intent, new ServiceConnection() {
                 @Override
@@ -271,16 +272,15 @@ public class TdsFragment extends Fragment {
             },0);
         }
 
-        long start = System.currentTimeMillis();
-        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
-            long seconds = (System.currentTimeMillis()-start)/1000;
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, tds);
             data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
-            if(isLogging){
+            if (isLogging) {
                 logs.add(entry);
             }
         });

@@ -6,12 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,12 +24,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.TempView;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.specificactivities.TemperatureActivity;
-import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -48,8 +44,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.opencsv.CSVWriter;
 
 import org.jetbrains.annotations.NotNull;
@@ -191,13 +185,19 @@ public class TempFragment extends Fragment {
 
     private void stopLogging() {
         isLogging = false;
-        if(myService!=null){
+        if (myService != null) {
             myService.stopLogging(TempFragment.class);
         }
     }
 
     ArrayList<Entry> logs = new ArrayList<>();
     private boolean isLogging = false;
+    long start = 0;
+
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
+
     private void startLogging() {
         logs.clear();
         isLogging = true;
@@ -205,7 +205,7 @@ public class TempFragment extends Fragment {
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
         DatabaseReference ref = deviceRef.child("Data").child("TEMP_VAL");
-        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, TempFragment.class, "temp");
+        ForegroundService.setInitials(PhActivity.DEVICE_ID, ref, TempFragment.class, start, "temp");
         requireActivity().startService(intent);
         requireActivity().bindService(intent, new ServiceConnection() {
             @Override
@@ -222,19 +222,17 @@ public class TempFragment extends Fragment {
         }, 0);
     }
 
-
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
-
+        start = System.currentTimeMillis();
         if(ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, TempFragment.class, "temp")){
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
 
+            start = ForegroundService.start;
             Intent intent = new Intent(requireContext(), ForegroundService.class);
             requireActivity().bindService(intent, new ServiceConnection() {
                 @Override
@@ -270,16 +268,15 @@ public class TempFragment extends Fragment {
             },0);
         }
 
-        long start = System.currentTimeMillis();
-        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
-            long seconds = (System.currentTimeMillis()-start)/1000;
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, temp);
             data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
-            if(isLogging){
+            if (isLogging) {
                 logs.add(entry);
             }
         });

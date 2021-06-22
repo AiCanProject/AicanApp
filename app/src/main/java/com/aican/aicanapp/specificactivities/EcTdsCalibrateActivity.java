@@ -1,17 +1,11 @@
 package com.aican.aicanapp.specificactivities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -24,6 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
@@ -235,13 +234,19 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
 
     private void stopLogging() {
         isLogging = false;
-        if(myService!=null){
+        if (myService != null) {
             myService.stopLogging(PhFragment.class);
         }
     }
 
     ArrayList<Entry> logs = new ArrayList<>();
     private boolean isLogging = false;
+    long start = 0;
+
+
+    ForegroundService myService;
+    PlotGraphNotifier plotGraphNotifier;
+
     private void startLogging() {
         logs.clear();
         isLogging = true;
@@ -249,7 +254,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         Context context = this;
         Intent intent = new Intent(context, ForegroundService.class);
         DatabaseReference ref = deviceRef.child("Data").child("EC_VAL");
-        ForegroundService.setInitials(PhActivity.DEVICE_ID,ref, PhFragment.class,null);
+        ForegroundService.setInitials(PhActivity.DEVICE_ID, ref, PhFragment.class, start, null);
         startService(intent);
         bindService(intent, new ServiceConnection() {
             @Override
@@ -266,26 +271,27 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         }, 0);
     }
 
-
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
     @Override
     public void onResume() {
         super.onResume();
 
-        if(ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)){
+        start = System.currentTimeMillis();
+
+        if (ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)) {
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
 
+            start = ForegroundService.start;
+
             Intent intent = new Intent(this, ForegroundService.class);
             bindService(intent, new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
-                    if(service instanceof ForegroundService.MyBinder){
+                    if (service instanceof ForegroundService.MyBinder) {
                         myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries=myService.getEntries();
+                        ArrayList<Entry> entries = myService.getEntries();
                         logs.clear();
                         logs.addAll(entries);
 
@@ -315,15 +321,15 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         }
 
         long start = System.currentTimeMillis();
-        plotGraphNotifier = new PlotGraphNotifier(2000, ()->{
-            long seconds = (System.currentTimeMillis()-start)/1000;
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, ec);
             data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
-            if(isLogging){
+            if (isLogging) {
                 logs.add(entry);
             }
         });
