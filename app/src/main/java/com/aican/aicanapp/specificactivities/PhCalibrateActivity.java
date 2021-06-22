@@ -58,6 +58,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
     float[] buffers = new float[]{2.0F,4.0F,7.0F,9.0F,11.0F};
     String[] bufferLabels = new String[]{"B_1","B_2","B_3","B_4","B_5"};
     String[] coeffLabels = new String[]{"VAL_1","VAL_2","VAL_3","VAL_4","VAL_5"};
+    int[] calValues = new int[]{11,21,31,41,51};
     int currentBuf = 0;
 
     DatabaseReference deviceRef;
@@ -126,7 +127,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
                     millisUntilFinished/=1000;
                     int min = (int)millisUntilFinished/60;
                     int sec = (int)millisUntilFinished%60;
-                    String time = String.format("%02d:%02d", min, sec);
+                    String time = String.format(Locale.UK, "%02d:%02d", min, sec);
                     tvTimer.setText(time);
                 }
 
@@ -134,15 +135,16 @@ public class PhCalibrateActivity extends AppCompatActivity {
                 public void onFinish() {
                     runOnUiThread(()->{
                         tvTimer.setVisibility(View.INVISIBLE);
-
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                         deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
-                            float coeff = dataSnapshot.getValue(Float.class);
+                            Float coeff = dataSnapshot.getValue(Float.class);
+                            if(coeff==null) return;
                             displayCoeffAndPrepareNext(coeff);
                         });
                     });
                 }
             };
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(1).addOnSuccessListener(t->{
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t->{
                 timer.start();
             });
         });
@@ -240,7 +242,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        deviceRef.child("UI").child("PH").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);

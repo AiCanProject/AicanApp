@@ -262,16 +262,17 @@ public class Dashboard extends AppCompatActivity {
 
             FirebaseDatabase.getInstance(app).getReference().child(deviceTypes.get(id)).child(id).get().addOnSuccessListener(dataSnapshot -> {
                 devicesLoaded.incrementAndGet();
+                DataSnapshot data = dataSnapshot.child("Data");
                 DataSnapshot ui = dataSnapshot.child("UI");
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
                         phDevices.add(new PhDevice(
                                 id,
                                 "pH Meter",
-                                ui.child("PH").child("PH_VAL").getValue(Float.class),
-                                ui.child("EC").child("EC_VAL").getValue(Float.class),
-                                ui.child("TEMP").child("TEMP_VAL").getValue(Integer.class),
-                                ui.child("TDS").child("TDS_VAL").getValue(Integer.class)
+                                data.child("PH_VAL").getValue(Float.class),
+                                data.child("EC_VAL").getValue(Float.class),
+                                data.child("TEMP_VAL").getValue(Integer.class),
+                                data.child("TDS_VAL").getValue(Integer.class)
                         ));
                         break;
                     }

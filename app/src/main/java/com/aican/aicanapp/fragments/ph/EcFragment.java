@@ -120,7 +120,7 @@ public class EcFragment extends Fragment {
     }
 
     private void setupListeners() {
-        deviceRef.child("UI").child("EC").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 float ec = snapshot.getValue(Float.class);

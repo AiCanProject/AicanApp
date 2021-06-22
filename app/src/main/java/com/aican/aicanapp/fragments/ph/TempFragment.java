@@ -155,7 +155,7 @@ public class TempFragment extends Fragment {
 
 
     private void setupListeners() {
-        deviceRef.child("UI").child("TEMP").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int temp = snapshot.getValue(Integer.class);

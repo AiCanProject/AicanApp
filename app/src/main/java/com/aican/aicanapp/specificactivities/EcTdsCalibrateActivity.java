@@ -50,7 +50,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
     LineChart lineChart;
     FillGraphDataTask fillGraphDataTask;
 
-    int tds=0;
+    float ec =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +101,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
 
                 @Override
                 public void onFinish() {
+                    deviceRef.child("UI").child("EC").child("EC_CAL").child("CAL").setValue(0);
                     deviceRef.child("UI").child("EC").child("EC_CAL").child("VAL_1").get().addOnSuccessListener(snapshot -> {
                        Float coeff = snapshot.getValue(Float.class);
                        if(coeff == null) return;
@@ -112,7 +113,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
             };
 
             deviceRef.child("UI").child("EC").child("EC_CAL").child("B_1").setValue(Integer.valueOf(etBuffer.getText().toString())).addOnSuccessListener(t->{
-                deviceRef.child("UI").child("EC").child("EC_CAL").child("CAL").setValue(1).addOnSuccessListener(t2-> timer.start());
+                deviceRef.child("UI").child("EC").child("EC_CAL").child("CAL").setValue(11).addOnSuccessListener(t2-> timer.start());
             });
         });
 
@@ -154,13 +155,13 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        deviceRef.child("UI").child("EC").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Integer val = snapshot.getValue(Integer.class);
+                Float val = snapshot.getValue(Float.class);
                 if(val==null) return;
                 etTds.setText(String.valueOf(val));
-                tds = val;
+                ec = val;
             }
 
             @Override
@@ -202,7 +203,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
 
             long seconds = (System.currentTimeMillis()-start)/1000;
             LineData data = lineChart.getData();
-            data.addEntry(new Entry(seconds, tds), 0);
+            data.addEntry(new Entry(seconds, ec), 0);
 
             if(data.getXMax()-data.getXMin()>60){
                 lineChart.getXAxis().setAxisMinimum(data.getXMax()-60);

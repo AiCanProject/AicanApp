@@ -227,7 +227,7 @@ public class PhFragment extends Fragment {
     }
 
     private void setupListeners() {
-        deviceRef.child("UI").child("PH").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);

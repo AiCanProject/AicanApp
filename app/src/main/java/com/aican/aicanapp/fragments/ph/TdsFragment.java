@@ -117,7 +117,7 @@ public class TdsFragment extends Fragment {
         fillGraphDataTask.cancel(true);
     }
     private void setupListeners() {
-        deviceRef.child("UI").child("TDS").child("TDS_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("TDS_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int tds = snapshot.getValue(Integer.class);
