@@ -16,6 +16,16 @@
         android:background="@drawable/ph_custom_bg"
         android:padding="5dp">
 
+        <ImageView
+            android:id="@+id/ivOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/ic_three_dots"
+            app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/temp_image"

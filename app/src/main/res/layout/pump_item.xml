@@ -16,35 +16,42 @@ app:cardElevation="10dp">
     android:background="@drawable/pump_custom_bg"
     android:padding="5dp">
 
+    <ImageView
+        android:id="@+id/ivOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginTop="18dp"
+        android:src="@drawable/ic_three_dots"
+        app:tint="@color/white" />
+
     <LinearLayout
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:id="@+id/image_ll"
+        android:layout_marginEnd="12dp"
         android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/pump_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/pump_logo"
-        android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/pump_image"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="36dp"
+            android:src="@drawable/pump_logo"
+            android:layout_centerVertical="true" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch1"
             android:layout_width="wrap_content"
-            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/black_force"
-            android:layout_marginStart="10dp"
-            android:textOff="OFF"
-            android:textOn="ON"
+            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/pump_image"
-            android:layout_toStartOf="@id/pump_image"
             android:thumb="@drawable/sw_thumb"
-            app:track="@drawable/sw_track"
-            app:showText="true" />
+            app:track="@drawable/sw_track" />
 
     </LinearLayout>
     <TextView

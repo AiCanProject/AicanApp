@@ -1,10 +1,10 @@
 package com.aican.aicanapp.adapters;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.TempDevice;
-import com.aican.aicanapp.specificactivities.*;
+import com.aican.aicanapp.specificactivities.TemperatureActivity;
+import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -29,9 +30,11 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
 //    }
 
     ArrayList<TempDevice> tempDevices;
+    DashboardListsOptionsClickListener optionsClickListener;
 
-    public TempAdapter(ArrayList<TempDevice> tempDevices) {
+    public TempAdapter(ArrayList<TempDevice> tempDevices, DashboardListsOptionsClickListener optionsClickListener) {
         this.tempDevices = tempDevices;
+        this.optionsClickListener = optionsClickListener;
     }
 
     @Override
@@ -65,27 +68,34 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
         return tempDevices.size();
     }
 
-    public class TempAdapterViewHolder extends RecyclerView.ViewHolder{
+    public class TempAdapterViewHolder extends RecyclerView.ViewHolder {
 
         private TextView temperature;
         private TextView tvName;
+        private ImageView ivOptions;
+
 
         //Viewholder-----------------------------------------------------------------------------------------
         public TempAdapterViewHolder(View itemView) {
             super(itemView);
             temperature = itemView.findViewById(R.id.ph);
             tvName = itemView.findViewById(R.id.custom_device_name);
+            ivOptions = itemView.findViewById(R.id.ivOptions);
         }
 
-        public void bind(TempDevice device){
+        public void bind(TempDevice device) {
             String tempString = String.format(Locale.UK, "%d°C", device.getTemp());
             tvName.setText(device.getName());
             temperature.setText(tempString);
 
-            itemView.setOnClickListener(v->{
+            itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), TemperatureActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
                 itemView.getContext().startActivity(intent);
+            });
+
+            ivOptions.setOnClickListener(v -> {
+                optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
         }
 

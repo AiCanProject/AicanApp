@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,6 +30,7 @@ import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
@@ -43,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener {
 
     public static final String KEY_DEVICE_ID = "device_id";
     public static final int GRAPH_PLOT_DELAY = 15000;
@@ -52,6 +54,7 @@ public class Dashboard extends AppCompatActivity {
     String mUid;
 
     ArrayList<String> deviceIds;
+    HashMap<String, String> deviceIdIds;
     HashMap<String, String> deviceTypes;
 
     ArrayList<PhDevice> phDevices;
@@ -102,6 +105,7 @@ public class Dashboard extends AppCompatActivity {
         coolingDevices = new ArrayList<>();
         tempDevices = new ArrayList<>();
         deviceTypes = new HashMap<>();
+        deviceIdIds = new HashMap<>();
 
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +164,7 @@ public class Dashboard extends AppCompatActivity {
     //Temperature RC------------------------------------------------------------------------------------------------------
     public void setUpTemp() {
         tempRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        tempAdapter = new TempAdapter(tempDevices);
+        tempAdapter = new TempAdapter(tempDevices, this::onOptionsIconClicked);
         tempRecyclerView.setAdapter(tempAdapter);
     }
     //Temperature RC------------------------------------------------------------------------------------------------------
@@ -168,7 +172,7 @@ public class Dashboard extends AppCompatActivity {
     //Cooling RC------------------------------------------------------------------------------------------------------
     public void setUpCooling() {
         coolingRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        coolingAdapter = new CoolingAdapter(coolingDevices);
+        coolingAdapter = new CoolingAdapter(coolingDevices, this::onOptionsIconClicked);
         coolingRecyclerView.setAdapter(coolingAdapter);
     }
     //Cooling RC------------------------------------------------------------------------------------------------------
@@ -176,7 +180,7 @@ public class Dashboard extends AppCompatActivity {
     //Ph RC------------------------------------------------------------------------------------------------------
     public void setUpPh() {
         phRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        phAdapter = new PhAdapter(phDevices);
+        phAdapter = new PhAdapter(phDevices, this::onOptionsIconClicked);
         phRecyclerView.setAdapter(phAdapter);
     }
     //Ph RC------------------------------------------------------------------------------------------------------
@@ -184,7 +188,7 @@ public class Dashboard extends AppCompatActivity {
     //Pump RC------------------------------------------------------------------------------------------------------
     public void setUpPump() {
         pumpRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        pumpAdapter = new PumpAdapter(pumpDevices);
+        pumpAdapter = new PumpAdapter(pumpDevices, this::onOptionsIconClicked);
         pumpRecyclerView.setAdapter(pumpAdapter);
     }
     //Pump RC------------------------------------------------------------------------------------------------------
@@ -195,6 +199,7 @@ public class Dashboard extends AppCompatActivity {
         coolingDevices.clear();
         tempDevices.clear();
         pumpDevices.clear();
+        deviceIdIds.clear();
         getDeviceIds();
     }
 
@@ -205,6 +210,7 @@ public class Dashboard extends AppCompatActivity {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     String deviceId = deviceSnapshot.getValue(String.class);
                     deviceIds.add(deviceId);
+                    deviceIdIds.put(deviceId, deviceSnapshot.getKey());
                 }
 
                 getDeviceAccounts();
@@ -364,5 +370,26 @@ public class Dashboard extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finishAffinity();
+    }
+
+    @Override
+    public void onOptionsIconClicked(View view, String deviceId) {
+        PopupMenu menu = new PopupMenu(this, view);
+        menu.getMenuInflater().inflate(R.menu.device_options, menu.getMenu());
+        menu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.menuRemoveDevice) {
+                String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
+                if (uid != null && deviceIdIds.containsKey(deviceId)) {
+                    FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
+                            .child("USERS").child(uid).child("DEVICES").child(deviceIdIds.get(deviceId)).removeValue()
+                            .addOnSuccessListener(d -> {
+                                refresh();
+                            });
+                }
+                return true;
+            }
+            return false;
+        });
+        menu.show();
     }
 }

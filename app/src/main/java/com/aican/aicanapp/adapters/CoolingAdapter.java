@@ -1,10 +1,10 @@
 package com.aican.aicanapp.adapters;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
-import com.aican.aicanapp.dataClasses.TempDevice;
-import com.aican.aicanapp.specificactivities.*;
+import com.aican.aicanapp.specificactivities.TemperatureActivity;
+import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -29,9 +29,11 @@ public class CoolingAdapter extends RecyclerView.Adapter<CoolingAdapter.CoolingA
 //    }
 
     ArrayList<CoolingDevice> coolingDevices;
+    DashboardListsOptionsClickListener optionsClickListener;
 
-    public CoolingAdapter(ArrayList<CoolingDevice> coolingDevices) {
+    public CoolingAdapter(ArrayList<CoolingDevice> coolingDevices, DashboardListsOptionsClickListener optionsClickListener) {
         this.coolingDevices = coolingDevices;
+        this.optionsClickListener = optionsClickListener;
     }
 
     @Override
@@ -55,39 +57,34 @@ public class CoolingAdapter extends RecyclerView.Adapter<CoolingAdapter.CoolingA
 
     //viewHolder---------------------------------------------------------------------------
 
-    public class CoolingAdapterViewHolder extends RecyclerView.ViewHolder{
+    public class CoolingAdapterViewHolder extends RecyclerView.ViewHolder {
 
         private TextView cooling;
         private TextView tvName;
+        private ImageView ivOptions;
+
 
         public CoolingAdapterViewHolder(View itemView) {
             super(itemView);
             cooling = itemView.findViewById(R.id.cooling);
             tvName = itemView.findViewById(R.id.custom_device_name);
+            ivOptions = itemView.findViewById(R.id.ivOptions);
 
-
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String deviceIdStr;
-//                    Context context = itemView.getContext();
-//                    deviceIdStr = "cooling " + deviceId;
-//                    Intent toCool = new Intent(context, TemperatureActivity.class);
-//                    toCool.putExtra("deviceId",deviceIdStr);
-//                    context.startActivity(toCool);
-//                }
-//            });
         }
 
-        public void bind(CoolingDevice device){
+        public void bind(CoolingDevice device) {
             String tempString = String.format(Locale.UK, "%d°C", device.getTemp());
             tvName.setText(device.getName());
             cooling.setText(tempString);
 
-            itemView.setOnClickListener(v->{
+            itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), TemperatureActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
                 itemView.getContext().startActivity(intent);
+            });
+
+            ivOptions.setOnClickListener(v -> {
+                optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
         }
     }

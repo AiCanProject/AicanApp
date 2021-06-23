@@ -1,10 +1,10 @@
 package com.aican.aicanapp.adapters;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.PumpDevice;
-import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PumpActivity;
+import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,9 +28,11 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
 //    }
 
     ArrayList<PumpDevice> pumpDevices;
+    DashboardListsOptionsClickListener optionsClickListener;
 
-    public PumpAdapter(ArrayList<PumpDevice> pumpDevices) {
+    public PumpAdapter(ArrayList<PumpDevice> pumpDevices, DashboardListsOptionsClickListener optionsClickListener) {
         this.pumpDevices = pumpDevices;
+        this.optionsClickListener = optionsClickListener;
     }
 
     @Override
@@ -52,8 +54,10 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
         return pumpDevices.size();
     }
 
-    public class PumpAdapterViewHolder extends RecyclerView.ViewHolder{
+    public class PumpAdapterViewHolder extends RecyclerView.ViewHolder {
         private TextView tvMode, tvVol, tvSpeed, tvDir, tvName;
+        private ImageView ivOptions;
+
         //Viewholder-----------------------------------------------------------------------------------------
         public PumpAdapterViewHolder(View itemView) {
             super(itemView);
@@ -62,18 +66,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             tvSpeed = itemView.findViewById(R.id.tvSpeed);
             tvDir = itemView.findViewById(R.id.tvDir);
             tvName = itemView.findViewById(R.id.custom_device_name);
-
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-////                    String deviceIdStr;
-//                    Context context = itemView.getContext();
-////                    deviceIdStr = "Pump " + deviceId;
-//                    Intent tpPump = new Intent(context, PumpActivity.class);
-////                    tpPump.putExtra("deviceId",deviceIdStr);
-//                    context.startActivity(tpPump);
-//                }
-//            });
+            ivOptions = itemView.findViewById(R.id.ivOptions);
         }
 
         public void bind(PumpDevice device){
@@ -100,10 +93,13 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             tvSpeed.setText(speed);
             tvDir.setText(dir);
 
-            itemView.setOnClickListener(v->{
+            itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), PumpActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
                 itemView.getContext().startActivity(intent);
+            });
+            ivOptions.setOnClickListener(v -> {
+                optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
         }
 

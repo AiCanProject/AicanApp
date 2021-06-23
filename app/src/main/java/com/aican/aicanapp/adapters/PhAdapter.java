@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,7 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,9 +30,11 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 //    }
 
     ArrayList<PhDevice> phDevices;
+    DashboardListsOptionsClickListener optionsClickListener;
 
-    public PhAdapter(ArrayList<PhDevice> phDevices) {
+    public PhAdapter(ArrayList<PhDevice> phDevices, DashboardListsOptionsClickListener optionsClickListener) {
         this.phDevices = phDevices;
+        this.optionsClickListener = optionsClickListener;
     }
 
     @Override
@@ -59,7 +63,8 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     }
 
     public class PhAdapterViewHolder extends RecyclerView.ViewHolder {
-        private TextView ph, ec, temp, tds,tvName;
+        private TextView ph, ec, temp, tds, tvName;
+        private ImageView ivOptions;
 
         //Viewholder-----------------------------------------------------------------------------------------
         public PhAdapterViewHolder(View itemView) {
@@ -69,18 +74,8 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             temp = itemView.findViewById(R.id.temp);
             tds = itemView.findViewById(R.id.tds);
             tvName = itemView.findViewById(R.id.custom_device_name);
+            ivOptions = itemView.findViewById(R.id.ivOptions);
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String deviceIdStr;
-//                    Context context = itemView.getContext();
-//                    deviceIdStr = "Ph " + deviceId;
-//                    Intent toPh = new Intent(context, TemperatureActivity.class);
-//                    toPh.putExtra("deviceId",deviceIdStr);
-//                    context.startActivity(toPh);
-//                }
-//            });
         }
 
         public void bind(PhDevice device) {
@@ -94,13 +89,18 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             tds.setText(tdsString);
             tvName.setText(device.getName());
 
-            itemView.setOnClickListener(v->{
+            itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), PhActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
                 itemView.getContext().startActivity(intent);
+            });
+
+            ivOptions.setOnClickListener(v -> {
+                optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
         }
 
         //Viewholder-----------------------------------------------------------------------------------------
     }
+
 }

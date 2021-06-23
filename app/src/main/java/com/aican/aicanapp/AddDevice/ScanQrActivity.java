@@ -166,15 +166,21 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
             cameraProvider.unbind(analyzer);
         }
         linkDeviceOnFirebase(result);
-        Intent intent = new Intent(this, Dashboard.class);
-        startActivity(intent);
     }
 
     private void linkDeviceOnFirebase(String deviceId) {
         String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
-        if(uid==null) return;
+        if (uid == null) return;
         DatabaseReference ref = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
-        ref.child("USERS").child(uid).child("DEVICES").push().setValue(deviceId);
+        ref.child("USERS").child(uid).child("DEVICES").push().setValue(deviceId)
+                .addOnSuccessListener(d -> {
+                    Toast.makeText(ScanQrActivity.this, "Linked Successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, Dashboard.class);
+                    startActivity(intent);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(ScanQrActivity.this, "Failed to link device", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private class ImageScanner implements ImageAnalysis.Analyzer {
