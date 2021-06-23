@@ -177,7 +177,7 @@ public class ForegroundService extends Service {
         return false;
     }
     public static boolean isMyTypeRunning(String deviceId, Class<?> c, String type){
-        return isMyClassRunning(deviceId, c) && ForegroundService.type.equals(type);
+        return isMyClassRunning(deviceId, c) && (ForegroundService.type != null && ForegroundService.type.equals(type));
     }
     public ArrayList<Entry> getEntries(){
         return entries;
