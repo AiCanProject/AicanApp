@@ -1,6 +1,7 @@
 package com.aican.aicanapp.specificactivities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
+import com.aican.aicanapp.dialogs.ExitConfirmDialog;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
@@ -507,19 +508,33 @@ public class PhCalibrateActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isCalibrating) {
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Calibration is in progress!")
-                    .setMessage("Are you sure you want to cancel calibration?")
-                    .setPositiveButton("No", (d, v) -> {
-                        d.dismiss();
-                    })
-                    .setNegativeButton("Yes", (d, v) -> {
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                        super.onBackPressed();
-                    })
-                    .create();
+//            AlertDialog dialog = new AlertDialog.Builder(this)
+//                    .setTitle("Calibration is in progress!")
+//                    .setMessage("Are you sure you want to cancel calibration?")
+//                    .setPositiveButton("No", (d, v) -> {
+//                        d.dismiss();
+//                    })
+//                    .setNegativeButton("Yes", (d, v) -> {
+//                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+//                        super.onBackPressed();
+//                    })
+//                    .create();
+            ExitConfirmDialog dialog = new ExitConfirmDialog((new ExitConfirmDialog.DialogCallbacks() {
+                @Override
+                public void onYesClicked(Dialog dialog1) {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                    dialog1.dismiss();
+                    isCalibrating = false;
+                    onBackPressed();
+                }
 
-            dialog.show();
+                @Override
+                public void onNoClicked(Dialog dialog1) {
+                    dialog1.dismiss();
+                }
+            }));
+
+            dialog.show(getSupportFragmentManager(), null);
         } else {
             super.onBackPressed();
         }
