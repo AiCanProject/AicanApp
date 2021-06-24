@@ -7,8 +7,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.aican.aicanapp.R
-import com.aican.aicanapp.tempController.adjustAlpha
-import com.aican.aicanapp.tempController.toPx
+import com.aican.aicanapp.utils.adjustAlpha
+import com.aican.aicanapp.utils.toPx
 import kotlin.math.log10
 
 private const val EMPTY_CHAR = '#'

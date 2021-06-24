@@ -7,12 +7,12 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.PathParser
 import com.aican.aicanapp.R
-import com.aican.aicanapp.tempController.getColorCompat
-import com.aican.aicanapp.tempController.toPx
+import com.aican.aicanapp.utils.getColorCompat
+import com.aican.aicanapp.utils.toPx
 
 class PhView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    private var vertical = false
+    private var vertical = true
 
     private val maxPh = 14
     private val minPh = 0
@@ -195,6 +195,11 @@ class PhView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var targetPh = currentPh
     fun moveTo(ph: Float) {
         targetPh = ph
+        if (targetPh > 14F) {
+            targetPh = 14F
+        } else if (targetPh < 0) {
+            targetPh = 0F
+        }
         invalidate()
     }
 

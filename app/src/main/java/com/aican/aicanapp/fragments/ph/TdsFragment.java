@@ -273,6 +273,9 @@ public class TdsFragment extends Fragment {
         }
 
         plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (tds < 0 || tds > 9999) {
+                return;
+            }
             long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, tds);
@@ -296,7 +299,9 @@ public class TdsFragment extends Fragment {
         deviceRef.child("Data").child("TDS_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                int tds = snapshot.getValue(Integer.class);
+                Long t = snapshot.getValue(Long.class);
+                if (t == null) return;
+                int tds = (int) Math.min(10000, t);
                 updateValue(tds);
                 TdsFragment.this.tds = tds;
             }
@@ -308,11 +313,16 @@ public class TdsFragment extends Fragment {
         });
 
     }
-    private void updateValue(Integer value){
-        String newText = String.format(Locale.UK,"%04d",value);
+    private void updateValue(Integer value) {
+        String newText;
+        if (value < 0 || value > 9999) {
+            newText = "----";
+        } else {
+            newText = String.format(Locale.UK, "%04d", value);
+        }
         tvEcNext.setText(newText);
 
-        if(getContext()!=null){
+        if (getContext() != null) {
             Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
             Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 

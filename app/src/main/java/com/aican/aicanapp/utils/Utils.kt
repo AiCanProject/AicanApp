@@ -1,4 +1,4 @@
-package com.aican.aicanapp.tempController
+package com.aican.aicanapp.utils
 
 import android.content.Context
 import android.content.res.Resources
@@ -37,3 +37,4 @@ fun intermediateColor(a: Int, b: Int, t: Float): Int {
             Color.blue(a) + ((Color.blue(b) - Color.blue(a)) * t).toInt()
     )
 }
+

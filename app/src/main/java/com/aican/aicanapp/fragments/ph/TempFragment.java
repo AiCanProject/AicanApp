@@ -269,6 +269,9 @@ public class TempFragment extends Fragment {
         }
 
         plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (temp < -50 || temp > 125) {
+                return;
+            }
             long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, temp);
@@ -289,11 +292,16 @@ public class TempFragment extends Fragment {
     }
 
 
-    private void updateTemp(int temp){
-        String newText = String.format(Locale.UK,"%d°C",temp);
+    private void updateTemp(int temp) {
+        String newText;
+        if (temp < -50 || temp > 125) {
+            newText = "--";
+        } else {
+            newText = String.format(Locale.UK, "%d°C", temp);
+        }
         tvTempNext.setText(newText);
 
-        if(getContext()!=null){
+        if (getContext() != null) {
             Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
             Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 

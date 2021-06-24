@@ -10,6 +10,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.aican.aicanapp.R
+import com.aican.aicanapp.utils.adjustAlpha
+import com.aican.aicanapp.utils.getColorCompat
+import com.aican.aicanapp.utils.getDrawableCompat
+import com.aican.aicanapp.utils.toPx
 import kotlin.math.abs
 
 data class BezierCurve(

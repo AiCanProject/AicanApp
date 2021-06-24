@@ -8,13 +8,13 @@ public class PhDevice {
     int temp;
     int tds;
 
-    public PhDevice(String id, String name, float ph, float ec, int temp, int tds) {
+    public PhDevice(String id, String name, float ph, float ec, int temp, long tds) {
         this.id = id;
         this.name = name;
         this.ph = ph;
         this.ec = ec;
         this.temp = temp;
-        this.tds = tds;
+        this.tds = (int) Math.min(10000, tds);
     }
 
     public String getId() {

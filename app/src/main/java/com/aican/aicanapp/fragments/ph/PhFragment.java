@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -63,15 +64,19 @@ public class PhFragment extends Fragment {
 
     DatabaseReference deviceRef;
     LinearLayout llStart, llStop, llClear, llExport;
+    CardView cv1Min, cv5Min, cv10Min, cv15Min;
 
     float ph = 0;
+    int skipPoints = 0;
+    int skipCount = 0;
 
+    ArrayList<Entry> entriesOriginal;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ph_main,container, false);
+        return inflater.inflate(R.layout.fragment_ph_main, container, false);
     }
 
     @Override
@@ -87,12 +92,16 @@ public class PhFragment extends Fragment {
         llStop = view.findViewById(R.id.llStop);
         llClear = view.findViewById(R.id.llClear);
         llExport = view.findViewById(R.id.llExport);
-        
+        cv5Min = view.findViewById(R.id.cv5min);
+        cv1Min = view.findViewById(R.id.cv1min);
+        cv10Min = view.findViewById(R.id.cv10min);
+        cv15Min = view.findViewById(R.id.cv15min);
+
         phView.setCurrentPh(7);
+        entriesOriginal = new ArrayList<>();
 
-
-        calibrateBtn.setOnClickListener(v->{
-            Intent intent= new Intent(requireContext(), PhCalibrateActivity.class);
+        calibrateBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), PhCalibrateActivity.class);
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
             startActivity(intent);
         });
@@ -141,21 +150,68 @@ public class PhFragment extends Fragment {
             llExport.setVisibility(View.VISIBLE);
             stopLogging();
         });
-        llClear.setOnClickListener(v->{
+        llClear.setOnClickListener(v -> {
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
             clearLogs();
         });
-        llExport.setOnClickListener(v->{
+        llExport.setOnClickListener(v -> {
             exportLogs();
+        });
+
+        cv1Min.setOnClickListener(v -> {
+            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
+            rescaleGraph();
+        });
+        cv5Min.setOnClickListener(v -> {
+            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
+            rescaleGraph();
+        });
+        cv10Min.setOnClickListener(v -> {
+            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
+            rescaleGraph();
+        });
+        cv15Min.setOnClickListener(v -> {
+            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
+            rescaleGraph();
         });
     }
 
+    private void rescaleGraph() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int count = 0;
+        for (Entry entry : entriesOriginal) {
+            if (count == 0) {
+                entries.add(entry);
+            }
+            ++count;
+            if (count >= skipPoints) {
+                count = 0;
+            }
+        }
+
+        lineChart.getLineData().clearValues();
+
+        LineDataSet lds = new LineDataSet(entries, "pH");
+
+        lds.setLineWidth(2);
+        lds.setCircleRadius(4);
+        lds.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> ds = new ArrayList<>();
+        ds.add(lds);
+
+        LineData ld = new LineData(ds);
+        lineChart.setData(ld);
+        lineChart.invalidate();
+    }
+
     private void exportLogs() {
-        if(!checkStoragePermission()){
+        if (!checkStoragePermission()) {
             return;
         }
-        String csv = (requireContext().getExternalFilesDir(null).getAbsolutePath() + "/"+System.currentTimeMillis()+".csv");
+        String csv = (requireContext().getExternalFilesDir(null).getAbsolutePath() + "/" + System.currentTimeMillis() + ".csv");
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(csv));
 
@@ -245,15 +301,17 @@ public class PhFragment extends Fragment {
             requireActivity().bindService(intent, new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
-                    if(service instanceof ForegroundService.MyBinder){
+                    if(service instanceof ForegroundService.MyBinder) {
                         myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries=myService.getEntries();
+                        ArrayList<Entry> entries = myService.getEntries();
                         logs.clear();
                         logs.addAll(entries);
+                        entriesOriginal.clear();
+                        entriesOriginal.addAll(entries);
 
                         lineChart.getLineData().clearValues();
 
-                        LineDataSet lineDataSet = new LineDataSet(logs,"pH");
+                        LineDataSet lineDataSet = new LineDataSet(logs, "pH");
 
                         lineDataSet.setLineWidth(2);
                         lineDataSet.setCircleRadius(4);
@@ -277,10 +335,19 @@ public class PhFragment extends Fragment {
         }
 
         plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (ph < 0 || ph > 14) {
+                return;
+            }
+            if (skipCount < skipPoints) {
+                skipCount++;
+                return;
+            }
+            skipCount = 0;
             long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, ph);
             data.addEntry(entry, 0);
+            entriesOriginal.add(entry);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
@@ -315,11 +382,16 @@ public class PhFragment extends Fragment {
 
     }
 
-    private void updatePh(float ph){
-        String newText = String.format(Locale.UK,"%.2f",ph);
+    private void updatePh(float ph) {
+        String newText;
+        if (ph < 0 || ph > 14) {
+            newText = "--";
+        } else {
+            newText = String.format(Locale.UK, "%.2f", ph);
+        }
         tvPhNext.setText(newText);
 
-        if(getContext()!=null){
+        if (getContext() != null) {
             Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
             Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 

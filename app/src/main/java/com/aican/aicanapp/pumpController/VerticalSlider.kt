@@ -8,7 +8,11 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.aican.aicanapp.R
-import com.aican.aicanapp.tempController.*
+import com.aican.aicanapp.tempController.CurveSeekView
+import com.aican.aicanapp.utils.adjustAlpha
+import com.aican.aicanapp.utils.getColorCompat
+import com.aican.aicanapp.utils.getDrawableCompat
+import com.aican.aicanapp.utils.toPx
 import kotlin.math.roundToInt
 
 class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attrs) {

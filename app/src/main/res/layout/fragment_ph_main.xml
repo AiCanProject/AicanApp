@@ -7,163 +7,6 @@
     android:clipChildren="false"
     tools:context=".specificactivities.PhActivity">
 
-    <!--        <TextView-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="Ph"-->
-    <!--            android:id="@+id/phTag"-->
-    <!--            android:visibility="gone"-->
-    <!--            android:textSize="24sp"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintBottom_toTopOf="@id/ph_scale"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            android:layout_margin="20dp"-->
-    <!--            android:textColor="@color/blueDark"-->
-    <!--            android:textStyle="bold"/>-->
-
-    <!--        <Button-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="Prev"-->
-    <!--            android:id="@+id/prev_btn"-->
-    <!--            android:background="#00000000"-->
-    <!--            android:textColor="#000"-->
-    <!--            android:padding="10dp"-->
-    <!--            android:drawableLeft="@drawable/ic_prev"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintBottom_toTopOf="@id/ph_scale"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-
-
-    <!--            />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/next_btn"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:background="#00000000"-->
-    <!--            android:drawableEnd="@drawable/ic_arrow_forward_black_24dp"-->
-    <!--            android:drawableRight="@drawable/ic_arrow_forward_black_24dp"-->
-    <!--            android:textColor="#000"-->
-    <!--            android:padding="10dp"-->
-    <!--            android:text="Next"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent"-->
-    <!--            app:layout_constraintBottom_toTopOf="@id/ph_scale"-->
-    <!--            />-->
-
-
-    <!--        <ImageView-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="100dp"-->
-    <!--            android:id="@+id/ph_scale"-->
-    <!--            android:src="@drawable/ph2"-->
-    <!--            android:layout_marginTop="16dp"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/next_btn"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"/>-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:id="@+id/resLL"-->
-    <!--            android:orientation="vertical"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/ph_scale">-->
-
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="horizontal"-->
-    <!--            android:weightSum="1"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/ph_scale">-->
-
-    <!--            <LinearLayout-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="match_parent"-->
-    <!--                android:orientation="vertical"-->
-    <!--                android:layout_weight="0.5">-->
-
-    <!--                <TextView-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:layout_gravity="center"-->
-    <!--                    android:text="Current Ph"-->
-    <!--                    android:textSize="18sp"-->
-    <!--                    android:gravity="center"/>-->
-
-    <!--                <TextView-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:text="2"-->
-    <!--                    android:id="@+id/currPh"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:textSize="40sp"-->
-    <!--                    android:textStyle="bold"-->
-    <!--                    android:textColor="@color/blueDark"/>-->
-
-    <!--            </LinearLayout>-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="match_parent"-->
-    <!--                    android:orientation="vertical"-->
-    <!--                    android:layout_weight="0.5">-->
-
-    <!--                    <TextView-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"-->
-    <!--                        android:layout_gravity="center"-->
-    <!--                        android:text="Coefficient"-->
-    <!--                        android:textSize="18sp"-->
-    <!--                        android:gravity="center"/>-->
-    <!--                    <TextView-->
-    <!--                        android:layout_width="match_parent"-->
-    <!--                        android:layout_height="wrap_content"-->
-    <!--                        android:text="2"-->
-    <!--                        android:id="@+id/coefficient"-->
-    <!--                        android:gravity="center"-->
-    <!--                        android:textSize="40sp"-->
-    <!--                        android:textStyle="bold"-->
-    <!--                        android:textColor="@color/blueDark"/>-->
-
-
-    <!--                </LinearLayout>-->
-
-    <!--        </LinearLayout>-->
-
-    <!--            <com.uzairiqbal.circulartimerview.CircularTimerView-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_marginHorizontal="100dp"-->
-    <!--                android:id="@+id/calibrateTimer"-->
-    <!--                app:progressColor="@color/blueDark"-->
-    <!--                app:backgroundColor="@color/colorPrimary"-->
-    <!--                app:startingPoint="bottom"-->
-    <!--                app:progressText="Calibrate"-->
-    <!--                app:progressTextColor="@color/white"-->
-    <!--                app:textSize="18sp"-->
-    <!--                app:backgroundWidth="0"-->
-    <!--                app:maxValue="100"-->
-    <!--                app:isClockwise="true"-->
-    <!--                android:textColor="@color/white"-->
-    <!--                app:progressBackgroundColor="@color/white"-->
-    <!--                android:gravity="center"-->
-    <!--                android:layout_gravity="center"/>-->
-
-    <!--        </LinearLayout>-->
-
-    <!--        <com.github.mikephil.charting.charts.LineChart-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="0dp"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintTop_toBottomOf="@id/resLL"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"/>-->
-
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
         android:layout_width="wrap_content"
@@ -198,17 +41,6 @@
         app:layout_constraintStart_toEndOf="@id/guideline5"
         />
 
-<!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
-<!--        android:id="@+id/phTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="65dp"-->
-<!--        android:layout_marginTop="18dp"-->
-<!--        android:layout_marginEnd="40dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"-->
-<!--        app:layout_constraintVertical_chainStyle="packed"-->
-<!--        app:suffix=""/>-->
     <FrameLayout
         android:id="@+id/flPh"
         android:layout_width="wrap_content"
@@ -257,11 +89,21 @@
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        app:layout_constraintBottom_toTopOf="@id/graphOptions"
+        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
         app:layout_constraintStart_toStartOf="parent" />
+
     <include
-        android:id="@+id/graphOptions"
-        layout="@layout/graph_options"
+        layout="@layout/graph_time_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/line_chart"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <include
+        android:id="@+id/graphLoggingOptions"
+        layout="@layout/graph_logging_options"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginBottom="8dp"

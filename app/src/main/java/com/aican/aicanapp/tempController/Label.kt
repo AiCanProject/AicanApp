@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import com.aican.aicanapp.utils.intermediateColor
 import kotlin.math.log10
 import kotlin.math.roundToInt
 

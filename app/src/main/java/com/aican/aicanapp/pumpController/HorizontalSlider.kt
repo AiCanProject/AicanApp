@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import com.aican.aicanapp.R
-import com.aican.aicanapp.tempController.adjustAlpha
-import com.aican.aicanapp.tempController.getColorCompat
-import com.aican.aicanapp.tempController.toPx
+import com.aican.aicanapp.utils.adjustAlpha
+import com.aican.aicanapp.utils.getColorCompat
+import com.aican.aicanapp.utils.toPx
 import kotlin.math.roundToInt
 
 class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, attrs) {

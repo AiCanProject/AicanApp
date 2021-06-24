@@ -46,14 +46,6 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
     @Override
     public void onBindViewHolder(PhAdapter.PhAdapterViewHolder holder, int position) {
-//        holder.ph.setText(phs[position]);
-//        deviceId = Integer.toString(position);
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                context.startActivity(new Intent(context,PhActivity.class));
-//            }
-//        });
         holder.bind(phDevices.get(position));
     }
 
@@ -79,10 +71,25 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
         }
 
         public void bind(PhDevice device) {
-            String phString = String.format(Locale.UK, "pH: %.2f", device.getPh());
+            String phString;
+            if (device.getPh() < 0 || device.getPh() > 14) {
+                phString = "pH: -";
+            } else {
+                phString = String.format(Locale.UK, "pH: %.2f", device.getPh());
+            }
             String ecString = String.format(Locale.UK, "EC: %.2f mS/cm", device.getEc());
-            String tempString = String.format(Locale.UK, "Temp: %d°C", device.getTemp());
-            String tdsString = String.format(Locale.UK, "TDS: %d ppm", device.getTds());
+            String tempString;
+            if (device.getTemp() < -50 || device.getTemp() > 125) {
+                tempString = "Temp: -";
+            } else {
+                tempString = String.format(Locale.UK, "Temp: %d°C", device.getTemp());
+            }
+            String tdsString;
+            if (device.getTds() < 0 || device.getTds() > 9999) {
+                tdsString = "TDS: -";
+            } else {
+                tdsString = String.format(Locale.UK, "TDS: %d ppm", device.getTds());
+            }
             ph.setText(phString);
             ec.setText(ecString);
             temp.setText(tempString);

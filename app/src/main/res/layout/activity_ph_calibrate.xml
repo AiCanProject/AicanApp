@@ -201,11 +201,12 @@
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        app:layout_constraintBottom_toTopOf="@id/graphOptions"
+        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
         app:layout_constraintStart_toStartOf="parent" />
+
     <include
-        android:id="@+id/graphOptions"
-        layout="@layout/graph_options"
+        android:id="@+id/graphLoggingOptions"
+        layout="@layout/graph_logging_options"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

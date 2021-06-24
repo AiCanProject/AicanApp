@@ -279,7 +279,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 data.child("PH_VAL").getValue(Float.class),
                                 data.child("EC_VAL").getValue(Float.class),
                                 data.child("TEMP_VAL").getValue(Integer.class),
-                                data.child("TDS_VAL").getValue(Integer.class)
+                                data.child("TDS_VAL").getValue(Long.class)
                         ));
                         break;
                     }
@@ -352,18 +352,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     }
                 }
             });
-
-//            FirebaseDatabase.getInstance(app).getReference().child(id).get().addOnSuccessListener(dataSnapshot -> {
-//                devicesLoaded.incrementAndGet();
-//                deviceMap.put(id, dataSnapshot.getValue(Device.class));
-//
-//                if (devicesLoaded.get() == deviceIds.size()) {
-//                    //Notify adapter
-//                    Log.d(TAG, "getDevices: ");
-//                    adapter.notifyDataSetChanged();
-//                    addListenersForDevices();
-//                }
-//            });
         }
     }
 

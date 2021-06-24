@@ -9,7 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.PathParser
 import com.aican.aicanapp.R
-import com.aican.aicanapp.tempController.getColorCompat
+import com.aican.aicanapp.utils.getColorCompat
 
 class TempView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -43,12 +43,6 @@ class TempView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private fun drawIcon(canvas: Canvas) {
         val paths = listOf(
             PathParser.createPathFromPathData("m36.11,39.44l0,-28.7a6.71,6.71 0 0 0 -13.41,0l0,28.7c-8.82,6.29 -4.14,20.62 6.71,20.56c10.84,0.06 15.53,-14.27 6.7,-20.56zm-6.7,18.56c-9.18,0.07 -12.86,-12.21 -5.15,-17.19a1.15,1.15 0 0 0 0.44,-0.84l0,-29.23a4.71,4.71 0 0 1 9.41,0l0,29.19a1.22,1.22 0 0 0 0.45,0.84c7.7,4.97 4.02,17.23 -5.15,17.23z"),
-//            PathParser.createPathFromPathData("m45,34.63l-5.7,0a1,1 0 0 0 0,2l5.7,0a1,1 0 0 0 0,-2z"),
-//            PathParser.createPathFromPathData("m45,30.48l-5.7,0a1,1 0 0 0 0,2l5.7,0a1,1 0 0 0 0,-2z"),
-//            PathParser.createPathFromPathData("m45,26.33l-5.7,0a1,1 0 0 0 0,2l5.7,0a1,1 0 0 0 0,-2z"),
-//            PathParser.createPathFromPathData("m45,22.19l-5.7,0a1,1 0 0 0 0,2l5.7,0a1,1 0 0 0 0,-2z"),
-//            PathParser.createPathFromPathData("m45,18l-5.7,0a1,1 0 0 0 0,2l5.7,0a1,1 0 0 0 0,-2z"),
-//            PathParser.createPathFromPathData("m39.26,15.89l5.74,0a1,1 0 0 0 0,-2l-5.7,0a1,1 0 0 0 -0.04,2z"),
             PathParser.createPathFromPathData("m30.41,41.45l0,-29.15a1,1 0 0 0 -2,0l0,29.15c-8.78,1.42 -7.95,14.14 1,14.36c8.95,-0.22 9.78,-12.94 1,-14.36zm-1,12.36c-6.9,-0.22 -6.9,-10.22 0,-10.44c6.9,0.22 6.9,10.23 0,10.44z")
         )
         val matrix = Matrix().apply {
