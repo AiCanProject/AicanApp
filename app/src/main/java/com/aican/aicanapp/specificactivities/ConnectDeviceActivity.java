@@ -13,6 +13,8 @@ import com.aican.aicanapp.retrofit.DeviceClient;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,26 +50,38 @@ public class ConnectDeviceActivity extends AppCompatActivity {
     }
 
     private void callUrl(String homeSsid, String homePass) {
-        DeviceClient.client.connect(homeSsid, homePass).enqueue(new Callback<ResponseBody>() {
+        DeviceClient.client.checkActive().enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Toast.makeText(ConnectDeviceActivity.this, "Connected Successfully", Toast.LENGTH_SHORT).show();
+            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+
+                Toast.makeText(ConnectDeviceActivity.this, "Credentials sent to device", Toast.LENGTH_SHORT).show();
+
+                DeviceClient.client.connect(homeSsid, homePass).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+                    }
+
+
+                    @Override
+                    public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
+                    }
+
+                });
             }
 
-
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ConnectDeviceActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
+            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
+                Toast.makeText(ConnectDeviceActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
             }
-
         });
+
     }
     private boolean validate() {
-        if (etSsid.getText().length() == 0) {
+        if (etSsid.getText() == null || etSsid.getText().length() == 0) {
             tilSsid.setError("Invalid SSID");
             return false;
         }
-        if (etPass.getText().length() == 0) {
+        if (etPass.getText() == null || etPass.getText().length() == 0) {
             tilPass.setError("Invalid Password");
             return false;
         }

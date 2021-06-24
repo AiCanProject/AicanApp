@@ -12,4 +12,6 @@ public interface DeviceService {
     @GET("setting")
     Call<ResponseBody> connect(@Query("ssid") String ssid, @Query("pass") String pass);
 
+    @GET("/")
+    Call<ResponseBody> checkActive();
 }
