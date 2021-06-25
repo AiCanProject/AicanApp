@@ -13,6 +13,8 @@ import android.os.IBinder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -56,7 +59,7 @@ import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACK
 
 public class EcTdsCalibrateActivity extends AppCompatActivity {
 
-    TextInputEditText etBuffer,etTds;
+    TextInputEditText etBuffer, etTds;
     RelativeLayout startLayout, rlCoefficient;
     ImageView ivStartBtn;
     TextView tvStart, tvCoefficient;
@@ -66,8 +69,15 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
     LineChart lineChart;
     LinearLayout llStart, llStop, llClear, llExport;
 
+    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 
-    float ec =0;
+    int skipPoints = 0;
+    int skipCount = 0;
+
+    ArrayList<Entry> entriesOriginal;
+
+    float ec = 0;
+    boolean isTimeOptionsVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +112,25 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         llClear = findViewById(R.id.llClear);
         llExport = findViewById(R.id.llExport);
 
+        cv5Min = findViewById(R.id.cv5min);
+        cv1Min = findViewById(R.id.cv1min);
+        cv10Min = findViewById(R.id.cv10min);
+        cv15Min = findViewById(R.id.cv15min);
+        cvClock = findViewById(R.id.cvClock);
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        entriesOriginal = new ArrayList<>();
 
+        cvClock.setOnClickListener(v -> {
+            isTimeOptionsVisible = !isTimeOptionsVisible;
+            if (isTimeOptionsVisible) {
+                showTimeOptions();
+            } else {
+                hideTimeOptions();
+            }
+        });
 
-        ivStartBtn.setOnClickListener(v->{
+        ivStartBtn.setOnClickListener(v -> {
             ivStartBtn.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryAlpha));
             ivStartBtn.setEnabled(false);
             tvStart.setVisibility(View.VISIBLE);
@@ -113,7 +138,7 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
             CountDownTimer timer = new CountDownTimer(120000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    millisUntilFinished/=1000;
+                    millisUntilFinished /= 1000;
                     int min = (int)millisUntilFinished/60;
                     int sec = (int)millisUntilFinished%60;
                     String time = String.format(Locale.UK,"%02d:%02d", min, sec);
@@ -182,13 +207,29 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
             llExport.setVisibility(View.VISIBLE);
             stopLogging();
         });
-        llClear.setOnClickListener(v->{
+        llClear.setOnClickListener(v -> {
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
             clearLogs();
         });
-        llExport.setOnClickListener(v->{
+        llExport.setOnClickListener(v -> {
             exportLogs();
+        });
+        cv1Min.setOnClickListener(v -> {
+            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv5Min.setOnClickListener(v -> {
+            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv10Min.setOnClickListener(v -> {
+            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv15Min.setOnClickListener(v -> {
+            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
         });
     }
 
@@ -271,6 +312,54 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         }, 0);
     }
 
+    private void rescaleGraph() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int count = 0;
+        for (Entry entry : entriesOriginal) {
+            if (count == 0) {
+                entries.add(entry);
+            }
+            ++count;
+            if (count >= skipPoints) {
+                count = 0;
+            }
+        }
+
+        lineChart.getLineData().clearValues();
+
+        LineDataSet lds = new LineDataSet(entries, "pH");
+
+        lds.setLineWidth(2);
+        lds.setCircleRadius(4);
+        lds.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> ds = new ArrayList<>();
+        ds.add(lds);
+
+        LineData ld = new LineData(ds);
+        lineChart.setData(ld);
+        lineChart.invalidate();
+    }
+
+
+    private void setupListeners() {
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float val = snapshot.getValue(Float.class);
+                if (val == null) return;
+                etTds.setText(String.valueOf(val));
+                ec = val;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -322,10 +411,16 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
 
         long start = System.currentTimeMillis();
         plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (skipCount < skipPoints) {
+                skipCount++;
+                return;
+            }
+            skipCount = 0;
             long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, ec);
             data.addEntry(entry, 0);
+            entriesOriginal.add(entry);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
@@ -335,22 +430,45 @@ public class EcTdsCalibrateActivity extends AppCompatActivity {
         });
     }
 
+    private void showTimeOptions() {
+        cv1Min.setVisibility(View.VISIBLE);
+        cv5Min.setVisibility(View.VISIBLE);
+        cv10Min.setVisibility(View.VISIBLE);
+        cv15Min.setVisibility(View.VISIBLE);
 
-    private void setupListeners() {
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+        Animation zoomIn = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
+        cv1Min.startAnimation(zoomIn);
+        cv5Min.startAnimation(zoomIn);
+        cv10Min.startAnimation(zoomIn);
+        cv15Min.startAnimation(zoomIn);
+    }
+
+    private void hideTimeOptions() {
+        Animation zoomOut = AnimationUtils.loadAnimation(this, R.anim.zoom_out);
+        zoomOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float val = snapshot.getValue(Float.class);
-                if(val==null) return;
-                etTds.setText(String.valueOf(val));
-                ec = val;
+            public void onAnimationStart(Animation animation) {
+
             }
 
             @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onAnimationEnd(Animation animation) {
+
+                cv1Min.setVisibility(View.INVISIBLE);
+                cv5Min.setVisibility(View.INVISIBLE);
+                cv10Min.setVisibility(View.INVISIBLE);
+                cv15Min.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
 
             }
         });
-    }
 
+        cv1Min.startAnimation(zoomOut);
+        cv5Min.startAnimation(zoomOut);
+        cv10Min.startAnimation(zoomOut);
+        cv15Min.startAnimation(zoomOut);
+    }
 }

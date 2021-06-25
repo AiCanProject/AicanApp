@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -61,9 +62,14 @@ public class TempFragment extends Fragment {
     DatabaseReference deviceRef;
     LineChart lineChart;
     LinearLayout llStart, llStop, llClear, llExport;
+    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 
+    int skipPoints = 0;
+    int skipCount = 0;
 
-    int temp=0;
+    ArrayList<Entry> entriesOriginal;
+
+    int temp = 0;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -71,6 +77,8 @@ public class TempFragment extends Fragment {
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ph_temp, container, false);
     }
+
+    boolean isTimeOptionsVisible = false;
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -84,9 +92,23 @@ public class TempFragment extends Fragment {
         llStop = view.findViewById(R.id.llStop);
         llClear = view.findViewById(R.id.llClear);
         llExport = view.findViewById(R.id.llExport);
+        cv5Min = view.findViewById(R.id.cv5min);
+        cv1Min = view.findViewById(R.id.cv1min);
+        cv10Min = view.findViewById(R.id.cv10min);
+        cv15Min = view.findViewById(R.id.cv15min);
+        cvClock = view.findViewById(R.id.cvClock);
 
         tempView.setTemp(10);
+        entriesOriginal = new ArrayList<>();
 
+        cvClock.setOnClickListener(v -> {
+            isTimeOptionsVisible = !isTimeOptionsVisible;
+            if (isTimeOptionsVisible) {
+                showTimeOptions();
+            } else {
+                hideTimeOptions();
+            }
+        });
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         setupGraph();
@@ -133,15 +155,32 @@ public class TempFragment extends Fragment {
             llExport.setVisibility(View.VISIBLE);
             stopLogging();
         });
-        llClear.setOnClickListener(v->{
+        llClear.setOnClickListener(v -> {
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
             clearLogs();
         });
-        llExport.setOnClickListener(v->{
+        llExport.setOnClickListener(v -> {
             exportLogs();
         });
+        cv1Min.setOnClickListener(v -> {
+            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv5Min.setOnClickListener(v -> {
+            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv10Min.setOnClickListener(v -> {
+            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv15Min.setOnClickListener(v -> {
+            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
     }
+
 
     private void exportLogs() {
         if(!checkStoragePermission()){
@@ -222,67 +261,34 @@ public class TempFragment extends Fragment {
         }, 0);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        start = System.currentTimeMillis();
-        if(ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, TempFragment.class, "temp")){
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-
-            start = ForegroundService.start;
-            Intent intent = new Intent(requireContext(), ForegroundService.class);
-            requireActivity().bindService(intent, new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    if(service instanceof ForegroundService.MyBinder){
-                        myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries=myService.getEntries();
-                        logs.clear();
-                        logs.addAll(entries);
-
-                        lineChart.getLineData().clearValues();
-
-                        LineDataSet lineDataSet = new LineDataSet(logs,"Temperature");
-
-                        lineDataSet.setLineWidth(2);
-                        lineDataSet.setCircleRadius(4);
-                        lineDataSet.setValueTextSize(10);
-
-
-                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-                        dataSets.add(lineDataSet);
-
-                        LineData data = new LineData(dataSets);
-                        lineChart.setData(data);
-                        lineChart.invalidate();
-                    }
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-
-                }
-            },0);
+    private void rescaleGraph() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int count = 0;
+        for (Entry entry : entriesOriginal) {
+            if (count == 0) {
+                entries.add(entry);
+            }
+            ++count;
+            if (count >= skipPoints) {
+                count = 0;
+            }
         }
 
-        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
-            if (temp < -50 || temp > 125) {
-                return;
-            }
-            long seconds = (System.currentTimeMillis() - start) / 1000;
-            LineData data = lineChart.getData();
-            Entry entry = new Entry(seconds, temp);
-            data.addEntry(entry, 0);
-            lineChart.notifyDataSetChanged();
-            data.notifyDataChanged();
-            lineChart.invalidate();
-            if (isLogging) {
-                logs.add(entry);
-            }
-        });
+        lineChart.getLineData().clearValues();
+
+        LineDataSet lds = new LineDataSet(entries, "pH");
+
+        lds.setLineWidth(2);
+        lds.setCircleRadius(4);
+        lds.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> ds = new ArrayList<>();
+        ds.add(lds);
+
+        LineData ld = new LineData(ds);
+        lineChart.setData(ld);
+        lineChart.invalidate();
     }
 
     @Override
@@ -367,4 +373,114 @@ public class TempFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        start = System.currentTimeMillis();
+        if (ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, TempFragment.class, "temp")) {
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+
+            start = ForegroundService.start;
+            Intent intent = new Intent(requireContext(), ForegroundService.class);
+            requireActivity().bindService(intent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    if (service instanceof ForegroundService.MyBinder) {
+                        myService = ((ForegroundService.MyBinder) service).getService();
+                        ArrayList<Entry> entries = myService.getEntries();
+                        logs.clear();
+                        logs.addAll(entries);
+
+                        lineChart.getLineData().clearValues();
+
+                        LineDataSet lineDataSet = new LineDataSet(logs, "Temperature");
+
+                        lineDataSet.setLineWidth(2);
+                        lineDataSet.setCircleRadius(4);
+                        lineDataSet.setValueTextSize(10);
+
+
+                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                        dataSets.add(lineDataSet);
+
+                        LineData data = new LineData(dataSets);
+                        lineChart.setData(data);
+                        lineChart.invalidate();
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+
+                }
+            }, 0);
+        }
+
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (temp < -50 || temp > 125) {
+                return;
+            }
+            if (skipCount < skipPoints) {
+                skipCount++;
+                return;
+            }
+            skipCount = 0;
+            long seconds = (System.currentTimeMillis() - start) / 1000;
+            LineData data = lineChart.getData();
+            Entry entry = new Entry(seconds, temp);
+            data.addEntry(entry, 0);
+            entriesOriginal.add(entry);
+            lineChart.notifyDataSetChanged();
+            data.notifyDataChanged();
+            lineChart.invalidate();
+            if (isLogging) {
+                logs.add(entry);
+            }
+        });
+    }
+
+    private void showTimeOptions() {
+        cv1Min.setVisibility(View.VISIBLE);
+        cv5Min.setVisibility(View.VISIBLE);
+        cv10Min.setVisibility(View.VISIBLE);
+        cv15Min.setVisibility(View.VISIBLE);
+
+        Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
+        cv1Min.startAnimation(zoomIn);
+        cv5Min.startAnimation(zoomIn);
+        cv10Min.startAnimation(zoomIn);
+        cv15Min.startAnimation(zoomIn);
+    }
+
+    private void hideTimeOptions() {
+        Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
+        zoomOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                cv1Min.setVisibility(View.INVISIBLE);
+                cv5Min.setVisibility(View.INVISIBLE);
+                cv10Min.setVisibility(View.INVISIBLE);
+                cv15Min.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        cv1Min.startAnimation(zoomOut);
+        cv5Min.startAnimation(zoomOut);
+        cv10Min.startAnimation(zoomOut);
+        cv15Min.startAnimation(zoomOut);
+    }
 }

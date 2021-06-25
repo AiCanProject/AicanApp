@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -60,9 +61,14 @@ public class EcFragment extends Fragment {
     Animation fadeOut;
     Animation slideInBottom;
     LinearLayout llStart, llStop, llClear, llExport;
+    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 
 
     float ec = 0;
+    int skipPoints = 0;
+    int skipCount = 0;
+
+    ArrayList<Entry> entriesOriginal;
     LineChart lineChart;
 
     @Nullable
@@ -71,6 +77,8 @@ public class EcFragment extends Fragment {
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ph_ec, container, false);
     }
+
+    boolean isTimeOptionsVisible = false;
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -84,12 +92,26 @@ public class EcFragment extends Fragment {
         llStop = view.findViewById(R.id.llStop);
         llClear = view.findViewById(R.id.llClear);
         llExport = view.findViewById(R.id.llExport);
+        cv5Min = view.findViewById(R.id.cv5min);
+        cv1Min = view.findViewById(R.id.cv1min);
+        cv10Min = view.findViewById(R.id.cv10min);
+        cv15Min = view.findViewById(R.id.cv15min);
+        cvClock = view.findViewById(R.id.cvClock);
 
+        entriesOriginal = new ArrayList<>();
 
-        btnCalibrate.setOnClickListener(v->{
+        btnCalibrate.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), EcTdsCalibrateActivity.class);
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
             startActivity(intent);
+        });
+        cvClock.setOnClickListener(v -> {
+            isTimeOptionsVisible = !isTimeOptionsVisible;
+            if (isTimeOptionsVisible) {
+                showTimeOptions();
+            } else {
+                hideTimeOptions();
+            }
         });
 
         fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
@@ -139,15 +161,32 @@ public class EcFragment extends Fragment {
             llExport.setVisibility(View.VISIBLE);
             stopLogging();
         });
-        llClear.setOnClickListener(v->{
+        llClear.setOnClickListener(v -> {
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
             clearLogs();
         });
-        llExport.setOnClickListener(v->{
+        llExport.setOnClickListener(v -> {
             exportLogs();
         });
+        cv1Min.setOnClickListener(v -> {
+            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv5Min.setOnClickListener(v -> {
+            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv10Min.setOnClickListener(v -> {
+            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv15Min.setOnClickListener(v -> {
+            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
     }
+
 
     private void exportLogs() {
         if(!checkStoragePermission()){
@@ -228,6 +267,95 @@ public class EcFragment extends Fragment {
         }, 0);
     }
 
+    private void rescaleGraph() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int count = 0;
+        for (Entry entry : entriesOriginal) {
+            if (count == 0) {
+                entries.add(entry);
+            }
+            ++count;
+            if (count >= skipPoints) {
+                count = 0;
+            }
+        }
+
+        lineChart.getLineData().clearValues();
+
+        LineDataSet lds = new LineDataSet(entries, "pH");
+
+        lds.setLineWidth(2);
+        lds.setCircleRadius(4);
+        lds.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> ds = new ArrayList<>();
+        ds.add(lds);
+
+        LineData ld = new LineData(ds);
+        lineChart.setData(ld);
+        lineChart.invalidate();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        plotGraphNotifier.stop();
+    }
+
+    private void setupListeners() {
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                float ec = snapshot.getValue(Float.class);
+                updateValue(ec);
+                EcFragment.this.ec = ec;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void updateValue(Float value) {
+        String newText = String.format(Locale.UK, "%02.2f", value);
+        if (value < 10) {
+            newText = "0" + newText;
+        }
+        tvEcNext.setText(newText);
+
+        if (getContext() != null) {
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    tvEcCurr.setVisibility(View.INVISIBLE);
+                    TextView t = tvEcCurr;
+                    tvEcCurr = tvEcNext;
+                    tvEcNext = t;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            tvEcCurr.startAnimation(fadeOut);
+            tvEcNext.setVisibility(View.VISIBLE);
+            tvEcNext.startAnimation(slideInBottom);
+        } else {
+            tvEcCurr.setText(newText);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -278,10 +406,16 @@ public class EcFragment extends Fragment {
         }
 
         plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (skipCount < skipPoints) {
+                skipCount++;
+                return;
+            }
+            skipCount = 0;
             long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
             Entry entry = new Entry(seconds, ec);
             data.addEntry(entry, 0);
+            entriesOriginal.add(entry);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
@@ -291,63 +425,46 @@ public class EcFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        plotGraphNotifier.stop();
+    private void showTimeOptions() {
+        cv1Min.setVisibility(View.VISIBLE);
+        cv5Min.setVisibility(View.VISIBLE);
+        cv10Min.setVisibility(View.VISIBLE);
+        cv15Min.setVisibility(View.VISIBLE);
+
+        Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
+        cv1Min.startAnimation(zoomIn);
+        cv5Min.startAnimation(zoomIn);
+        cv10Min.startAnimation(zoomIn);
+        cv15Min.startAnimation(zoomIn);
     }
 
-    private void setupListeners() {
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+    private void hideTimeOptions() {
+        Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
+        zoomOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                float ec = snapshot.getValue(Float.class);
-                updateValue(ec);
-                EcFragment.this.ec = ec;
+            public void onAnimationStart(Animation animation) {
+
             }
 
             @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onAnimationEnd(Animation animation) {
+
+                cv1Min.setVisibility(View.INVISIBLE);
+                cv5Min.setVisibility(View.INVISIBLE);
+                cv10Min.setVisibility(View.INVISIBLE);
+                cv15Min.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
 
             }
         });
 
+        cv1Min.startAnimation(zoomOut);
+        cv5Min.startAnimation(zoomOut);
+        cv10Min.startAnimation(zoomOut);
+        cv15Min.startAnimation(zoomOut);
     }
-    private void updateValue(Float value){
-        String newText = String.format(Locale.UK,"%02.2f",value);
-        if(value<10){
-            newText = "0"+newText;
-        }
-        tvEcNext.setText(newText);
-
-        if(getContext()!=null){
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    tvEcCurr.setVisibility(View.INVISIBLE);
-                    TextView t = tvEcCurr;
-                    tvEcCurr = tvEcNext;
-                    tvEcNext = t;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            tvEcCurr.startAnimation(fadeOut);
-            tvEcNext.setVisibility(View.VISIBLE);
-            tvEcNext.startAnimation(slideInBottom);
-        }else{
-            tvEcCurr.setText(newText);
-        }
-    }
-
 
 }

@@ -64,7 +64,7 @@ public class PhFragment extends Fragment {
 
     DatabaseReference deviceRef;
     LinearLayout llStart, llStop, llClear, llExport;
-    CardView cv1Min, cv5Min, cv10Min, cv15Min;
+    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 
     float ph = 0;
     int skipPoints = 0;
@@ -78,6 +78,8 @@ public class PhFragment extends Fragment {
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ph_main, container, false);
     }
+
+    boolean isTimeOptionsVisible = false;
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -96,6 +98,7 @@ public class PhFragment extends Fragment {
         cv1Min = view.findViewById(R.id.cv1min);
         cv10Min = view.findViewById(R.id.cv10min);
         cv15Min = view.findViewById(R.id.cv15min);
+        cvClock = view.findViewById(R.id.cvClock);
 
         phView.setCurrentPh(7);
         entriesOriginal = new ArrayList<>();
@@ -105,76 +108,18 @@ public class PhFragment extends Fragment {
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
             startActivity(intent);
         });
+        cvClock.setOnClickListener(v -> {
+            isTimeOptionsVisible = !isTimeOptionsVisible;
+            if (isTimeOptionsVisible) {
+                showTimeOptions();
+            } else {
+                hideTimeOptions();
+            }
+        });
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupGraph();
         setupListeners();
-    }
-
-    private void setupGraph() {
-        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(),"pH");
-
-        lineDataSet.setLineWidth(2);
-        lineDataSet.setCircleRadius(4);
-        lineDataSet.setValueTextSize(10);
-
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(lineDataSet);
-
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-        lineChart.invalidate();
-
-        lineChart.setDrawGridBackground(true);
-        lineChart.setDrawBorders(true);
-        Description d = new Description();
-        d.setText("pH Graph");
-        lineChart.setDescription(d);
-
-        llStart.setOnClickListener(v->{
-            if(ForegroundService.isRunning()){
-                Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-            startLogging();
-        });
-        llStop.setOnClickListener(v->{
-            llStart.setVisibility(View.VISIBLE);
-            llStop.setVisibility(View.INVISIBLE);
-            llClear.setVisibility(View.VISIBLE);
-            llExport.setVisibility(View.VISIBLE);
-            stopLogging();
-        });
-        llClear.setOnClickListener(v -> {
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-            clearLogs();
-        });
-        llExport.setOnClickListener(v -> {
-            exportLogs();
-        });
-
-        cv1Min.setOnClickListener(v -> {
-            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
-            rescaleGraph();
-        });
-        cv5Min.setOnClickListener(v -> {
-            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
-            rescaleGraph();
-        });
-        cv10Min.setOnClickListener(v -> {
-            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
-            rescaleGraph();
-        });
-        cv15Min.setOnClickListener(v -> {
-            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY - 1;
-            rescaleGraph();
-        });
     }
 
     private void rescaleGraph() {
@@ -423,12 +368,119 @@ public class PhFragment extends Fragment {
         }
     }
 
-    private int getAttr(@AttrRes int attrRes){
+    private int getAttr(@AttrRes int attrRes) {
         TypedValue typedValue = new TypedValue();
-        requireActivity().getTheme().resolveAttribute(attrRes,typedValue,true);
+        requireActivity().getTheme().resolveAttribute(attrRes, typedValue, true);
 
         return typedValue.data;
     }
 
+    private void setupGraph() {
+        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "pH");
+
+        lineDataSet.setLineWidth(2);
+        lineDataSet.setCircleRadius(4);
+        lineDataSet.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(lineDataSet);
+
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+        lineChart.invalidate();
+
+        lineChart.setDrawGridBackground(true);
+        lineChart.setDrawBorders(true);
+        Description d = new Description();
+        d.setText("pH Graph");
+        lineChart.setDescription(d);
+
+        llStart.setOnClickListener(v -> {
+            if (ForegroundService.isRunning()) {
+                Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+            startLogging();
+        });
+        llStop.setOnClickListener(v -> {
+            llStart.setVisibility(View.VISIBLE);
+            llStop.setVisibility(View.INVISIBLE);
+            llClear.setVisibility(View.VISIBLE);
+            llExport.setVisibility(View.VISIBLE);
+            stopLogging();
+        });
+        llClear.setOnClickListener(v -> {
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+            clearLogs();
+        });
+        llExport.setOnClickListener(v -> {
+            exportLogs();
+        });
+
+        cv1Min.setOnClickListener(v -> {
+            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv5Min.setOnClickListener(v -> {
+            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv10Min.setOnClickListener(v -> {
+            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv15Min.setOnClickListener(v -> {
+            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+    }
+
+    private void showTimeOptions() {
+        cv1Min.setVisibility(View.VISIBLE);
+        cv5Min.setVisibility(View.VISIBLE);
+        cv10Min.setVisibility(View.VISIBLE);
+        cv15Min.setVisibility(View.VISIBLE);
+
+        Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
+        cv1Min.startAnimation(zoomIn);
+        cv5Min.startAnimation(zoomIn);
+        cv10Min.startAnimation(zoomIn);
+        cv15Min.startAnimation(zoomIn);
+    }
+
+    private void hideTimeOptions() {
+        Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
+        zoomOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                cv1Min.setVisibility(View.INVISIBLE);
+                cv5Min.setVisibility(View.INVISIBLE);
+                cv10Min.setVisibility(View.INVISIBLE);
+                cv15Min.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        cv1Min.startAnimation(zoomOut);
+        cv5Min.startAnimation(zoomOut);
+        cv10Min.startAnimation(zoomOut);
+        cv15Min.startAnimation(zoomOut);
+    }
 
 }

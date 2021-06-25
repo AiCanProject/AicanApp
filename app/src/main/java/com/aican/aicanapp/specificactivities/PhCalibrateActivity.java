@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -64,13 +65,18 @@ import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACK
 public class PhCalibrateActivity extends AppCompatActivity {
 
     PhView phView;
-//    ProgressLabelView phTextView, plvCoefficient;
-    Button btnStart,btnNext;
+    //    ProgressLabelView phTextView, plvCoefficient;
+    Button btnStart, btnNext;
     TextView tvTimer, tvCoefficient, tvBufferCurr, tvBufferNext, tvPh, tvCoefficientLabel, tvEdit;
     Toolbar toolbar;
     LineChart lineChart;
     LinearLayout llStart, llStop, llClear, llExport;
+    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 
+    int skipPoints = 0;
+    int skipCount = 0;
+
+    ArrayList<Entry> entriesOriginal;
 
     float[] buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
@@ -97,6 +103,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
         }
     };
+    boolean isTimeOptionsVisible = false;
 
     private void setupGraph() {
         LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "pH");
@@ -137,15 +144,32 @@ public class PhCalibrateActivity extends AppCompatActivity {
             llExport.setVisibility(View.VISIBLE);
             stopLogging();
         });
-        llClear.setOnClickListener(v->{
+        llClear.setOnClickListener(v -> {
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
             clearLogs();
         });
-        llExport.setOnClickListener(v->{
+        llExport.setOnClickListener(v -> {
             exportLogs();
         });
+        cv1Min.setOnClickListener(v -> {
+            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv5Min.setOnClickListener(v -> {
+            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv10Min.setOnClickListener(v -> {
+            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
+        cv15Min.setOnClickListener(v -> {
+            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
+            rescaleGraph();
+        });
     }
+
 
     private void exportLogs() {
         if(!checkStoragePermission()){
@@ -234,6 +258,49 @@ public class PhCalibrateActivity extends AppCompatActivity {
         plotGraphNotifier.stop();
     }
 
+    private void rescaleGraph() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int count = 0;
+        for (Entry entry : entriesOriginal) {
+            if (count == 0) {
+                entries.add(entry);
+            }
+            ++count;
+            if (count >= skipPoints) {
+                count = 0;
+            }
+        }
+
+        lineChart.getLineData().clearValues();
+
+        LineDataSet lds = new LineDataSet(entries, "pH");
+
+        lds.setLineWidth(2);
+        lds.setCircleRadius(4);
+        lds.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> ds = new ArrayList<>();
+        ds.add(lds);
+
+        LineData ld = new LineData(ds);
+        lineChart.setData(ld);
+        lineChart.invalidate();
+    }
+
+    private void loadBuffers() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
+            buffers[0] = snapshot.child("B_1").getValue(Float.class);
+            buffers[1] = snapshot.child("B_2").getValue(Float.class);
+            buffers[2] = snapshot.child("B_3").getValue(Float.class);
+            buffers[3] = snapshot.child("B_4").getValue(Float.class);
+            buffers[4] = snapshot.child("B_5").getValue(Float.class);
+
+            tvBufferCurr.setText(String.valueOf(buffers[0]));
+            phView.setCurrentPh(buffers[0]);
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_Light);
@@ -272,11 +339,26 @@ public class PhCalibrateActivity extends AppCompatActivity {
         llStop = findViewById(R.id.llStop);
         llClear = findViewById(R.id.llClear);
         llExport = findViewById(R.id.llExport);
-
+        cv5Min = findViewById(R.id.cv5min);
+        cv1Min = findViewById(R.id.cv1min);
+        cv10Min = findViewById(R.id.cv10min);
+        cv15Min = findViewById(R.id.cv15min);
+        cvClock = findViewById(R.id.cvClock);
 
         tvBufferCurr.setText(String.valueOf(buffers[0]));
 
         phView.setCurrentPh(buffers[0]);
+
+        entriesOriginal = new ArrayList<>();
+
+        cvClock.setOnClickListener(v -> {
+            isTimeOptionsVisible = !isTimeOptionsVisible;
+            if (isTimeOptionsVisible) {
+                showTimeOptions();
+            } else {
+                hideTimeOptions();
+            }
+        });
 
         btnStart.setOnClickListener(v -> {
             btnStart.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryAlpha));
@@ -348,82 +430,6 @@ public class PhCalibrateActivity extends AppCompatActivity {
         loadBuffers();
         setupPhListener();
         setupCoeffListener();
-    }
-
-    private void loadBuffers() {
-        deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
-            buffers[0] = snapshot.child("B_1").getValue(Float.class);
-            buffers[1] = snapshot.child("B_2").getValue(Float.class);
-            buffers[2] = snapshot.child("B_3").getValue(Float.class);
-            buffers[3] = snapshot.child("B_4").getValue(Float.class);
-            buffers[4] = snapshot.child("B_5").getValue(Float.class);
-
-            tvBufferCurr.setText(String.valueOf(buffers[0]));
-            phView.setCurrentPh(buffers[0]);
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        start = System.currentTimeMillis();
-
-        if (ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)) {
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-
-            start = ForegroundService.start;
-
-            Intent intent = new Intent(this, ForegroundService.class);
-            bindService(intent, new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    if (service instanceof ForegroundService.MyBinder) {
-                        myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries = myService.getEntries();
-                        logs.clear();
-                        logs.addAll(entries);
-
-                        lineChart.getLineData().clearValues();
-
-                        LineDataSet lineDataSet = new LineDataSet(logs,"pH");
-
-                        lineDataSet.setLineWidth(2);
-                        lineDataSet.setCircleRadius(4);
-                        lineDataSet.setValueTextSize(10);
-
-
-                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-                        dataSets.add(lineDataSet);
-
-                        LineData data = new LineData(dataSets);
-                        lineChart.setData(data);
-                        lineChart.invalidate();
-                    }
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-
-                }
-            },0);
-        }
-
-        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
-            long seconds = (System.currentTimeMillis() - start) / 1000;
-            LineData data = lineChart.getData();
-            Entry entry = new Entry(seconds, coeff);
-            data.addEntry(entry, 0);
-            lineChart.notifyDataSetChanged();
-            data.notifyDataChanged();
-            lineChart.invalidate();
-            if (isLogging) {
-                logs.add(entry);
-            }
-        });
     }
 
     private void displayCoeffAndPrepareNext(float coeff) {
@@ -539,4 +545,116 @@ public class PhCalibrateActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        start = System.currentTimeMillis();
+
+        if (ForegroundService.isMyClassRunning(PhActivity.DEVICE_ID, PhFragment.class)) {
+            llStart.setVisibility(View.INVISIBLE);
+            llStop.setVisibility(View.VISIBLE);
+            llClear.setVisibility(View.INVISIBLE);
+            llExport.setVisibility(View.INVISIBLE);
+
+            start = ForegroundService.start;
+
+            Intent intent = new Intent(this, ForegroundService.class);
+            bindService(intent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    if (service instanceof ForegroundService.MyBinder) {
+                        myService = ((ForegroundService.MyBinder) service).getService();
+                        ArrayList<Entry> entries = myService.getEntries();
+                        logs.clear();
+                        logs.addAll(entries);
+
+                        lineChart.getLineData().clearValues();
+
+                        LineDataSet lineDataSet = new LineDataSet(logs, "pH");
+
+                        lineDataSet.setLineWidth(2);
+                        lineDataSet.setCircleRadius(4);
+                        lineDataSet.setValueTextSize(10);
+
+
+                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                        dataSets.add(lineDataSet);
+
+                        LineData data = new LineData(dataSets);
+                        lineChart.setData(data);
+                        lineChart.invalidate();
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+
+                }
+            }, 0);
+        }
+
+        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
+            if (skipCount < skipPoints) {
+                skipCount++;
+                return;
+            }
+            skipCount = 0;
+            long seconds = (System.currentTimeMillis() - start) / 1000;
+            LineData data = lineChart.getData();
+            Entry entry = new Entry(seconds, coeff);
+            entriesOriginal.add(entry);
+            data.addEntry(entry, 0);
+            lineChart.notifyDataSetChanged();
+            data.notifyDataChanged();
+            lineChart.invalidate();
+            if (isLogging) {
+                logs.add(entry);
+            }
+        });
+    }
+
+    private void showTimeOptions() {
+        cv1Min.setVisibility(View.VISIBLE);
+        cv5Min.setVisibility(View.VISIBLE);
+        cv10Min.setVisibility(View.VISIBLE);
+        cv15Min.setVisibility(View.VISIBLE);
+
+        Animation zoomIn = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
+        cv1Min.startAnimation(zoomIn);
+        cv5Min.startAnimation(zoomIn);
+        cv10Min.startAnimation(zoomIn);
+        cv15Min.startAnimation(zoomIn);
+    }
+
+    private void hideTimeOptions() {
+        Animation zoomOut = AnimationUtils.loadAnimation(this, R.anim.zoom_out);
+        zoomOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                cv1Min.setVisibility(View.INVISIBLE);
+                cv5Min.setVisibility(View.INVISIBLE);
+                cv10Min.setVisibility(View.INVISIBLE);
+                cv15Min.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        cv1Min.startAnimation(zoomOut);
+        cv5Min.startAnimation(zoomOut);
+        cv10Min.startAnimation(zoomOut);
+        cv15Min.startAnimation(zoomOut);
+    }
+
 }

@@ -11,6 +11,8 @@
         android:backgroundTint="@color/white"
         app:cardCornerRadius="13dp"
         app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="4dp"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -25,12 +27,13 @@
         android:id="@+id/cv5min"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:layout_marginTop="8dp"
+        android:layout_margin="4dp"
         android:backgroundTint="@color/white"
-
         app:cardCornerRadius="13dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv1min">
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cv1min"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -44,11 +47,12 @@
         android:id="@+id/cv10min"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:layout_marginTop="8dp"
+        android:layout_margin="4dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="13dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv5min">
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/cv5min"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,11 +67,13 @@
         android:id="@+id/cv15min"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:layout_marginTop="8dp"
+        android:layout_margin="4dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="13dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv10min">
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cv10min"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
@@ -75,6 +81,25 @@
             android:layout_gravity="center"
             android:text="15"
             android:textColor="@color/black" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvClock"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_margin="4dp"
+        android:backgroundTint="@color/white"
+        app:cardCornerRadius="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cv15min"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_clock" />
+
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
