@@ -1,36 +1,33 @@
 package com.aican.aicanapp.fragments.pump;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.pumpController.VerticalSlider;
+import com.aican.aicanapp.specificactivities.PumpActivity;
 import com.aican.aicanapp.specificactivities.PumpCalibrateActivity;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 public class DoseFragment extends Fragment {
 
@@ -39,15 +36,18 @@ public class DoseFragment extends Fragment {
     Button calibrateBtn;
     ShapeableImageView startBtn;
     TextView tvStart;
+    SwitchCompat switchDir;
     boolean isStarted = false;
-    
+
+    DatabaseReference deviceRef = null;
+
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         return inflater.inflate(
                 R.layout.fragment_dose,
-                container, 
+                container,
                 false
         );
     }
@@ -62,104 +62,98 @@ public class DoseFragment extends Fragment {
         calibrateBtn = view.findViewById(R.id.calibrateBtn);
         startBtn = view.findViewById(R.id.ivStartBtn);
         tvStart = view.findViewById(R.id.tvStart);
+        switchDir = view.findViewById(R.id.switchDir);
 
-        volController.setProgress(200);
-        speedController.setProgress(250);
+        volController.setProgress(0);
+        speedController.setProgress(0);
 
-//        volController.setOnProgressChangeListener(progress -> {
-////            newVol.setProgress(progress);
-//        });
-//        speedController.setOnProgressChangeListener(progress -> {
-////            newSpeed.setProgress(progress);
-//        });
-
-        calibrateBtn.setOnClickListener(v->{
-//            volController.setProgress(volController.getProgress());
-//            speedController.setProgress(speedController.getProgress());
+        calibrateBtn.setOnClickListener(v -> {
             startActivity(
                     new Intent(requireContext(), PumpCalibrateActivity.class)
             );
         });
 
-        startBtn.setOnClickListener(v->{
-            isStarted=!isStarted;
+        startBtn.setOnClickListener(v -> {
+            isStarted = !isStarted;
             refreshStartBtnUI();
         });
 
-        //....................................................Graph............................................................................
-        LineDataSet lineDataSet = new LineDataSet(dataPoints(),"Temperature 1");
-        LineDataSet lineDataSet1 = new LineDataSet(dataPoints1(),"Temperature 2");
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
+                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
 
-        lineDataSet1.setColors(Color.RED);
-        lineDataSet1.setLineWidth(2);
-        lineDataSet1.setCircleRadius(4);
-        lineDataSet1.setValueTextSize(10);
+        checkModeAndSetListeners();
+    }
 
-        lineDataSet.setLineWidth(2);
-        lineDataSet.setCircleRadius(4);
-        lineDataSet.setValueTextSize(10);
+    private void checkModeAndSetListeners() {
+        deviceRef.child("UI").child("MODE").child("MODE_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Integer mode = snapshot.getValue(Integer.class);
+                if (mode == null) {
+                    return;
+                }
+                if (mode == 0) {
+                    setupListeners();
+                } else {
+                    isStarted = false;
+                    refreshStartBtnUI();
+                    volController.setProgress(0);
+                    speedController.setProgress(0);
+                    switchDir.setChecked(false);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(lineDataSet);
-        dataSets.add(lineDataSet1);
+            }
+        });
+    }
 
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-        lineChart.invalidate();
+    private void setupListeners() {
 
-        lineChart.setDrawGridBackground(true);
-        lineChart.setDrawBorders(true);
+        deviceRef.child("UI").child("MODE").child("DOSE").child("DIR").get().addOnSuccessListener(snapshot -> {
+            Integer dir = snapshot.getValue(Integer.class);
+            if (dir == null) return;
 
-        data.setValueFormatter(new MyValueFormatter());
+            switchDir.setChecked(dir == 0);
+        });
 
+        deviceRef.child("UI").child("MODE").child("DOSE").child("SPEED").get().addOnSuccessListener(snapshot -> {
+            Integer speed = snapshot.getValue(Integer.class);
+            if (speed == null) return;
+
+            speedController.setProgress(speed);
+        });
+
+        deviceRef.child("UI").child("MODE").child("DOSE").child("VOL").get().addOnSuccessListener(snapshot -> {
+            Integer vol = snapshot.getValue(Integer.class);
+            if (vol == null) return;
+
+            volController.setProgress(vol);
+        });
+
+        speedController.setOnProgressChangeListener(progress -> {
+            deviceRef.child("UI").child("MODE").child("DOSE").child("SPEED").setValue(progress);
+        });
+
+        volController.setOnProgressChangeListener(progress -> {
+            deviceRef.child("UI").child("MODE").child("DOSE").child("VOL").setValue(progress);
+        });
+
+        switchDir.setOnCheckedChangeListener((v, isChecked) -> {
+            deviceRef.child("UI").child("MODE").child("DOSE").child("DIR").setValue(isChecked ? 0 : 1);
+        });
     }
 
     private void refreshStartBtnUI() {
-        if(isStarted){
+        if (isStarted) {
             tvStart.setText("STOP");
             startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red));
-        }else{
+        } else {
             tvStart.setText("START");
             startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
         }
     }
 
-    private int getAttr(@AttrRes int attrRes){
-        TypedValue typedValue = new TypedValue();
-        requireContext().getTheme().resolveAttribute(attrRes,typedValue,true);
-
-        return typedValue.data;
-    }
-
-    public ArrayList<Entry> dataPoints (){
-        ArrayList<Entry> dataPointsList = new ArrayList<>();
-        dataPointsList.add(new Entry(0,20));
-        dataPointsList.add(new Entry(1,10));
-        dataPointsList.add(new Entry(2,5));
-        dataPointsList.add(new Entry(3,12));
-        dataPointsList.add(new Entry(4,18));
-
-        return dataPointsList;
-    }
-
-    public ArrayList<Entry> dataPoints1 (){
-        ArrayList<Entry> dataPointsList = new ArrayList<>();
-        dataPointsList.add(new Entry(0,5));
-        dataPointsList.add(new Entry(1,16));
-        dataPointsList.add(new Entry(2,5));
-        dataPointsList.add(new Entry(3,5));
-        dataPointsList.add(new Entry(4,1));
-        dataPointsList.add(new Entry(5,11));
-
-        return dataPointsList;
-    }
-
-    private class MyValueFormatter extends ValueFormatter {
-
-        @Override
-        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-            return value+"";
-        }
-    }
 }

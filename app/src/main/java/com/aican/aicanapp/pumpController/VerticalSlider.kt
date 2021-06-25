@@ -445,7 +445,13 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     private var progress = minRange.toInt()
-    fun setProgress(progress: Int) {
+    fun setProgress(p: Int) {
+        var progress = p
+        if (progress < minRange) {
+            progress = minRange.toInt()
+        } else if (progress > maxRange) {
+            progress = maxRange.toInt()
+        }
         this.progress = progress
         this.prevProgress = progress
         if (height != 0) {
