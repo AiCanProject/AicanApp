@@ -29,6 +29,7 @@ import com.aican.aicanapp.dataClasses.CoolingDevice;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
+import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -45,10 +46,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener {
+public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
 
     public static final String KEY_DEVICE_ID = "device_id";
     public static final int GRAPH_PLOT_DELAY = 15000;
+    public static final String DEVICE_TYPE_PH = "PH_METER";
+    public static final String DEVICE_TYPE_PUMP = "P_PUMP";
+    public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
+    public static final String DEVICE_TYPE_COOLING = "PELTIER";
 
     DatabaseReference primaryDatabase;
     String mUid;
@@ -56,6 +61,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
     HashMap<String, String> deviceTypes;
+    HashMap<String, String> deviceNames;
 
     ArrayList<PhDevice> phDevices;
     ArrayList<PumpDevice> pumpDevices;
@@ -106,6 +112,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempDevices = new ArrayList<>();
         deviceTypes = new HashMap<>();
         deviceIdIds = new HashMap<>();
+        deviceNames = new HashMap<>();
 
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,11 +278,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 devicesLoaded.incrementAndGet();
                 DataSnapshot data = dataSnapshot.child("Data");
                 DataSnapshot ui = dataSnapshot.child("UI");
+                String name = dataSnapshot.child("NAME").getValue(String.class);
+                deviceNames.put(id, name);
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
                         phDevices.add(new PhDevice(
                                 id,
-                                "pH Meter",
+                                name,
                                 data.child("PH_VAL").getValue(Float.class),
                                 data.child("EC_VAL").getValue(Float.class),
                                 data.child("TEMP_VAL").getValue(Integer.class),
@@ -288,7 +297,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         if (mode == 0) {
                             pumpDevices.add(new PumpDevice(
                                     id,
-                                    "Peristaltic Pump",
+                                    name,
                                     mode,
                                     ui.child("MODE").child("DOSE").child("SPEED").getValue(Integer.class),
                                     ui.child("MODE").child("DOSE").child("DIR").getValue(Integer.class),
@@ -298,7 +307,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         } else {
                             pumpDevices.add(new PumpDevice(
                                     id,
-                                    "Peristaltic Pump",
+                                    name,
                                     mode,
                                     ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
                                     ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
@@ -311,7 +320,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     case "TEMP_CONTROLLER": {
                         tempDevices.add(new TempDevice(
                                 id,
-                                "Oil Bath Controller",
+                                name,
                                 ui.child("TEMP").child("TEMP_VAL").getValue(Integer.class)
                         ));
                         break;
@@ -319,7 +328,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     case "PELTIER": {
                         coolingDevices.add(new CoolingDevice(
                                 id,
-                                "Laboratory Chiller",
+                                name,
                                 ui.child("TEMP").child("TEMP_VAL").getValue(Integer.class)
                         ));
                         break;
@@ -365,6 +374,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         PopupMenu menu = new PopupMenu(this, view);
         menu.getMenuInflater().inflate(R.menu.device_options, menu.getMenu());
         menu.setOnMenuItemClickListener(item -> {
+
             if (item.getItemId() == R.id.menuRemoveDevice) {
                 String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
                 if (uid != null && deviceIdIds.containsKey(deviceId)) {
@@ -375,9 +385,25 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                             });
                 }
                 return true;
+            } else if (item.getItemId() == R.id.menuRename) {
+                EditNameDialog dialog = new EditNameDialog(
+                        deviceId,
+                        deviceTypes.get(deviceId),
+                        deviceNames.get(deviceId),
+                        this
+                );
+                dialog.show(getSupportFragmentManager(), null);
             }
+
             return false;
         });
         menu.show();
+    }
+
+    @Override
+    public void onNameChanged(String deviceId, String type, String newName) {
+        FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference()
+                .child(type).child(deviceId).child("NAME").setValue(newName);
+        refresh();
     }
 }
