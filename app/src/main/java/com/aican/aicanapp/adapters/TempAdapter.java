@@ -91,6 +91,7 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), TemperatureActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
+                intent.putExtra(TemperatureActivity.DEVICE_TYPE_KEY, Dashboard.DEVICE_TYPE_TEMP);
                 itemView.getContext().startActivity(intent);
             });
 

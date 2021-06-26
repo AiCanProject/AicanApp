@@ -514,17 +514,6 @@ public class PhCalibrateActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isCalibrating) {
-//            AlertDialog dialog = new AlertDialog.Builder(this)
-//                    .setTitle("Calibration is in progress!")
-//                    .setMessage("Are you sure you want to cancel calibration?")
-//                    .setPositiveButton("No", (d, v) -> {
-//                        d.dismiss();
-//                    })
-//                    .setNegativeButton("Yes", (d, v) -> {
-//                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-//                        super.onBackPressed();
-//                    })
-//                    .create();
             ExitConfirmDialog dialog = new ExitConfirmDialog((new ExitConfirmDialog.DialogCallbacks() {
                 @Override
                 public void onYesClicked(Dialog dialog1) {

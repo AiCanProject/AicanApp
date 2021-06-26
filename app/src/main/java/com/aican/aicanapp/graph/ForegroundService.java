@@ -171,7 +171,7 @@ public class ForegroundService extends Service {
         return isRunning;
     }
     public static boolean isMyClassRunning(String deviceId, Class<?> c){
-        if(isRunning && currentClass == c && deviceId.equals(ForegroundService.deviceId)){
+        if (isRunning && currentClass == c && deviceId != null && deviceId.equals(ForegroundService.deviceId)) {
             return true;
         }
         return false;
