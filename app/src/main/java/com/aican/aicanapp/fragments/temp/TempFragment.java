@@ -1,4 +1,4 @@
-package com.aican.aicanapp.fragments.pump;
+package com.aican.aicanapp.fragments.temp;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -9,29 +9,26 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.graph.ForegroundService;
-import com.aican.aicanapp.pumpController.VerticalSlider;
-import com.aican.aicanapp.specificactivities.PumpActivity;
-import com.aican.aicanapp.specificactivities.PumpCalibrateActivity;
+import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -39,7 +36,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,53 +50,41 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class PumpFragment extends Fragment {
-
-    VerticalSlider speedController;
-    LineChart lineChart;
-    SwitchCompat switchDir;
-    Button calibrateBtn;
-    ShapeableImageView startBtn;
-    TextView tvStart;
-    boolean isStarted = false;
-
-    DatabaseReference deviceRef = null;
+public class TempFragment extends Fragment {
 
 
+    DatabaseReference deviceRef;
+    float temp = 0;
+    TextView tvTempCurr, tvTempNext;
     LinearLayout llStart, llStop, llClear, llExport;
     CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
-    float speed = -1;
     int skipPoints = 0;
     int skipCount = 0;
-
     ArrayList<Entry> entriesOriginal;
     boolean isTimeOptionsVisible = false;
-
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pump, container, false);
-    }
-
     ArrayList<Entry> logs = new ArrayList<>();
     long start = 0;
     ForegroundService myService;
     PlotGraphNotifier plotGraphNotifier;
+    private LineChart lineChart;
     private boolean isLogging = false;
 
+    @Nullable
+    @org.jetbrains.annotations.Nullable
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_temp_main, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        speedController = view.findViewById(R.id.speedController);
+        tvTempCurr = view.findViewById(R.id.tvTempCurr);
+        tvTempNext = view.findViewById(R.id.tvTempNext);
         lineChart = view.findViewById(R.id.line_chart);
-        calibrateBtn = view.findViewById(R.id.calibrateBtn);
-        startBtn = view.findViewById(R.id.ivStartBtn);
-        tvStart = view.findViewById(R.id.tvStart);
-        switchDir = view.findViewById(R.id.switchDir);
 
         llStart = view.findViewById(R.id.llStart);
         llStop = view.findViewById(R.id.llStop);
@@ -112,15 +96,18 @@ public class PumpFragment extends Fragment {
         cv15Min = view.findViewById(R.id.cv15min);
         cvClock = view.findViewById(R.id.cvClock);
 
-        speedController.setProgress(0);
-
         entriesOriginal = new ArrayList<>();
 
-        calibrateBtn.setOnClickListener(v -> {
-            startActivity(
-                    new Intent(requireContext(), PumpCalibrateActivity.class)
-            );
-        });
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
+                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
+
+        setupListeners();
+        setupGraph();
+
+    }
+
+    private void setupListeners() {
+
         cvClock.setOnClickListener(v -> {
             isTimeOptionsVisible = !isTimeOptionsVisible;
             if (isTimeOptionsVisible) {
@@ -130,21 +117,24 @@ public class PumpFragment extends Fragment {
             }
         });
 
-        startBtn.setOnClickListener(v -> {
-            isStarted = !isStarted;
-            refreshStartBtnUI();
+        deviceRef.child("UI").child("TEMP").child("TEMP_VAL_2").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Integer temp = snapshot.getValue(Integer.class);
+                if (temp == null) return;
+                updateTemp(temp);
+                TempFragment.this.temp = temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
         });
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
-                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
-
-        checkModeAndSetListeners();
-        setupGraph();
-
-
     }
 
     private void setupGraph() {
-        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "Speed");
+        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "Temp");
 
         lineDataSet.setLineWidth(2);
         lineDataSet.setCircleRadius(4);
@@ -157,11 +147,11 @@ public class PumpFragment extends Fragment {
         LineData data = new LineData(dataSets);
         lineChart.setData(data);
         lineChart.invalidate();
-
         lineChart.setDrawGridBackground(true);
         lineChart.setDrawBorders(true);
+
         Description d = new Description();
-        d.setText("Pump Graph");
+        d.setText("Temp Graph");
         lineChart.setDescription(d);
 
         llStart.setOnClickListener(v -> {
@@ -190,7 +180,6 @@ public class PumpFragment extends Fragment {
         llExport.setOnClickListener(v -> {
             exportLogs();
         });
-
         cv1Min.setOnClickListener(v -> {
             skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
             rescaleGraph();
@@ -207,36 +196,6 @@ public class PumpFragment extends Fragment {
             skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
             rescaleGraph();
         });
-    }
-
-    private void rescaleGraph() {
-        ArrayList<Entry> entries = new ArrayList<>();
-        int count = 0;
-        for (Entry entry : entriesOriginal) {
-            if (count == 0) {
-                entries.add(entry);
-            }
-            ++count;
-            if (count >= skipPoints) {
-                count = 0;
-            }
-        }
-
-        lineChart.getLineData().clearValues();
-
-        LineDataSet lds = new LineDataSet(entries, "Speed");
-
-        lds.setLineWidth(2);
-        lds.setCircleRadius(4);
-        lds.setValueTextSize(10);
-
-
-        ArrayList<ILineDataSet> ds = new ArrayList<>();
-        ds.add(lds);
-
-        LineData ld = new LineData(ds);
-        lineChart.setData(ld);
-        lineChart.invalidate();
     }
 
     private void exportLogs() {
@@ -263,8 +222,8 @@ public class PumpFragment extends Fragment {
 
     private boolean checkStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (requireContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requireActivity().requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
+            if (requireActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
                 return false;
             }
         }
@@ -281,7 +240,7 @@ public class PumpFragment extends Fragment {
     private void stopLogging() {
         isLogging = false;
         if (myService != null) {
-            myService.stopLogging(PumpFragment.class);
+            myService.stopLogging(TempFragment.class);
         }
     }
 
@@ -291,10 +250,10 @@ public class PumpFragment extends Fragment {
 
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
-        DatabaseReference ref = deviceRef.child("UI").child("MODE").child("PUMP").child("SPEED");
-        ForegroundService.setInitials(PumpActivity.DEVICE_ID, ref, PumpFragment.class, start, "pump");
-        requireActivity().startService(intent);
-        requireActivity().bindService(intent, new ServiceConnection() {
+        DatabaseReference ref = deviceRef.child("UI").child("TEMP").child("TEMP_VAL_2");
+        ForegroundService.setInitials(TemperatureActivity.DEVICE_ID, ref, TempFragment.class, start, TemperatureActivity.deviceType);
+        context.startService(intent);
+        context.bindService(intent, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 if (service instanceof ForegroundService.MyBinder) {
@@ -310,18 +269,57 @@ public class PumpFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        plotGraphNotifier.stop();
+    }
+
+    private void rescaleGraph() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int count = 0;
+        for (Entry entry : entriesOriginal) {
+            if (count == 0) {
+                entries.add(entry);
+            }
+            ++count;
+            if (count >= skipPoints) {
+                count = 0;
+            }
+        }
+
+        lineChart.getLineData().clearValues();
+
+        LineDataSet lds = new LineDataSet(entries, "Temp");
+
+        lds.setLineWidth(2);
+        lds.setCircleRadius(4);
+        lds.setValueTextSize(10);
+
+
+        ArrayList<ILineDataSet> ds = new ArrayList<>();
+        ds.add(lds);
+
+        LineData ld = new LineData(ds);
+        lineChart.setData(ld);
+        lineChart.invalidate();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+
         start = System.currentTimeMillis();
-        if (ForegroundService.isMyTypeRunning(PumpActivity.DEVICE_ID, PumpFragment.class, "pump")) {
+
+        if (ForegroundService.isMyTypeRunning(TemperatureActivity.DEVICE_ID, TempFragment.class, TemperatureActivity.deviceType)) {
             llStart.setVisibility(View.INVISIBLE);
             llStop.setVisibility(View.VISIBLE);
             llClear.setVisibility(View.INVISIBLE);
             llExport.setVisibility(View.INVISIBLE);
 
             start = ForegroundService.start;
+
             Intent intent = new Intent(requireContext(), ForegroundService.class);
-            requireActivity().bindService(intent, new ServiceConnection() {
+            requireContext().bindService(intent, new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     if (service instanceof ForegroundService.MyBinder) {
@@ -329,12 +327,10 @@ public class PumpFragment extends Fragment {
                         ArrayList<Entry> entries = myService.getEntries();
                         logs.clear();
                         logs.addAll(entries);
-                        entriesOriginal.clear();
-                        entriesOriginal.addAll(entries);
 
                         lineChart.getLineData().clearValues();
 
-                        LineDataSet lineDataSet = new LineDataSet(logs, "Speed");
+                        LineDataSet lineDataSet = new LineDataSet(logs, "Temp");
 
                         lineDataSet.setLineWidth(2);
                         lineDataSet.setCircleRadius(4);
@@ -358,7 +354,6 @@ public class PumpFragment extends Fragment {
         }
 
         plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
-            if (speed == -1) return;
             if (skipCount < skipPoints) {
                 skipCount++;
                 return;
@@ -366,9 +361,9 @@ public class PumpFragment extends Fragment {
             skipCount = 0;
             long seconds = (System.currentTimeMillis() - start) / 1000;
             LineData data = lineChart.getData();
-            Entry entry = new Entry(seconds, speed);
-            data.addEntry(entry, 0);
+            Entry entry = new Entry(seconds, temp);
             entriesOriginal.add(entry);
+            data.addEntry(entry, 0);
             lineChart.notifyDataSetChanged();
             data.notifyDataChanged();
             lineChart.invalidate();
@@ -376,88 +371,6 @@ public class PumpFragment extends Fragment {
                 logs.add(entry);
             }
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        plotGraphNotifier.stop();
-    }
-
-
-    private void checkModeAndSetListeners() {
-        deviceRef.child("UI").child("MODE").child("MODE_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Integer mode = snapshot.getValue(Integer.class);
-                if (mode == null) {
-                    return;
-                }
-                if (mode == 1) {
-                    setupListeners();
-                } else {
-                    speed = -1;
-                    isStarted = false;
-                    refreshStartBtnUI();
-                    speedController.setProgress(0);
-                    switchDir.setChecked(false);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void setupListeners() {
-
-        deviceRef.child("UI").child("MODE").child("PUMP").child("DIR").get().addOnSuccessListener(snapshot -> {
-            Integer dir = snapshot.getValue(Integer.class);
-            if (dir == null) return;
-
-            switchDir.setChecked(dir == 0);
-        });
-
-        deviceRef.child("UI").child("MODE").child("PUMP").child("SPEED").get().addOnSuccessListener(snapshot -> {
-            Integer speed = snapshot.getValue(Integer.class);
-            if (speed == null) return;
-
-            speedController.setProgress(speed);
-        });
-
-        deviceRef.child("UI").child("MODE").child("PUMP").child("SPEED").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Integer speed = snapshot.getValue(Integer.class);
-                if (speed == null) return;
-                PumpFragment.this.speed = speed;
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
-
-        speedController.setOnProgressChangeListener(progress -> {
-            deviceRef.child("UI").child("MODE").child("PUMP").child("SPEED").setValue(progress);
-        });
-
-        switchDir.setOnCheckedChangeListener((v, isChecked) -> {
-            deviceRef.child("UI").child("MODE").child("PUMP").child("DIR").setValue(isChecked ? 0 : 1);
-        });
-    }
-
-    private void refreshStartBtnUI() {
-        if (isStarted) {
-            tvStart.setText("STOP");
-            startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red));
-        } else {
-            tvStart.setText("START");
-            startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
-        }
     }
 
     private void showTimeOptions() {
@@ -500,5 +413,53 @@ public class PumpFragment extends Fragment {
         cv5Min.startAnimation(zoomOut);
         cv10Min.startAnimation(zoomOut);
         cv15Min.startAnimation(zoomOut);
+    }
+
+    private void updateTemp(int temp) {
+        String newText;
+        if (temp < -50 || temp > 125) {
+            newText = "--";
+        } else {
+            newText = String.format(Locale.UK, "%d°C", temp);
+        }
+        tvTempNext.setText(newText);
+
+        if (getContext() != null) {
+            Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
+            Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
+
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    tvTempCurr.setVisibility(View.INVISIBLE);
+                    TextView t = tvTempCurr;
+                    tvTempCurr = tvTempNext;
+                    tvTempNext = t;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            tvTempCurr.startAnimation(fadeOut);
+            tvTempNext.setVisibility(View.VISIBLE);
+            tvTempNext.startAnimation(slideInBottom);
+        } else {
+            tvTempCurr.setText(newText);
+        }
+    }
+
+    private int getAttr(@AttrRes int attrRes) {
+        TypedValue typedValue = new TypedValue();
+        requireActivity().getTheme().resolveAttribute(attrRes, typedValue, true);
+
+        return typedValue.data;
     }
 }

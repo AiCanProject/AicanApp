@@ -32,7 +32,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     private val labelTextSize = 18F.toPx()
 
     private var maxRange = 300F
-    private var minRange = 20F
+    private var minRange = 0F
 
     private val lineColor = context.getColorCompat(R.color.colorAccent)
 
@@ -101,7 +101,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
             ),
             Shader.TileMode.CLAMP
         )
-        calcPrevLabelPath()
+//        calcPrevLabelPath()
         calcCurrentLabelPath()
         setProgressDelayed()
     }
@@ -122,7 +122,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
             )
             sliderDrawable?.draw(this)
             drawLabels(this)
-            drawPrevLabel(this)
+//            drawPrevLabel(this)
             drawCurrentLabel(this)
         }
     }
@@ -211,7 +211,8 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
 
     private fun calcCurrentLabelPath() {
         val textBounds = Rect()
-        currentLabelTextPaint.getTextBounds("999", 0, 3, textBounds)
+        val maxString = maxRange.toInt().toString()
+        currentLabelTextPaint.getTextBounds(maxString, 0, maxString.length, textBounds)
         val boxHeight = currentLabelPadding * 2 + textBounds.height()
         val boxWidth = currentLabelPadding * 2 + textBounds.width()
         val top = progressY - boxHeight / 2
@@ -265,83 +266,83 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         }
     }
 
-    
+
     //Prev Label-----------------------------------------------------------------------
-    private val prevLabelPadding = 12F.toPx()
-    private val prevLabelTextSize = 22F.toPx()
-    private val prevLabelTextPaint = Paint().apply {
-        style = Paint.Style.FILL_AND_STROKE
-        isAntiAlias = true
-        color = context.getColorCompat(R.color.black)
-        textSize = prevLabelTextSize
-        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-    }
-    private val prevLabelBoxPaint = Paint().apply {
-        color = context.getColorCompat(R.color.green)
-        style = Paint.Style.STROKE
-        strokeWidth = curveStrokeWidth
-        isAntiAlias = true
-    }
-    private val prevLabelBoxCornerRadius = 8F.toPx()
-    private val prevLabelArrowLength = 12F.toPx()
-    private val prevLabelBoxPath = Path()
-    private var prevProgress = maxRange.toInt()
-    private var prevProgressY = 100F
-    private fun calcPrevLabelPath() {
-        val textBounds = Rect()
-        prevLabelTextPaint.getTextBounds("999", 0, 3, textBounds)
-        val boxHeight = prevLabelPadding * 2 + textBounds.height()
-        val boxWidth = prevLabelPadding * 2 + textBounds.width()
-        val top = prevProgressY - boxHeight / 2
-        val bottom = prevProgressY + boxHeight / 2
-
-        prevLabelBoxPath.reset()
-        if (!invert) {
-            val left =
-                width - (2 * circleRadius + 2 * curveStrokeWidth + boxWidth + prevLabelArrowLength + distBetweenBoxAndCircle)
-            val right = left + boxWidth
-            prevLabelBoxPath.apply {
-                moveTo(left + prevLabelBoxCornerRadius, top)
-                lineTo(right - prevLabelBoxCornerRadius, top)
-                quadTo(right, top, right, top + prevLabelBoxCornerRadius)
-                lineTo(right, prevProgressY - prevLabelArrowLength / 2)
-                lineTo(right + prevLabelArrowLength, prevProgressY)
-                lineTo(right, prevProgressY + prevLabelArrowLength / 2)
-                lineTo(right, bottom - prevLabelBoxCornerRadius)
-                quadTo(
-                    right,
-                    bottom,
-                    right - prevLabelBoxCornerRadius,
-                    bottom
-                )
-                lineTo(left + prevLabelBoxCornerRadius, bottom)
-                quadTo(left, bottom, left, bottom - prevLabelBoxCornerRadius)
-                lineTo(left, top + prevLabelBoxCornerRadius)
-                quadTo(left, top, left + prevLabelBoxCornerRadius, top)
-                close()
-            }
-        } else {
-            val left =
-                2 * circleRadius + 2 * curveStrokeWidth + distBetweenBoxAndCircle + prevLabelArrowLength
-            val right = left + boxWidth
-            prevLabelBoxPath.apply {
-                moveTo(left + prevLabelBoxCornerRadius, top)
-                lineTo(right - prevLabelBoxCornerRadius, top)
-                quadTo(right, top, right, top + prevLabelBoxCornerRadius)
-                lineTo(right, bottom - prevLabelBoxCornerRadius)
-                quadTo(right, bottom, right - prevLabelBoxCornerRadius, bottom)
-                lineTo(left + prevLabelBoxCornerRadius, bottom)
-                quadTo(left, bottom, left, bottom - prevLabelBoxCornerRadius)
-                lineTo(left, prevProgressY + prevLabelArrowLength / 2)
-                lineTo(left - prevLabelArrowLength, prevProgressY)
-                lineTo(left, prevProgressY - prevLabelArrowLength / 2)
-                lineTo(left, top + prevLabelBoxCornerRadius)
-                quadTo(left, top, left + prevLabelBoxCornerRadius, top)
-                close()
-
-            }
-        }
-    }
+//    private val prevLabelPadding = 12F.toPx()
+//    private val prevLabelTextSize = 22F.toPx()
+//    private val prevLabelTextPaint = Paint().apply {
+//        style = Paint.Style.FILL_AND_STROKE
+//        isAntiAlias = true
+//        color = context.getColorCompat(R.color.black)
+//        textSize = prevLabelTextSize
+//        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+//    }
+//    private val prevLabelBoxPaint = Paint().apply {
+//        color = context.getColorCompat(R.color.green)
+//        style = Paint.Style.STROKE
+//        strokeWidth = curveStrokeWidth
+//        isAntiAlias = true
+//    }
+//    private val prevLabelBoxCornerRadius = 8F.toPx()
+//    private val prevLabelArrowLength = 12F.toPx()
+//    private val prevLabelBoxPath = Path()
+//    private var prevProgress = maxRange.toInt()
+//    private var prevProgressY = 100F
+//    private fun calcPrevLabelPath() {
+//        val textBounds = Rect()
+//        prevLabelTextPaint.getTextBounds("999", 0, 3, textBounds)
+//        val boxHeight = prevLabelPadding * 2 + textBounds.height()
+//        val boxWidth = prevLabelPadding * 2 + textBounds.width()
+//        val top = prevProgressY - boxHeight / 2
+//        val bottom = prevProgressY + boxHeight / 2
+//
+//        prevLabelBoxPath.reset()
+//        if (!invert) {
+//            val left =
+//                width - (2 * circleRadius + 2 * curveStrokeWidth + boxWidth + prevLabelArrowLength + distBetweenBoxAndCircle)
+//            val right = left + boxWidth
+//            prevLabelBoxPath.apply {
+//                moveTo(left + prevLabelBoxCornerRadius, top)
+//                lineTo(right - prevLabelBoxCornerRadius, top)
+//                quadTo(right, top, right, top + prevLabelBoxCornerRadius)
+//                lineTo(right, prevProgressY - prevLabelArrowLength / 2)
+//                lineTo(right + prevLabelArrowLength, prevProgressY)
+//                lineTo(right, prevProgressY + prevLabelArrowLength / 2)
+//                lineTo(right, bottom - prevLabelBoxCornerRadius)
+//                quadTo(
+//                    right,
+//                    bottom,
+//                    right - prevLabelBoxCornerRadius,
+//                    bottom
+//                )
+//                lineTo(left + prevLabelBoxCornerRadius, bottom)
+//                quadTo(left, bottom, left, bottom - prevLabelBoxCornerRadius)
+//                lineTo(left, top + prevLabelBoxCornerRadius)
+//                quadTo(left, top, left + prevLabelBoxCornerRadius, top)
+//                close()
+//            }
+//        } else {
+//            val left =
+//                2 * circleRadius + 2 * curveStrokeWidth + distBetweenBoxAndCircle + prevLabelArrowLength
+//            val right = left + boxWidth
+//            prevLabelBoxPath.apply {
+//                moveTo(left + prevLabelBoxCornerRadius, top)
+//                lineTo(right - prevLabelBoxCornerRadius, top)
+//                quadTo(right, top, right, top + prevLabelBoxCornerRadius)
+//                lineTo(right, bottom - prevLabelBoxCornerRadius)
+//                quadTo(right, bottom, right - prevLabelBoxCornerRadius, bottom)
+//                lineTo(left + prevLabelBoxCornerRadius, bottom)
+//                quadTo(left, bottom, left, bottom - prevLabelBoxCornerRadius)
+//                lineTo(left, prevProgressY + prevLabelArrowLength / 2)
+//                lineTo(left - prevLabelArrowLength, prevProgressY)
+//                lineTo(left, prevProgressY - prevLabelArrowLength / 2)
+//                lineTo(left, top + prevLabelBoxCornerRadius)
+//                quadTo(left, top, left + prevLabelBoxCornerRadius, top)
+//                close()
+//
+//            }
+//        }
+//    }
 
     private fun drawCurrentLabel(canvas: Canvas) {
 
@@ -364,25 +365,25 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         )
     }
 
-    private fun drawPrevLabel(canvas: Canvas) {
-        canvas.drawPath(prevLabelBoxPath, whiteFillPaint)
-        canvas.drawPath(prevLabelBoxPath, prevLabelBoxPaint)
-        val prevLabel = prevProgress.toString()
-        val textBounds = Rect()
-        prevLabelTextPaint.getTextBounds(prevLabel, 0, prevLabel.length, textBounds)
-        val textStart = if (!invert) {
-            val textWidth = textBounds.width()
-            width - (2 * circleRadius + 2 * curveStrokeWidth + prevLabelArrowLength + prevLabelPadding + textWidth + distBetweenBoxAndCircle)
-        } else {
-            2 * circleRadius + 2 * curveStrokeWidth + distBetweenBoxAndCircle + prevLabelArrowLength + prevLabelPadding
-        }
-        canvas.drawText(
-            prevLabel,
-            textStart,
-            prevProgressY + textBounds.height() / 2,
-            prevLabelTextPaint
-        )
-    }
+//    private fun drawPrevLabel(canvas: Canvas) {
+//        canvas.drawPath(prevLabelBoxPath, whiteFillPaint)
+//        canvas.drawPath(prevLabelBoxPath, prevLabelBoxPaint)
+//        val prevLabel = prevProgress.toString()
+//        val textBounds = Rect()
+//        prevLabelTextPaint.getTextBounds(prevLabel, 0, prevLabel.length, textBounds)
+//        val textStart = if (!invert) {
+//            val textWidth = textBounds.width()
+//            width - (2 * circleRadius + 2 * curveStrokeWidth + prevLabelArrowLength + prevLabelPadding + textWidth + distBetweenBoxAndCircle)
+//        } else {
+//            2 * circleRadius + 2 * curveStrokeWidth + distBetweenBoxAndCircle + prevLabelArrowLength + prevLabelPadding
+//        }
+//        canvas.drawText(
+//            prevLabel,
+//            textStart,
+//            prevProgressY + textBounds.height() / 2,
+//            prevLabelTextPaint
+//        )
+//    }
 
     private fun getCurrentLabel(): Int =
         (maxRange - (progressY - scalePaddingVertical) * (maxRange - minRange) / (height - 2 * scalePaddingVertical)).roundToInt()
@@ -430,7 +431,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
             progressY = height - scalePaddingVertical
         }
         if (currentLabel > maxRange) {
-            currentLabel = maxRange.toInt()
+            currentLabel = (++maxRange).toInt()
             progressY = scalePaddingVertical
         }
 
@@ -453,7 +454,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
             progress = maxRange.toInt()
         }
         this.progress = progress
-        this.prevProgress = progress
+//        this.prevProgress = progress
         if (height != 0) {
             setProgressDelayed()
         }
@@ -462,9 +463,9 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     private fun setProgressDelayed() {
         progressY =
             (maxRange - progress) * (height - 2 * scalePaddingVertical) / (maxRange - minRange) + scalePaddingVertical
-        prevProgressY = progressY
+//        prevProgressY = progressY
         calcCurrentLabelPath()
-        calcPrevLabelPath()
+//        calcPrevLabelPath()
         invalidate()
     }
 

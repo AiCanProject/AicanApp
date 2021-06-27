@@ -13,8 +13,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.adapters.PhViewPagerAdapter;
-import com.aican.aicanapp.fragments.ph.*;
+import com.aican.aicanapp.adapters.ViewPagerAdapter;
+import com.aican.aicanapp.fragments.ph.EcFragment;
+import com.aican.aicanapp.fragments.ph.PhFragment;
+import com.aican.aicanapp.fragments.ph.TdsFragment;
+import com.aican.aicanapp.fragments.ph.TempFragment;
 import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -32,7 +35,7 @@ public class PhActivity extends AppCompatActivity {
     ViewPager2 viewPager;
 
     ArrayList<Fragment> fragments;
-    PhViewPagerAdapter phViewPagerAdapter;
+    ViewPagerAdapter phViewPagerAdapter;
 
     public static String DEVICE_ID = null;
 
@@ -59,7 +62,7 @@ public class PhActivity extends AppCompatActivity {
         fragments.add(new TempFragment());
         fragments.add(new EcFragment());
         fragments.add(new TdsFragment());
-        phViewPagerAdapter = new PhViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
+        phViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
         viewPager.setAdapter(phViewPagerAdapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {

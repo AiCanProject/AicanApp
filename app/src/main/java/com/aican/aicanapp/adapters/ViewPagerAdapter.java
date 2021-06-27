@@ -10,15 +10,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class PumpViewPagerAdapter extends FragmentStateAdapter {
+public class ViewPagerAdapter extends FragmentStateAdapter {
 
     ArrayList<Fragment> fragments;
 
-    public PumpViewPagerAdapter(@NonNull @NotNull FragmentManager fragmentManager, @NonNull @NotNull Lifecycle lifecycle, ArrayList<Fragment> fragments) {
+    public ViewPagerAdapter(@NonNull @NotNull FragmentManager fragmentManager, @NonNull @NotNull Lifecycle lifecycle, ArrayList<Fragment> fragments) {
         super(fragmentManager, lifecycle);
         this.fragments = fragments;
     }
-
 
     @NonNull
     @NotNull

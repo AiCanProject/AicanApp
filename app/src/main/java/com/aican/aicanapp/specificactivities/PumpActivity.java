@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.adapters.PumpViewPagerAdapter;
+import com.aican.aicanapp.adapters.ViewPagerAdapter;
 import com.aican.aicanapp.fragments.pump.DoseFragment;
 import com.aican.aicanapp.fragments.pump.PumpFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -25,7 +25,7 @@ public class PumpActivity extends AppCompatActivity {
     TabLayout tabLayout;
 
     ArrayList<Fragment> fragments;
-    PumpViewPagerAdapter adapter;
+    ViewPagerAdapter adapter;
 
     public static String DEVICE_ID = null;
 
@@ -49,7 +49,7 @@ public class PumpActivity extends AppCompatActivity {
         fragments = new ArrayList<>();
         fragments.add(new DoseFragment());
         fragments.add(new PumpFragment());
-        adapter = new PumpViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
         viewPager.setAdapter(adapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position)->{
