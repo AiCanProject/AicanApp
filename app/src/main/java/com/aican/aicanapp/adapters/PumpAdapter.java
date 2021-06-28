@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -57,6 +58,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
     public class PumpAdapterViewHolder extends RecyclerView.ViewHolder {
         private TextView tvMode, tvVol, tvSpeed, tvDir, tvName;
         private ImageView ivOptions;
+        private SwitchCompat onOffSwitch;
 
         //Viewholder-----------------------------------------------------------------------------------------
         public PumpAdapterViewHolder(View itemView) {
@@ -67,6 +69,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             tvDir = itemView.findViewById(R.id.tvDir);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
+            onOffSwitch = itemView.findViewById(R.id.switch1);
         }
 
         public void bind(PumpDevice device){
@@ -82,10 +85,15 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             }
             String speed = String.format(Locale.UK, "Speed: %d mL/min", device.getSpeed());
             String dir;
-            if(device.getDir()==0){
+            if (device.getDir() == 0) {
                 dir = "Direction: Clockwise";
-            }else{
+            } else {
                 dir = "Direction: AntiClockwise";
+            }
+            if (device.getStatus() == PumpActivity.STATUS_PUMP || device.getStatus() == PumpActivity.STATUS_DOSE) {
+                onOffSwitch.setChecked(true);
+            } else {
+                onOffSwitch.setChecked(false);
             }
 
             tvName.setText(device.getName());

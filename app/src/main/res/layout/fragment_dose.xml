@@ -11,7 +11,7 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:paddingVertical="24dp"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
+        app:layout_constraintBottom_toTopOf="@id/startLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -41,59 +41,11 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.4"
             android:orientation="vertical"
             android:paddingVertical="12dp"
-            android:gravity="bottom">
+            android:gravity="bottom" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:id="@+id/rlStart"
-                android:layout_centerHorizontal="true">
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:layout_centerInParent="true"
-                    android:background="@color/colorPrimary"
-                    android:theme="@style/CircularImageView"
-                    android:id="@+id/ivStartBtn"/>
-                <TextView
-                    android:id="@+id/tvStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="start"
-                    android:layout_centerInParent="true"
-                    android:textColor="@color/white"
-                    android:textAllCaps="true"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-            </RelativeLayout>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchDir"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Clockwise"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/blueDarkAlpha"
-                android:theme="@style/Switch"
-                android:layout_below="@id/rlStart"/>
-
-            <Button
-                android:id="@+id/calibrateBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:text="Calibrate"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/switchDir"
-                android:textColor="@color/white" />
-
-        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -104,8 +56,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Volume(mL)"
                 android:layout_gravity="center_horizontal"
+                android:text="Volume(mL)"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -118,29 +70,89 @@
 
     </LinearLayout>
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <include
-        layout="@layout/graph_time_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="26dp"
-        app:layout_constraintBottom_toBottomOf="@id/line_chart"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <include
-        android:id="@+id/graphLoggingOptions"
-        layout="@layout/graph_logging_options"
+    <RelativeLayout
+        android:id="@+id/startLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/rlStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivStartBtn"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_centerInParent="true"
+                android:background="@color/colorPrimary"
+                android:theme="@style/CircularImageView" />
+
+            <TextView
+                android:id="@+id/tvStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="start"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchDir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rlStart"
+            android:layout_centerHorizontal="true"
+            android:text="Clockwise"
+            android:textColor="@color/blueDarkAlpha"
+            android:theme="@style/Switch" />
+
+        <Button
+            android:id="@+id/calibrateBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/switchDir"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Calibrate"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/stopLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/startLayout">
+
+        <com.aican.aicanapp.pumpController.ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_above="@id/btnStop"
+            android:layout_alignParentTop="true" />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="STOP"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

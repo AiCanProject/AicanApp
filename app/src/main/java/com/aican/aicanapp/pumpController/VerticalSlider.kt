@@ -451,7 +451,8 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         if (progress < minRange) {
             progress = minRange.toInt()
         } else if (progress > maxRange) {
-            progress = maxRange.toInt()
+            maxRange = progress.toFloat()
+//            progress = maxRange.toInt()
         }
         this.progress = progress
 //        this.prevProgress = progress
@@ -472,6 +473,10 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     fun getProgress() = progress
 
     var onProgressChangeListener: OnProgressChangeListener? = null
+
+    fun setMaxRange(maxRange: Int) {
+        this.maxRange = maxRange.toFloat()
+    }
 
     interface OnProgressChangeListener {
         fun onProgressChange(progress: Int)

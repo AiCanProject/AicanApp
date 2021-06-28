@@ -21,6 +21,13 @@ import java.util.ArrayList;
 
 public class PumpActivity extends AppCompatActivity {
 
+    public static final int STATUS_OFF = 0;
+    public static final int STATUS_DOSE = 10;
+    public static final int STATUS_DOSE_COMPLETED = 11;
+    public static final int STATUS_PUMP = 20;
+    public static final int STATUS_CAL_START = 30;
+    public static final int STATUS_CAL_FINISH = 31;
+
     ViewPager2 viewPager;
     TabLayout tabLayout;
 

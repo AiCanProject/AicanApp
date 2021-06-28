@@ -15,7 +15,7 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
 
     var onProgressChangeListener: OnProgressChangeListener? = null
 
-    private var progress = 80
+    private var progress = 0
 
     private var progressX = 0F
     private var progressY = 0F
@@ -29,7 +29,7 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
         }
 
     private var minRange = 0
-    private var maxRange = 100
+    private var maxRange = 50
     private val strokeWidth = 4F.toPx()
     private val labelTextSize = 18F.toPx()
     private val currentLabelTextSize = 20F.toPx()
@@ -184,6 +184,15 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
             progressY + distBwScaleAndSlider + scaleWidth + distBwScaleAndLabel + bounds.height(),
             labelPaint
         )
+
+        text = "(mL/min)"
+        labelPaint.getTextBounds(text, 0, text.length, bounds)
+        canvas.drawText(
+            text,
+            width / 2F - (bounds.width() / 2F),
+            progressY + distBwScaleAndSlider + scaleWidth + distBwScaleAndLabel + bounds.height(),
+            labelPaint
+        )
     }
 
     private fun drawSlider(canvas: Canvas) {
@@ -257,13 +266,16 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
             progress = maxRange
             progressX = width - labelPadding
         }
+
+        calcBoxPath()
+        invalidate()
         if (progress == prev) {
             return
         }
-        calcBoxPath()
-        invalidate()
         onProgressChangeListener?.onProgressChange(progress)
     }
+
+    fun getProgress() = progress
 
     interface OnProgressChangeListener {
         fun onProgressChange(progress: Int)

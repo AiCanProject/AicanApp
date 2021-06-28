@@ -12,15 +12,20 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.StepsAdapter;
 import com.aican.aicanapp.dataClasses.Step;
 import com.aican.aicanapp.pumpController.HorizontalSlider;
 import com.aican.aicanapp.utils.ItemDecoratorBars;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -31,9 +36,13 @@ public class PumpCalibrateActivity extends AppCompatActivity {
     Button btnSave;
     HorizontalSlider slider;
     RecyclerView rvSteps;
+    SwitchCompat switchDir;
 
     ArrayList<Step> steps;
     StepsAdapter stepsAdapter;
+
+    String deviceId = null;
+    DatabaseReference deviceRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,53 +53,71 @@ public class PumpCalibrateActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
+        deviceId = getIntent().getStringExtra(Dashboard.KEY_DEVICE_ID);
+        if (deviceId == null) throw new RuntimeException();
+
         ivStartBtn = findViewById(R.id.ivStartBtn);
         startLayout = findViewById(R.id.startLayout);
         saveLayout = findViewById(R.id.saveLayout);
         btnSave = findViewById(R.id.savBtn);
         slider = findViewById(R.id.slider);
         rvSteps = findViewById(R.id.rvSteps);
+        switchDir = findViewById(R.id.switchClockwise);
 
         steps = new ArrayList<>();
         stepsAdapter = new StepsAdapter(steps);
         rvSteps.setAdapter(stepsAdapter);
         new PagerSnapHelper().attachToRecyclerView(rvSteps);
         rvSteps.addItemDecoration(new ItemDecoratorBars(
-                px(15F),px(10F),px(20F),
+                px(15F), px(10F), px(20F),
                 ContextCompat.getColor(this, R.color.grey_light),
                 ContextCompat.getColor(this, R.color.colorPrimary)
         ));
 
-        ivStartBtn.setOnClickListener(v->{
-            Animation slideOutLeft = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
-            Animation slideInRight = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference()
+                .child("P_PUMP").child(deviceId);
 
-            slideOutLeft.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    startLayout.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            startLayout.startAnimation(slideOutLeft);
-            saveLayout.setVisibility(View.VISIBLE);
-            saveLayout.startAnimation(slideInRight);
-
+        ivStartBtn.setOnClickListener(v -> {
+            showSaveLayout();
             calibrate();
+            deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_CAL_START);
+            deviceRef.child("UI").child("CAL").child("CAL").setValue(1);
+        });
+
+        btnSave.setOnClickListener(v -> {
+            int calVal = slider.getProgress();
+            deviceRef.child("UI").child("CAL").child("CAL_VAL").setValue(calVal);
+            onBackPressed();
         });
 
         loadSteps();
 
+    }
+
+    private void showSaveLayout() {
+        Animation slideOutLeft = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
+        Animation slideInRight = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+
+        slideOutLeft.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                startLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        startLayout.startAnimation(slideOutLeft);
+        saveLayout.setVisibility(View.VISIBLE);
+        saveLayout.startAnimation(slideInRight);
     }
 
     private void loadSteps() {
@@ -110,11 +137,13 @@ public class PumpCalibrateActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                runOnUiThread(()->{
+                runOnUiThread(() -> {
                     slider.setDisabled(false);
                     btnSave.setBackgroundColor(ContextCompat.getColor(PumpCalibrateActivity.this, R.color.colorPrimary));
                     btnSave.setText("Save");
                 });
+                deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_CAL_FINISH);
+                deviceRef.child("UI").child("CAL").child("CAL").setValue(0);
             }
         };
         timer.start();

@@ -1,7 +1,5 @@
 package com.aican.aicanapp.dataClasses;
 
-import androidx.annotation.Nullable;
-
 public class PumpDevice {
     String id;
     String name;
@@ -9,6 +7,7 @@ public class PumpDevice {
     int speed;
     int dir;
     Integer vol;
+    int status;
 
     public int getVol() {
         return vol;
@@ -18,13 +17,14 @@ public class PumpDevice {
         this.vol = vol;
     }
 
-    public PumpDevice(String id, String name, int mode, int speed, int dir,@Nullable Integer vol) {
+    public PumpDevice(String id, String name, int mode, int speed, int dir, Integer vol, int status) {
         this.id = id;
         this.name = name;
         this.mode = mode;
         this.speed = speed;
         this.dir = dir;
         this.vol = vol;
+        this.status = status;
     }
 
     public String getId() {
@@ -65,5 +65,13 @@ public class PumpDevice {
 
     public void setDir(int dir) {
         this.dir = dir;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

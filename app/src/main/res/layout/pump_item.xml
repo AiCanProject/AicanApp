@@ -51,6 +51,7 @@ app:cardElevation="10dp">
             android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:thumb="@drawable/sw_thumb"
+            android:enabled="false"
             app:track="@drawable/sw_track" />
 
     </LinearLayout>
