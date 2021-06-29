@@ -290,11 +290,9 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
     private void loadBuffers() {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
-            buffers[0] = snapshot.child("B_1").getValue(Float.class);
-            buffers[1] = snapshot.child("B_2").getValue(Float.class);
-            buffers[2] = snapshot.child("B_3").getValue(Float.class);
-            buffers[3] = snapshot.child("B_4").getValue(Float.class);
-            buffers[4] = snapshot.child("B_5").getValue(Float.class);
+            for (int i = 0; i < bufferLabels.length; ++i) {
+                buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
+            }
 
             tvBufferCurr.setText(String.valueOf(buffers[0]));
             phView.setCurrentPh(buffers[0]);
@@ -419,7 +417,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
         tvEdit.setOnClickListener(v -> {
             EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                 updateBufferValue(ph);
-                deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(ph);
+                deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(String.valueOf(ph));
             });
             dialog.show(getSupportFragmentManager(), null);
         });

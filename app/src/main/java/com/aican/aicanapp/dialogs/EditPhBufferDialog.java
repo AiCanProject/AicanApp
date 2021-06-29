@@ -35,6 +35,18 @@ public class EditPhBufferDialog extends BottomSheetDialogFragment {
         return inflater.inflate(R.layout.dialog_edit_ph_buffer, container, false);
     }
 
+    public static float round(float number, int scale) {
+        int pow = 10;
+        for (int i = 1; i < scale; i++)
+            pow *= 10;
+        float tmp = number * pow;
+        return ((float) ((int) ((tmp - (int) tmp) >= 0.5f ? tmp + 1 : tmp))) / pow;
+    }
+
+    public interface OnValueChangedListener {
+        void onValueChanged(Float pH);
+    }
+
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -43,18 +55,14 @@ public class EditPhBufferDialog extends BottomSheetDialogFragment {
         tilPh = view.findViewById(R.id.tilPh);
         etPh = view.findViewById(R.id.etPh);
 
-        btnChange.setOnClickListener(v->{
+        btnChange.setOnClickListener(v -> {
             try{
                 float ph = Float.parseFloat(etPh.getText().toString());
-                onValueChangedListener.onValueChanged(ph);
+                onValueChangedListener.onValueChanged(round(ph, 2));
                 dismiss();
             }catch (Exception e){
                 tilPh.setError("Invalid pH value");
             }
         });
-    }
-
-    public interface OnValueChangedListener{
-        void onValueChanged(Float pH);
     }
 }
