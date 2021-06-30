@@ -365,7 +365,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
             isCalibrating = true;
             setupCoeffListener();
-            CountDownTimer timer = new CountDownTimer(120000, 1000) {
+            CountDownTimer timer = new CountDownTimer(2000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     millisUntilFinished /= 1000;
@@ -394,10 +394,8 @@ public class PhCalibrateActivity extends AppCompatActivity {
         });
 
         btnNext.setOnClickListener(v -> {
-            if (currentBuf == buffers.length - 1) {
-                Intent intent = new Intent(this, PhActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+            if (currentBuf >= buffers.length - 1) {
+                onBackPressed();
                 return;
             }
             btnNext.setVisibility(View.INVISIBLE);
