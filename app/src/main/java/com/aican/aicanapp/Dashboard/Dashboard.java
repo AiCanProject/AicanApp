@@ -50,7 +50,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     public static final String KEY_DEVICE_ID = "device_id";
     public static final int GRAPH_PLOT_DELAY = 15000;
-    public static final String DEVICE_TYPE_PH = "PH_METER";
+    public static final String DEVICE_TYPE_PH = "PHMETER";
     public static final String DEVICE_TYPE_PUMP = "P_PUMP";
     public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
@@ -282,14 +282,16 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 deviceNames.put(id, name);
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
-                        phDevices.add(new PhDevice(
+                        PhDevice device = new PhDevice(
                                 id,
                                 name,
                                 data.child("PH_VAL").getValue(Float.class),
                                 data.child("EC_VAL").getValue(Float.class),
                                 data.child("TEMP_VAL").getValue(Integer.class),
                                 data.child("TDS_VAL").getValue(Long.class)
-                        ));
+                        );
+                        phDevices.add(device);
+//                        setPhDeviceListeners(device, phDevices.size()-1);
                         break;
                     }
                     case "P_PUMP": {

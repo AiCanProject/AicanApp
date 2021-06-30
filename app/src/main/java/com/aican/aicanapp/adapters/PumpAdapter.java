@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,14 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.specificactivities.PumpActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -108,6 +117,41 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             });
             ivOptions.setOnClickListener(v -> {
                 optionsClickListener.onOptionsIconClicked(v, device.getId());
+            });
+
+            setFirebaseListeners(device);
+        }
+
+        private void setFirebaseListeners(PumpDevice device) {
+            DatabaseReference uiRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_PUMP).child(device.getId())
+                    .child("UI");
+
+            uiRef.child("MODE").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    device.setMode(snapshot.child("MODE_VAL").getValue(Integer.class));
+                    device.setDir(snapshot.child("DOSE").child("DIR").getValue(Integer.class));
+                    device.setSpeed(snapshot.child("DOSE").child("SPEED").getValue(Integer.class));
+                    device.setVol(snapshot.child("DOSE").child("VOL").getValue(Integer.class));
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
+            uiRef.child("STATUS").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    device.setStatus(snapshot.getValue(Integer.class));
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
             });
         }
 

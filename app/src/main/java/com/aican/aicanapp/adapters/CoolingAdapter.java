@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
@@ -14,6 +15,14 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -86,6 +95,30 @@ public class CoolingAdapter extends RecyclerView.Adapter<CoolingAdapter.CoolingA
 
             ivOptions.setOnClickListener(v -> {
                 optionsClickListener.onOptionsIconClicked(v, device.getId());
+            });
+
+            setFirebaseListeners(device);
+        }
+
+        private void setFirebaseListeners(CoolingDevice device) {
+
+            DatabaseReference deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_COOLING).child(device.getId());
+
+            deviceRef.child("UI").child("TEMP").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Integer val = snapshot.getValue(Integer.class);
+                    if (val == null) return;
+                    int prev = device.getTemp();
+                    device.setTemp(val);
+                    if (prev != device.getTemp())
+                        notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
             });
         }
     }

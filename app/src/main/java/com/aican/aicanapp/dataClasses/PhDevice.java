@@ -60,4 +60,8 @@ public class PhDevice {
     public void setTds(int tds) {
         this.tds = tds;
     }
+
+    public void setTds(long tds) {
+        this.tds = (int) Math.min(10000, tds);
+    }
 }
