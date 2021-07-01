@@ -365,7 +365,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
             isCalibrating = true;
             setupCoeffListener();
-            CountDownTimer timer = new CountDownTimer(2000, 1000) {
+            CountDownTimer timer = new CountDownTimer(120000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     millisUntilFinished /= 1000;

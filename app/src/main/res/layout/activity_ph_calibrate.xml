@@ -30,7 +30,8 @@
         android:id="@+id/phView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="24dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="12dp"
         app:layout_constraintBottom_toTopOf="@id/line_chart"
         app:layout_constraintEnd_toStartOf="@id/guideline5"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-light"
         android:text="Buffer"
@@ -67,17 +68,6 @@
         app:layout_constraintStart_toEndOf="@id/guideline5"
         app:layout_constraintTop_toBottomOf="@id/main_toolbar" />
 
-    <!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
-    <!--        android:id="@+id/phTextView"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="65dp"-->
-    <!--        android:layout_marginTop="8dp"-->
-    <!--        android:layout_marginEnd="40dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/phLabelTextView"-->
-    <!--        app:layout_constraintVertical_chainStyle="packed"-->
-    <!--        app:suffix=""/>-->
     <FrameLayout
         android:id="@+id/flBuffer"
         android:layout_width="wrap_content"
@@ -140,19 +130,6 @@
         app:layout_constraintStart_toEndOf="@id/guideline5"
         app:layout_constraintTop_toBottomOf="@id/flBuffer" />
 
-    <!--    <com.aican.aicanapp.tempController.ProgressLabelView-->
-    <!--        android:id="@+id/plvCoefficient"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="65dp"-->
-    <!--        android:layout_marginTop="18dp"-->
-    <!--        android:layout_marginEnd="40dp"-->
-    <!--        android:visibility="invisible"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="@id/phLabelTextView"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/tvCoefficient"-->
-    <!--        app:layout_constraintVertical_chainStyle="packed"-->
-    <!--        app:suffix=""-->
-    <!--        tools:visibility="visible" />-->
     <TextView
         android:id="@+id/tvPh"
         android:layout_width="wrap_content"
@@ -197,12 +174,46 @@
         tools:visibility="visible" />
 
 
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="02:00"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/startBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/startBtn"
+        app:layout_constraintTop_toTopOf="@id/startBtn"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Start"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/flBuffer"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@id/guideline6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline6" />
 
     <include
         layout="@layout/graph_time_options"
@@ -222,31 +233,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/tvTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="01:30"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/startBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/startBtn"
-        app:layout_constraintTop_toTopOf="@id/startBtn"
-        tools:visibility="visible" />
-
-    <Button
-        android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="2dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Start"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@id/flBuffer"
-        app:layout_constraintTop_toBottomOf="@id/tvCoefficient" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
