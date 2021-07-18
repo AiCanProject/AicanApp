@@ -32,6 +32,7 @@ import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
+import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -395,6 +396,8 @@ public class PhFragment extends Fragment {
         Description d = new Description();
         d.setText("pH Graph");
         lineChart.setDescription(d);
+
+        data.setValueFormatter(new DecimalValueFormatter());
 
         llStart.setOnClickListener(v -> {
             if (ForegroundService.isRunning()) {

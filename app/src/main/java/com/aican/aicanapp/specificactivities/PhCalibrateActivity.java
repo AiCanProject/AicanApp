@@ -37,6 +37,7 @@ import com.aican.aicanapp.dialogs.ExitConfirmDialog;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
+import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -126,8 +127,10 @@ public class PhCalibrateActivity extends AppCompatActivity {
         d.setText("pH Graph");
         lineChart.setDescription(d);
 
-        llStart.setOnClickListener(v->{
-            if(ForegroundService.isRunning()){
+        data.setValueFormatter(new DecimalValueFormatter());
+
+        llStart.setOnClickListener(v -> {
+            if (ForegroundService.isRunning()) {
                 Toast.makeText(this, "Another graph is logging", Toast.LENGTH_SHORT).show();
                 return;
             }

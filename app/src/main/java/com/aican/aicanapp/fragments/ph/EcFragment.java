@@ -29,6 +29,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.specificactivities.EcTdsCalibrateActivity;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -140,11 +141,13 @@ public class EcFragment extends Fragment {
         lineChart.setDrawGridBackground(true);
         lineChart.setDrawBorders(true);
 
+        data.setValueFormatter(new DecimalValueFormatter());
+
         Description d = new Description();
         d.setText("EC Graph");
         lineChart.setDescription(d);
-        llStart.setOnClickListener(v->{
-            if(ForegroundService.isRunning()){
+        llStart.setOnClickListener(v -> {
+            if (ForegroundService.isRunning()) {
                 Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
                 return;
             }
