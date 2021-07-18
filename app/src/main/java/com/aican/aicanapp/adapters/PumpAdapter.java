@@ -133,7 +133,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                     device.setDir(snapshot.child("DOSE").child("DIR").getValue(Integer.class));
                     device.setSpeed(snapshot.child("DOSE").child("SPEED").getValue(Integer.class));
                     device.setVol(snapshot.child("DOSE").child("VOL").getValue(Integer.class));
-                    notifyDataSetChanged();
+                    notifyItemChanged(getAdapterPosition());
                 }
 
                 @Override
@@ -145,7 +145,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     device.setStatus(snapshot.getValue(Integer.class));
-                    notifyDataSetChanged();
+                    notifyItemChanged(getAdapterPosition());
                 }
 
                 @Override
