@@ -28,10 +28,10 @@ import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
 import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
@@ -105,9 +105,8 @@ public class PhFragment extends Fragment {
         entriesOriginal = new ArrayList<>();
 
         calibrateBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), PhCalibrateActivity.class);
-            intent.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
-            startActivity(intent);
+            SelectCalibrationPointsDialog dialog = new SelectCalibrationPointsDialog();
+            dialog.show(getParentFragmentManager(), null);
         });
         cvClock.setOnClickListener(v -> {
             isTimeOptionsVisible = !isTimeOptionsVisible;

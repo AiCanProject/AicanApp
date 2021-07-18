@@ -65,6 +65,10 @@ import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACK
 
 public class PhCalibrateActivity extends AppCompatActivity {
 
+    public static final String THREE_POINT_CALIBRATION = "three";
+    public static final String FIVE_POINT_CALIBRATION = "five";
+    public static final String CALIBRATION_TYPE = "calibration_type";
+
     PhView phView;
     //    ProgressLabelView phTextView, plvCoefficient;
     Button btnStart, btnNext;
@@ -87,6 +91,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
     DatabaseReference deviceRef;
     String deviceId;
+    String calibrationType;
 
     float coeff = 0;
     float ph = 0;
@@ -318,8 +323,24 @@ public class PhCalibrateActivity extends AppCompatActivity {
         }
 
         deviceId = getIntent().getStringExtra(Dashboard.KEY_DEVICE_ID);
-        if (deviceId == null) {
+        calibrationType = getIntent().getStringExtra(CALIBRATION_TYPE);
+        if (deviceId == null || calibrationType == null) {
             throw new RuntimeException();
+        }
+
+        if (calibrationType.equals(THREE_POINT_CALIBRATION)) {
+
+            buffers = new float[]{4.0F, 7.0F, 9.0F};
+            bufferLabels = new String[]{"B_2", "B_3", "B_4"};
+            coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
+            calValues = new int[]{20, 30, 40};
+
+        } else if (calibrationType.equals(FIVE_POINT_CALIBRATION)) {
+
+            buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
+            bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
+            coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
+            calValues = new int[]{10, 20, 30, 40, 50};
         }
 
         phView = findViewById(R.id.phView);
