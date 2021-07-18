@@ -13,13 +13,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="50dp"
         android:background="@color/colorPrimary"
         android:text="Set Temperature"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"
         app:layout_constraintStart_toEndOf="@+id/curveSeekView"
-        app:layout_constraintTop_toBottomOf="@id/humidityTextView" />
+        app:layout_constraintBottom_toTopOf="@id/line_chart" />
 
 
     <TextView
@@ -27,7 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-light"
         android:text="Current Temperature"
@@ -96,7 +96,6 @@
         android:layout_height="65dp"
         android:layout_marginTop="18dp"
         android:layout_marginEnd="40dp"
-        app:layout_constraintBottom_toTopOf="@id/themButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/tempLabelTextView"
