@@ -326,7 +326,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         tempDevices.add(new TempDevice(
                                 id,
                                 name,
-                                ui.child("TEMP").child("TEMP_VAL").getValue(Integer.class)
+                                data.child("TEMP1_VAL").getValue(Integer.class)
                         ));
                         break;
                     }

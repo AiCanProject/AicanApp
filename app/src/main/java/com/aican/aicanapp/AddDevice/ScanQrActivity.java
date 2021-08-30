@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -55,6 +57,7 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
     ProcessCameraProvider cameraProvider;
     ImageView iv;
     private ExecutorService cameraExecutor;
+    EditText etId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
 
         iv = findViewById(R.id.iv);
         previewView = findViewById(R.id.previewView);
+        etId = findViewById(R.id.etId);
 
         if (checkPermissions()) {
             removeCameraRequiredLayout();
@@ -81,6 +85,15 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor();
+
+        etId.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onQrResult(etId.getText().toString());
+                return true;
+            }
+
+            return false;
+        });
     }
 
     private void removeCameraRequiredLayout() {

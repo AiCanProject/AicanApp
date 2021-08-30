@@ -117,7 +117,7 @@ public class TempFragment extends Fragment {
             }
         });
 
-        deviceRef.child("UI").child("TEMP").child("TEMP_VAL_2").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("TEMP2_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Integer temp = snapshot.getValue(Integer.class);
@@ -250,7 +250,7 @@ public class TempFragment extends Fragment {
 
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
-        DatabaseReference ref = deviceRef.child("UI").child("TEMP").child("TEMP_VAL_2");
+        DatabaseReference ref = deviceRef.child("Data").child("TEMP2_VAL");
         ForegroundService.setInitials(TemperatureActivity.DEVICE_ID, ref, TempFragment.class, start, TemperatureActivity.deviceType);
         context.startService(intent);
         context.bindService(intent, new ServiceConnection() {

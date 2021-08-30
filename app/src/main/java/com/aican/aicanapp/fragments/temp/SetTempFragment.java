@@ -155,7 +155,7 @@ public class SetTempFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 int newTemp = Math.round(curveSeekView.getProgress());
-                deviceRef.child("UI").child("TEMP").child("TEMP_VAL").setValue(newTemp);
+                deviceRef.child("Data").child("TEMP1_VAL").setValue(newTemp);
             }
         });
 
@@ -284,7 +284,7 @@ public class SetTempFragment extends Fragment {
 
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
-        DatabaseReference ref = deviceRef.child("UI").child("TEMP").child("TEMP_VAL");
+        DatabaseReference ref = deviceRef.child("Data").child("TEMP1_VAL");
         ForegroundService.setInitials(TemperatureActivity.DEVICE_ID, ref, SetTempFragment.class, start, TemperatureActivity.deviceType + "set");
         context.startService(intent);
         context.bindService(intent, new ServiceConnection() {
@@ -451,7 +451,7 @@ public class SetTempFragment extends Fragment {
 
     private void setupListeners() {
 
-        deviceRef.child("UI").child("TEMP").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Integer temp = snapshot.getValue(Integer.class);
