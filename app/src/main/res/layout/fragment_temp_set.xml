@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="24dp"
         app:layout_constraintStart_toEndOf="@+id/curveSeekView"
-        app:layout_constraintBottom_toTopOf="@id/line_chart" />
+        app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal1" />
 
 
     <TextView
@@ -77,6 +78,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintGuide_percent="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.60"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.aican.aicanapp.tempController.CurveSeekView
         android:id="@+id/curveSeekView"
@@ -84,7 +95,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -100,7 +111,88 @@
         app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/tempLabelTextView"
         app:layout_constraintVertical_chainStyle="packed" />
+    <TextView
+        android:id="@+id/divState"
+        android:gravity="center"
+        android:text="Device State is - ON"
+        android:textSize="25dp"
+        android:textColor="#BD1256"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/guidelineHorizontal1"/>
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:textSize="20dp"
+        android:text="Mode : "
+        app:layout_constraintTop_toBottomOf="@id/divState"
+        app:layout_constraintEnd_toStartOf="@+id/relay"
+        app:layout_constraintBottom_toBottomOf="@+id/relay"
+        android:layout_alignParentTop="true"
+        android:textColor="?attr/primaryTextColor"/>
+    <RelativeLayout
+        android:layout_marginTop="30dp"
+        android:id="@+id/relay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:background="@drawable/spinner_border"
+        app:layout_constraintTop_toBottomOf="@+id/divState"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/spinner"
+            android:gravity="start"
+            android:backgroundTint="@android:color/black"
+            android:layout_width="wrap_content"
+            android:spinnerMode="dropdown"
+            android:popupBackground="@android:color/white"
+            android:layout_height="wrap_content"
+            android:entries="@array/modes"
+            />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/onTime"
+        android:gravity="center"
+        android:textColor="?attr/secondaryTextColor"
+        android:layout_marginVertical="10dp"
+        android:textSize="15sp"
+        android:text="ON Time : Jan 21 2021 08:30 am"
+        app:layout_constraintTop_toBottomOf="@+id/relay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <TextView
+        android:id="@+id/offTime"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="?attr/secondaryTextColor"
+        android:layout_marginVertical="10dp"
+        android:text="OFF Time : Jan 21 2021 08:30 am"
+        app:layout_constraintTop_toBottomOf="@+id/onTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/modeButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Start"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+         />
+    <!--
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
@@ -126,6 +218,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-
+-->
 </androidx.constraintlayout.widget.ConstraintLayout>

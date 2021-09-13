@@ -15,4 +15,9 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="dark">Dark</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="modes">
+        <item>Regular</item>
+        <item>Timer</item>
+
+    </string-array>
 </resources>

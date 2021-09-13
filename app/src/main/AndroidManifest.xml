@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AicanApp"
         tools:targetApi="m">
-        <activity android:name=".specificactivities.ConnectDeviceActivity"></activity>
+        <activity android:name=".specificactivities.ConnectDeviceActivity"/>
         <activity android:name=".Authentication.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
