@@ -437,6 +437,7 @@ public class PhCalibrateActivity extends AppCompatActivity {
         });
 
         tvEdit.setOnClickListener(v -> {
+
             EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                 updateBufferValue(ph);
                 deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(String.valueOf(ph));

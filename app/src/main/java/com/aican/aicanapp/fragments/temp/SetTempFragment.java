@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -38,6 +39,8 @@ import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.dialogs.EditPhBufferDialog;
+import com.aican.aicanapp.dialogs.EditSetTempDialog;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.tempController.CurveSeekView;
@@ -99,8 +102,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     private boolean initialValue = true;
     private boolean isLogging = false;
     private boolean light = false;
-
-
+    TextView tvEdit;
+    int valuesProgress;
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -117,6 +120,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         spinner=view.findViewById(R.id.spinner);
         onTime=view.findViewById(R.id.onTime);
         offTime=view.findViewById(R.id.offTime);
+        tvEdit=view.findViewById(R.id.tvEdit);
         divState=view.findViewById(R.id.divState);
         tempTextView = view.findViewById(R.id.humidityTextView);
         if (light) setLightStatusBar(curveSeekView);
@@ -172,16 +176,35 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public Unit invoke(Float aFloat) {
                 progress = aFloat;
-                tempTextView.setProgress(Math.round(aFloat));
+//                tempTextView.setProgress(Math.round(aFloat));
                 Log.e("progress", Integer.toString(Math.round(aFloat)));
                 return null;
+            }
+        });
+
+
+
+        tvEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditSetTempDialog dialog = new EditSetTempDialog(new EditSetTempDialog.OnValueChangedListener() {
+                    @Override
+                    public void onValueChanged(int setTemp) {
+                        valuesProgress=Math.round(setTemp);
+                        tempTextView.setProgress(valuesProgress);
+//                        curveSeekView.setProgress(valuesProgress);
+                    }
+                }) ;
+                dialog.show(getActivity().getSupportFragmentManager(), null);
             }
         });
 
         changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int newTemp = Math.round(curveSeekView.getProgress());
+//                int newTemp = Math.round(curveSeekView.getProgress());
+                int newTemp = Math.round(valuesProgress);
                 deviceRef.child("UI").child("TEMP").child("SET_TEMP").setValue(newTemp);
                 Toast.makeText(getContext(), "Temperature is updated", Toast.LENGTH_SHORT).show();
             }
@@ -663,11 +686,12 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
                 currTemp.setProgress(temp);
                 SetTempFragment.this.temp = temp;
-//                if (initialValue) {
-//                    initialValue = false;
+                if (initialValue) {
+                    initialValue = false;
 //                    curveSeekView.setProgress(temp);
-//                    tempTextView.setProgress(temp);
-//                }
+                    valuesProgress=temp;
+                    tempTextView.setProgress(valuesProgress);
+                }
             }
 
             @Override

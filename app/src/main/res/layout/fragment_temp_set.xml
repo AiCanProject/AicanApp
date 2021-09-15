@@ -12,6 +12,8 @@
         android:id="@+id/themButton"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="0dp"
+       app:layout_constraintTop_toBottomOf="@id/humidityTextView"
+        app:layout_constraintVertical_bias="0.919"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:background="@color/colorPrimary"
@@ -44,29 +46,64 @@
         android:layout_width="150dp"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/tempLabelTextView"
+        app:layout_constraintBottom_toTopOf="@+id/lay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/temperatureLabelTextView" />
 
-    <TextView
-        android:id="@+id/tempLabelTextView"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="16dp"
-        android:clipChildren="false"
-        android:fontFamily="sans-serif-light"
-        android:text="Temperature"
-        android:textAllCaps="true"
-        android:textColor="?attr/secondaryTextColor"
+        android:id="@+id/lay"
         app:layout_constraintBottom_toTopOf="@id/humidityTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
         app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/temperatureTextView"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed">
+        <TextView
+            android:id="@+id/tempLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
+            android:clipChildren="false"
+            android:fontFamily="sans-serif-light"
+            android:text="Temperature"
+            android:textAllCaps="true"
+            android:textColor="?attr/secondaryTextColor"
+            />
+        <TextView
+            android:id="@+id/tvEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp"
+            android:drawablePadding="4dp"
+            android:padding="2dp"
+            android:text="Edit"
+            android:textAllCaps="true"
+            android:textColor="@color/blueDark"
+            android:textSize="14sp"
+            app:drawableStartCompat="@drawable/ic_edit"
+            app:drawableTint="@color/blueDark"
+            app:layout_constraintBottom_toBottomOf="@id/flBuffer"
+            app:layout_constraintStart_toEndOf="@id/flBuffer" />
+
+
+    </LinearLayout>
+
+    <com.aican.aicanapp.tempController.ProgressLabelView
+        android:id="@+id/humidityTextView"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/lay"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -101,16 +138,7 @@
 
     </com.aican.aicanapp.tempController.CurveSeekView>
 
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/humidityTextView"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/tempLabelTextView"
-        app:layout_constraintVertical_chainStyle="packed" />
+
     <TextView
         android:id="@+id/divState"
         android:gravity="center"
