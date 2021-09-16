@@ -57,18 +57,20 @@ class Label(
     }
 
     private fun onYChange() {
-        if (!inFocus) {
-            progressData.apply {
-                getTextBounds(textBounds)
-                progress = ((currentY - minY) / (maxY - minY)) *
-                        (maxProgress - minProgress) + minProgress
-                progress = progress.roundToInt().toFloat()
-            }
-        } else {
-            progress = view.getProgress().roundToInt().toFloat()
-        }
+        progress = view.getProgress().roundToInt().toFloat()
 
-        lastCharIndex = (log10(progress.toDouble()) + 1).toInt()
+//        if (!inFocus) {
+//            progressData.apply {
+//                getTextBounds(textBounds)
+//                progress = ((currentY - minY) / (maxY - minY)) *
+//                        (maxProgress - minProgress) + minProgress
+//                progress = progress.roundToInt().toFloat()
+//            }
+//        }else{
+//            progress = view.getProgress().roundToInt().toFloat()
+//        }
+
+    lastCharIndex = (log10(progress.toDouble()) + 1).toInt()
 
         for (i in (lastCharIndex - 1) downTo 0) {
             text[i] = '0' + progress.toInt() % 10

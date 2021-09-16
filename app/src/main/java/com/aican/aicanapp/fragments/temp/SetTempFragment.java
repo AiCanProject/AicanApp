@@ -176,7 +176,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public Unit invoke(Float aFloat) {
                 progress = aFloat;
-//                tempTextView.setProgress(Math.round(aFloat));
+                tempTextView.setProgress(Math.round(aFloat));
                 Log.e("progress", Integer.toString(Math.round(aFloat)));
                 return null;
             }
@@ -193,7 +193,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                     public void onValueChanged(int setTemp) {
                         valuesProgress=Math.round(setTemp);
                         tempTextView.setProgress(valuesProgress);
-//                        curveSeekView.setProgress(valuesProgress);
+                        curveSeekView.setProgress(seekProgCalulation(valuesProgress));
                     }
                 }) ;
                 dialog.show(getActivity().getSupportFragmentManager(), null);
@@ -272,6 +272,79 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
         setupListeners();
 //        setupGraph();
+    }
+
+    private float seekProgCalulation(int n) {
+
+        if(n<=300&&n>=293){
+            return 300-n;
+        }
+
+        else if(n<=292&&n>=279){
+            return 300-n+1;
+        }
+
+        else if(n<=278&&n>=265){
+            return 300-n+2;
+        }
+        else if(n<=264&&n>=251){
+            return 300-n+3;
+        }
+        else if(n<=250&&n>=237){
+            return 300-n+4;
+        }
+        else if(n<=236&&n>=223){
+            return 300-n+5;
+        }
+        else if(n<=222&&n>=209){
+            return 300-n+6;
+        }
+        else if(n<=208&&n>=195){
+            return 300-n+7;
+        }
+        else if(n<=194&&n>=181){
+            return 300-n+8;
+        }
+        else if(n<=180&&n>=167){
+            return 300-n+9;
+        }
+        else if(n<=166&&n>=153){
+            return 300-n+10;
+        }
+        else if(n<=152&&n>=139){
+            return 300-n+11;
+        }
+        else if(n<=138&&n>=125){
+            return 300-n+12;
+        }
+        else if(n<=124&&n>=111){
+            return 300-n+13;
+        }
+        else if(n<=110&&n>=97){
+            return 300-n+14;
+        }
+        else if(n<=96&&n>=83){
+            return 300-n+15;
+        }
+        else if(n<=82&&n>=69){
+            return 300-n+16;
+        }
+        else if(n<=68&&n>=55){
+            return 300-n+17;
+        }
+        else if(n<=54&&n>=41){
+            return 300-n+18;
+        }
+        else if(n<=40&&n>=27){
+            return 300-n+19;
+        }
+        else if(n<=26&&n>=13){
+            return 300-n+20;
+        }
+        else{
+            return 0;
+        }
+
     }
 
     private String getTodayDate() {
@@ -688,6 +761,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 SetTempFragment.this.temp = temp;
                 if (initialValue) {
                     initialValue = false;
+                    curveSeekView.setProgress(seekProgCalulation(temp));
 //                    curveSeekView.setProgress(temp);
                     valuesProgress=temp;
                     tempTextView.setProgress(valuesProgress);

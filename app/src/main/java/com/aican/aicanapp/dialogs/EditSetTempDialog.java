@@ -53,7 +53,7 @@ public class EditSetTempDialog extends BottomSheetDialogFragment {
         btnChange.setOnClickListener(v -> {
             try{
                 int temp= Integer.parseInt(etSetTemp.getText().toString());
-                if(temp>=30&& temp<=300) {
+                if(temp>=20&& temp<=300) {
                     onValueChangedListener.onValueChanged(temp);
                     dismiss();
                 }

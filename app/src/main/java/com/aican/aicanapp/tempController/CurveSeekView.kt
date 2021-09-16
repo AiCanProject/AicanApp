@@ -105,7 +105,7 @@ class CurveSeekView @JvmOverloads constructor(
     private val selectedLabelTextSize = 28F.toPx()
     private val labelTextSize = 18F.toPx()
     private val labelPaddingVertical = 4F.toPx()
-    private val labelsCount = 10
+    private val labelsCount = 1
     private val labelPadding = 16F.toPx()
     private val labelSuffix = "°C"
 
@@ -116,7 +116,7 @@ class CurveSeekView @JvmOverloads constructor(
     private val markRanges = arrayOf(Range(10.0F, 30F), Range(230.0F, 300.0F))
 
     //Progress
-    private val maxProgress = 30F
+    private val maxProgress = 20F
     private val minProgress = 300F
 
     //Fling
@@ -481,15 +481,16 @@ class CurveSeekView @JvmOverloads constructor(
     fun getProgress(): Float = getProgress(progressY)
 
     private fun getProgress(y: Float): Float {
-        return ((y - scalePaddingVertical) /
-                (height - scalePaddingVertical * 2)) * (maxProgress - minProgress) + minProgress
+        return (
+                (y - scalePaddingVertical) / (height - scalePaddingVertical * 2)) *
+                (maxProgress - minProgress) + minProgress
     }
 
     fun setProgress(newProgress: Float) {
         progress = newProgress
         updateSeekY(
-            (progress / maxProgress.coerceAtLeast(minProgress) *
-                    (height - scalePaddingVertical * 2)) + scalePaddingVertical
+            (progress / maxProgress.coerceAtLeast(minProgress)
+                    * (height - scalePaddingVertical * 2)) + scalePaddingVertical
         )
     }
 
