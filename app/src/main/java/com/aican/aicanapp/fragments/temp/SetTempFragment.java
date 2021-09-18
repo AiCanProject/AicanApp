@@ -42,6 +42,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.EditSetTempDialog;
 import com.aican.aicanapp.graph.ForegroundService;
+import com.aican.aicanapp.service.TempService;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.tempController.CurveSeekView;
 import com.aican.aicanapp.tempController.ProgressLabelView;
@@ -72,6 +73,9 @@ import java.util.List;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
+import static com.aican.aicanapp.Dashboard.Dashboard.a;
+import static com.aican.aicanapp.Dashboard.Dashboard.b;
+
 public class SetTempFragment extends Fragment implements AdapterView.OnItemSelectedListener{
     
     DatabaseReference deviceRef = null;
@@ -86,24 +90,27 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     TextView onTime,offTime,divState;
     int setMode=0,reg=1;
     long diffTime,startTime,endTime;
-    LinearLayout llStart, llStop, llClear, llExport;
-    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
-    int skipPoints = 0;
-    int skipCount = 0;
-    ArrayList<Entry> entriesOriginal;
     float temp = 0;
-    boolean isTimeOptionsVisible = false;
-    ArrayList<Entry> logs = new ArrayList<>();
-    long start = 0;
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
     private float progress = 150f;
-    private LineChart lineChart;
     private boolean initialValue = true;
-    private boolean isLogging = false;
     private boolean light = false;
     TextView tvEdit;
-    int valuesProgress;
+    int valuesProgress,valTemp2;
+    String divStateFB="";
+    boolean first=true;
+//    LinearLayout llStart, llStop, llClear, llExport;
+//    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
+//    int skipPoints = 0;
+//    int skipCount = 0;
+//    ArrayList<Entry> entriesOriginal;
+//    boolean isTimeOptionsVisible = false;
+//    ArrayList<Entry> logs = new ArrayList<>();
+//    long start = 0;
+//    ForegroundService myService;
+//    PlotGraphNotifier plotGraphNotifier;
+//    private LineChart lineChart;
+//    private boolean isLogging = false;
+
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -116,6 +123,9 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         super.onViewCreated(view, savedInstanceState);
 
 //        lineChart = view.findViewById(R.id.line_chart);
+        reg=a;
+        setMode=b;
+
         curveSeekView = view.findViewById(R.id.curveSeekView);
         spinner=view.findViewById(R.id.spinner);
         onTime=view.findViewById(R.id.onTime);
@@ -130,6 +140,13 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
         startTime=0;
         endTime=0;
+        if (setMode==0){
+            modeBtn.setText("START");
+        }
+        else {
+
+            modeBtn.setText("STOP");
+        }
 
 //        llStart = view.findViewById(R.id.llStart);
 //        llStop = view.findViewById(R.id.llStop);
@@ -146,7 +163,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         curveSeekView.setProgress(progress);
         tempTextView.setProgress((int) progress);
         tempTextView.setAnimationDuration(800);
-        modeBtn.setText("START");
+//        modeBtn.setText("START");
 
         currTemp.setTextColor(getAttr(R.attr.primaryTextColor));
         tempTextView.setTextColor(getAttr(R.attr.primaryTextColor));
@@ -214,6 +231,14 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 if(setMode==0){
                     setMode=1;
+                    //Service
+                    Intent serviceIntent=new Intent(getContext(), TempService.class);
+                    serviceIntent.putExtra("device",divStateFB);
+                    serviceIntent.putExtra("temp1",valuesProgress);
+                    serviceIntent.putExtra("temp2",valTemp2);
+                    serviceIntent.putExtra("reg",reg);
+                    serviceIntent.putExtra("mode",setMode);
+                    getContext().startService(serviceIntent);
                     modeBtn.setText("STOP");
                     if(reg==1) {
                         deviceRef.child("UI").child("TEMP").child("STATUS").setValue(1);
@@ -227,6 +252,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                         }
 
                     }
+
+
                 }
                 else{
                     setMode=0;
@@ -238,6 +265,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                         deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(startTime);
                         Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
                     }
+
+                    //Service
+                    Intent serviceIntent=new Intent(getContext(),TempService.class);
+                    getContext().stopService(serviceIntent);
                 }
                 Toast.makeText(getContext(), "Mode updated", Toast.LENGTH_SHORT).show();
             }
@@ -250,6 +281,12 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 R.layout.color_spinner_layout);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout); //Spinner Dropdown Text
         spinner.setAdapter(adapter);
+        if(reg==1) {
+            spinner.setSelection(0);
+        }
+        else if(reg==0){
+            spinner.setSelection(1);
+        }
         spinner.setOnItemSelectedListener(this);
 
         onTime.setText("ON Time : "+getTodayDate());
@@ -774,6 +811,20 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             }
         });
 
+        deviceRef.child("Data").child("TEMP2_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Integer temp = snapshot.getValue(Integer.class);
+                if (temp == null) return;
+                valTemp2=temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
         deviceRef.child("UI").child("TEMP").child("STATE").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -786,7 +837,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 else{
                     divState.setTextColor(getResources().getColor(R.color.red));
                 }
-
+                divStateFB=val;
             }
 
             @Override
@@ -800,8 +851,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(position==0){
             reg=1;
-            modeBtn.setText("START");
-            setMode=0;
+            if (!first){
+                modeBtn.setText("START");
+                setMode=0;
+            }
             onTime.setVisibility(View.GONE);
             offTime.setVisibility(View.GONE);
             deviceRef.child("UI").child("TEMP").child("STATUS").setValue(0);
@@ -809,8 +862,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         else if(position==1){
             reg=0;
             showTimeONOFFOptions();
-            modeBtn.setText("START");
-            setMode=0;
+            if (!first){
+                modeBtn.setText("START");
+                setMode=0;
+            }
             deviceRef.child("UI").child("TEMP").child("STATUS").setValue(0);
         }
     }

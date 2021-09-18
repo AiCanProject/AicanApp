@@ -55,6 +55,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
 
+    public static int a;
+    public static int b;
     DatabaseReference primaryDatabase;
     String mUid;
 
@@ -87,6 +89,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        a=getIntent().getIntExtra("reg",1);
+        b=getIntent().getIntExtra("mode",0);
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);

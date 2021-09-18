@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class TemperatureActivity extends AppCompatActivity {
 
     public static final String DEVICE_TYPE_KEY = "device_type";
-    public static String DEVICE_ID = null;
+    public static String DEVICE_ID = "device_id";
     public static String deviceType = null;
 
 
