@@ -34,6 +34,7 @@ import android.widget.Toast;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -43,6 +44,7 @@ import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.EditSetTempDialog;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.service.TempService;
+import com.aican.aicanapp.specificactivities.SetTempGraphActivity;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.tempController.CurveSeekView;
 import com.aican.aicanapp.tempController.ProgressLabelView;
@@ -73,8 +75,6 @@ import java.util.List;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-import static com.aican.aicanapp.Dashboard.Dashboard.a;
-import static com.aican.aicanapp.Dashboard.Dashboard.b;
 
 public class SetTempFragment extends Fragment implements AdapterView.OnItemSelectedListener{
     
@@ -84,6 +84,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     CurveSeekView curveSeekView;
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
+    AppCompatButton graphBtn;
     Spinner spinner;
     Button modeBtn;
     int togTime=1;
@@ -95,9 +96,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     private boolean initialValue = true;
     private boolean light = false;
     TextView tvEdit;
-    int valuesProgress,valTemp2;
+    int valuesProgress,valTemp2,fixedTemp;
     String divStateFB="";
     boolean first=true;
+    TempService tempService;
 //    LinearLayout llStart, llStop, llClear, llExport;
 //    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 //    int skipPoints = 0;
@@ -123,9 +125,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         super.onViewCreated(view, savedInstanceState);
 
 //        lineChart = view.findViewById(R.id.line_chart);
-        reg=a;
-        setMode=b;
 
+
+
+        graphBtn=view.findViewById(R.id.graphBtn);
         curveSeekView = view.findViewById(R.id.curveSeekView);
         spinner=view.findViewById(R.id.spinner);
         onTime=view.findViewById(R.id.onTime);
@@ -140,13 +143,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
         startTime=0;
         endTime=0;
-        if (setMode==0){
-            modeBtn.setText("START");
-        }
-        else {
-
-            modeBtn.setText("STOP");
-        }
 
 //        llStart = view.findViewById(R.id.llStart);
 //        llStop = view.findViewById(R.id.llStop);
@@ -160,8 +156,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
         currTemp.setProgress(Math.round(progress));
         tempTextView.setAnimationDuration(0);
-        curveSeekView.setProgress(progress);
-        tempTextView.setProgress((int) progress);
         tempTextView.setAnimationDuration(800);
 //        modeBtn.setText("START");
 
@@ -187,20 +181,27 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 //                hideTimeOptions();
 //            }
 //        });
+        graphBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), SetTempGraphActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         curveSeekView.setOnProgressChangeListener(new Function1<Float, Unit>() {
             @Override
             public Unit invoke(Float aFloat) {
                 progress = aFloat;
+                valuesProgress=Math.round(aFloat);
                 tempTextView.setProgress(Math.round(aFloat));
                 Log.e("progress", Integer.toString(Math.round(aFloat)));
                 return null;
             }
         });
 
-
-
+        
         tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -209,8 +210,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                     @Override
                     public void onValueChanged(int setTemp) {
                         valuesProgress=Math.round(setTemp);
-                        tempTextView.setProgress(valuesProgress);
-                        curveSeekView.setProgress(seekProgCalulation(valuesProgress));
+                        tempTextView.setProgress(Math.round(setTemp));
+                        curveSeekView.setProgress(seekProgCalulation(Math.round(setTemp)));
                     }
                 }) ;
                 dialog.show(getActivity().getSupportFragmentManager(), null);
@@ -220,8 +221,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                int newTemp = Math.round(curveSeekView.getProgress());
-                int newTemp = Math.round(valuesProgress);
+                int newTemp = Math.round(curveSeekView.getProgress());
+//                int newTemp = Math.round(valuesProgress);
                 deviceRef.child("UI").child("TEMP").child("SET_TEMP").setValue(newTemp);
                 Toast.makeText(getContext(), "Temperature is updated", Toast.LENGTH_SHORT).show();
             }
@@ -232,12 +233,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 if(setMode==0){
                     setMode=1;
                     //Service
+                    TempService.dataInitialize(divStateFB,fixedTemp,valTemp2,reg,setMode,valuesProgress);
                     Intent serviceIntent=new Intent(getContext(), TempService.class);
-                    serviceIntent.putExtra("device",divStateFB);
-                    serviceIntent.putExtra("temp1",valuesProgress);
-                    serviceIntent.putExtra("temp2",valTemp2);
-                    serviceIntent.putExtra("reg",reg);
-                    serviceIntent.putExtra("mode",setMode);
                     getContext().startService(serviceIntent);
                     modeBtn.setText("STOP");
                     if(reg==1) {
@@ -267,6 +264,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                     }
 
                     //Service
+                    TempService.dataInitialize("",0,0,0,0,0);
                     Intent serviceIntent=new Intent(getContext(),TempService.class);
                     getContext().stopService(serviceIntent);
                 }
@@ -281,12 +279,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 R.layout.color_spinner_layout);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout); //Spinner Dropdown Text
         spinner.setAdapter(adapter);
-        if(reg==1) {
-            spinner.setSelection(0);
-        }
-        else if(reg==0){
-            spinner.setSelection(1);
-        }
+
         spinner.setOnItemSelectedListener(this);
 
         onTime.setText("ON Time : "+getTodayDate());
@@ -795,14 +788,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 if (temp == null) return;
 
                 currTemp.setProgress(temp);
+                fixedTemp=temp;
                 SetTempFragment.this.temp = temp;
-                if (initialValue) {
-                    initialValue = false;
-                    curveSeekView.setProgress(seekProgCalulation(temp));
-//                    curveSeekView.setProgress(temp);
-                    valuesProgress=temp;
-                    tempTextView.setProgress(valuesProgress);
-                }
             }
 
             @Override
@@ -845,7 +832,25 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
+        deviceRef.child("UI").child("TEMP").child("SET_TEMP").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Integer temp = snapshot.getValue(Integer.class);
+                if (temp == null) return;
+                if (initialValue) {
+                    initialValue = false;
+                    curveSeekView.setProgress(seekProgCalulation(temp));
 
+//                    valuesProgress=temp;
+                    tempTextView.setProgress(temp);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -898,5 +903,46 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             curveSeekView.setSystemUiVisibility(flags);
             requireActivity().getWindow().setStatusBarColor(Color.WHITE);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        curveSeekView.setProgress(seekProgCalulation(150));
+        tempTextView.setProgress((int) 150f);
+        Intent intent=new Intent(getContext(),TempService.class);
+        getContext().bindService(intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                tempService= ((TempService.MyBinder) iBinder).getTempService();
+                if (TempService.isShowingNotification()){
+                    modeBtn.setText("STOP");
+                    curveSeekView.setProgress(seekProgCalulation(TempService.getSetTemp()));
+                    tempTextView.setProgress(TempService.getSetTemp());
+                    setMode=TempService.getSetMode();
+                    reg=TempService.getReg();
+                    initialValue=false;
+                    if(reg==1) {
+                        spinner.setSelection(0);
+                    }
+                    else if(reg==0){
+                        spinner.setSelection(1);
+                        Log.w("selection","1");
+                    }
+                }
+                else{
+                    modeBtn.setText("START");
+                    curveSeekView.setProgress(seekProgCalulation(TempService.getSetTemp()));
+                    tempTextView.setProgress(TempService.getSetTemp());
+
+                }
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        },0);
     }
 }

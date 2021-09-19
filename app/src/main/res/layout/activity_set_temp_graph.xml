@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".specificactivities.SetTempGraphActivity">
+
+    <TextView
+        android:id="@+id/fixedTempHeading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Current Temperature"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDarkAlpha"
+        app:layout_constraintBottom_toTopOf="@+id/fixedTemp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fixedTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="94dp"
+        android:background="@drawable/box_temp_bg"
+        android:paddingHorizontal="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/changingTempHeading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fixedTempHeading">
+
+        <TextView
+            android:id="@+id/tvTempCurr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="64sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/changingTempHeading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Temperature"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDarkAlpha"
+        app:layout_constraintBottom_toTopOf="@+id/changingTemp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fixedTemp" />
+
+    <FrameLayout
+        android:id="@+id/changingTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="94dp"
+        android:background="@drawable/box_temp_bg"
+        android:paddingHorizontal="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/line_chart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changingTempHeading">
+
+        <TextView
+            android:id="@+id/tvTempChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="64sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        layout="@layout/graph_time_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="26dp"
+        app:layout_constraintBottom_toBottomOf="@id/line_chart"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <include
+        android:id="@+id/graphLoggingOptions"
+        layout="@layout/graph_logging_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

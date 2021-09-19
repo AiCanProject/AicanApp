@@ -15,10 +15,12 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AicanApp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".specificactivities.ConnectDeviceActivity"/>
+        <activity android:name=".specificactivities.SetTempGraphActivity"/>
+
+        <activity android:name=".specificactivities.ConnectDeviceActivity" />
         <activity android:name=".Authentication.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,8 +43,8 @@
         <activity android:name=".specificactivities.PumpActivity" />
         <activity android:name=".AddDevice.ScanQrActivity" />
 
-        <service android:name=".graph.ForegroundService"/>
-        <service android:name=".service.TempService"/>
+        <service android:name=".graph.ForegroundService" />
+        <service android:name=".service.TempService" />
     </application>
 
 </manifest>
