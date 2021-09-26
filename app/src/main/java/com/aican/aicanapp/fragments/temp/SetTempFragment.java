@@ -157,7 +157,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         currTemp.setProgress(Math.round(progress));
         tempTextView.setAnimationDuration(0);
         tempTextView.setAnimationDuration(800);
-//        modeBtn.setText("START");
 
         currTemp.setTextColor(getAttr(R.attr.primaryTextColor));
         tempTextView.setTextColor(getAttr(R.attr.primaryTextColor));
@@ -222,7 +221,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View view) {
                 int newTemp = Math.round(curveSeekView.getProgress());
-//                int newTemp = Math.round(valuesProgress);
                 deviceRef.child("UI").child("TEMP").child("SET_TEMP").setValue(newTemp);
                 Toast.makeText(getContext(), "Temperature is updated", Toast.LENGTH_SHORT).show();
             }
@@ -245,12 +243,9 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                         if(togTime==2){
                             deviceRef.child("UI").child("TEMP").child("OFF_TIME").setValue(endTime);
                             deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(startTime);
-                            Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
                         }
-
                     }
-
-
                 }
                 else{
                     setMode=0;
@@ -260,7 +255,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                         endTime=0;startTime=0;
                         deviceRef.child("UI").child("TEMP").child("OFF_TIME").setValue(endTime);
                         deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(startTime);
-                        Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
                     }
 
                     //Service
@@ -909,7 +904,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     public void onResume() {
         super.onResume();
         curveSeekView.setProgress(seekProgCalulation(150));
-        tempTextView.setProgress((int) 150f);
+        tempTextView.setProgress((int)150f);
         Intent intent=new Intent(getContext(),TempService.class);
         getContext().bindService(intent, new ServiceConnection() {
             @Override
