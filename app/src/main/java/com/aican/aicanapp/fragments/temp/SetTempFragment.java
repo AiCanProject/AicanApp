@@ -100,6 +100,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     String divStateFB="";
     boolean first=true;
     TempService tempService;
+    boolean ON_CLICKED=false;
 //    LinearLayout llStart, llStop, llClear, llExport;
 //    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 //    int skipPoints = 0;
@@ -125,8 +126,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         super.onViewCreated(view, savedInstanceState);
 
 //        lineChart = view.findViewById(R.id.line_chart);
-
-
 
         graphBtn=view.findViewById(R.id.graphBtn);
         curveSeekView = view.findViewById(R.id.curveSeekView);
@@ -239,12 +238,19 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                         deviceRef.child("UI").child("TEMP").child("STATUS").setValue(1);
                     }
                     else if(reg==0){
+
                         deviceRef.child("UI").child("TEMP").child("STATUS").setValue(2);
-                        if(togTime==2){
+                        if(!ON_CLICKED){
+                            deviceRef.child("UI").child("TEMP").child("OFF_TIME").setValue(0);
+                            deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(0);
+                        }
+                        if (togTime == 2) {
+                            togTime = 0;
                             deviceRef.child("UI").child("TEMP").child("OFF_TIME").setValue(endTime);
                             deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(startTime);
 //                            Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 }
                 else{
@@ -252,11 +258,15 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                     modeBtn.setText("START");
                     deviceRef.child("UI").child("TEMP").child("STATUS").setValue(0);
                     if(togTime==2){
+                        togTime=0;
                         endTime=0;startTime=0;
                         deviceRef.child("UI").child("TEMP").child("OFF_TIME").setValue(endTime);
                         deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(startTime);
 //                        Toast.makeText(getContext(), ""+endTime+" "+startTime, Toast.LENGTH_SHORT).show();
                     }
+                    ON_CLICKED=false;
+                    onTime.setText("ON Time : "+getTodayDate());
+                    offTime.setText("OFF Time : "+getTodayDate());
 
                     //Service
                     TempService.dataInitialize("",0,0,0,0,0);
@@ -285,13 +295,19 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 togTime=1;
                 initDatePicker();
+                ON_CLICKED=true;
             }
         });
         offTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                togTime=2;
-                initDatePicker();
+               if (!ON_CLICKED){
+                   Toast.makeText(getContext(), "Please select a On Time", Toast.LENGTH_SHORT).show();
+               }
+               else {
+                   togTime=2;
+                   initDatePicker();
+               }
             }
         });
 
@@ -861,7 +877,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         }
         else if(position==1){
             reg=0;
+            ON_CLICKED=false;
             showTimeONOFFOptions();
+            onTime.setText("ON Time : "+getTodayDate());
+            offTime.setText("OFF Time : "+getTodayDate());
             if (!first){
                 modeBtn.setText("START");
                 setMode=0;
