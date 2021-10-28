@@ -228,6 +228,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View view) {
                 if(setMode==0){
+                    spinner.setEnabled(false);
                     setMode=1;
                     //Service
                     TempService.dataInitialize(divStateFB,fixedTemp,valTemp2,reg,setMode,valuesProgress);
@@ -254,6 +255,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                     }
                 }
                 else{
+                    spinner.setEnabled(true);
                     setMode=0;
                     modeBtn.setText("START");
                     deviceRef.child("UI").child("TEMP").child("STATUS").setValue(0);
