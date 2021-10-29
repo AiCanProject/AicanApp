@@ -1,5 +1,4 @@
 package com.aican.aicanapp.fragments.temp;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -74,10 +73,7 @@ import java.util.List;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-
-
 public class SetTempFragment extends Fragment implements AdapterView.OnItemSelectedListener{
-    
     DatabaseReference deviceRef = null;
     ProgressLabelView currTemp;
     ProgressLabelView tempTextView;
@@ -229,6 +225,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 if(setMode==0){
                     spinner.setEnabled(false);
+                    onTime.setEnabled(false);
+                    offTime.setEnabled(false);
                     setMode=1;
                     //Service
                     TempService.dataInitialize(divStateFB,fixedTemp,valTemp2,reg,setMode,valuesProgress);
@@ -256,6 +254,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 }
                 else{
                     spinner.setEnabled(true);
+                    onTime.setEnabled(true);
+                    offTime.setEnabled(true);
                     setMode=0;
                     modeBtn.setText("START");
                     deviceRef.child("UI").child("TEMP").child("STATUS").setValue(0);
@@ -850,13 +850,11 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer temp = snapshot.getValue(Integer.class);
                 if (temp == null) return;
-                if (initialValue) {
-                    initialValue = false;
+//                if (initialValue) {
+//                    initialValue = false;
                     curveSeekView.setProgress(seekProgCalulation(temp));
-
-//                    valuesProgress=temp;
                     tempTextView.setProgress(temp);
-                }
+//                }
             }
 
             @Override
@@ -864,6 +862,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
+
     }
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
