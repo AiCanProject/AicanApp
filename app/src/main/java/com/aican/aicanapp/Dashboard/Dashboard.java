@@ -211,16 +211,18 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         getDeviceIds();
     }
 
+    private static final String TAG = "Dashboard";
     private void getDeviceIds() {
         primaryDatabase.child("DEVICES").get().addOnSuccessListener(dataSnapshot -> {
             //Connect to devices account and get device details
             if (dataSnapshot.hasChildren()) {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     String deviceId = deviceSnapshot.getValue(String.class);
+                    Log.e(TAG, "getDeviceIds: "+deviceId );
                     deviceIds.add(deviceId);
                     deviceIdIds.put(deviceId, deviceSnapshot.getKey());
                 }
-
+                Log.e("devices",String.valueOf(deviceIds.size()));
                 getDeviceAccounts();
             }
         });
@@ -232,7 +234,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         for (String id : deviceIds) {
             secondaryDatabase.child(id).get().addOnSuccessListener(dataSnapshot -> {
                 accountsLoaded.incrementAndGet();
-
+                Log.e(TAG, "getDeviceAccounts: "+id );
                 DeviceAccount deviceAccount = dataSnapshot.getValue(DeviceAccount.class);
                 if (deviceAccount == null) return;
                 deviceTypes.put(id, deviceAccount.type);
@@ -274,13 +276,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         AtomicInteger devicesLoaded = new AtomicInteger();
         for (String id : deviceIds) {
             FirebaseApp app = FirebaseApp.getInstance(id);
-
-            FirebaseDatabase.getInstance(app).getReference().child(deviceTypes.get(id)).child(id).get().addOnSuccessListener(dataSnapshot -> {
+            Log.e(TAG, "getDevices: "+id +", "+deviceTypes.get(id));
+            FirebaseDatabase.getInstance(app).getReference().child(deviceTypes.get(id)).child(id).get()
+                    .addOnSuccessListener(dataSnapshot -> {
                 devicesLoaded.incrementAndGet();
                 DataSnapshot data = dataSnapshot.child("Data");
                 DataSnapshot ui = dataSnapshot.child("UI");
                 String name = dataSnapshot.child("NAME").getValue(String.class);
                 deviceNames.put(id, name);
+//                Log.e(TAG, "getDevices: "+id+", "+deviceTypes.get(id) );
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
                         PhDevice device = new PhDevice(
@@ -324,6 +328,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         break;
                     }
                     case "TEMP_CONTROLLER": {
+                        Log.e("temp","called "+id);
                         tempDevices.add(new TempDevice(
                                 id,
                                 name,
@@ -366,7 +371,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         tvPump.setVisibility(View.VISIBLE);
                     }
                 }
-            });
+            })
+                    .addOnFailureListener(error->{
+                        error.printStackTrace();
+                    });
         }
     }
 

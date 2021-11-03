@@ -36,8 +36,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-
-import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.EditSetTempDialog;
@@ -47,30 +45,14 @@ import com.aican.aicanapp.specificactivities.SetTempGraphActivity;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.tempController.CurveSeekView;
 import com.aican.aicanapp.tempController.ProgressLabelView;
-import com.aican.aicanapp.utils.PlotGraphNotifier;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.opencsv.CSVWriter;
-
 import org.jetbrains.annotations.NotNull;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 public class SetTempFragment extends Fragment implements AdapterView.OnItemSelectedListener{
@@ -97,19 +79,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     boolean first=true;
     TempService tempService;
     boolean ON_CLICKED=false;
-//    LinearLayout llStart, llStop, llClear, llExport;
-//    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
-//    int skipPoints = 0;
-//    int skipCount = 0;
-//    ArrayList<Entry> entriesOriginal;
-//    boolean isTimeOptionsVisible = false;
-//    ArrayList<Entry> logs = new ArrayList<>();
-//    long start = 0;
-//    ForegroundService myService;
-//    PlotGraphNotifier plotGraphNotifier;
-//    private LineChart lineChart;
-//    private boolean isLogging = false;
-
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -120,9 +89,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-//        lineChart = view.findViewById(R.id.line_chart);
-
         graphBtn=view.findViewById(R.id.graphBtn);
         curveSeekView = view.findViewById(R.id.curveSeekView);
         spinner=view.findViewById(R.id.spinner);
@@ -138,17 +104,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
         startTime=0;
         endTime=0;
-
-//        llStart = view.findViewById(R.id.llStart);
-//        llStop = view.findViewById(R.id.llStop);
-//        llClear = view.findViewById(R.id.llClear);
-//        llExport = view.findViewById(R.id.llExport);
-//        cv5Min = view.findViewById(R.id.cv5min);
-//        cv1Min = view.findViewById(R.id.cv1min);
-//        cv10Min = view.findViewById(R.id.cv10min);
-//        cv15Min = view.findViewById(R.id.cv15min);
-//        cvClock = view.findViewById(R.id.cvClock);
-
         currTemp.setProgress(Math.round(progress));
         tempTextView.setAnimationDuration(0);
         tempTextView.setAnimationDuration(800);
@@ -164,17 +119,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         curveSeekView.setFirstGradientColor(getAttr(R.attr.firstGradientColor));
         curveSeekView.setSecondGradientColor(getAttr(R.attr.secondGradientColor));
         changeBtn.setBackgroundColor(getAttr(R.attr.warningTextColor));
-
-//        entriesOriginal = new ArrayList<>();
-
-//        cvClock.setOnClickListener(v -> {
-//            isTimeOptionsVisible = !isTimeOptionsVisible;
-//            if (isTimeOptionsVisible) {
-//                showTimeOptions();
-//            } else {
-//                hideTimeOptions();
-//            }
-//        });
         graphBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,8 +126,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 startActivity(intent);
             }
         });
-
-
         curveSeekView.setOnProgressChangeListener(new Function1<Float, Unit>() {
             @Override
             public Unit invoke(Float aFloat) {
@@ -194,8 +136,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 return null;
             }
         });
-
-        
         tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,13 +145,12 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                     public void onValueChanged(int setTemp) {
                         valuesProgress=Math.round(setTemp);
                         tempTextView.setProgress(Math.round(setTemp));
-                        curveSeekView.setProgress(seekProgCalulation(Math.round(setTemp)));
+                        curveSeekView.setProgress(seekProgCalculation(Math.round(setTemp)));
                     }
                 }) ;
                 dialog.show(getActivity().getSupportFragmentManager(), null);
             }
         });
-
         changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -278,20 +217,15 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 Toast.makeText(getContext(), "Mode updated", Toast.LENGTH_SHORT).show();
             }
         });
-
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
                 .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
-
         ArrayAdapter adapter=ArrayAdapter.createFromResource(getContext(),R.array.modes,
                 R.layout.color_spinner_layout);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout); //Spinner Dropdown Text
         spinner.setAdapter(adapter);
-
         spinner.setOnItemSelectedListener(this);
-
         onTime.setText("ON Time : "+getTodayDate());
         offTime.setText("OFF Time : "+getTodayDate());
-
         onTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -312,12 +246,9 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                }
             }
         });
-
         setupListeners();
-//        setupGraph();
     }
-
-    private float seekProgCalulation(int n) {
+    private float seekProgCalculation(int n) {
 
         if(n<=300&&n>=293){
             return 300-n;
@@ -389,7 +320,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         }
 
     }
-
     private String getTodayDate() {
         Calendar cal=Calendar.getInstance();
         int year=cal.get(Calendar.YEAR);
@@ -400,7 +330,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         int min=cal.get(Calendar.MINUTE);
         return makeDateString(day,month,year,hour,min);
     }
-
     private void initDatePicker() {
         DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -420,7 +349,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         datePickerDialog=new DatePickerDialog(getContext(),style,dateSetListener,year,month,day);
         datePickerDialog.show();
     }
-
     private void initTimePicker(int day,int month,int year) {
         TimePickerDialog.OnTimeSetListener timeSetListener=new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -450,13 +378,10 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         Calendar cal=Calendar.getInstance();
         int h=cal.get(Calendar.HOUR_OF_DAY);
         int m=cal.get(Calendar.MINUTE);
-
         int style= AlertDialog.THEME_HOLO_LIGHT;
-
         timePickerDialog=new TimePickerDialog(getContext(),style,timeSetListener,h,m, true);
         timePickerDialog.show();
     }
-
     private String makeDateString(int day, int month, int year,int hour,int min) {
         String valMin="",valHour="";
         if(min<10){
@@ -473,7 +398,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         }
         return day+"-"+month+"-"+year+"  "+valHour+":"+valMin;
     }
-
     private boolean differFromNowTimeCalculate(int day,int month,int year,int hour,int min){
         boolean bol=false;
         Calendar cal=Calendar.getInstance();
@@ -509,291 +433,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 +(hour-hourNow)*60+(min-minNow);
         return bol;
     }
-
-//    private void setupGraph() {
-//        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "Temp");
-//
-//        lineDataSet.setLineWidth(2);
-//        lineDataSet.setCircleRadius(4);
-//        lineDataSet.setValueTextSize(10);
-//
-//
-//        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-//        dataSets.add(lineDataSet);
-//
-//        LineData data = new LineData(dataSets);
-//        lineChart.setData(data);
-//        lineChart.invalidate();
-//        lineChart.setDrawGridBackground(true);
-//        lineChart.setDrawBorders(true);
-//
-//        Description d = new Description();
-//        d.setText("Temp Graph");
-//        lineChart.setDescription(d);
-//
-//        llStart.setOnClickListener(v -> {
-//            if (ForegroundService.isRunning()) {
-//                Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//            llStart.setVisibility(View.INVISIBLE);
-//            llStop.setVisibility(View.VISIBLE);
-//            llClear.setVisibility(View.INVISIBLE);
-//            llExport.setVisibility(View.INVISIBLE);
-//            startLogging();
-//        });
-//        llStop.setOnClickListener(v -> {
-//            llStart.setVisibility(View.VISIBLE);
-//            llStop.setVisibility(View.INVISIBLE);
-//            llClear.setVisibility(View.VISIBLE);
-//            llExport.setVisibility(View.VISIBLE);
-//            stopLogging();
-//        });
-//        llClear.setOnClickListener(v -> {
-//            llClear.setVisibility(View.INVISIBLE);
-//            llExport.setVisibility(View.INVISIBLE);
-//            clearLogs();
-//        });
-//        llExport.setOnClickListener(v -> {
-//            exportLogs();
-//        });
-//        cv1Min.setOnClickListener(v -> {
-//            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-//            rescaleGraph();
-//        });
-//        cv5Min.setOnClickListener(v -> {
-//            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-//            rescaleGraph();
-//        });
-//        cv10Min.setOnClickListener(v -> {
-//            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-//            rescaleGraph();
-//        });
-//        cv15Min.setOnClickListener(v -> {
-//            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-//            rescaleGraph();
-//        });
-//    }
-
-//    private void exportLogs() {
-//        if (!checkStoragePermission()) {
-//            return;
-//        }
-//        String csv = (requireContext().getExternalFilesDir(null).getAbsolutePath() + "/" + System.currentTimeMillis() + ".csv");
-//        try {
-//            CSVWriter writer = new CSVWriter(new FileWriter(csv));
-//
-//            List<String[]> data = new ArrayList<String[]>();
-//            data.add(new String[]{"X", "Y"});
-//            for (int i = 0; i < logs.size(); i++) {
-//                String[] s = {String.valueOf(logs.get(i).getX()), String.valueOf(logs.get(i).getY())};
-//                data.add(s);
-//            }
-//            writer.writeAll(data); // data is adding to csv
-//            Toast.makeText(requireContext(), "Exported", Toast.LENGTH_LONG).show();
-//            writer.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private boolean checkStoragePermission() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (requireActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-
-//    private void clearLogs() {
-//        logs.clear();
-//        if (myService != null) {
-//            myService.clearEntries();
-//        }
-//    }
-
-//    private void stopLogging() {
-//        isLogging = false;
-//        if (myService != null) {
-//            myService.stopLogging(SetTempFragment.class);
-//        }
-//    }
-
-//    private void startLogging() {
-//        logs.clear();
-//        isLogging = true;
-//
-//        Context context = requireContext();
-//        Intent intent = new Intent(context, ForegroundService.class);
-//        DatabaseReference ref = deviceRef.child("Data").child("TEMP1_VAL");
-//        ForegroundService.setInitials(TemperatureActivity.DEVICE_ID, ref, SetTempFragment.class, start, TemperatureActivity.deviceType + "set");
-//        context.startService(intent);
-//        context.bindService(intent, new ServiceConnection() {
-//            @Override
-//            public void onServiceConnected(ComponentName name, IBinder service) {
-//                if (service instanceof ForegroundService.MyBinder) {
-//                    myService = ((ForegroundService.MyBinder) service).getService();
-//                }
-//            }
-//
-//            @Override
-//            public void onServiceDisconnected(ComponentName name) {
-//
-//            }
-//        }, 0);
-//    }
-
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        plotGraphNotifier.stop();
-//    }
-
-//    private void rescaleGraph() {
-//        ArrayList<Entry> entries = new ArrayList<>();
-//        int count = 0;
-//        for (Entry entry : entriesOriginal) {
-//            if (count == 0) {
-//                entries.add(entry);
-//            }
-//            ++count;
-//            if (count >= skipPoints) {
-//                count = 0;
-//            }
-//        }
-//
-//        lineChart.getLineData().clearValues();
-//
-//        LineDataSet lds = new LineDataSet(entries, "Temp");
-//
-//        lds.setLineWidth(2);
-//        lds.setCircleRadius(4);
-//        lds.setValueTextSize(10);
-//
-//
-//        ArrayList<ILineDataSet> ds = new ArrayList<>();
-//        ds.add(lds);
-//
-//        LineData ld = new LineData(ds);
-//        lineChart.setData(ld);
-//        lineChart.invalidate();
-//    }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//
-//        start = System.currentTimeMillis();
-//
-//        if (ForegroundService.isMyTypeRunning(TemperatureActivity.DEVICE_ID, SetTempFragment.class, TemperatureActivity.deviceType + "set")) {
-//            llStart.setVisibility(View.INVISIBLE);
-//            llStop.setVisibility(View.VISIBLE);
-//            llClear.setVisibility(View.INVISIBLE);
-//            llExport.setVisibility(View.INVISIBLE);
-//
-//            start = ForegroundService.start;
-//
-//            Intent intent = new Intent(requireContext(), ForegroundService.class);
-//            requireContext().bindService(intent, new ServiceConnection() {
-//                @Override
-//                public void onServiceConnected(ComponentName name, IBinder service) {
-//                    if (service instanceof ForegroundService.MyBinder) {
-//                        myService = ((ForegroundService.MyBinder) service).getService();
-//                        ArrayList<Entry> entries = myService.getEntries();
-//                        logs.clear();
-//                        logs.addAll(entries);
-//
-//                        lineChart.getLineData().clearValues();
-//
-//                        LineDataSet lineDataSet = new LineDataSet(logs, "Temp");
-//
-//                        lineDataSet.setLineWidth(2);
-//                        lineDataSet.setCircleRadius(4);
-//                        lineDataSet.setValueTextSize(10);
-//
-//
-//                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-//                        dataSets.add(lineDataSet);
-//
-//                        LineData data = new LineData(dataSets);
-//                        lineChart.setData(data);
-//                        lineChart.invalidate();
-//                    }
-//                }
-//
-//                @Override
-//                public void onServiceDisconnected(ComponentName name) {
-//
-//                }
-//            }, 0);
-//        }
-//
-//        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
-//            if (skipCount < skipPoints) {
-//                skipCount++;
-//                return;
-//            }
-//            skipCount = 0;
-//            long seconds = (System.currentTimeMillis() - start) / 1000;
-//            LineData data = lineChart.getData();
-//            Entry entry = new Entry(seconds, temp);
-//            entriesOriginal.add(entry);
-//            data.addEntry(entry, 0);
-//            lineChart.notifyDataSetChanged();
-//            data.notifyDataChanged();
-//            lineChart.invalidate();
-//            if (isLogging) {
-//                logs.add(entry);
-//            }
-//        });
-//    }
-
-//    private void showTimeOptions() {
-//        cv1Min.setVisibility(View.VISIBLE);
-//        cv5Min.setVisibility(View.VISIBLE);
-//        cv10Min.setVisibility(View.VISIBLE);
-//        cv15Min.setVisibility(View.VISIBLE);
-//
-//        Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
-//        cv1Min.startAnimation(zoomIn);
-//        cv5Min.startAnimation(zoomIn);
-//        cv10Min.startAnimation(zoomIn);
-//        cv15Min.startAnimation(zoomIn);
-//    }
-//
-//    private void hideTimeOptions() {
-//        Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
-//        zoomOut.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//
-//                cv1Min.setVisibility(View.INVISIBLE);
-//                cv5Min.setVisibility(View.INVISIBLE);
-//                cv10Min.setVisibility(View.INVISIBLE);
-//                cv15Min.setVisibility(View.INVISIBLE);
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-//
-//        cv1Min.startAnimation(zoomOut);
-//        cv5Min.startAnimation(zoomOut);
-//        cv10Min.startAnimation(zoomOut);
-//        cv15Min.startAnimation(zoomOut);
-//    }
-
     private void setupListeners() {
-
         deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -810,7 +450,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
-
         deviceRef.child("Data").child("TEMP2_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -818,26 +457,23 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 if (temp == null) return;
                 valTemp2=temp;
             }
-
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
-
-        deviceRef.child("UI").child("TEMP").child("STATE").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("TEMP").child("MODE").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String val=snapshot.getValue(String.class);
-                if (val == null) return;
-                divState.setText("Device State is - "+val);
-                if(val.toLowerCase().equals("on")){
+                int val=snapshot.getValue(Integer.class);
+                if(val==1){
+                    divState.setText("App mode is - "+"ON");
                     divState.setTextColor(getResources().getColor(R.color.green));
                 }
                 else{
+                    divState.setText("App mode is - "+"OFF");
                     divState.setTextColor(getResources().getColor(R.color.red));
                 }
-                divStateFB=val;
+                divStateFB=String.valueOf(val);
             }
 
             @Override
@@ -852,7 +488,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 if (temp == null) return;
 //                if (initialValue) {
 //                    initialValue = false;
-                    curveSeekView.setProgress(seekProgCalulation(temp));
+                    curveSeekView.setProgress(seekProgCalculation(temp));
                     tempTextView.setProgress(temp);
 //                }
             }
@@ -923,7 +559,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onResume() {
         super.onResume();
-        curveSeekView.setProgress(seekProgCalulation(150));
+        curveSeekView.setProgress(seekProgCalculation(150));
         tempTextView.setProgress((int)150f);
         Intent intent=new Intent(getContext(),TempService.class);
         getContext().bindService(intent, new ServiceConnection() {
@@ -932,7 +568,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 tempService= ((TempService.MyBinder) iBinder).getTempService();
                 if (TempService.isShowingNotification()){
                     modeBtn.setText("STOP");
-                    curveSeekView.setProgress(seekProgCalulation(TempService.getSetTemp()));
+                    curveSeekView.setProgress(seekProgCalculation(TempService.getSetTemp()));
                     tempTextView.setProgress(TempService.getSetTemp());
                     setMode=TempService.getSetMode();
                     reg=TempService.getReg();
@@ -947,7 +583,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 }
                 else{
                     modeBtn.setText("START");
-                    curveSeekView.setProgress(seekProgCalulation(TempService.getSetTemp()));
+                    curveSeekView.setProgress(seekProgCalculation(TempService.getSetTemp()));
                     tempTextView.setProgress(TempService.getSetTemp());
 
                 }

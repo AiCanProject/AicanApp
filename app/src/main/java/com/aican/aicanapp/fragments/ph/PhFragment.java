@@ -1,5 +1,4 @@
 package com.aican.aicanapp.fragments.ph;
-
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
@@ -55,7 +54,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 public class PhFragment extends Fragment {
     private static final String TAG = "PhFragment";
     PhView phView;
