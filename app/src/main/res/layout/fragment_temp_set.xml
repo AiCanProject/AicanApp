@@ -123,6 +123,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/temperatureLabelTextView" />
+
     <LinearLayout
         android:id="@+id/lay"
         android:layout_width="0dp"
@@ -265,32 +266,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal5" />
-
-    <!--
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <include
-        layout="@layout/graph_time_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="26dp"
-        app:layout_constraintBottom_toBottomOf="@id/line_chart"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <include
-        android:id="@+id/graphLoggingOptions"
-        layout="@layout/graph_logging_options"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
--->
 </androidx.constraintlayout.widget.ConstraintLayout>

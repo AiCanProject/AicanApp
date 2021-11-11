@@ -80,7 +80,7 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
     public class TempAdapterViewHolder extends RecyclerView.ViewHolder {
 
         private TextView temperature;
-        private TextView tvName;
+        private TextView tvName,tvId;
         private ImageView ivOptions;
 
 
@@ -89,12 +89,14 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
             super(itemView);
             temperature = itemView.findViewById(R.id.ph);
             tvName = itemView.findViewById(R.id.custom_device_name);
+            tvId = itemView.findViewById(R.id.custom_device_id);
             ivOptions = itemView.findViewById(R.id.ivOptions);
         }
 
         public void bind(TempDevice device) {
             String tempString = String.format(Locale.UK, "%d°C", device.getTemp());
             tvName.setText(device.getName());
+            tvId.setText("("+device.getId()+")");
             temperature.setText(tempString);
 
             itemView.setOnClickListener(v -> {
@@ -115,7 +117,8 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
 
             DatabaseReference deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_TEMP).child(device.getId());
 
-            deviceRef.child("UI").child("TEMP").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+//            deviceRef.child("UI").child("TEMP").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+            deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Integer val = snapshot.getValue(Integer.class);

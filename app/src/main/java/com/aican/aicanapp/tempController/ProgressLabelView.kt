@@ -34,8 +34,8 @@ class ProgressLabelView @JvmOverloads constructor(
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
     }
 
-    private val text: CharArray = CharArray(12) { EMPTY_CHAR }
-    private val newText: CharArray = CharArray(12) { EMPTY_CHAR }
+    private val text: CharArray = CharArray(100) { EMPTY_CHAR }
+    private val newText: CharArray = CharArray(100) { EMPTY_CHAR }
     private var lastCharIndex: Int = 0
     private var suffix: String = "°C"
     private var maxValueString = "300$suffix"
@@ -71,7 +71,7 @@ class ProgressLabelView @JvmOverloads constructor(
         lastCharIndex = (log10(n.toDouble()) + 1).toInt()
 
         for (i in (lastCharIndex - 1) downTo 0) {
-            newText[i] = '0' + n % 10
+            newText[i] = '0'+n % 10
             n /= 10
         }
 

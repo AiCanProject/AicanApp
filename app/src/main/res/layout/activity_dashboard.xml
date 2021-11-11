@@ -9,7 +9,6 @@
     android:background="@color/lightWhite"
     tools:context=".Dashboard.Dashboard">
 
-
     <RelativeLayout
         android:id="@+id/main_dashboard"
         android:layout_width="match_parent"
@@ -29,8 +28,13 @@
             android:textAlignment="center"
             app:title="DASHBOARD"
             app:titleTextColor="@color/white" />
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"/>
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/main_toolbar">

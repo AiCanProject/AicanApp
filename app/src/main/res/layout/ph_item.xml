@@ -39,11 +39,20 @@
             android:id="@+id/custom_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="30dp"
+            android:paddingHorizontal="20dp"
             android:paddingTop="10dp"
             android:text="Custom Device Name"
             android:textColor="@color/white"
             android:textSize="20sp" />
+        <TextView
+            android:id="@+id/custom_device_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/custom_device_name"
+            android:paddingTop="10dp"
+            android:text="(EPT2002)"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
 
         <!--        <TextView-->
         <!--            android:id="@+id/current_temp_text"-->

@@ -65,7 +65,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     }
 
     public class PhAdapterViewHolder extends RecyclerView.ViewHolder {
-        private TextView ph, ec, temp, tds, tvName;
+        private TextView ph, ec, temp, tds, tvName,tvId;
         private ImageView ivOptions;
 
         //Viewholder-----------------------------------------------------------------------------------------
@@ -76,6 +76,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             temp = itemView.findViewById(R.id.temp);
             tds = itemView.findViewById(R.id.tds);
             tvName = itemView.findViewById(R.id.custom_device_name);
+            tvId = itemView.findViewById(R.id.custom_device_id);
             ivOptions = itemView.findViewById(R.id.ivOptions);
 
         }
@@ -105,6 +106,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             temp.setText(tempString);
             tds.setText(tdsString);
             tvName.setText(device.getName());
+            tvId.setText("("+device.getId()+")");
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), PhActivity.class);

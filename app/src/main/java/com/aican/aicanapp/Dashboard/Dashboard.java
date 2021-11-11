@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -74,6 +76,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     PumpAdapter pumpAdapter;
 
     private DrawerLayout drawerLayout;
+    private ProgressBar progressBar;
+    private ScrollView scrollView;
     //Recyclerviews-------------------------------------------------------------------
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -94,6 +98,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         coolingRecyclerView = findViewById(R.id.cooling_recyclerview);
         phRecyclerView = findViewById(R.id.ph_recyclerview);
         pumpRecyclerView = findViewById(R.id.pump_recyclerview);
+        progressBar=findViewById(R.id.progressBar);
+        scrollView=findViewById(R.id.scrollView);
         tvTemp = findViewById(R.id.tvTemp);
         tvCooling = findViewById(R.id.tvCooling);
         tvPh = findViewById(R.id.tvPh);
@@ -101,7 +107,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
-        
+        progressBar.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.GONE);
 
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
@@ -234,7 +241,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         for (String id : deviceIds) {
             secondaryDatabase.child(id).get().addOnSuccessListener(dataSnapshot -> {
                 accountsLoaded.incrementAndGet();
-                Log.e(TAG, "getDeviceAccounts: "+id );
+//                Log.e(TAG, "getDeviceAccounts: "+id );
                 DeviceAccount deviceAccount = dataSnapshot.getValue(DeviceAccount.class);
                 if (deviceAccount == null) return;
                 deviceTypes.put(id, deviceAccount.type);
@@ -371,6 +378,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         tvPump.setVisibility(View.VISIBLE);
                     }
                 }
+                progressBar.setVisibility(View.GONE);
+                scrollView.setVisibility(View.VISIBLE);
             })
                     .addOnFailureListener(error->{
                         error.printStackTrace();

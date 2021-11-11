@@ -69,7 +69,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     TextView onTime,offTime,divState;
     int setMode=0,reg=1;
     long diffTime,startTime,endTime;
-    float temp = 0;
+    int temp1=150 ;
     private float progress = 150f;
     private boolean initialValue = true;
     private boolean light = false;
@@ -89,6 +89,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
+                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
         graphBtn=view.findViewById(R.id.graphBtn);
         curveSeekView = view.findViewById(R.id.curveSeekView);
         spinner=view.findViewById(R.id.spinner);
@@ -119,6 +121,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
         curveSeekView.setFirstGradientColor(getAttr(R.attr.firstGradientColor));
         curveSeekView.setSecondGradientColor(getAttr(R.attr.secondGradientColor));
         changeBtn.setBackgroundColor(getAttr(R.attr.warningTextColor));
+        setupListeners();
         graphBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -217,8 +220,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 Toast.makeText(getContext(), "Mode updated", Toast.LENGTH_SHORT).show();
             }
         });
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
-                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
         ArrayAdapter adapter=ArrayAdapter.createFromResource(getContext(),R.array.modes,
                 R.layout.color_spinner_layout);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout); //Spinner Dropdown Text
@@ -246,7 +247,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                }
             }
         });
-        setupListeners();
+
     }
     private float seekProgCalculation(int n) {
 
@@ -442,7 +443,6 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
 
                 currTemp.setProgress(temp);
                 fixedTemp=temp;
-                SetTempFragment.this.temp = temp;
             }
 
             @Override
@@ -486,11 +486,9 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer temp = snapshot.getValue(Integer.class);
                 if (temp == null) return;
-//                if (initialValue) {
-//                    initialValue = false;
                     curveSeekView.setProgress(seekProgCalculation(temp));
                     tempTextView.setProgress(temp);
-//                }
+                    temp1 = temp;
             }
 
             @Override
@@ -559,8 +557,8 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
     @Override
     public void onResume() {
         super.onResume();
-        curveSeekView.setProgress(seekProgCalculation(150));
-        tempTextView.setProgress((int)150f);
+        curveSeekView.setProgress(seekProgCalculation(temp1));
+        tempTextView.setProgress(temp1);
         Intent intent=new Intent(getContext(),TempService.class);
         getContext().bindService(intent, new ServiceConnection() {
             @Override
