@@ -9,8 +9,6 @@
     android:background="@color/lightWhite"
     tools:context=".Dashboard.Dashboard">
 
-
-
     <RelativeLayout
         android:id="@+id/main_dashboard"
         android:layout_width="match_parent"

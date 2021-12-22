@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Dashboard2.ui.slideshow.SlideshowFragment">
+
+    <TextView
+        android:id="@+id/fragmentName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dashboard"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/montserrat"
+        android:textSize="30sp"
+        android:textColor="#1E55DB"
+        />
+
+    <TextView
+        android:id="@+id/OilBathTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oil Bath Controller"
+        android:layout_below="@+id/fragmentName"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/montserrat"
+        android:textSize="24sp"
+        android:layout_marginTop="30dp"
+        android:textColor="#E26A2C"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/oilBathCard"
+        android:layout_width="320dp"
+        android:layout_height="152dp"
+        android:layout_below="@+id/OilBathTV"
+        android:layout_marginTop="22dp"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="13dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/Current_Temp_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Temperature"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#FF8243
+"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:id="@+id/Current_Temp_Num_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Current_Temp_TV"
+                android:text="-242 C"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:textColor="#E26A2C"
+                android:textSize="30sp"
+                />
+
+            <RelativeLayout
+                android:id="@+id/name_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/Current_Temp_Num_TV"
+                android:background="#FDA65D"
+                >
+
+                <ImageView
+                    android:id="@+id/IV"
+                    android:layout_width="17dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_groupcurrenttemp"
+                    android:layout_marginStart="17dp"
+                    />
+
+                <TextView
+                    android:id="@+id/type_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Oil Bath Controller"
+                    android:layout_toRightOf="@+id/IV"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="13sp"
+                    android:textColor="#F5F5F5"
+                    />
+
+                <TextView
+                    android:id="@+id/type_num_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/type_TV"
+                    android:text="ID:TC1002"
+                    android:layout_toRightOf="@+id/IV"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="10sp"
+                    android:textColor="#F5F5F5"
+                    />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/PeristalticPumpTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/oilBathCard"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Peristaltic Pump"
+        android:textColor="#3C7571"
+        android:textSize="24sp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/PeristalticPumpCard"
+        android:layout_width="320dp"
+        android:layout_height="152dp"
+        android:layout_below="@+id/PeristalticPumpTV"
+        android:layout_marginTop="22dp"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="13dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/PeristalticPumpTextTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="Current Temperature"
+                android:textColor="#6AB9B4"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/PeristalticPumpNum_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/PeristalticPumpTextTV"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="-242 C"
+                android:textColor="#3C7571"
+                android:textSize="30sp" />
+
+            <RelativeLayout
+                android:id="@+id/PeristalticPumpName_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/PeristalticPumpNum_TV"
+                android:background="#6AB9B4">
+
+                <ImageView
+                    android:id="@+id/PeristalticPumpIV"
+                    android:layout_width="17dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="17dp"
+                    android:src="@drawable/ic_groupcurrenttemp" />
+
+                <TextView
+                    android:id="@+id/PeristalticPumpTV2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/PeristalticPumpIV"
+                    android:text="Peristaltic Pump"
+                    android:textColor="#F5F5F5"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/PeristalticPumpIDTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/PeristalticPumpTV2"
+                    android:layout_marginStart="17dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/PeristalticPumpIV"
+                    android:text="ID:TC1002"
+                    android:textColor="#F5F5F5"
+                    android:textSize="10sp" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

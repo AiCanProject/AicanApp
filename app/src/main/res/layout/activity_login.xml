@@ -97,9 +97,9 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_below="@+id/forgetPassword_tv"
-            android:layout_marginEnd="26dp"
             android:layout_marginStart="26dp"
             android:layout_marginTop="18dp"
+            android:layout_marginEnd="26dp"
             android:background="@drawable/button"
             android:fontFamily="@font/montserrat"
             android:text="LOGIN"
@@ -109,8 +109,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/login_btn"
-            android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/register_tv1"
@@ -130,7 +130,7 @@
                 android:text="Register"
                 android:textColor="#1E55DB"
                 android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

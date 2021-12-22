@@ -81,4 +81,13 @@
     <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/rect_white_top_rounded_20</item>
     </style>
+
+    <style name="Theme.AicanApp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.AicanApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.AicanApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

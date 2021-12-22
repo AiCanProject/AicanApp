@@ -15,16 +15,24 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AicanApp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".specificactivities.ConnectDeviceActivity"></activity>
-        <activity android:name=".Authentication.SplashActivity">
+        <activity
+            android:name=".Dashboard2.DashboardActivity2"
+            android:exported="true"
+            android:label="@string/title_activity_dashboard2"
+            android:theme="@style/Theme.AicanApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".specificactivities.ConnectDeviceActivity" />
+        <activity android:name=".Authentication.SplashActivity">
+
         </activity>
         <activity android:name=".specificactivities.EcTdsCalibrateActivity" />
         <activity
@@ -41,7 +49,7 @@
         <activity android:name=".specificactivities.PumpActivity" />
         <activity android:name=".AddDevice.ScanQrActivity" />
 
-        <service android:name=".graph.ForegroundService"/>
+        <service android:name=".graph.ForegroundService" />
     </application>
 
 </manifest>

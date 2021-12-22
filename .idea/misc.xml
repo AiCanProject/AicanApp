@@ -5,7 +5,24 @@
       <map>
         <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/button.xml" value="0.27870370370370373" />
         <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/rectangle.xml" value="0.31354166666666666" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/signout.xml" value="0.27870370370370373" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_add_device_option.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_dashboard2.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_detailed.xml" value="0.26435185185185184" />
         <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_login.xml" value="0.33" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_main.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/app_bar_dashboard2.xml" value="0.33" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/content_dashboard2.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_exit_confirm.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_gallery.xml" value="0.2518518518518518" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_home.xml" value="0.2518518518518518" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_slideshow.xml" value="0.2518518518518518" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_temp_main.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/nav_drawer.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/layout/nav_header_dashboard2.xml" value="0.2518518518518518" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.26435185185185184" />
+        <entry key="..\:/Users/Aditya Work/AndroidStudioProjects/AicanApp/app/src/main/res/menu/dashboard_activity2.xml" value="0.26435185185185184" />
       </map>
     </option>
   </component>
