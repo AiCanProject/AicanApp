@@ -59,9 +59,9 @@ public class PhActivity extends AppCompatActivity {
 
         fragments = new ArrayList<>();
         fragments.add(new PhFragment());
-        fragments.add(new TempFragment());
-        fragments.add(new EcFragment());
-        fragments.add(new TdsFragment());
+        //fragments.add(new TempFragment());
+        //fragments.add(new EcFragment());
+        //fragments.add(new TdsFragment());
         phViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
         viewPager.setAdapter(phViewPagerAdapter);
 
@@ -70,15 +70,15 @@ public class PhActivity extends AppCompatActivity {
                 case 0:
                     tab.setText("ph");
                     break;
-                case 1:
-                    tab.setText("temp");
-                    break;
-                case 2:
-                    tab.setText("ec");
-                    break;
-                case 3:
-                    tab.setText("tds");
-                    break;
+               // case 1:
+                 //   tab.setText("temp");
+                   // break;
+               // case 2:
+                 //   tab.setText("ec");
+                   // break;
+                //case 3:
+                  //  tab.setText("tds");
+                   // break;
             }
         }).attach();
 

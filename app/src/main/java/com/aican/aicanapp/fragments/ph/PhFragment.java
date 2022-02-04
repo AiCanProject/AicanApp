@@ -60,7 +60,7 @@ public class PhFragment extends Fragment {
     private static final String TAG = "PhFragment";
     PhView phView;
     Button calibrateBtn;
-    TextView tvPhCurr, tvPhNext;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr;
     LineChart lineChart;
 
     DatabaseReference deviceRef;
@@ -85,6 +85,10 @@ public class PhFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        tvEcCurr = view.findViewById(R.id.tvEcCurr);
+        tvTempCurr = view.findViewById(R.id.tvTempCurr);
+        tvTempNext = view.findViewById(R.id.tvTempNext);
 
         phView = view.findViewById(R.id.phView);
         calibrateBtn = view.findViewById(R.id.calibrateBtn);
@@ -268,7 +272,7 @@ public class PhFragment extends Fragment {
 
                         LineData data = new LineData(dataSets);
                         lineChart.setData(data);
-                        lineChart.invalidate();
+                       lineChart.invalidate();
                     }
                 }
 
@@ -324,6 +328,37 @@ public class PhFragment extends Fragment {
 
             }
         });
+
+        deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String temp = snapshot.getValue(Integer.class).toString();
+                tvTempCurr.setText(temp + "°C");
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String ec = snapshot.getValue(Integer.class).toString();
+                tvEcCurr.setText(ec);
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 

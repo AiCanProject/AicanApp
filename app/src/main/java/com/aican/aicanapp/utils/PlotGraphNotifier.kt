@@ -10,7 +10,7 @@ class PlotGraphNotifier(delayMs: Long = 2000, onNewEntryCallback: OnNewEntryCall
         running = true
         job = GlobalScope.launch(Dispatchers.Default) {
             while (running) {
-                onNewEntryCallback.onNewEntry()
+                //onNewEntryCallback.onNewEntry()
                 delay(delayMs)
             }
         }
