@@ -74,7 +74,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             ph = itemView.findViewById(R.id.ph);
             ec = itemView.findViewById(R.id.ec);
             temp = itemView.findViewById(R.id.temp);
-            tds = itemView.findViewById(R.id.tds);
+           // tds = itemView.findViewById(R.id.tds);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
 
@@ -85,25 +85,28 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             if (device.getPh() < 0 || device.getPh() > 14) {
                 phString = "pH: -";
             } else {
-                phString = String.format(Locale.UK, "pH: %.2f", device.getPh());
+                phString = String.format(Locale.UK, "%.2f", device.getPh());
             }
-            String ecString = String.format(Locale.UK, "EC: %.2f mS/cm", device.getEc());
+            String ecString = String.format(Locale.UK, "mV: %.2f ", device.getEc());
             String tempString;
             if (device.getTemp() < -50 || device.getTemp() > 125) {
                 tempString = "Temp: -";
             } else {
                 tempString = String.format(Locale.UK, "Temp: %d°C", device.getTemp());
             }
-            String tdsString;
+
+            /*String tdsString;
             if (device.getTds() < 0 || device.getTds() > 9999) {
                 tdsString = "TDS: -";
             } else {
                 tdsString = String.format(Locale.UK, "TDS: %d ppm", device.getTds());
             }
+             */
+
             ph.setText(phString);
             ec.setText(ecString);
             temp.setText(tempString);
-            tds.setText(tdsString);
+            //tds.setText(tdsString);
             tvName.setText(device.getName());
 
             itemView.setOnClickListener(v -> {

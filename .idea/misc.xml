@@ -8,10 +8,12 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_ph.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_ph_calibrate.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.18" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_tds.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_temp.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/ph_item.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/temp_activity.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/temp_item.xml" value="0.2" />
       </map>
     </option>
   </component>
