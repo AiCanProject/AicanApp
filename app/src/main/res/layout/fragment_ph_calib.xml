@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/white"
+android:clipChildren="false"
+android:elevation="48dp"
+app:cardCornerRadius="43dp"
+tools:context=".fragments.ph.PhCalibFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:padding="22dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/phLevelCard"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/white"
+                android:elevation="52dp"
+                app:cardCornerRadius="36dp">
+
+                <com.aican.aicanapp.ph.PhView
+                    android:id="@+id/phView"
+                    android:layout_width="34dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="15dp"
+                    android:layout_marginStart="43dp"
+                    android:layout_marginTop="8dp"
+                    app:vertical="true" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="113dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="45dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="pH"
+                    android:textColor="@color/black"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/tvPhCurr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/Current_Ph_TV"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="110dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text="7.4"
+                    android:textColor="@color/black"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvPhNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/Current_Ph_TV"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="110dp"
+                    android:layout_marginTop="12dp"
+                    android:fontFamily="@font/montserrat_medium"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="42sp"
+                    android:visibility="invisible" />
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tempCard"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:elevation="52dp"
+                app:cardCornerRadius="36dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Temperature"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvTempCurr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/type_TV"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="35dp"
+                    android:layout_toEndOf="@+id/IV"
+                    android:text="20 C"
+                    android:textColor="@color/black"
+                    android:textSize="40sp" />
+
+                <TextView
+                    android:id="@+id/tvTempNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/type_TV"
+                    android:layout_marginStart="57dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_toEndOf="@+id/IV"
+                    android:text=""
+                    android:textColor="#F5F5F5"
+                    android:textSize="40sp"
+                    android:visibility="invisible" />
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:elevation="52dp"
+                app:cardCornerRadius="36dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Voltage"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvEcCurr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="35dp"
+                    android:text="123"
+                    android:textColor="@color/blueDark"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+
+            </androidx.cardview.widget.CardView>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

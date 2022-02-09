@@ -54,18 +54,18 @@ public class PhActivity extends AppCompatActivity {
             throw new RuntimeException();
         }
 
-        tabLayout = findViewById(R.id.tabLayout);
-        viewPager = findViewById(R.id.viewPager);
+        //tabLayout = findViewById(R.id.tabLayout);
+        //viewPager = findViewById(R.id.viewPager);
 
-        fragments = new ArrayList<>();
-        fragments.add(new PhFragment());
+        //fragments = new ArrayList<>();
+        //fragments.add(new PhFragment());
         //fragments.add(new TempFragment());
         //fragments.add(new EcFragment());
         //fragments.add(new TdsFragment());
-        phViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
-        viewPager.setAdapter(phViewPagerAdapter);
+        //phViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
+        //viewPager.setAdapter(phViewPagerAdapter);
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+        /*new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
                     tab.setText("ph");
@@ -81,10 +81,10 @@ public class PhActivity extends AppCompatActivity {
                    // break;
             }
         }).attach();
+*/
 
-
-//        PhTwoTutorial fragment = new PhTwoTutorial();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).commit();
+        PhFragment fragment = new PhFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView,fragment).commit();
 
 //        timerTextView = findViewById(R.id.countDownTv);
 //        calibrateBtn = findViewById(R.id.calibrateBtn);

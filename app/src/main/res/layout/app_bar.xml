@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar
+    android:id="@+id/main_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentEnd="true"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginEnd="0dp"
+    android:background="@drawable/gradient_color"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+</androidx.appcompat.widget.Toolbar>
+
+<!--<LinearLayout
+    android:id="@+id/toolBar"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="102dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:background="@drawable/gradient_color">
+    </androidx.appcompat.widget.Toolbar>
+
+
+</LinearLayout>
+-->
+<!--
+<androidx.drawerlayout.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightWhite">
+
+    <RelativeLayout
+        android:id="@+id/main_dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="102dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="@drawable/gradient_color"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_gravity = "start"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_color"
+        tools:layout_gravity="">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/iv"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/profile_pic_placeholder"
+                    android:padding="5dp"/>
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="UserName"
+                    android:padding="3dp"
+                    android:textStyle="bold"
+                    android:textSize="24sp"
+                    android:layout_marginStart="4dp"
+                    android:layout_below="@id/iv"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/white"/>
+
+                <ImageView
+                    android:id="@+id/ivLogout"
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_logout"
+                    app:tint="@color/white"
+                    android:layout_margin="12dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvConnectDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Setup Device"
+                android:textColor="@color/black"
+                android:paddingVertical="16dp"
+                android:paddingHorizontal="22dp"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
+-->

@@ -91,23 +91,24 @@ public class PhFragment extends Fragment {
         tvTempNext = view.findViewById(R.id.tvTempNext);
 
         phView = view.findViewById(R.id.phView);
-        calibrateBtn = view.findViewById(R.id.calibrateBtn);
+        //calibrateBtn = view.findViewById(R.id.calibrateBtn);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
-        lineChart = view.findViewById(R.id.line_chart);
-        llStart = view.findViewById(R.id.llStart);
-        llStop = view.findViewById(R.id.llStop);
-        llClear = view.findViewById(R.id.llClear);
-        llExport = view.findViewById(R.id.llExport);
-        cv5Min = view.findViewById(R.id.cv5min);
-        cv1Min = view.findViewById(R.id.cv1min);
-        cv10Min = view.findViewById(R.id.cv10min);
-        cv15Min = view.findViewById(R.id.cv15min);
-        cvClock = view.findViewById(R.id.cvClock);
+        //lineChart = view.findViewById(R.id.line_chart);
+        //llStart = view.findViewById(R.id.llStart);
+        //llStop = view.findViewById(R.id.llStop);
+        //llClear = view.findViewById(R.id.llClear);
+        //llExport = view.findViewById(R.id.llExport);
+        //cv5Min = view.findViewById(R.id.cv5min);
+        //cv1Min = view.findViewById(R.id.cv1min);
+        //cv10Min = view.findViewById(R.id.cv10min);
+        //cv15Min = view.findViewById(R.id.cv15min);
+        //cvClock = view.findViewById(R.id.cvClock);
 
-        phView.setCurrentPh(7);
+        phView.setCurrentPh(7.0F);
         entriesOriginal = new ArrayList<>();
 
+        /*
         calibrateBtn.setOnClickListener(v -> {
             SelectCalibrationPointsDialog dialog = new SelectCalibrationPointsDialog();
             dialog.show(getParentFragmentManager(), null);
@@ -121,10 +122,16 @@ public class PhFragment extends Fragment {
             }
         });
 
+         */
+
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-        setupGraph();
+        // setupGraph();
         setupListeners();
-    }
+
+
+
+}
 
     private void rescaleGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
@@ -138,24 +145,27 @@ public class PhFragment extends Fragment {
                 count = 0;
             }
         }
-
-        lineChart.getLineData().clearValues();
-
-        LineDataSet lds = new LineDataSet(entries, "pH");
-
-        lds.setLineWidth(2);
-        lds.setCircleRadius(4);
-        lds.setValueTextSize(10);
-
-
-        ArrayList<ILineDataSet> ds = new ArrayList<>();
-        ds.add(lds);
-
-        LineData ld = new LineData(ds);
-        lineChart.setData(ld);
-        lineChart.invalidate();
     }
 
+        //lineChart.getLineData().clearValues();
+
+        //LineDataSet lds = new LineDataSet(entries, "pH");
+//
+//        lds.setLineWidth(2);
+//        lds.setCircleRadius(4);
+//        lds.setValueTextSize(10);
+
+
+//        ArrayList<ILineDataSet> ds = new ArrayList<>();
+  //      ds.add(lds);
+
+    //    LineData ld = new LineData(ds);
+      //  lineChart.setData(ld);
+        //lineChart.invalidate();
+
+
+
+/*
     private void exportLogs() {
         if (!checkStoragePermission()) {
             return;
@@ -178,6 +188,9 @@ public class PhFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+
+
 
     private boolean checkStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -238,41 +251,41 @@ public class PhFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        start = System.currentTimeMillis();
+        //start = System.currentTimeMillis();
         if(ForegroundService.isMyTypeRunning(PhActivity.DEVICE_ID, PhFragment.class, "ph")){
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
+            //llStart.setVisibility(View.INVISIBLE);
+           // llStop.setVisibility(View.VISIBLE);
+           // llClear.setVisibility(View.INVISIBLE);
+           // llExport.setVisibility(View.INVISIBLE);
 
-            start = ForegroundService.start;
+            //start = ForegroundService.start;
             Intent intent = new Intent(requireContext(), ForegroundService.class);
             requireActivity().bindService(intent, new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     if(service instanceof ForegroundService.MyBinder) {
-                        myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries = myService.getEntries();
-                        logs.clear();
-                        logs.addAll(entries);
+                    //    myService = ((ForegroundService.MyBinder) service).getService();
+                        //ArrayList<Entry> entries = myService.getEntries();
+                      //  logs.clear();
+                        //logs.addAll(entries);
                         entriesOriginal.clear();
-                        entriesOriginal.addAll(entries);
+                       // entriesOriginal.addAll(entries);
 
-                        lineChart.getLineData().clearValues();
+                        //lineChart.getLineData().clearValues();
 
-                        LineDataSet lineDataSet = new LineDataSet(logs, "pH");
+                        //LineDataSet lineDataSet = new LineDataSet(logs, "pH");
 
-                        lineDataSet.setLineWidth(2);
-                        lineDataSet.setCircleRadius(4);
-                        lineDataSet.setValueTextSize(10);
+                        //lineDataSet.setLineWidth(2);
+                        //lineDataSet.setCircleRadius(4);
+                        //lineDataSet.setValueTextSize(10);
 
 
-                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-                        dataSets.add(lineDataSet);
+                        //ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+                        //dataSets.add(lineDataSet);
 
-                        LineData data = new LineData(dataSets);
-                        lineChart.setData(data);
-                       lineChart.invalidate();
+                        //LineData data = new LineData(dataSets);
+                        //lineChart.setData(data);
+                       //lineChart.invalidate();
                     }
                 }
 
@@ -309,9 +322,9 @@ public class PhFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        plotGraphNotifier.stop();
+        //plotGraphNotifier.stop();
     }
-
+*/
     private void setupListeners() {
         deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
@@ -409,7 +422,7 @@ public class PhFragment extends Fragment {
 
         return typedValue.data;
     }
-
+/*
     private void setupGraph() {
         LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "pH");
 
@@ -477,7 +490,9 @@ public class PhFragment extends Fragment {
             rescaleGraph();
         });
     }
+*/
 
+    /*
     private void showTimeOptions() {
         cv1Min.setVisibility(View.VISIBLE);
         cv5Min.setVisibility(View.VISIBLE);
@@ -519,5 +534,7 @@ public class PhFragment extends Fragment {
         cv10Min.startAnimation(zoomOut);
         cv15Min.startAnimation(zoomOut);
     }
+
+     */
 
 }

@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AicanApp"
         tools:targetApi="m">
-        <activity android:name=".specificactivities.ConnectDeviceActivity"></activity>
+        <activity android:name=".specificactivities.ConnectDeviceActivity"/>
         <activity android:name=".Authentication.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,8 @@
         <activity
             android:name=".specificactivities.PhCalibrateActivity"
             android:parentActivityName=".specificactivities.PhActivity" />
-        <activity android:name=".specificactivities.PhActivity" />
+        <activity android:name=".specificactivities.PhActivity"
+            android:screenOrientation="landscape"/>
         <activity android:name=".AddDevice.AddDeviceOption" />
         <activity android:name=".specificactivities.TemperatureActivity" />
         <activity android:name=".Dashboard.Dashboard" />
