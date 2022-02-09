@@ -1,5 +1,6 @@
 package com.aican.aicanapp.ph
 
+import android.R.attr.radius
 import android.animation.ArgbEvaluator
 import android.content.Context
 import android.graphics.*
@@ -9,6 +10,7 @@ import androidx.core.graphics.PathParser
 import com.aican.aicanapp.R
 import com.aican.aicanapp.utils.getColorCompat
 import com.aican.aicanapp.utils.toPx
+
 
 class PhView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -185,6 +187,7 @@ class PhView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun drawScale(canvas: Canvas) {
+
         if (vertical) {
             canvas.drawLine(width / 2F, 0F, width / 2F, height.toFloat(), scalePaint)
         } else {

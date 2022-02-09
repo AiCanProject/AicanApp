@@ -2,16 +2,137 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+    <include
+        android:id="@+id/toolBar"
+        layout="@layout/app_bar" />
+
+    <FrameLayout
+        android:id="@+id/tabBar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="90dp"
+        android:background="@drawable/back_tabs"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tabItemP"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/back_select2"
+                android:backgroundTint="@color/btnColor"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/select2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/select3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/select4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/item1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="center"
+                android:text="pH"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/item2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="center"
+                android:text="Calliberate"
+                android:textColor="@color/btnColor"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/item3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="center"
+                android:text="Log"
+                android:textColor="@color/btnColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/item4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="center"
+                android:text="Alarm"
+                android:textColor="@color/btnColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+
+    <!--
+    tab bar
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        android:elevation="10dp"
+        android:background="@drawable/back_tabs">
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="fill_vertical"
         android:id="@+id/tabLayout">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tabItemPh"
             android:layout_width="wrap_content"
+            android:background="@drawable/back_select2"
             android:layout_height="wrap_content"
             android:text="PH" />
 
@@ -21,7 +142,7 @@
             android:layout_height="wrap_content"
             android:text="Temp" />
 
-<!--
+
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tabItemEC"
             android:layout_width="wrap_content"
@@ -33,11 +154,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TDS" />
-            -->
-    </com.google.android.material.tabs.TabLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+    </com.google.android.material.tabs.TabLayout>
+    </FrameLayout>
+
+    -->
+    <!--
+
+        custom design for tab bar
+c-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fragmentContainerView"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        app:cardCornerRadius="23dp"
+        android:elevation="23dp"
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
