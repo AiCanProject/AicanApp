@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,9 +28,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.adapters.LogAdapter;
+import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
@@ -52,17 +59,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class PhFragment extends Fragment {
     private static final String TAG = "PhFragment";
     PhView phView;
-    Button calibrateBtn;
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr;
+    Button calibrateBtn, logBtn;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, batter, slopeVal, offsetVal;
     LineChart lineChart;
+    RecyclerView recyclerView;
 
+    TableLayout stk;
     DatabaseReference deviceRef;
     LinearLayout llStart, llStop, llClear, llExport;
     CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
@@ -89,6 +101,13 @@ public class PhFragment extends Fragment {
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         tvTempCurr = view.findViewById(R.id.tvTempCurr);
         tvTempNext = view.findViewById(R.id.tvTempNext);
+        //stk =     view.findViewById(R.id.table_main);
+        logBtn = view.findViewById(R.id.logBtn);
+        recyclerView = view.findViewById(R.id.tableRecycler);
+        batter = view.findViewById(R.id.batteryPer);
+        slopeVal = view.findViewById(R.id.slopeVal);
+        offsetVal = view.findViewById(R.id.offsetVal);
+
 
         phView = view.findViewById(R.id.phView);
         calibrateBtn = view.findViewById(R.id.calibrateBtn);
@@ -105,8 +124,59 @@ public class PhFragment extends Fragment {
         cv15Min = view.findViewById(R.id.cv15min);
         cvClock = view.findViewById(R.id.cvClock);
 
+        phData phData = new phData();
         phView.setCurrentPh(7);
         entriesOriginal = new ArrayList<>();
+        ArrayList<phData> list = new ArrayList<>();
+
+
+        logBtn.setOnClickListener(v -> {
+            String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+            phData.setDate(currentTime);
+
+            deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float p = snapshot.getValue(Float.class);
+                    String ph = String.format(Locale.UK, "%.2f", p );
+
+                    phData.setpH(ph);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
+
+            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float mv = snapshot.getValue(Float.class);
+                    String m = String.format(Locale.UK, "%.2f", mv );
+                    phData.setmV(m);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
+
+            LogAdapter adapter = new LogAdapter(list);
+
+            list.add(phData);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        });
+
+
+
+        //setup recyclerview log
+
+
 
         calibrateBtn.setOnClickListener(v -> {
             SelectCalibrationPointsDialog dialog = new SelectCalibrationPointsDialog();
@@ -125,6 +195,50 @@ public class PhFragment extends Fragment {
         setupGraph();
         setupListeners();
     }
+
+    /*
+    public void init() {
+        TableRow tbrow0 = new TableRow(requireContext());
+        TextView tv0 = new TextView(requireContext());
+        tv0.setText("pH");
+        tv0.setTextColor(Color.BLACK);
+        tv0.setPadding(12,0,20,10);
+        tv0.setTextSize(32);
+
+        tbrow0.addView(tv0);
+        TextView tv1 = new TextView(requireContext());
+        tv1.setText("mV");
+        tv1.setTextColor(Color.BLACK);
+
+        tv1.setPadding(20,0,12,10);
+        tv1.setTextSize(32);
+        tbrow0.addView(tv1);
+
+        stk.addView(tbrow0);
+        for (int i = 0; i < 5; i++) {
+            TableRow tbrow = new TableRow(requireContext());
+            TextView t1v = new TextView(requireContext());
+
+            t1v.setText( "3"+ i);
+            t1v.setPadding(12,0,20,10);
+            t1v.setTextSize(28);
+            t1v.setTextColor(Color.BLACK);
+            t1v.setGravity(Gravity.CENTER);
+            tbrow.addView(t1v);
+            TextView t2v = new TextView(requireContext());
+            t2v.setText(Float.toString(updatePh(ph)));
+            t2v.setTextColor(Color.BLACK);
+            t2v.setGravity(Gravity.CENTER);
+
+            t2v.setPadding(20,0,12,10);
+            t2v.setTextSize(28);
+            tbrow.addView(t2v);
+
+            stk.addView(tbrow);
+        }
+
+    }
+*/
 
     private void rescaleGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
@@ -218,6 +332,7 @@ public class PhFragment extends Fragment {
         Context context = requireContext();
         Intent intent = new Intent(context, ForegroundService.class);
         DatabaseReference ref = deviceRef.child("Data").child("PH_VAL");
+
         ForegroundService.setInitials(PhActivity.DEVICE_ID, ref, PhFragment.class, start, "ph");
         requireActivity().startService(intent);
         requireActivity().bindService(intent, new ServiceConnection() {
@@ -358,6 +473,68 @@ public class PhFragment extends Fragment {
 
             }
         });
+
+        deviceRef.child("Data").child("HOLD").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float hold = snapshot.getValue(Float.class);
+                if(hold == 1) {
+                    tvPhNext.setTextColor(Color.GREEN);
+                    tvPhCurr.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("BATTERY").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String batt = snapshot.getValue(Integer.class).toString();
+                batter.setText(batt + "%");
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("SLOPE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String slope = snapshot.getValue(Integer.class).toString();
+                slopeVal.setText(slope + "%");
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("OFFSET").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String offset = snapshot.getValue(Integer.class).toString();
+                offsetVal.setText(offset);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
 
 
     }

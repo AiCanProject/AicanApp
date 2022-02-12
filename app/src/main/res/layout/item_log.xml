@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="7dp"
+    android:paddingLeft="7dp"
+    android:layout_margin="2dp"
+    android:paddingTop="3dp"
+    android:background="#D5D2D2"
+    android:paddingBottom="2dp"
+    android:layout_weight="1"
+    android:baselineAligned="false">
+
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="11/02/2022"
+            android:textStyle="bold"
+            android:layout_margin="8dp"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="6:45 pm"
+            android:textStyle="bold"
+            android:layout_margin="8dp"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/logPh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="7.0"
+            android:textStyle="bold"
+            android:layout_margin="8dp"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/logMv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="121"
+            android:textStyle="bold"
+            android:layout_margin="8dp"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+
+</LinearLayout>

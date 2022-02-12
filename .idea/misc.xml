@@ -3,14 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_ph.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_ph_calibrate.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.18" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_ph_calibrate.xml" value="0.14" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_pump_calibrate.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_select_calib_points.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.14" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_tds.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_temp.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_temp.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_two_tutorial.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/graph_logging_options.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/item_log.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/temp_activity.xml" value="0.2" />
       </map>
     </option>

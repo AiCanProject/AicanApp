@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
+        app:layout_constraintGuide_percent="0.20" />
 
     <com.aican.aicanapp.ph.PhView
         android:id="@+id/phView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="24dp"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
+        app:layout_constraintBottom_toTopOf="@+id/line_chart"
         app:layout_constraintEnd_toStartOf="@id/guideline5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,22 +30,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:text="Current PH"
-        android:textSize="22sp"
         android:textAllCaps="true"
-        android:layout_marginTop="40dp"
         android:textColor="@color/blueDarkAlpha"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="22sp"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/flPh"
         android:layout_width="wrap_content"
-        android:layout_height="94dp"
+        android:layout_height="84dp"
         app:layout_constraintStart_toStartOf="@id/phLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/phLabelTextView">
 
@@ -56,7 +53,7 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="64sp"
+            android:textSize="54sp"
             android:textStyle="bold" />
 
         <TextView
@@ -66,12 +63,44 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="64sp"
+            android:textSize="54sp"
             android:textStyle="bold"
             android:visibility="invisible" />
 
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/batteryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Battery"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDarkAlpha"
+        android:textSize="22sp"
+        app:layout_constraintStart_toEndOf="@id/phLabelTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/flBattery"
+        android:layout_width="wrap_content"
+        android:layout_height="84dp"
+        app:layout_constraintStart_toStartOf="@id/batteryLabel"
+        app:layout_constraintTop_toBottomOf="@id/batteryLabel">
+
+        <TextView
+            android:id="@+id/batteryPer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="54sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
 
 
     <TextView
@@ -79,22 +108,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:text="Current\nTemperature"
         android:textAllCaps="true"
-        android:textSize="22sp"
-        android:layout_marginTop="40dp"
         android:textColor="@color/blueDarkAlpha"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/flPh"
+        android:textSize="22sp"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        />
+        app:layout_constraintTop_toBottomOf="@id/flPh" />
 
     <FrameLayout
         android:id="@+id/flTemp"
         android:layout_width="wrap_content"
-        android:layout_height="94dp"
+        android:layout_height="84dp"
         app:layout_constraintStart_toStartOf="@id/tempLabelTextView"
         app:layout_constraintTop_toBottomOf="@id/tempLabelTextView">
 
@@ -105,7 +131,7 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="64sp"
+            android:textSize="54sp"
             android:textStyle="bold" />
 
         <TextView
@@ -115,28 +141,72 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="64sp"
+            android:textSize="54sp"
             android:textStyle="bold"
             android:visibility="invisible" />
 
     </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/slopeLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Slope"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDarkAlpha"
+        android:textSize="22sp"
+        app:layout_constraintStart_toEndOf="@id/tempLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/flBattery" />
+
+    <FrameLayout
+        android:id="@+id/flSlope"
+        android:layout_width="wrap_content"
+        android:layout_height="84dp"
+        app:layout_constraintStart_toStartOf="@id/slopeLabel"
+        app:layout_constraintTop_toBottomOf="@id/slopeLabel">
+
+        <TextView
+            android:id="@+id/slopeVal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="54sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTempNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="54sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
+
 
     <TextView
         android:id="@+id/mvLabelTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:text="mV"
-        android:textSize="22sp"
         android:textAllCaps="false"
-        android:layout_marginTop="40dp"
         android:textColor="@color/blueDarkAlpha"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/flTemp"
+        android:textSize="22sp"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        />
+        app:layout_constraintTop_toBottomOf="@id/flTemp" />
 
     <TextView
         android:id="@+id/tvEcCurr"
@@ -145,29 +215,165 @@
         android:layout_gravity="center"
         android:text=""
         android:textColor="@color/blueDark"
-        android:textSize="64sp"
+        android:textSize="54sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/mvLabelTextView"
         app:layout_constraintStart_toStartOf="@id/mvLabelTextView"/>
+
+
+    <TextView
+        android:id="@+id/offsetLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="sans-serif-light"
+        android:text="Offset"
+        android:textAllCaps="true"
+        android:textColor="@color/blueDarkAlpha"
+        android:textSize="22sp"
+        app:layout_constraintStart_toEndOf="@id/tempLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/flSlope" />
+
+    <FrameLayout
+        android:id="@+id/flOffset"
+        android:layout_width="wrap_content"
+        android:layout_height="84dp"
+        app:layout_constraintStart_toStartOf="@id/offsetLabel"
+        app:layout_constraintTop_toBottomOf="@id/offsetLabel">
+
+        <TextView
+            android:id="@+id/offsetVal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@color/blueDark"
+            android:textSize="54sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+
 
 
     <Button
         android:id="@+id/calibrateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="12dp"
         android:backgroundTint="@color/colorPrimary"
+        android:gravity="center_vertical"
         android:text="Calibrate"
-        app:layout_constraintStart_toStartOf="@id/flPh"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
-        android:layout_marginBottom="24dp"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView1"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView1" />
+
+    <Button
+        android:id="@+id/logBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Log"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/scrollView1"
+        app:layout_constraintStart_toStartOf="@+id/scrollView1" />
+
+    <LinearLayout
+        android:id="@+id/scrollView1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/slopeLabel"
+        app:layout_constraintTop_toTopOf="@id/logBtn">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Date"
+            android:textAllCaps="false"
+            android:textColor="@color/blueDarkAlpha"
+            android:textSize="22sp"
+            app:layout_constraintStart_toEndOf="@id/guideline5"
+            app:layout_constraintTop_toBottomOf="@id/flTemp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Time"
+            android:textAllCaps="false"
+            android:textColor="@color/blueDarkAlpha"
+            android:textSize="22sp"
+            app:layout_constraintStart_toEndOf="@id/guideline5"
+            app:layout_constraintTop_toBottomOf="@id/flTemp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:text="pH"
+            android:textAllCaps="false"
+            android:textColor="@color/blueDarkAlpha"
+            android:textSize="22sp"
+            app:layout_constraintStart_toEndOf="@id/guideline5"
+            app:layout_constraintTop_toBottomOf="@id/flTemp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-light"
+            android:text="mV"
+            android:textAllCaps="false"
+            android:textColor="@color/blueDarkAlpha"
+            android:textSize="22sp"
+            app:layout_constraintStart_toEndOf="@id/guideline5"
+            app:layout_constraintTop_toBottomOf="@id/flTemp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/slopeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView1">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tableRecycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_log" />
+
+    </LinearLayout>
+
+
+
+
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
         android:layout_height="230dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -177,6 +383,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="26dp"
+        android:visibility="gone"
         android:layout_marginBottom="26dp"
         app:layout_constraintBottom_toBottomOf="@id/line_chart"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -187,7 +394,166 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+<!--
+<TableLayout
+android:layout_width="0dp"
+android:layout_height="0dp"
+android:layout_margin="22dp"
+app:layout_constraintTop_toBottomOf="@+id/guideline6"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintBottom_toBottomOf="parent"
+tools:ignore="UselessParent">
+
+<TableRow
+    android:layout_margin="2dp"
+    android:background="#F0F7F7">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:text="pH"
+        android:paddingStart="162dp"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="mV"
+        android:paddingStart="162dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+</TableRow>
+<TableRow
+    android:layout_margin="2dp"
+    android:background="#F0F7F7">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:paddingStart="162dp"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text=""
+        android:paddingStart="162dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+</TableRow>
+<TableRow
+    android:layout_margin="2dp"
+    android:background="#F0F7F7">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:paddingStart="162dp"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text=""
+        android:paddingStart="162dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+</TableRow>
+
+
+<TableRow
+    android:layout_margin="2dp"
+    android:background="#F0F7F7">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:paddingStart="162dp"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text=""
+        android:paddingStart="162dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+</TableRow>
+
+<TableRow
+    android:layout_margin="2dp"
+    android:background="#F0F7F7">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"
+        android:text=""
+        android:paddingStart="162dp"
+        android:textSize="32dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text=""
+        android:paddingStart="162dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+</TableRow>
+
+
+</TableLayout>
+-->
