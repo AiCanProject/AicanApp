@@ -73,20 +73,20 @@
         android:id="@+id/batteryLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:text="Battery"
         android:textAllCaps="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="55dp"
         android:textColor="@color/blueDarkAlpha"
         android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/phLabelTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/offsetLabel"
+        app:layout_constraintTop_toBottomOf="@+id/flSlope" />
 
     <FrameLayout
         android:id="@+id/flBattery"
         android:layout_width="wrap_content"
-        android:layout_height="84dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/batteryLabel"
         app:layout_constraintTop_toBottomOf="@id/batteryLabel">
 
@@ -97,7 +97,7 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="54sp"
+            android:textSize="44sp"
             android:textStyle="bold" />
 
     </FrameLayout>
@@ -107,15 +107,15 @@
         android:id="@+id/tempLabelTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
-        android:text="Current\nTemperature"
+        android:text="Temperature"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="20dp"
         android:textAllCaps="true"
         android:textColor="@color/blueDarkAlpha"
         android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toBottomOf="@id/flPh" />
+        app:layout_constraintStart_toEndOf="@+id/phLabelTextView"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <FrameLayout
         android:id="@+id/flTemp"
@@ -152,20 +152,20 @@
         android:id="@+id/slopeLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:fontFamily="sans-serif-light"
         android:text="Slope"
         android:textAllCaps="true"
+        android:layout_marginStart="98dp"
         android:textColor="@color/blueDarkAlpha"
         android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/tempLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/flBattery" />
+        app:layout_constraintStart_toEndOf="@+id/mvLabelTextView"
+        app:layout_constraintTop_toBottomOf="@+id/flTemp" />
 
     <FrameLayout
         android:id="@+id/flSlope"
         android:layout_width="wrap_content"
-        android:layout_height="84dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/slopeLabel"
         app:layout_constraintTop_toBottomOf="@id/slopeLabel">
 
@@ -176,37 +176,25 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="54sp"
+            android:textSize="44sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvTempNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text=""
-            android:textColor="@color/blueDark"
-            android:textSize="54sp"
-            android:textStyle="bold"
-            android:visibility="invisible" />
-
     </FrameLayout>
-
 
 
     <TextView
         android:id="@+id/mvLabelTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:text="mV"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="18dp"
         android:textAllCaps="false"
         android:textColor="@color/blueDarkAlpha"
         android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toBottomOf="@id/flTemp" />
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/flPh" />
 
     <TextView
         android:id="@+id/tvEcCurr"
@@ -215,7 +203,7 @@
         android:layout_gravity="center"
         android:text=""
         android:textColor="@color/blueDark"
-        android:textSize="54sp"
+        android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/mvLabelTextView"
         app:layout_constraintStart_toStartOf="@id/mvLabelTextView"/>
@@ -225,20 +213,20 @@
         android:id="@+id/offsetLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
         android:text="Offset"
         android:textAllCaps="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="30dp"
         android:textColor="@color/blueDarkAlpha"
         android:textSize="22sp"
-        app:layout_constraintStart_toEndOf="@id/tempLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/flSlope" />
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/tvEcCurr" />
 
     <FrameLayout
         android:id="@+id/flOffset"
         android:layout_width="wrap_content"
-        android:layout_height="84dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/offsetLabel"
         app:layout_constraintTop_toBottomOf="@id/offsetLabel">
 
@@ -249,7 +237,7 @@
             android:layout_gravity="center"
             android:text=""
             android:textColor="@color/blueDark"
-            android:textSize="54sp"
+            android:textSize="44sp"
             android:textStyle="bold" />
 
     </FrameLayout>
@@ -288,7 +276,7 @@
         android:paddingStart="30dp"
         android:paddingEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/slopeLabel"
+        app:layout_constraintStart_toEndOf="@+id/tempLabelTextView"
         app:layout_constraintTop_toTopOf="@id/logBtn">
 
         <TextView
@@ -353,7 +341,7 @@
         android:layout_marginTop="5dp"
         android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/slopeLabel"
+        app:layout_constraintStart_toEndOf="@+id/tempLabelTextView"
         app:layout_constraintTop_toBottomOf="@+id/scrollView1">
 
 
