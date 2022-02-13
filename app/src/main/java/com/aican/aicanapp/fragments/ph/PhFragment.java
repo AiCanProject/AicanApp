@@ -128,6 +128,7 @@ public class PhFragment extends Fragment {
         phView.setCurrentPh(7);
         entriesOriginal = new ArrayList<>();
         ArrayList<phData> list = new ArrayList<>();
+        //LogAdapter adapter = new LogAdapter(list);
 
 
         logBtn.setOnClickListener(v -> {
@@ -164,14 +165,12 @@ public class PhFragment extends Fragment {
             });
 
             LogAdapter adapter = new LogAdapter(list);
-
             list.add(phData);
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         });
-
 
 
         //setup recyclerview log
