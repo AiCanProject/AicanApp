@@ -87,7 +87,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             } else {
                 phString = String.format(Locale.UK, "%.2f", device.getPh());
             }
-            String ecString = String.format(Locale.UK, "EC: %.2f mS/cm", device.getEc());
+            String ecString = String.format(Locale.UK, "mV: %.2f", device.getEc());
             String tempString;
             if (device.getTemp() < -50 || device.getTemp() > 125) {
                 tempString = "Temp: -";

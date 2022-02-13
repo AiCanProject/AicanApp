@@ -482,6 +482,10 @@ public class PhFragment extends Fragment {
                     tvPhNext.setTextColor(Color.GREEN);
                     tvPhCurr.setTextColor(Color.GREEN);
                 }
+                else{
+                    tvPhCurr.setTextColor(Color.parseColor("#433A7F"));
+                    tvPhCurr.setTextColor(Color.parseColor("#433A7F"));
+                }
             }
 
             @Override

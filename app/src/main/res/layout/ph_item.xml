@@ -121,14 +121,10 @@
             android:id="@+id/phValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/custom_device_name"
             android:layout_marginStart="26dp"
             android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            tools:ignore="ExtraText">
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="18dp"
-            android:orientation="vertical"
             android:layout_below= "@+id/custom_device_name">
 
             <TextView
@@ -143,6 +139,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="pH"
+                android:layout_marginStart="12dp"
+                android:layout_gravity="bottom"
                 android:textColor="@color/white"
                 android:textSize="22sp" />
         </LinearLayout>
@@ -152,7 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/phValue"
             android:layout_marginStart="26dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
