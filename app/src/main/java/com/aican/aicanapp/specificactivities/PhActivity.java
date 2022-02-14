@@ -1,9 +1,12 @@
 package com.aican.aicanapp.specificactivities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -15,17 +18,21 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.ViewPagerAdapter;
 import com.aican.aicanapp.fragments.ph.EcFragment;
+import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.TdsFragment;
 import com.aican.aicanapp.fragments.ph.TempFragment;
+import com.aican.aicanapp.fragments.ph.phAlarmFragment;
+import com.aican.aicanapp.fragments.ph.phLogFragment;
 import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 
-public class PhActivity extends AppCompatActivity {
+public class PhActivity extends AppCompatActivity implements View.OnClickListener{
 
+    TextView ph, calibrate,log, alarm, tabItemPh, tabItemCalib;
     TextView timerTextView;
     Button calibrateBtn;
     ProgressLabelView currentPh, phChange;
@@ -33,9 +40,15 @@ public class PhActivity extends AppCompatActivity {
 
     TabLayout tabLayout;
     ViewPager2 viewPager;
+    Toolbar toolbar;
 
     ArrayList<Fragment> fragments;
     ViewPagerAdapter phViewPagerAdapter;
+
+    PhFragment phFragment = new PhFragment();
+    PhCalibFragment phCalibFragment = new PhCalibFragment();
+    phLogFragment phLogFragment = new phLogFragment();
+    phAlarmFragment phAlarmFragment = new phAlarmFragment();
 
     public static String DEVICE_ID = null;
 
@@ -53,6 +66,20 @@ public class PhActivity extends AppCompatActivity {
         if(DEVICE_ID==null){
             throw new RuntimeException();
         }
+
+        loadFragments(phFragment);
+        ph = findViewById(R.id.item1);
+        calibrate = findViewById(R.id.item2);
+        log = findViewById(R.id.item3);
+        alarm= findViewById(R.id.item4);
+        tabItemPh = findViewById(R.id.tabItemP);
+        tabItemCalib = findViewById(R.id.select2);
+
+        ph.setOnClickListener(this);
+        calibrate.setOnClickListener(this);
+        log.setOnClickListener(this);
+        alarm.setOnClickListener(this);
+
 
         //tabLayout = findViewById(R.id.tabLayout);
         //viewPager = findViewById(R.id.viewPager);
@@ -83,8 +110,8 @@ public class PhActivity extends AppCompatActivity {
         }).attach();
 */
 
-        PhFragment fragment = new PhFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView,fragment).commit();
+        //PhFragment fragment = new PhFragment();
+        //getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView,fragment).commit();
 
 //        timerTextView = findViewById(R.id.countDownTv);
 //        calibrateBtn = findViewById(R.id.calibrateBtn);
@@ -163,4 +190,65 @@ public class PhActivity extends AppCompatActivity {
 //
 //        return typedValue.data;
 //    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.item1){
+            tabItemPh.animate().x(0).setDuration(100);
+            loadFragments(phFragment);
+            ph.setTextColor(Color.WHITE);
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+        } else if (view.getId() == R.id.item2){
+
+            loadFragments(phCalibFragment);
+            calibrate.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth();
+            tabItemPh.animate().x(size).setDuration(100);
+
+        } else if (view.getId() == R.id.item3){
+            loadFragments(phLogFragment);
+            log.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth()*2;
+            tabItemPh.animate().x(size).setDuration(100);
+
+
+
+        } else if(view.getId() == R.id.item4) {
+            loadFragments(phAlarmFragment);
+
+            alarm.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth()*3;
+            tabItemPh.animate().x(size).setDuration(100);
+
+
+        }
+    }
+
+
+    private boolean loadFragments(Fragment fragment) {
+    if (fragment != null) {
+        Log.d("navigation", "loadFragments: Frag is loaded");
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainerView, fragment)
+                .addToBackStack(null)
+                .commit();
+
+        return true;
+    }
+    return false;
+}
+
+
 }
