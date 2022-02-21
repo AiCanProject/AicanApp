@@ -49,8 +49,8 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
         public TextView ph, mv, dt, tim;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ph = itemView.findViewById(R.id.logPh);
-            mv = itemView.findViewById(R.id.logMv);
+            ph = itemView.findViewById(R.id.phLog);
+            mv = itemView.findViewById(R.id.mVLog);
             dt = itemView.findViewById(R.id.date);
             tim = itemView.findViewById(R.id.time);
         }

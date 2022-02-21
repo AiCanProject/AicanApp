@@ -1,10 +1,12 @@
 package com.aican.aicanapp.specificactivities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -38,6 +40,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     ProgressLabelView currentPh, phChange;
     AppCompatSeekBar phSeekBar;
 
+    ImageView setting;
     TabLayout tabLayout;
     ViewPager2 viewPager;
     Toolbar toolbar;
@@ -75,10 +78,19 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         tabItemPh = findViewById(R.id.tabItemP);
         tabItemCalib = findViewById(R.id.select2);
 
+        setting = findViewById(R.id.settings);
         ph.setOnClickListener(this);
         calibrate.setOnClickListener(this);
         log.setOnClickListener(this);
         alarm.setOnClickListener(this);
+
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PhActivity.this, Dashboard.class);
+                startActivity(intent);
+            }
+        });
 
 
         //tabLayout = findViewById(R.id.tabLayout);

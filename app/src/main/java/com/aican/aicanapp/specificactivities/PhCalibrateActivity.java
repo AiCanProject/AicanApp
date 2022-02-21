@@ -1,6 +1,7 @@
 package com.aican.aicanapp.specificactivities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;

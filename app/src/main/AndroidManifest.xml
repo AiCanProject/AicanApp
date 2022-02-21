@@ -15,10 +15,13 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AicanApp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".specificactivities.ConnectDeviceActivity"/>
+        <activity
+            android:name=".Dashboard.SettingActivity"
+            android:exported="false" />
+        <activity android:name=".specificactivities.ConnectDeviceActivity" />
         <activity android:name=".Authentication.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,8 +33,9 @@
         <activity
             android:name=".specificactivities.PhCalibrateActivity"
             android:parentActivityName=".specificactivities.PhActivity" />
-        <activity android:name=".specificactivities.PhActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".specificactivities.PhActivity"
+            android:screenOrientation="landscape" />
         <activity android:name=".AddDevice.AddDeviceOption" />
         <activity android:name=".specificactivities.TemperatureActivity" />
         <activity android:name=".Dashboard.Dashboard" />
@@ -42,7 +46,7 @@
         <activity android:name=".specificactivities.PumpActivity" />
         <activity android:name=".AddDevice.ScanQrActivity" />
 
-        <service android:name=".graph.ForegroundService"/>
+        <service android:name=".graph.ForegroundService" />
     </application>
 
 </manifest>

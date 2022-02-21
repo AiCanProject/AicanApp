@@ -179,6 +179,20 @@ tools:context=".fragments.ph.PhCalibFragment">
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:padding="10dp"
+                android:text="02:00"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+
             <Button
                 android:id="@+id/startBtn"
                 android:layout_width="127dp"
@@ -207,6 +221,7 @@ tools:context=".fragments.ph.PhCalibFragment">
                 android:textStyle="bold" />
 
             <Spinner
+                android:id="@+id/calibMode"
                 android:layout_width="200dp"
                 android:layout_height="45dp"
                 android:layout_margin="10dp"
@@ -219,17 +234,27 @@ tools:context=".fragments.ph.PhCalibFragment">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:elevation="12dp"
-            android:layout_marginTop="12dp"
             android:layout_marginStart="192dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="192dp"
             android:backgroundTint="@color/white"
-            app:cardCornerRadius="43dp">
+            android:elevation="12dp"
+            app:cardCornerRadius="14dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Next"
+                    android:textSize="22sp"
+                    android:visibility="gone" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -266,181 +291,366 @@ tools:context=".fragments.ph.PhCalibFragment">
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/log3point"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/ph1"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/log1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textSize="22sp" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:background="#DFE6ED" />
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/ph1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/phEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
 
 
-                    <TextView
-                        android:id="@+id/mv1"
-                        android:layout_width="wrap_content"
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/mv1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/mvEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/log2"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:textSize="22sp" />
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/ph2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/phEdit2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
 
 
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/mv2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/mvEdit2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/log3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/ph3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/phEdit3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/mv3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/mvEdit3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
+
+
+                    </LinearLayout>
                 </LinearLayout>
 
-
                 <LinearLayout
+                    android:id="@+id/log5Point"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/ph2"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/log4"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textSize="22sp" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:background="#DFE6ED" />
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/ph4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/phEdit4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
 
 
-                    <TextView
-                        android:id="@+id/mv2"
-                        android:layout_width="wrap_content"
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/mv4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/mvEdit4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/log5"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:textSize="22sp" />
-
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:id="@+id/ph3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textSize="22sp" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:background="#DFE6ED" />
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/ph5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/phEdit5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
 
 
-                    <TextView
-                        android:id="@+id/mv3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:textSize="22sp" />
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
 
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/mv5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:id="@+id/ph4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textSize="22sp" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="#DFE6ED" />
-
-
-                    <TextView
-                        android:id="@+id/mv4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:textSize="22sp" />
+                        <TextView
+                            android:id="@+id/mvEdit5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawablePadding="2dp"
+                            android:padding="2dp"
+                            android:text="Edit"
+                            android:textAllCaps="true"
+                            android:textColor="@color/blueDark"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/ic_edit"
+                            app:drawableTint="@color/blueDark" />
 
 
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:id="@+id/ph5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textSize="22sp" />
-
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="#DFE6ED" />
-
-
-                    <TextView
-                        android:id="@+id/mv5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="1"
-                        android:textSize="22sp" />
-
-
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
