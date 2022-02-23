@@ -1,5 +1,6 @@
 package com.aican.aicanapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,26 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.dataClasses.phData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
-    ArrayList<phData> list ;
+    List<phData> list ;
 
-    public LogAdapter(ArrayList<phData> mlist) {
+
+
+    public LogAdapter(List<phData> mlist) {
         this.list = mlist;
+    }
+
+    public void onRefreshAdapter(List<phData> reports){
+        list = reports;
+        this.list.clear();
+        this.notifyItemInserted(list.size());
+        //this.list.clear();
+        //this.list.addAll(reports);
+        //this.notifyItemInserted(reports.size()-1);
+        //this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -32,7 +46,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull LogAdapter.ViewHolder holder, int position) {
-
+        holder.setIsRecyclable(false);
         holder.ph.setText(list.get(position).getpH());
         holder.mv.setText(list.get(position).getmV());
         holder.dt.setText(list.get(position).getDate());

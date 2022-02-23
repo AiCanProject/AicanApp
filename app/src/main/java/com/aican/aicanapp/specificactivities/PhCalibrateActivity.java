@@ -436,12 +436,16 @@ public class PhCalibrateActivity extends AppCompatActivity {
 
         });
 
+
         tvEdit.setOnClickListener(v -> {
+
+
             EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                 updateBufferValue(ph);
                 deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(String.valueOf(ph));
             });
-            dialog.show(getSupportFragmentManager(), null);
+            dialog.show(getSupportFragmentManager(),null);
+
         });
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);

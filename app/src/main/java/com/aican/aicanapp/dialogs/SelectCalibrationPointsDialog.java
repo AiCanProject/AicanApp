@@ -42,9 +42,10 @@ public class SelectCalibrationPointsDialog extends DialogFragment {
         tvSelect.setOnClickListener(v -> {
 
             Intent intent = new Intent(requireContext(), PhCalibrateActivity.class);
-            if (radioGroup.getCheckedRadioButtonId() == R.id.rb3Point) {
+            /*if (radioGroup.getCheckedRadioButtonId() == R.id.rb3Point) {
                 intent.putExtra(PhCalibrateActivity.CALIBRATION_TYPE, PhCalibrateActivity.THREE_POINT_CALIBRATION);
-            } else if (radioGroup.getCheckedRadioButtonId() == R.id.rb5Point) {
+            } else */
+                if (radioGroup.getCheckedRadioButtonId() == R.id.rb5Point) {
                 intent.putExtra(PhCalibrateActivity.CALIBRATION_TYPE, PhCalibrateActivity.FIVE_POINT_CALIBRATION);
             }
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);

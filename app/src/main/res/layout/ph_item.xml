@@ -46,6 +46,8 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
+
+
         <!--        <TextView-->
         <!--            android:id="@+id/current_temp_text"-->
         <!--            android:layout_width="wrap_content"-->
@@ -150,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/phValue"
             android:layout_marginStart="26dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="18dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

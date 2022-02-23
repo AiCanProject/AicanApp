@@ -47,6 +47,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
         this.optionsClickListener = optionsClickListener;
     }
 
+
     @Override
     public PhAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -104,7 +105,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             ec.setText(ecString);
             temp.setText(tempString);
 //            tds.setText(tdsString);
-            tvName.setText(device.getName());
+            tvName.setText("pH "+ device.getId());
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), PhActivity.class);

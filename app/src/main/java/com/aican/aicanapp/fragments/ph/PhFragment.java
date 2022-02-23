@@ -433,7 +433,9 @@ public class PhFragment extends Fragment {
                 Float ph = snapshot.getValue(Float.class);
                 if(ph==null) return;
                 phView.moveTo(ph);
-                updatePh(ph);
+                String phCur = String.format(Locale.UK, "%.2f" , ph);
+                tvPhCurr.setText(phCur);
+                //updatePh(ph);
                 PhFragment.this.ph = ph;
             }
 
@@ -446,8 +448,11 @@ public class PhFragment extends Fragment {
         deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String temp = snapshot.getValue(Integer.class).toString();
-                tvTempCurr.setText(temp + "°C");
+                Float temp = snapshot.getValue(Float.class);
+                String formatTemp = String.format(Locale.UK, "%.1f", temp);
+
+
+                tvTempCurr.setText(formatTemp + "°C");
                 //updatePh(temp);
                 //PhFragment.this.ph = temp;
             }
@@ -493,6 +498,7 @@ public class PhFragment extends Fragment {
             }
         });
 
+
         deviceRef.child("Data").child("BATTERY").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -526,10 +532,9 @@ public class PhFragment extends Fragment {
         deviceRef.child("Data").child("OFFSET").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String offset = snapshot.getValue(Integer.class).toString();
-                offsetVal.setText(offset);
-
-
+                Float offset = snapshot.getValue(Float.class);
+                String off = String.format(Locale.UK, "%.2f", offset);
+                offsetVal.setText(off);
             }
 
             @Override
@@ -550,10 +555,10 @@ public class PhFragment extends Fragment {
             newText = String.format(Locale.UK, "%.2f", ph);
         }
         tvPhNext.setText(newText);
-
+        /*
         if (getContext() != null) {
-            Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
-            Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
+           // Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
+           // Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 
             fadeOut.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -580,7 +585,7 @@ public class PhFragment extends Fragment {
             tvPhNext.startAnimation(slideInBottom);
         }else{
             tvPhCurr.setText(newText);
-        }
+        }*/
     }
 
     private int getAttr(@AttrRes int attrRes) {

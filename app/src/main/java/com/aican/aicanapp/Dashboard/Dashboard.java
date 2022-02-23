@@ -231,7 +231,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         for (String id : deviceIds) {
             secondaryDatabase.child(id).get().addOnSuccessListener(dataSnapshot -> {
                 accountsLoaded.incrementAndGet();
-
                 DeviceAccount deviceAccount = dataSnapshot.getValue(DeviceAccount.class);
                 if (deviceAccount == null) return;
                 deviceTypes.put(id, deviceAccount.type);

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:windowSoftInputMode="adjustPan|adjustResize"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -27,6 +29,8 @@
             android:layout_height="wrap_content"
             android:hint="pH"
             android:inputType="text"
+            android:textColor="@color/black"
+            android:nextFocusDown="@+id/etPh"
             android:textColorHint="@color/grey_light_force" />
     </com.google.android.material.textfield.TextInputLayout>
 
