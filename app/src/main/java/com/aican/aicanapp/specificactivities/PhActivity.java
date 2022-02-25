@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.Dashboard.SettingActivity;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.ViewPagerAdapter;
 import com.aican.aicanapp.fragments.ph.EcFragment;
@@ -87,7 +88,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(PhActivity.this, Dashboard.class);
+                Intent intent = new Intent(PhActivity.this, SettingActivity.class);
                 startActivity(intent);
             }
         });

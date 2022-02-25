@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
             android:paddingTop="10dp"
-            android:text="Custom Device Name"
+            android:text="pH Meter  "
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/phValue"
             android:layout_marginStart="26dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

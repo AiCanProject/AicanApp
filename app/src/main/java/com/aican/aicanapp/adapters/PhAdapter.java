@@ -104,7 +104,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             ec.setText(ecString);
             temp.setText(tempString);
 //            tds.setText(tdsString);
-            tvName.setText(device.getName());
+            tvName.setText("ph Meter "+device.getId());
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), PhActivity.class);

@@ -19,7 +19,7 @@ import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
 
 import org.jetbrains.annotations.NotNull;
 
-public class SelectCalibrationPointsDialog extends DialogFragment {
+public class  SelectCalibrationPointsDialog extends DialogFragment {
 
     TextView tvSelect;
     RadioGroup radioGroup;

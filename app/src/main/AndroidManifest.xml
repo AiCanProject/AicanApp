@@ -19,8 +19,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".Dashboard.SettingActivity"
+            android:name=".dialogs.AuthenticateRoleDialog"
             android:exported="false" />
+        <activity
+            android:name=".Dashboard.SettingActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity android:name=".specificactivities.ConnectDeviceActivity" />
         <activity android:name=".Authentication.SplashActivity">
             <intent-filter>
@@ -38,7 +42,9 @@
             android:screenOrientation="landscape" />
         <activity android:name=".AddDevice.AddDeviceOption" />
         <activity android:name=".specificactivities.TemperatureActivity" />
-        <activity android:name=".Dashboard.Dashboard" />
+        <activity
+            android:name=".Dashboard.Dashboard"
+            android:screenOrientation="landscape" />
         <activity android:name=".MainActivity" />
         <activity android:name=".Authentication.LoginActivity" />
         <activity android:name=".Authentication.SignUpActivity" />

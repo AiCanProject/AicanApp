@@ -27,6 +27,7 @@ import android.widget.VideoView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.dialogs.AuthenticateRoleDialog;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
@@ -77,8 +78,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     private void loadBuffers() {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
-                buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
-
+                buffers[i] =  Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
 
             ph1.setText(String.valueOf(buffers[0]));
@@ -249,13 +249,25 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         point3 = view.findViewById(R.id.log3point);
         point5 = view.findViewById(R.id.log5Point);
 
+        Bundle bundle = new Bundle();
+        String name = bundle.getString("name");
+        String pass = bundle.getString("passcode");
         spin = view.findViewById(R.id.calibMode);
         spin.setOnItemSelectedListener(this);
+
+
         ArrayAdapter aa = new ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,mode);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
         calibrateBtn.setOnClickListener(v -> {
+            AuthenticateRoleDialog roleDialog = new AuthenticateRoleDialog();
+
+            roleDialog.show(getParentFragmentManager(),  null);
+
+
+
+            /*
             calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
             calibrateBtn.setEnabled(false);
             tvTimer.setVisibility(View.VISIBLE);
@@ -296,7 +308,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
                 timer.start();
             });
 
-
+        */
         });
 
 
@@ -312,7 +324,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             calibrateBtn.setEnabled(true);
 
             //phView.moveTo(buffers[currentBuf]);
-            updateBufferValue(buffers[currentBuf]);
+            updateBufferValue((float) buffers[currentBuf]);
 
             //tvCoefficient.setVisibility(View.INVISIBLE);
             //tvCoefficientLabel.setVisibility(View.INVISIBLE);
