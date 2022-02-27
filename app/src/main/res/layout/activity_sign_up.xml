@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="146dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="110dp"
@@ -48,6 +48,15 @@
         android:textColor="@color/white_force"
         android:textSize="32sp"
         android:transitionName="@string/title_transition" />
+
+
+    <Button
+        android:id="@+id/wifi"
+        android:layout_margin="15sp"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wifi Setting"/>
 
     <LinearLayout
         android:layout_width="match_parent"

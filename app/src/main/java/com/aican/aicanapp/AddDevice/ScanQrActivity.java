@@ -194,6 +194,7 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
                 .addOnFailureListener(e -> {
                     Toast.makeText(ScanQrActivity.this, "Failed to link device", Toast.LENGTH_SHORT).show();
                 });
+
     }
 
     private class ImageScanner implements ImageAnalysis.Analyzer {

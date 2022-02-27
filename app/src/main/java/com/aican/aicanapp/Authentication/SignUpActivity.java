@@ -3,8 +3,10 @@ package com.aican.aicanapp.Authentication;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
     EditText etName;
     ImageView ivBackBtn;
     TextInputLayout tilName, tilEmail, tilPassword;
-
+    Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,14 @@ public class SignUpActivity extends AppCompatActivity {
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
         etName = findViewById(R.id.etName);
-
+        btn = findViewById(R.id.wifi);
         database = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
 
+
+        btn.setOnClickListener(V -> {
+            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        });
+        
         findViewById(R.id.btnSignUp).setOnClickListener(v -> {
             dialog = new ProgressDialog(this);
             dialog.setCancelable(false);

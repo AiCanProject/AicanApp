@@ -105,6 +105,24 @@
                 android:paddingTop="5dp"/>
 
             <TextView
+                android:id="@+id/tvIndusPh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Industry pH Meter"
+                android:textColor="@color/black_force"
+                android:textSize="16sp"
+                android:textAllCaps="true"
+                android:paddingHorizontal="10dp"
+                android:paddingTop="10dp"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/indus_ph_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="5dp"/>
+            <TextView
                 android:id="@+id/tvPump"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

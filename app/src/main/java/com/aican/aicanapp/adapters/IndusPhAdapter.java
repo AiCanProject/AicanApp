@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.dataClasses.PhDevice;
-import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.dataClasses.IndusPhDevices;
+import com.aican.aicanapp.specificactivities.IndusPhActivity;
+
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.ChildEventListener;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolder> {
+public class IndusPhAdapter extends RecyclerView.Adapter<IndusPhAdapter.IPhAdapterViewHolder> {
 
 //    private String[] phs;     // Store data here in list or array from backend
 //    private String deviceId;
@@ -39,48 +40,48 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 //        this.context = context;
 //    }
 
-    ArrayList<PhDevice> phDevices;
+    ArrayList<IndusPhDevices> indusPhDevices;
     DashboardListsOptionsClickListener optionsClickListener;
 
-    public PhAdapter(ArrayList<PhDevice> phDevices, DashboardListsOptionsClickListener optionsClickListener) {
-        this.phDevices = phDevices;
+    public IndusPhAdapter(ArrayList<IndusPhDevices> indusPhDevices, DashboardListsOptionsClickListener optionsClickListener) {
+        this.indusPhDevices = indusPhDevices;
         this.optionsClickListener = optionsClickListener;
     }
 
     @Override
-    public PhAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IPhAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.ph_item, parent, false);
-        return new PhAdapterViewHolder(view);
+        View view = inflater.inflate(R.layout.indus_ph_item, parent, false);
+        return new IPhAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(PhAdapter.PhAdapterViewHolder holder, int position) {
-        holder.bind(phDevices.get(position));
+    public void onBindViewHolder(@NonNull IPhAdapterViewHolder holder, int position) {
+        holder.bind(indusPhDevices.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return phDevices.size();
+        return indusPhDevices.size();
     }
 
-    public class PhAdapterViewHolder extends RecyclerView.ViewHolder {
-        private TextView ph, ec, temp, tds, tvName;
+    public class IPhAdapterViewHolder extends RecyclerView.ViewHolder {
+         private TextView ph, ec, temp, tds, tvName;
         private ImageView ivOptions;
 
         //Viewholder-----------------------------------------------------------------------------------------
-        public PhAdapterViewHolder(View itemView) {
+        public IPhAdapterViewHolder(View itemView) {
             super(itemView);
             ph = itemView.findViewById(R.id.ph);
             ec = itemView.findViewById(R.id.ec);
-            temp = itemView.findViewById(R.id.temp);
-//            tds = itemView.findViewById(R.id.tds);
+            //temp = itemView.findViewById(R.id.temp);
+            //tds = itemView.findViewById(R.id.tds);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
 
         }
 
-        public void bind(PhDevice device) {
+        public void bind(IndusPhDevices device) {
             String phString;
             if (device.getPh() < 0 || device.getPh() > 14) {
                 phString = "pH: -";
@@ -102,12 +103,12 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             }
             ph.setText(phString);
             ec.setText(ecString);
-            temp.setText(tempString);
-//            tds.setText(tdsString);
-            tvName.setText("ph Meter "+device.getId());
+            //temp.setText(tempString);
+            //tds.setText(tdsString);
+            tvName.setText(device.getName()+"  "+device.getId());
 
             itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(itemView.getContext(), PhActivity.class);
+                Intent intent = new Intent(itemView.getContext(), IndusPhActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
                 itemView.getContext().startActivity(intent);
             });
@@ -119,9 +120,9 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             setFirebaseListeners(device);
         }
 
-        private void setFirebaseListeners(PhDevice device) {
+        private void setFirebaseListeners(IndusPhDevices device) {
 
-            DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_PH).child(device.getId()).child("Data");
+            DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_IPH).child(device.getId()).child("Data");
 
             dataRef.addChildEventListener(new ChildEventListener() {
                 @Override
@@ -139,23 +140,23 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
                             device.setPh(ph);
                             break;
                         }
-                        case "TEMP_VAL": {
+                       /* case "TEMP_VAL": {
                             Integer val = snapshot.getValue(Integer.class);
                             if (val == null) return;
                             device.setTemp(val);
                             break;
-                        }
-                        case "EC_VAL": {
+                        }*/
+                        case "MV_VAL": {
                             Float val = snapshot.getValue(Float.class);
                             if (val == null) return;
                             device.setEc(val);
                             break;
                         }
                         //case "TDS_VAL": {
-                            //Long val = snapshot.getValue(Long.class);
-                            //if (val == null) return;
-                            //device.setTds(val);
-                          //  break;
+                        //Long val = snapshot.getValue(Long.class);
+                        //if (val == null) return;
+                        //device.setTds(val);
+                        //  break;
                         //}
                     }
                     notifyItemChanged(getAdapterPosition());

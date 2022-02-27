@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -22,15 +23,19 @@ import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.CoolingAdapter;
+import com.aican.aicanapp.adapters.IndusPhAdapter;
 import com.aican.aicanapp.adapters.PhAdapter;
 import com.aican.aicanapp.adapters.PumpAdapter;
 import com.aican.aicanapp.adapters.TempAdapter;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
+import com.aican.aicanapp.dataClasses.IndusPhDevices;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
+import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+import com.aican.aicanapp.specificactivities.IndusPhActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,6 +56,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String KEY_DEVICE_ID = "device_id";
     public static final int GRAPH_PLOT_DELAY = 15000;
     public static final String DEVICE_TYPE_PH = "PHMETER";
+    public static final String DEVICE_TYPE_IPH = "IPHMETER";
     public static final String DEVICE_TYPE_PUMP = "P_PUMP";
     public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
@@ -64,6 +70,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     HashMap<String, String> deviceNames;
 
     ArrayList<PhDevice> phDevices;
+    ArrayList<IndusPhDevices> indusPhDevices;
     ArrayList<PumpDevice> pumpDevices;
     ArrayList<TempDevice> tempDevices;
     ArrayList<CoolingDevice> coolingDevices;
@@ -72,15 +79,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     CoolingAdapter coolingAdapter;
     PhAdapter phAdapter;
     PumpAdapter pumpAdapter;
+    IndusPhAdapter indusPhAdapter;
 
+    Button calibrateBtn;
     private DrawerLayout drawerLayout;
     //Recyclerviews-------------------------------------------------------------------
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     //---------------------------------------------------------------------------------
-    private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView;
+    private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView, indusRecyclerView;
     private FloatingActionButton addNewDevice;
-    private TextView tvTemp,tvCooling, tvPump, tvPh, tvName, tvConnectDevice;
+    private TextView tvTemp,tvCooling, tvPump, tvPh, tvName, tvConnectDevice, tvIndusPh;
     private ImageView ivLogout;
 
     @Override
@@ -100,13 +109,16 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
-        
+
+        tvIndusPh = findViewById(R.id.tvIndusPh);
+        indusRecyclerView = findViewById(R.id.indus_ph_recyclerview);
 
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
                 .child("USERS").child(mUid);
         deviceIds = new ArrayList<>();
         phDevices = new ArrayList<>();
+        indusPhDevices = new ArrayList<>();
         pumpDevices = new ArrayList<>();
         coolingDevices = new ArrayList<>();
         tempDevices = new ArrayList<>();
@@ -114,6 +126,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
 
+        
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,6 +144,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             startActivity(new Intent(this, ConnectDeviceActivity.class));
         });
 
+
+
+
         //----------------------------------------
         setUpNavDrawer();
         setUpToolBar();
@@ -138,6 +154,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpCooling();
         setUpPh();
         setUpPump();
+        setUpIndusPh();
         //----------------------------------------
 
     }
@@ -191,7 +208,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phRecyclerView.setAdapter(phAdapter);
     }
     //Ph RC------------------------------------------------------------------------------------------------------
-
+    //Indus Ph RC
+    public void setUpIndusPh() {
+        indusRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        indusPhAdapter = new IndusPhAdapter(indusPhDevices, this::onOptionsIconClicked);
+        indusRecyclerView.setAdapter(indusPhAdapter);
+    }
     //Pump RC------------------------------------------------------------------------------------------------------
     public void setUpPump() {
         pumpRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -203,6 +225,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private void refresh() {
         deviceIds.clear();
         phDevices.clear();
+        indusPhDevices.clear();
         coolingDevices.clear();
         tempDevices.clear();
         pumpDevices.clear();
@@ -293,6 +316,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 //                        setPhDeviceListeners(device, phDevices.size()-1);
                         break;
                     }
+                    case "IPHMETER": {
+                        IndusPhDevices device = new IndusPhDevices(
+                                id,
+                                name,
+                                data.child("PH_VAL").getValue(Float.class),
+                                data.child("MV_VAL").getValue(Float.class)
+                        );
+                        indusPhDevices.add(device);
+//                        setPhDeviceListeners(device, phDevices.size()-1);
+                        break;
+                    }
                     case "P_PUMP": {
                         int mode = ui.child("MODE").child("MODE_VAL").getValue(Integer.class);
                         int status = ui.child("STATUS").getValue(Integer.class);
@@ -343,6 +377,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     coolingAdapter.notifyDataSetChanged();
                     phAdapter.notifyDataSetChanged();
                     pumpAdapter.notifyDataSetChanged();
+                    indusPhAdapter.notifyDataSetChanged();
                     if(tempDevices.size()==0){
                         tvTemp.setVisibility(View.GONE);
                     }else{
@@ -357,6 +392,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         tvPh.setVisibility(View.GONE);
                     }else{
                         tvPh.setVisibility(View.VISIBLE);
+                    }
+                    if(indusPhDevices.size()==0){
+                        tvIndusPh.setVisibility(View.GONE);
+                    }else{
+                        tvIndusPh.setVisibility(View.VISIBLE);
                     }
                     if(pumpDevices.size()==0){
                         tvPump.setVisibility(View.GONE);
