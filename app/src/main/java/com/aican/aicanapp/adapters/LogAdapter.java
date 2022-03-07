@@ -1,11 +1,14 @@
 package com.aican.aicanapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.R;
@@ -15,8 +18,24 @@ import java.util.ArrayList;
 
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
-    ArrayList<phData> list ;
 
+//    private DiffUtil.ItemCallback<phData> differCallBack =new DiffUtil.ItemCallback<phData>() {
+//        @Override
+//        public boolean areItemsTheSame(@NonNull phData oldItem, @NonNull phData newItem) {
+//            //return oldItem.getTime() == newItem.getTime();
+//            return oldItem == newItem;
+//        }
+//
+//        @SuppressLint("DiffUtilEquals")
+//        @Override
+//        public boolean areContentsTheSame(@NonNull phData oldItem, @NonNull phData newItem) {
+//            return oldItem.getTime() == newItem.getTime();
+//        }
+//    };
+//
+//     private AsyncListDiffer differ = new AsyncListDiffer(this, differCallBack);
+
+    ArrayList<phData> list ;
     public LogAdapter(ArrayList<phData> mlist) {
         this.list = mlist;
     }
@@ -33,6 +52,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull LogAdapter.ViewHolder holder, int position) {
 
+        //differ.getCurrentList();
         holder.ph.setText(list.get(position).getpH());
         holder.mv.setText(list.get(position).getmV());
         holder.dt.setText(list.get(position).getDate());

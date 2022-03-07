@@ -49,6 +49,9 @@ dependencies {
     implementation 'com.github.uzairiqbal91:CircularTimerView:1.0'
 
 
+    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
+
+
     implementation 'com.google.firebase:firebase-auth:20.0.4'
     implementation 'com.google.firebase:firebase-database:19.7.0'
 

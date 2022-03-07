@@ -1,15 +1,28 @@
 package com.aican.aicanapp.fragments.ph;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,15 +44,21 @@ import com.aican.aicanapp.dialogs.AuthenticateRoleDialog;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
+import com.google.common.collect.Table;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -53,7 +72,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5;
     DatabaseReference deviceRef;
     LinearLayout point3, point5;
-    Button calibrateBtn, btnNext;
+    Button calibrateBtn, btnNext, export;
     Spinner spin;
     String[] mode = {"3", "5"};
 
@@ -92,7 +111,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         });
     }
 
-
     private void displayCoeffAndPrepareNext(float coeff) {
         if(currentBuf==buffers.length-1) {
             btnNext.setText("Done");
@@ -100,9 +118,9 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             isCalibrating = false;
         }
         btnNext.setVisibility(View.VISIBLE);
-
         //tvCoefficientLabel.setVisibility(View.VISIBLE);
-        mv1.setText(String.format(Locale.UK, "%.2f", coeff));
+            mv1.setText(String.format(Locale.UK, "%.2f", coeff));
+            mv2.setText(String.format(Locale.UK,"%.2f", coeff));
         //tvCoefficient.setVisibility(View.VISIBLE);
     }
 
@@ -219,6 +237,11 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
 
+    int pageHeight = 900;
+    int pagewidth = 1280;
+    private static final int PERMISSION_REQUEST_CODE = 200;
+    Bitmap bmp, scaledbmp;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -238,6 +261,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         mv5 = view.findViewById(R.id.mv5);
 
 
+        export = view.findViewById(R.id.export);
         tvTimer = view.findViewById(R.id.tvTimer);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
@@ -260,14 +284,21 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
+        if (checkPermission()) {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
+
+        export.setOnClickListener(v ->{
+            generatePDF();
+        });
+
         calibrateBtn.setOnClickListener(v -> {
-            AuthenticateRoleDialog roleDialog = new AuthenticateRoleDialog();
+            //AuthenticateRoleDialog roleDialog = new AuthenticateRoleDialog();
 
-            roleDialog.show(getParentFragmentManager(),  null);
+            //roleDialog.show(getParentFragmentManager(),  null);
 
-
-
-            /*
             calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
             calibrateBtn.setEnabled(false);
             tvTimer.setVisibility(View.VISIBLE);
@@ -298,7 +329,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
                                 displayCoeffAndPrepareNext(coeff);
                             });
 
-                            handler.postDelayed(runnable, 1000);
+                            //handler.postDelayed(runnable, 1000);
                         }};
                     runnable.run();
 
@@ -308,7 +339,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
                 timer.start();
             });
 
-        */
+
         });
 
 
@@ -331,16 +362,128 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
         });
 
-
-
-
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         // setupGraph();
         setupListeners();
         loadBuffers();
-
-
     }
+
+    private void generatePDF() {
+
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+
+        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
+        Canvas canvas = myPage.getCanvas();
+
+        paint.setTextSize(60);
+        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
+
+        paint.setTextSize(40);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
+
+        paint.setColor(Color.rgb(150, 150, 150));
+        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
+
+        paint.setTextSize(20);
+        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
+
+        paint.setTextSize(20);
+        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
+
+        paint.setTextSize(30);
+        canvas.drawText("Slope: 60%", canvas.getWidth()-40, 190, paint);
+
+        paint.setTextSize(30);
+        canvas.drawText("Temperature: 30", canvas.getWidth()-40, 230, paint);
+
+        paint.setTextSize(30);
+        canvas.drawText("Offset: 40", canvas.getWidth()-40, 270, paint);
+
+
+        paint.setColor(Color.rgb(150, 150, 150));
+        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight()-30, paint);
+
+
+        pdfDocument.finishPage(myPage);
+
+//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
+//        File dir = new File(path);
+//        if (!dir.exists())
+//            dir.mkdirs();
+//
+//        File filePath = new File(dir, "Test.pdf");
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(filePath));
+//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//            //btn_generate.setText("Check PDF");
+//            //boolean_save=true;
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
+//        }
+//
+//        pdfDocument.close();
+
+        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
+        File file = new File(stringFilePath);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
+//        }
+//        else
+//        {
+//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
+//        }
+
+//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
+
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file));
+            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pdfDocument.close();
+    }
+
+
+    private boolean checkPermission() {
+        // checking of permissions.
+        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        // requesting permissions if not provided.
+        ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+
+                // after requesting permissions we are showing
+                // users a toast message of permission granted.
+                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (writeStorage && readStorage) {
+                    Toast.makeText(requireContext(), "Permission Granted..", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Permission Denined.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

@@ -10,19 +10,19 @@
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="100dp"
         android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="25dp"
+        android:gravity="center"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/subjectLL"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:layout_marginEnd="23dp"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="23dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="23dp"
             android:background="@drawable/buttonlayout2"
             android:orientation="horizontal"
             tools:ignore="UselessParent">
@@ -52,9 +52,28 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
+            android:hint="Enter Name"
+            app:boxStrokeColor="@color/colorPrimary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/assignedName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
             android:hint="Enter UserID"
             app:boxStrokeColor="@color/colorPrimary">
 
@@ -71,9 +90,9 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
             android:hint="Passcode"
             app:boxStrokeColor="@color/colorPrimary">
 
@@ -85,14 +104,39 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/signature"
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:layout_gravity="start"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/addSignature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="80dp"
+                android:text="Add Signature" />
+
+        </LinearLayout>
+
+
         <Button
             android:id="@+id/assignRole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="20dp"
-            android:text="Assign Role"/>
+            android:layout_marginEnd="20dp"
+            android:text="Assign Role" />
 
     </LinearLayout>
 

@@ -29,7 +29,9 @@ import com.google.firebase.database.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class phLogFragment extends Fragment {
 
@@ -50,6 +52,7 @@ public class phLogFragment extends Fragment {
         phData phData = new phData();
         ArrayList<phData> list = new ArrayList<>();
 
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
 
@@ -63,7 +66,6 @@ public class phLogFragment extends Fragment {
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Float p = snapshot.getValue(Float.class);
                     String ph = String.format(Locale.UK, "%.2f", p );
-
                     phData.setpH(ph);
                 }
 
@@ -72,6 +74,7 @@ public class phLogFragment extends Fragment {
 
                 }
             });
+
 
             deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -86,15 +89,15 @@ public class phLogFragment extends Fragment {
 
                 }
             });
-
             LogAdapter adapter = new LogAdapter(list);
-
             list.add(phData);
-            recyclerView.setHasFixedSize(true);
+            adapter.notifyDataSetChanged();
             recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
         });
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
 
     }
 }

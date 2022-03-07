@@ -1,17 +1,23 @@
 package com.aican.aicanapp.dialogs;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class AuthenticateRoleDialog extends DialogFragment {
 
     EditText userId, passCode;
-    Button generate;
+    Button generate, addSign;
+
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -49,7 +56,7 @@ public class AuthenticateRoleDialog extends DialogFragment {
             Intent intent = new Intent(requireContext(), PhCalibFragment.class);
             intent.putExtra(userId.getText().toString(), passCode.getText().toString());
             startActivity(intent);
-            if (isEmailValid() && isPassCodeValid()){
+            if (isEmailValid() && isPassCodeValid()) {
 
 
                 dismiss();
@@ -70,9 +77,10 @@ public class AuthenticateRoleDialog extends DialogFragment {
         String validName = userId.getText().toString();
         if (!validName.isEmpty()) {
 
-        }else{
+        } else {
             Toast.makeText(requireContext(), "Enter Email Address!", Toast.LENGTH_SHORT).show();
         }
         return true;
     }
+
 }
