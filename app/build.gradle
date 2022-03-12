@@ -60,6 +60,10 @@ dependencies {
     implementation "androidx.preference:preference:$preference_version"
 
 
+    //graph view
+    //implementation 'com.jjoe64:graphview:4.2.2'
+
+
 //    QR Scanning
     implementation 'com.google.mlkit:barcode-scanning:16.1.1'
 

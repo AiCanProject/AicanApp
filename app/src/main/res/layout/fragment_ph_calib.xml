@@ -179,14 +179,6 @@ tools:context=".fragments.ph.PhCalibFragment">
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/export"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
-                android:text="Export"
-                android:visibility="visible" />
-
             <TextView
                 android:id="@+id/tvTimer"
                 android:layout_width="wrap_content"
@@ -214,6 +206,7 @@ tools:context=".fragments.ph.PhCalibFragment">
                 android:layout_width="127dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:visibility="gone"
                 android:backgroundTint="#3CEA43"
                 android:text="Save" />
 
@@ -234,6 +227,16 @@ tools:context=".fragments.ph.PhCalibFragment">
                 android:layout_height="45dp"
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7" />
+
+            <TextView
+                android:id="@+id/lastCalibration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Last Calibrated at: \n 12/03/2022 20:05"/>
 
 
         </LinearLayout>
@@ -268,12 +271,12 @@ tools:context=".fragments.ph.PhCalibFragment">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="5dp">
+                    android:layout_margin="2dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
+                        android:layout_marginStart="23dp"
                         android:layout_marginBottom="2dp"
                         android:layout_weight="1"
                         android:text="pH"
@@ -303,7 +306,7 @@ tools:context=".fragments.ph.PhCalibFragment">
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:id="@+id/log1"
@@ -316,14 +319,14 @@ tools:context=".fragments.ph.PhCalibFragment">
                             android:id="@+id/ph1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
+                            android:layout_marginStart="22dp"
                             android:layout_marginBottom="2dp"
                             android:layout_weight="1"
                             android:text=""
                             android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/phEdit"
+                            android:id="@+id/phEdit1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
@@ -356,7 +359,7 @@ tools:context=".fragments.ph.PhCalibFragment">
                             android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/mvEdit"
+                            android:id="@+id/mvEdit1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"

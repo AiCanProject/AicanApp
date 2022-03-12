@@ -63,6 +63,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ph);
+        getWindow().setStatusBarColor(this.getResources().getColor(R.color.btnColor));
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
@@ -248,6 +249,20 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        Intent intent = new Intent(PhActivity.this, Dashboard.class);
+        startActivity(intent);
+
+//        if (count == 0) {
+//            super.onBackPressed();
+//            //additional code
+//        } else {
+//            getSupportFragmentManager().popBackStack();
+//        }
+    }
 
     private boolean loadFragments(Fragment fragment) {
     if (fragment != null) {

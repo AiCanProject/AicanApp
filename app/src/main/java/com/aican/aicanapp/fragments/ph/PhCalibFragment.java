@@ -41,6 +41,7 @@ import android.widget.VideoView;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.AuthenticateRoleDialog;
+import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
@@ -68,13 +69,13 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     public static final String CALIBRATION_TYPE = "calibration_type";
 
 
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5;
     DatabaseReference deviceRef;
     LinearLayout point3, point5;
     Button calibrateBtn, btnNext, export;
     Spinner spin;
-    String[] mode = {"3", "5"};
+    String[] mode = {"3"};
 
 
     float[] buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
@@ -138,12 +139,10 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
-                //if(ph==null) return;
-                //String phFormat = String.format(Locale.UK, "%.2f", ph);
-                //tvPhCurr.setText(phFormat);
-
-                //phView.moveTo(ph);
-                updatePh(ph);
+                if(ph==null) return;
+                //                phView.moveTo(ph);
+                String phForm = String.format(Locale.UK, "%.2f", ph);
+                tvPhCurr.setText(phForm);
                 //PhCalibFragment.this.tvPhNext = ph;
             }
 
@@ -237,10 +236,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
 
-    int pageHeight = 900;
-    int pagewidth = 1280;
-    private static final int PERMISSION_REQUEST_CODE = 200;
-    Bitmap bmp, scaledbmp;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -249,6 +244,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
         //calibrationType = getIntent().getStringExtra(CALIBRATION_TYPE);
 
+        lastCalib = view.findViewById(R.id.lastCalibration);
         ph1 = view.findViewById(R.id.ph1);
         ph2 = view.findViewById(R.id.ph2);
         ph3 = view.findViewById(R.id.ph3);
@@ -261,7 +257,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         mv5 = view.findViewById(R.id.mv5);
 
 
-        export = view.findViewById(R.id.export);
+
         tvTimer = view.findViewById(R.id.tvTimer);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
@@ -276,6 +272,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         Bundle bundle = new Bundle();
         String name = bundle.getString("name");
         String pass = bundle.getString("passcode");
+        Boolean success = bundle.getBoolean("success");
         spin = view.findViewById(R.id.calibMode);
         spin.setOnItemSelectedListener(this);
 
@@ -284,20 +281,11 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
-        if (checkPermission()) {
-            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            requestPermission();
-        }
-
-        export.setOnClickListener(v ->{
-            generatePDF();
-        });
-
         calibrateBtn.setOnClickListener(v -> {
-            //AuthenticateRoleDialog roleDialog = new AuthenticateRoleDialog();
+            AuthenticateRoleDialog dialog = new AuthenticateRoleDialog();
+            dialog.show(getParentFragmentManager(), null);
 
-            //roleDialog.show(getParentFragmentManager(),  null);
+            if (success == true){
 
             calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
             calibrateBtn.setEnabled(false);
@@ -316,6 +304,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
                 final Handler handler = new Handler();
                 Runnable runnable;
+
                 @Override
                 public void onFinish() {
                     runnable = new Runnable() {
@@ -330,7 +319,8 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
                             });
 
                             //handler.postDelayed(runnable, 1000);
-                        }};
+                        }
+                    };
                     runnable.run();
 
                 }
@@ -338,7 +328,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
                 timer.start();
             });
-
+        }
 
         });
 
@@ -368,121 +358,8 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         loadBuffers();
     }
 
-    private void generatePDF() {
-
-        PdfDocument pdfDocument = new PdfDocument();
-        Paint paint = new Paint();
-
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-        Canvas canvas = myPage.getCanvas();
-
-        paint.setTextSize(60);
-        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
-
-        paint.setTextSize(40);
-        paint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Slope: 60%", canvas.getWidth()-40, 190, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Temperature: 30", canvas.getWidth()-40, 230, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Offset: 40", canvas.getWidth()-40, 270, paint);
 
 
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight()-30, paint);
-
-
-        pdfDocument.finishPage(myPage);
-
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
-//        File dir = new File(path);
-//        if (!dir.exists())
-//            dir.mkdirs();
-//
-//        File filePath = new File(dir, "Test.pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(filePath));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//            //btn_generate.setText("Check PDF");
-//            //boolean_save=true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        pdfDocument.close();
-
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
-        File file = new File(stringFilePath);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
-//        }
-//        else
-//        {
-//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-//        }
-
-//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-
-        try {
-            pdfDocument.writeTo(new FileOutputStream(file));
-            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pdfDocument.close();
-    }
-
-
-    private boolean checkPermission() {
-        // checking of permissions.
-        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
-        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-        // requesting permissions if not provided.
-        ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0) {
-
-                // after requesting permissions we are showing
-                // users a toast message of permission granted.
-                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                if (writeStorage && readStorage) {
-                    Toast.makeText(requireContext(), "Permission Granted..", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "Permission Denined.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
 
 
     @Override
@@ -518,6 +395,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
 
     private void updateBufferValue(Float value) {
         String newValue = String.valueOf(value);
@@ -565,6 +443,8 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         }
     };
     boolean isTimeOptionsVisible = false;
+
+
 
 
 }

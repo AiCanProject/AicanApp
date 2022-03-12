@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -15,8 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,11 +60,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PhFragment extends Fragment {
+public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "PhFragment";
     PhView phView;
     Button calibrateBtn;
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr;
     LineChart lineChart;
 
     DatabaseReference deviceRef;
@@ -70,6 +74,7 @@ public class PhFragment extends Fragment {
     float ph = 0;
     int skipPoints = 0;
     int skipCount = 0;
+    String[] probe = {"Glass","Others"};
 
     ArrayList<Entry> entriesOriginal;
 
@@ -90,6 +95,12 @@ public class PhFragment extends Fragment {
         tvTempCurr = view.findViewById(R.id.tvTempCurr);
         tvTempNext = view.findViewById(R.id.tvTempNext);
 
+        Spinner probesVal = view.findViewById(R.id.probesVal);
+
+        offsetCurr = view.findViewById(R.id.offsetVal);
+        batteryCurr = view.findViewById(R.id.batteryVal);
+        slopeCurr = view.findViewById(R.id.slopeVal);
+
         phView = view.findViewById(R.id.phView);
         //calibrateBtn = view.findViewById(R.id.calibrateBtn);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
@@ -107,6 +118,13 @@ public class PhFragment extends Fragment {
 
         phView.setCurrentPh(7.0F);
         entriesOriginal = new ArrayList<>();
+
+//        probesVal.setOnClickListener((View.OnClickListener) this);
+        ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
+        ad.setDropDownViewResource(
+                android.R.layout
+                        .simple_spinner_dropdown_item);
+        probesVal.setAdapter(ad);
 
         /*
         calibrateBtn.setOnClickListener(v -> {
@@ -132,6 +150,7 @@ public class PhFragment extends Fragment {
 
 
 }
+
 
     private void rescaleGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
@@ -332,8 +351,29 @@ public class PhFragment extends Fragment {
                 Float ph = snapshot.getValue(Float.class);
                 if(ph==null) return;
                 phView.moveTo(ph);
-                updatePh(ph);
+                String phForm = String.format(Locale.UK, "%.2f", ph);
+                tvPhCurr.setText(phForm);
+                //updatePh(ph);
                 PhFragment.this.ph = ph;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("HOLD").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float hold = snapshot.getValue(Float.class);
+
+                if (hold == 1 ) {
+                    tvPhCurr.setTextColor(Color.GREEN);
+                }else if (hold != 1){
+                    tvPhCurr.setTextColor(Color.BLACK);
+                }
+
             }
 
             @Override
@@ -372,6 +412,53 @@ public class PhFragment extends Fragment {
             }
         });
 
+        deviceRef.child("Data").child("OFFSET").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String offSet = snapshot.getValue(Integer.class).toString();
+                offsetCurr.setText(offSet);
+
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+
+        deviceRef.child("Data").child("BATTERY").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String battery = snapshot.getValue(Integer.class).toString();
+                batteryCurr.setText(battery);
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("SLOPE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String slope = snapshot.getValue(Integer.class).toString();
+                slopeCurr.setText(slope);
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
@@ -385,7 +472,7 @@ public class PhFragment extends Fragment {
         tvPhNext.setText(newText);
 
         if (getContext() != null) {
-            Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
+           /* Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
             Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 
             fadeOut.setAnimationListener(new Animation.AnimationListener() {
@@ -411,9 +498,12 @@ public class PhFragment extends Fragment {
             tvPhCurr.startAnimation(fadeOut);
             tvPhNext.setVisibility(View.VISIBLE);
             tvPhNext.startAnimation(slideInBottom);
+
+            */
         }else{
             tvPhCurr.setText(newText);
         }
+
     }
 
     private int getAttr(@AttrRes int attrRes) {
@@ -421,6 +511,18 @@ public class PhFragment extends Fragment {
         requireActivity().getTheme().resolveAttribute(attrRes, typedValue, true);
 
         return typedValue.data;
+    }
+
+
+    //probes adapter
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 /*
     private void setupGraph() {

@@ -26,7 +26,6 @@ public class SQLiteDb extends SQLiteOpenHelper {
                 + USER_COLUMN_ID + " INTEGER PRIMARY KEY," + USER_COLUMN_NAME + " TEXT,"
                 + USER_COLUMN_PASSCODE + " TEXT" + ")";
         sqLiteDatabase.execSQL(CREATE_TABLE);
-
     }
 
     @Override
