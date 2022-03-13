@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.aican.aicanapp.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -16,7 +17,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
-public class EditPhBufferDialog extends BottomSheetDialogFragment {
+public class EditPhBufferDialog extends DialogFragment {
 
     Button btnChange;
     TextInputLayout tilPh;

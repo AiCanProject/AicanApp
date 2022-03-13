@@ -43,18 +43,18 @@ public class AuthenticateRoleDialog extends DialogFragment {
         userId = view.findViewById(R.id.userId);
         passCode = view.findViewById(R.id.userPwd);
         generate = view.findViewById(R.id.authenticateRole);
-        AtomicReference<Boolean> success = new AtomicReference<>(false);
+        boolean success;
         generate.setOnClickListener(v -> {
+
             Intent intent = new Intent(requireContext(), PhCalibFragment.class);
             intent.putExtra(userId.getText().toString(), passCode.getText().toString());
-            intent.putExtra("success", success);
+            //intent.putExtra("success", success);
             startActivity(intent);
 
             if (isEmailValid() && isPassCodeValid()) {
 
 
-
-                success.set(true);
+                //success = true;
                 dismiss();
             }
         });

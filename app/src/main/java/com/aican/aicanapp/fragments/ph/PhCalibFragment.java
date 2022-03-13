@@ -4,6 +4,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -42,9 +43,11 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.AuthenticateRoleDialog;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
+import com.aican.aicanapp.dialogs.ExitConfirmDialog;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
+import com.aican.aicanapp.utils.OnBackPressed;
 import com.google.common.collect.Table;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -60,9 +63,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelectedListener, OnBackPressed {
 
     public static final String THREE_POINT_CALIBRATION = "3";
     public static final String FIVE_POINT_CALIBRATION = "5";
@@ -70,13 +74,14 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
 
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
-    TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5;
+    TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, phEdit1, phEdit2, phEdit3, mvEdit1, mvEdit2, mvEdit3;
     DatabaseReference deviceRef;
     LinearLayout point3, point5;
     Button calibrateBtn, btnNext, export;
     Spinner spin;
     String[] mode = {"3"};
 
+    LinearLayout ll1;
 
     float[] buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
@@ -111,6 +116,18 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             }
         });
     }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.ph1 && v.getId() == R.id.mv1){
+                ph1.setBackgroundColor(Color.GRAY);
+                mv1.setBackgroundColor(Color.GRAY);
+            }
+
+
+        }
+    };
 
     private void displayCoeffAndPrepareNext(float coeff) {
         if(currentBuf==buffers.length-1) {
@@ -255,7 +272,12 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         mv3 = view.findViewById(R.id.mv3);
         mv4 = view.findViewById(R.id.mv4);
         mv5 = view.findViewById(R.id.mv5);
+        ll1 = view.findViewById(R.id.ll1);
 
+
+        phEdit1 = view.findViewById(R.id.phEdit1);
+        phEdit2 = view.findViewById(R.id.phEdit2);
+        phEdit3 = view.findViewById(R.id.phEdit3);
 
 
         tvTimer = view.findViewById(R.id.tvTimer);
@@ -276,6 +298,13 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         spin = view.findViewById(R.id.calibMode);
         spin.setOnItemSelectedListener(this);
 
+
+        phEdit1.setOnClickListener(this::onClick);
+        phEdit2.setOnClickListener(this::onClick);
+        phEdit3.setOnClickListener(this::onClick);
+
+
+        ll1.setOnClickListener(onClickListener);
 
         ArrayAdapter aa = new ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,mode);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -332,6 +361,8 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
         });
 
+        lastCalib.setText("Last Calibration by " );
+
 
         btnNext.setOnClickListener(v -> {
             if (currentBuf >= buffers.length - 1) {
@@ -356,6 +387,31 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         // setupGraph();
         setupListeners();
         loadBuffers();
+    }
+
+
+    //edit dialog
+    private void onClick(View v){
+        switch (v.getId()) {
+            case R.id.phEdit1:
+            case R.id.phEdit3:
+            case R.id.phEdit2:
+
+
+                EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
+                    updateBufferValue(ph);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(String.valueOf(ph));
+                });
+                dialog.show(getParentFragmentManager(), null);
+
+
+                break;
+
+
+            default:
+
+                break;
+        }
     }
 
 
@@ -445,6 +501,28 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     boolean isTimeOptionsVisible = false;
 
 
+    @Override
+    public void onBackPressed() {
+        if (isCalibrating) {
+            ExitConfirmDialog dialog = new ExitConfirmDialog((new ExitConfirmDialog.DialogCallbacks() {
+                @Override
+                public void onYesClicked(Dialog dialog1) {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                    dialog1.dismiss();
+                    isCalibrating = false;
+                    onBackPressed();
+                }
 
+                @Override
+                public void onNoClicked(Dialog dialog1) {
+                    dialog1.dismiss();
+                }
+            }));
 
+            dialog.show(getParentFragmentManager(), null);
+        } else {
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+
+    }
 }
