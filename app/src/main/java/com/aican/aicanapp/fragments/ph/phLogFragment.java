@@ -4,6 +4,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -33,6 +34,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.graph.ForegroundService;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
@@ -86,11 +88,15 @@ public class phLogFragment extends Fragment {
         //GraphView graphView = view.findViewById(R.id.graph);
         Button export = view.findViewById(R.id.export);
         Button logBtn = view.findViewById(R.id.logBtn);
+        Button clear = view.findViewById(R.id.clear);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         phData phData = new phData();
         ArrayList<phData> list = new ArrayList<>();
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
+        clear.setOnClickListener(v -> {
+            list.clear();
+        });
 
         setupGraph();
 
@@ -101,7 +107,11 @@ public class phLogFragment extends Fragment {
         }
 
         export.setOnClickListener(v ->{
-            generatePDF();
+
+            Intent i = new Intent(getContext(), Export.class);
+            startActivity(i);
+
+            //generatePDF();
         });
 
 
