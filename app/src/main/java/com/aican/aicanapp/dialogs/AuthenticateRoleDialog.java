@@ -1,12 +1,12 @@
 package com.aican.aicanapp.dialogs;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +19,21 @@ import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class AuthenticateRoleDialog extends DialogFragment {
 
-    EditText userId, passCode;
-    Button generate, addSign;
+    private static final String FILE_NAME = "user_info.txt";
 
+    EditText userId, passCode;
+    Button generate;
+    String validPasscode, validUserID;
+    String[] lines;
+    static AtomicReference<Boolean> success;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -38,30 +46,73 @@ public class AuthenticateRoleDialog extends DialogFragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-
         userId = view.findViewById(R.id.userId);
         passCode = view.findViewById(R.id.userPwd);
         generate = view.findViewById(R.id.authenticateRole);
-        AtomicReference<Boolean> success = new AtomicReference<>(false);
-        generate.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), PhCalibFragment.class);
-            intent.putExtra(userId.getText().toString(), passCode.getText().toString());
-            intent.putExtra("success", success);
-            startActivity(intent);
 
-            if (isEmailValid() && isPassCodeValid()) {
+     /*   FileInputStream fis = null;
+        try {
+            fis = getActivity().openFileInput(FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String text;
 
-
-
-                success.set(true);
-                dismiss();
+            while ((text = br.readLine()) != null) {
+                sb.append(text).append("\n");
             }
-        });
+            lines = sb.toString().split("\\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        success = new AtomicReference<>(false);
+        generate.setOnClickListener(v -> {
+
+            Log.d("46513", "gooo");
+            //if (isEmailValid() && isPassCodeValid()) {
+            validPasscode = passCode.getText().toString();
+            validUserID = userId.getText().toString();
+                Log.d("46513", validPasscode);
+                Log.d("46513", lines[2]);
+                Log.d("46513", validUserID);
+                Log.d("46513", lines[3]);
+
+                if(validPasscode.equals(lines[2]) && validUserID.equals(lines[3])){
+                    Toast.makeText(requireContext(), "GRANTEDDDDD", Toast.LENGTH_SHORT).show();
+
+                   *//* Bundle bundle = new Bundle();
+                    bundle.putString("edttext", "From Activity");
+                    Fragmentclass fragobj = new Fragmentclass();
+                    fragobj.setArguments(bundle);*//*
+
+                    success.set(true);
+                    Intent intent = new Intent(requireContext(), PhCalibFragment.class);
+                    intent.putExtra(userId.getText().toString(), passCode.getText().toString());
+                    intent.putExtra("success", success);
+                    //startActivity(intent);
+                    dismiss();
+                }else{
+                    Toast.makeText(requireContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
+                }
+           // }
+        });*/
     }
 
-    private boolean isPassCodeValid() {
-        String validName = passCode.getText().toString();
+    public static AtomicReference<Boolean> getStatus(){
+        return success;
+    }
+
+  /*  private boolean isPassCodeValid() {
+
         if (validName.isEmpty()) {
             Toast.makeText(requireContext(), "Enter Passcode!", Toast.LENGTH_SHORT).show();
             return false;
@@ -70,13 +121,13 @@ public class AuthenticateRoleDialog extends DialogFragment {
     }
 
     private boolean isEmailValid() {
-        String validName = userId.getText().toString();
+
         if (!validName.isEmpty()) {
 
         } else {
             Toast.makeText(requireContext(), "Enter Email Address!", Toast.LENGTH_SHORT).show();
         }
         return true;
-    }
+    }*/
 
 }

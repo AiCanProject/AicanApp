@@ -29,7 +29,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.graph.ForegroundService;
@@ -55,9 +57,13 @@ import com.itextpdf.text.pdf.parser.Line;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,11 +73,15 @@ import java.util.Map;
 
 public class phLogFragment extends Fragment {
 
+    private static final String FILE_NAME = "user_info.txt";
+
     LineChart lineChart;
     int pageHeight = 900;
     int pagewidth = 1280;
+    String[] lines;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,7 +101,6 @@ public class phLogFragment extends Fragment {
         ArrayList<phData> list = new ArrayList<>();
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
-
         setupGraph();
 
         if (checkPermission()) {
@@ -100,10 +109,39 @@ public class phLogFragment extends Fragment {
             requestPermission();
         }
 
-        export.setOnClickListener(v ->{
-            generatePDF();
-        });
+        DialogMain dialogMain = new DialogMain();
+        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
+        export.setOnClickListener(v -> {
+            FileInputStream fis = null;
+            try {
+                fis = getActivity().openFileInput(FILE_NAME);
+                InputStreamReader isr = new InputStreamReader(fis);
+                BufferedReader br = new BufferedReader(isr);
+                StringBuilder sb = new StringBuilder();
+                String text;
+
+                while ((text = br.readLine()) != null) {
+                    sb.append(text).append("\n");
+                }
+                lines = sb.toString().split("\\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (Source.status) {
+                generatePDF();
+            } else {
+                Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         logBtn.setOnClickListener(v -> {
             String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
@@ -113,7 +151,7 @@ public class phLogFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Float p = snapshot.getValue(Float.class);
-                    String ph = String.format(Locale.UK, "%.2f", p );
+                    String ph = String.format(Locale.UK, "%.2f", p);
                     phData.setpH(ph);
                 }
 
@@ -123,12 +161,11 @@ public class phLogFragment extends Fragment {
                 }
             });
 
-
             deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Float mv = snapshot.getValue(Float.class);
-                    String m = String.format(Locale.UK, "%.2f", mv );
+                    String m = String.format(Locale.UK, "%.2f", mv);
                     phData.setmV(m);
                 }
 
@@ -145,12 +182,10 @@ public class phLogFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-
     }
 
     private void generatePDF() {
-
+        Source.status = false;
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
 
@@ -175,19 +210,16 @@ public class phLogFragment extends Fragment {
         canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
 
         paint.setTextSize(30);
-        canvas.drawText("Slope: 60%", canvas.getWidth()-40, 190, paint);
+        canvas.drawText("Slope: 60%", canvas.getWidth() - 40, 190, paint);
 
         paint.setTextSize(30);
-        canvas.drawText("Temperature: 30", canvas.getWidth()-40, 230, paint);
+        canvas.drawText("Temperature: 30", canvas.getWidth() - 40, 230, paint);
 
         paint.setTextSize(30);
-        canvas.drawText("Offset: 40", canvas.getWidth()-40, 270, paint);
-
-
-
+        canvas.drawText("Offset: 40", canvas.getWidth() - 40, 270, paint);
 
         paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight()-30, paint);
+        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight() - 30, paint);
 
         pdfDocument.finishPage(myPage);
 
@@ -269,12 +301,13 @@ public class phLogFragment extends Fragment {
     int skipPoints = 0;
 
     Float ph;
+
     private void setupListeners() {
         deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
                 ph = snapshot.getValue(Float.class);
-                if(ph==null) return;
+                if (ph == null) return;
 
                 //phView.moveTo(ph);
                 //updatePh(ph);
@@ -335,20 +368,20 @@ public class phLogFragment extends Fragment {
          */
 
         ArrayList<Entry> yValues = new ArrayList<>();
-        yValues.add(new Entry(0,40f));
-        yValues.add(new Entry(1,50f));
-        yValues.add(new Entry(2,70f));
-        yValues.add(new Entry(3,80f));
-        yValues.add(new Entry(4,30f));
-        yValues.add(new Entry(5,90f));
-        yValues.add(new Entry(6,20f));
-        yValues.add(new Entry(7,100f));
+        yValues.add(new Entry(0, 40f));
+        yValues.add(new Entry(1, 50f));
+        yValues.add(new Entry(2, 70f));
+        yValues.add(new Entry(3, 80f));
+        yValues.add(new Entry(4, 30f));
+        yValues.add(new Entry(5, 90f));
+        yValues.add(new Entry(6, 20f));
+        yValues.add(new Entry(7, 100f));
 
 
         LineDataSet set = new LineDataSet(yValues, "pH");
         set.setFillAlpha(110);
-       ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-       dataSets.add(set);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set);
 
         lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
         LineData data = new LineData(dataSets);
@@ -414,9 +447,9 @@ public class phLogFragment extends Fragment {
         }).start();
 
  */
-    }
+}
 
-    //    private void rescaleGraph() {
+//    private void rescaleGraph() {
 //        ArrayList<Entry> entries = new ArrayList<>();
 //        int count = 0;
 //        for (Entry entry : entriesOriginal) {

@@ -1,29 +1,16 @@
 package com.aican.aicanapp.fragments.ph;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,47 +23,42 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.dialogs.AuthenticateRoleDialog;
-import com.aican.aicanapp.dialogs.EditPhBufferDialog;
-import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
-import com.google.common.collect.Table;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+
+    private static final String FILE_NAME = "user_info.txt";
 
     public static final String THREE_POINT_CALIBRATION = "3";
     public static final String FIVE_POINT_CALIBRATION = "5";
     public static final String CALIBRATION_TYPE = "calibration_type";
 
-
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5;
     DatabaseReference deviceRef;
     LinearLayout point3, point5;
-    Button calibrateBtn, btnNext, export;
+    Button calibrateBtn, btnNext, export, generate;
     Spinner spin;
     String[] mode = {"3"};
-
+    String[] lines;
 
     float[] buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
@@ -88,7 +70,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     String calibrationType;
     Activity activity;
 
-
     DatabaseReference coeffRef = null;
 
     float coeff = 0;
@@ -98,7 +79,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     private void loadBuffers() {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
-                buffers[i] =  Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
+                buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
 
             ph1.setText(String.valueOf(buffers[0]));
@@ -113,15 +94,15 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     private void displayCoeffAndPrepareNext(float coeff) {
-        if(currentBuf==buffers.length-1) {
+        if (currentBuf == buffers.length - 1) {
             btnNext.setText("Done");
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
             isCalibrating = false;
         }
         btnNext.setVisibility(View.VISIBLE);
         //tvCoefficientLabel.setVisibility(View.VISIBLE);
-            mv1.setText(String.format(Locale.UK, "%.2f", coeff));
-            mv2.setText(String.format(Locale.UK,"%.2f", coeff));
+        mv1.setText(String.format(Locale.UK, "%.2f", coeff));
+        mv2.setText(String.format(Locale.UK, "%.2f", coeff));
         //tvCoefficient.setVisibility(View.VISIBLE);
     }
 
@@ -133,13 +114,12 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         coeffRef.addValueEventListener(coeffListener);
     }
 
-
     private void setupListeners() {
         deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
-                if(ph==null) return;
+                if (ph == null) return;
                 //                phView.moveTo(ph);
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
@@ -148,7 +128,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -163,7 +142,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -181,8 +159,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
             }
         });
-
-
     }
 
     private void updatePh(float ph) {
@@ -201,7 +177,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             fadeOut.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-
                 }
 
                 @Override
@@ -221,26 +196,27 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             tvPhCurr.startAnimation(fadeOut);
             tvPhNext.setVisibility(View.VISIBLE);
             tvPhNext.startAnimation(slideInBottom);
-        }else{
+        } else {
             tvPhCurr.setText(newText);
         }
     }
 
-
-
+    /**
+     * Inflate the layout for this fragment
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ph_calib, container, false);
     }
-
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         //calibrationType = getIntent().getStringExtra(CALIBRATION_TYPE);
 
@@ -256,8 +232,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         mv4 = view.findViewById(R.id.mv4);
         mv5 = view.findViewById(R.id.mv5);
 
-
-
+        Log.d("6551313", "onViewCreated: ");
         tvTimer = view.findViewById(R.id.tvTimer);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
@@ -272,66 +247,123 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         Bundle bundle = new Bundle();
         String name = bundle.getString("name");
         String pass = bundle.getString("passcode");
-        Boolean success = bundle.getBoolean("success");
+        final Boolean success = bundle.getBoolean("success");
         spin = view.findViewById(R.id.calibMode);
         spin.setOnItemSelectedListener(this);
 
-
-        ArrayAdapter aa = new ArrayAdapter(requireContext(),android.R.layout.simple_spinner_item,mode);
+        ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
-        calibrateBtn.setOnClickListener(v -> {
+        DialogMain dialogMain = new DialogMain();
+        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+
+        calibrateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                FileInputStream fis = null;
+                try {
+                    fis = getActivity().openFileInput(FILE_NAME);
+                    InputStreamReader isr = new InputStreamReader(fis);
+                    BufferedReader br = new BufferedReader(isr);
+                    StringBuilder sb = new StringBuilder();
+                    String text;
+
+                    while ((text = br.readLine()) != null) {
+                        sb.append(text).append("\n");
+                    }
+                    lines = sb.toString().split("\\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if(Source.status){
+                    calibrate();
+                }else {
+                    Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+   /*     calibrateBtn.setOnClickListener(v -> {
             AuthenticateRoleDialog dialog = new AuthenticateRoleDialog();
             dialog.show(getParentFragmentManager(), null);
 
-            if (success == true){
+            Log.d("46513", String.valueOf(success));
 
-            calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
-            calibrateBtn.setEnabled(false);
-            tvTimer.setVisibility(View.VISIBLE);
-            isCalibrating = true;
-            setupCoeffListener();
-            CountDownTimer timer = new CountDownTimer(120000, 1000) {
+          //  success = AuthenticateRoleDialog.getStatus();
+
+            userId = view.findViewById(R.id.userId);
+            passCode = view.findViewById(R.id.userPwd);
+            generate = view.findViewById(R.id.authenticateRole);
+
+
+
+        //    success = new AtomicReference<>(false);
+                //}
+        });*/
+        /* generate.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onTick(long millisUntilFinished) {
-                    millisUntilFinished /= 1000;
-                    int min = (int) millisUntilFinished / 60;
-                    int sec = (int) millisUntilFinished % 60;
-                    String time = String.format(Locale.UK, "%02d:%02d", min, sec);
-                    tvTimer.setText(time);
+                public void onClick(View view) {
+                    if (success) {
+                        calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
+                        calibrateBtn.setEnabled(false);
+                        tvTimer.setVisibility(View.VISIBLE);
+                        isCalibrating = true;
+                        setupCoeffListener();
+                        CountDownTimer timer = new CountDownTimer(120000, 1000) {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                millisUntilFinished /= 1000;
+                                int min = (int) millisUntilFinished / 60;
+                                int sec = (int) millisUntilFinished % 60;
+                                String time = String.format(Locale.UK, "%02d:%02d", min, sec);
+                                tvTimer.setText(time);
+                            }
+
+                            final Handler handler = new Handler();
+                            Runnable runnable;
+
+                            @Override
+                            public void onFinish() {
+                                runnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tvTimer.setVisibility(View.INVISIBLE);
+                                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
+                                        deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
+                                            Float coeff = dataSnapshot.getValue(Float.class);
+                                            if (coeff == null) return;
+                                            displayCoeffAndPrepareNext(coeff);
+                                        });
+
+                                        //handler.postDelayed(runnable, 1000);
+                                    }
+                                };
+                                runnable.run();
+
+                            }
+                        };
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
+                            timer.start();
+                        });
+                    }
+                    // success.set(true);
+                    Intent intent = new Intent(requireContext(), PhCalibFragment.class);
+                    //    intent.putExtra(userId.getText().toString(), passCode.getText().toString());
+                    intent.putExtra("success", success);
+                    //startActivity(intent);
+                    // dismiss();
                 }
-
-                final Handler handler = new Handler();
-                Runnable runnable;
-
-                @Override
-                public void onFinish() {
-                    runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            tvTimer.setVisibility(View.INVISIBLE);
-                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
-                            deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
-                                Float coeff = dataSnapshot.getValue(Float.class);
-                                if (coeff == null) return;
-                                displayCoeffAndPrepareNext(coeff);
-                            });
-
-                            //handler.postDelayed(runnable, 1000);
-                        }
-                    };
-                    runnable.run();
-
-                }
-            };
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
-                timer.start();
-            });
-        }
-
-        });
-
+                });*/
 
         btnNext.setOnClickListener(v -> {
             if (currentBuf >= buffers.length - 1) {
@@ -349,7 +381,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
             //tvCoefficient.setVisibility(View.INVISIBLE);
             //tvCoefficientLabel.setVisibility(View.INVISIBLE);
-
         });
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
@@ -358,17 +389,11 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         loadBuffers();
     }
 
-
-
-
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         //Toast.makeText(requireContext(),mode[i] , Toast.LENGTH_LONG).show();
         //calibrationType = spin.getItemAtPosition(i).toString();
         if (spin.getSelectedItemPosition() == 0) {
-
-
             buffers = new float[]{4.0F, 7.0F, 9.0F};
             bufferLabels = new String[]{"B_2", "B_3", "B_4"};
             coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
@@ -376,8 +401,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
             point3.setVisibility(View.VISIBLE);
             point5.setVisibility(View.GONE);
-        }else if (spin.getSelectedItemPosition() == 1) {
-
+        } else if (spin.getSelectedItemPosition() == 1) {
 
             buffers = new float[]{4.0F, 7.0F, 9.0F};
             bufferLabels = new String[]{"B_2", "B_3", "B_4"};
@@ -387,47 +411,86 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             point5.setVisibility(View.VISIBLE);
             point3.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
-
 
     private void updateBufferValue(Float value) {
         String newValue = String.valueOf(value);
         ph2.setText(newValue);
 
-        //Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        //Animation slideInBottom = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
+/*        Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
+        Animation slideInBottom = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
 
-        //fadeOut.setAnimationListener(new Animation.AnimationListener() {
-          //  @Override
-            //public void onAnimationStart(Animation animation) {
-            //}
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                tvBufferCurr.setVisibility(View.INVISIBLE);
-//                TextView t = tvBufferCurr;
-//                tvBufferCurr = tvBufferNext;
-//                tvBufferNext = t;
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-//
-//        tvBufferCurr.startAnimation(fadeOut);
-//        tvBufferNext.setVisibility(View.VISIBLE);
-//        tvBufferNext.startAnimation(slideInBottom);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+          @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tvBufferCurr.setVisibility(View.INVISIBLE);
+                TextView t = tvBufferCurr;
+                tvBufferCurr = tvBufferNext;
+                tvBufferNext = t;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        tvBufferCurr.startAnimation(fadeOut);
+        tvBufferNext.setVisibility(View.VISIBLE);
+        tvBufferNext.startAnimation(slideInBottom);*/
     }
 
+    public void calibrate() {
+        Source.status = false;
+        calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
+        calibrateBtn.setEnabled(false);
+        tvTimer.setVisibility(View.VISIBLE);
+        isCalibrating = true;
+        setupCoeffListener();
+        CountDownTimer timer = new CountDownTimer(120000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                millisUntilFinished /= 1000;
+                int min = (int) millisUntilFinished / 60;
+                int sec = (int) millisUntilFinished % 60;
+                String time = String.format(Locale.UK, "%02d:%02d", min, sec);
+                tvTimer.setText(time);
+            }
+
+            final Handler handler = new Handler();
+            Runnable runnable;
+
+            @Override
+            public void onFinish() {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        tvTimer.setVisibility(View.INVISIBLE);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
+                            Float coeff = dataSnapshot.getValue(Float.class);
+                            if (coeff == null) return;
+                            displayCoeffAndPrepareNext(coeff);
+                        });
+
+                        //handler.postDelayed(runnable, 1000);
+                    }
+                };
+                runnable.run();
+            }
+        };
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
+            timer.start();
+        });
+    }
 
     ValueEventListener coeffListener = new ValueEventListener() {
         @Override
@@ -439,12 +502,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
         @Override
         public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
         }
     };
     boolean isTimeOptionsVisible = false;
-
-
-
-
 }
