@@ -149,7 +149,6 @@ public class Export extends AppCompatActivity {
 
         paint.setColor(Color.rgb(150, 150, 150));
         canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight()-30, paint);
-
         pdfDocument.finishPage(myPage);
 
 //        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
@@ -172,12 +171,12 @@ public class Export extends AppCompatActivity {
 //
 //        pdfDocument.close();
 
-        File yourAppDir = new File(Environment.getExternalStorageDirectory()+File.separator+"aicanPdf");
-        if (!yourAppDir.exists()) {
-            yourAppDir.mkdirs();
-        }
+//        File yourAppDir = new File(Environment.getExternalStorageDirectory()+File.separator+"aicanPdf");
+//        if (!yourAppDir.exists()) {
+//            yourAppDir.mkdirs();
+//        }
 
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/aicanPdf/ProgrammerWorld.pdf";
+        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + File.separator+ "/Download/ProgrammerWorld.pdf";
         File file = new File(stringFilePath);
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {

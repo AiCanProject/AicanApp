@@ -104,7 +104,6 @@ public class phLogFragment extends Fragment {
         ArrayList<phData> list = new ArrayList<>();
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
-<<<<<<< HEAD
         setupGraph();
 
         if (checkPermission()) {
@@ -124,21 +123,27 @@ public class phLogFragment extends Fragment {
                 BufferedReader br = new BufferedReader(isr);
                 StringBuilder sb = new StringBuilder();
                 String text;
-=======
-        clear.setOnClickListener(v -> {
-            list.clear();
-        });
 
-        setupGraph();
+                clear.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-        export.setOnClickListener(v ->{
+                        list.clear();
+                    }
+                });
 
-            Intent i = new Intent(getContext(), Export.class);
-            startActivity(i);
+                setupGraph();
 
-            //generatePDF();
-        });
->>>>>>> 998ffc26d23ff0c10cc5846523b07fdea8d17917
+                export.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent i = new Intent(getContext(), Export.class);
+                        startActivity(i);
+
+                    }
+                    //generatePDF();
+                });
 
                 while ((text = br.readLine()) != null) {
                     sb.append(text).append("\n");
@@ -203,7 +208,6 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
-<<<<<<< HEAD
     private void generatePDF() {
         Source.status = false;
         PdfDocument pdfDocument = new PdfDocument();
@@ -286,8 +290,6 @@ public class phLogFragment extends Fragment {
         pdfDocument.close();
     }
 
-=======
->>>>>>> 998ffc26d23ff0c10cc5846523b07fdea8d17917
     private boolean checkPermission() {
         // checking of permissions.
         int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
