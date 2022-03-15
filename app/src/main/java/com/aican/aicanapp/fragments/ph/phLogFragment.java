@@ -100,12 +100,6 @@ public class phLogFragment extends Fragment {
 
         setupGraph();
 
-        if (checkPermission()) {
-            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            requestPermission();
-        }
-
         export.setOnClickListener(v ->{
 
             Intent i = new Intent(getContext(), Export.class);
@@ -157,91 +151,6 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
 
-    }
-
-    private void generatePDF() {
-
-        PdfDocument pdfDocument = new PdfDocument();
-        Paint paint = new Paint();
-
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-        Canvas canvas = myPage.getCanvas();
-
-        paint.setTextSize(60);
-        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
-
-        paint.setTextSize(40);
-        paint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Slope: 60%", canvas.getWidth()-40, 190, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Temperature: 30", canvas.getWidth()-40, 230, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Offset: 40", canvas.getWidth()-40, 270, paint);
-
-
-
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight()-30, paint);
-
-        pdfDocument.finishPage(myPage);
-
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
-//        File dir = new File(path);
-//        if (!dir.exists())
-//            dir.mkdirs();
-//
-//        File filePath = new File(dir, "Test.pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(filePath));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//            //btn_generate.setText("Check PDF");
-//            //boolean_save=true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        pdfDocument.close();
-
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
-        File file = new File(stringFilePath);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
-//        }
-//        else
-//        {
-//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-//        }
-
-//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-
-        try {
-            pdfDocument.writeTo(new FileOutputStream(file));
-            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pdfDocument.close();
     }
 
     private boolean checkPermission() {

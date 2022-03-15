@@ -17,6 +17,9 @@ public class PhDevice {
         this.tds = (int) Math.min(10000, tds);
     }
 
+    public PhDevice() {
+    }
+
     public String getId() {
         return id;
     }
