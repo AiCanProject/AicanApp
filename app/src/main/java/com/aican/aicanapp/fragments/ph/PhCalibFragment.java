@@ -1,17 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
-import android.app.Activity;
-
 import android.app.Dialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -40,14 +30,9 @@ import com.aican.aicanapp.R;
 
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.dialogs.AuthenticateRoleDialog;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.ExitConfirmDialog;
-import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
-import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
 import com.aican.aicanapp.utils.OnBackPressed;
-import com.google.common.collect.Table;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,10 +52,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
     private static final String FILE_NAME = "user_info.txt";
 
-    public static final String THREE_POINT_CALIBRATION = "3";
-    public static final String FIVE_POINT_CALIBRATION = "5";
-    public static final String CALIBRATION_TYPE = "calibration_type";
-
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, phEdit1, phEdit2, phEdit3, mvEdit1, mvEdit2, mvEdit3;
     DatabaseReference deviceRef;
@@ -87,10 +68,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     String[] coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
     int[] calValues = new int[]{10, 20, 30, 40, 50};
     int currentBuf = 0;
-
-    String deviceId;
-    String calibrationType;
-    Activity activity;
 
     DatabaseReference coeffRef = null;
 
@@ -118,12 +95,10 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.ph1 && v.getId() == R.id.mv1){
+            if (v.getId() == R.id.ph1 && v.getId() == R.id.mv1) {
                 ph1.setBackgroundColor(Color.GRAY);
                 mv1.setBackgroundColor(Color.GRAY);
             }
-
-
         }
     };
 
@@ -134,10 +109,8 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             isCalibrating = false;
         }
         btnNext.setVisibility(View.VISIBLE);
-        //tvCoefficientLabel.setVisibility(View.VISIBLE);
         mv1.setText(String.format(Locale.UK, "%.2f", coeff));
         mv2.setText(String.format(Locale.UK, "%.2f", coeff));
-        //tvCoefficient.setVisibility(View.VISIBLE);
     }
 
     private void setupCoeffListener() {
@@ -154,10 +127,8 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
                 if (ph == null) return;
-                //                phView.moveTo(ph);
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
-                //PhCalibFragment.this.tvPhNext = ph;
             }
 
             @Override
@@ -170,8 +141,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String temp = snapshot.getValue(Integer.class).toString();
                 tvTempCurr.setText(temp + "°C");
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -184,13 +153,10 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String ec = snapshot.getValue(Integer.class).toString();
                 tvEcCurr.setText(ec);
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
     }
@@ -223,7 +189,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
-
                 }
             });
 
@@ -237,6 +202,7 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
     /**
      * Inflate the layout for this fragment
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -252,8 +218,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //calibrationType = getIntent().getStringExtra(CALIBRATION_TYPE);
-
         lastCalib = view.findViewById(R.id.lastCalibration);
         ph1 = view.findViewById(R.id.ph1);
         ph2 = view.findViewById(R.id.ph2);
@@ -266,8 +230,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         mv4 = view.findViewById(R.id.mv4);
         mv5 = view.findViewById(R.id.mv5);
         ll1 = view.findViewById(R.id.ll1);
-
-        Log.d("6551313", "onViewCreated: ");
 
         phEdit1 = view.findViewById(R.id.phEdit1);
         phEdit2 = view.findViewById(R.id.phEdit2);
@@ -283,11 +245,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         btnNext = view.findViewById(R.id.btnNext);
         point3 = view.findViewById(R.id.log3point);
         point5 = view.findViewById(R.id.log5Point);
-
-        Bundle bundle = new Bundle();
-        String name = bundle.getString("name");
-        String pass = bundle.getString("passcode");
-        final Boolean success = bundle.getBoolean("success");
         spin = view.findViewById(R.id.calibMode);
         spin.setOnItemSelectedListener(this);
 
@@ -296,7 +253,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         phEdit1.setOnClickListener(this::onClick);
         phEdit2.setOnClickListener(this::onClick);
         phEdit3.setOnClickListener(this::onClick);
-
 
         ll1.setOnClickListener(onClickListener);
 
@@ -333,92 +289,18 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
                         }
                     }
                 }
-                if(Source.status){
+                if (Source.status) {
                     calibrate();
-                }else {
+                } else {
                     Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-   /*     calibrateBtn.setOnClickListener(v -> {
-            AuthenticateRoleDialog dialog = new AuthenticateRoleDialog();
-            dialog.show(getParentFragmentManager(), null);
-
-            Log.d("46513", String.valueOf(success));
-
-          //  success = AuthenticateRoleDialog.getStatus();
-
-            userId = view.findViewById(R.id.userId);
-            passCode = view.findViewById(R.id.userPwd);
-            generate = view.findViewById(R.id.authenticateRole);
-
-
-
-<<<<<<< HEAD
-        //    success = new AtomicReference<>(false);
-                //}
-        });*/
-        /* generate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (success) {
-                        calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
-                        calibrateBtn.setEnabled(false);
-                        tvTimer.setVisibility(View.VISIBLE);
-                        isCalibrating = true;
-                        setupCoeffListener();
-                        CountDownTimer timer = new CountDownTimer(120000, 1000) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                                millisUntilFinished /= 1000;
-                                int min = (int) millisUntilFinished / 60;
-                                int sec = (int) millisUntilFinished % 60;
-                                String time = String.format(Locale.UK, "%02d:%02d", min, sec);
-                                tvTimer.setText(time);
-                            }
-
-                            final Handler handler = new Handler();
-                            Runnable runnable;
-
-                            @Override
-                            public void onFinish() {
-                                runnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tvTimer.setVisibility(View.INVISIBLE);
-                                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
-                                        deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
-                                            Float coeff = dataSnapshot.getValue(Float.class);
-                                            if (coeff == null) return;
-                                            displayCoeffAndPrepareNext(coeff);
-                                        });
-
-                                        //handler.postDelayed(runnable, 1000);
-                                    }
-                                };
-                                runnable.run();
-
-                            }
-                        };
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
-                            timer.start();
-                        });
-                    }
-                    // success.set(true);
-                    Intent intent = new Intent(requireContext(), PhCalibFragment.class);
-                    //    intent.putExtra(userId.getText().toString(), passCode.getText().toString());
-                    intent.putExtra("success", success);
-                    //startActivity(intent);
-                    // dismiss();
-                }
-                });*/
-        lastCalib.setText("Last Calibration by " );
-
+        lastCalib.setText("Last Calibration by ");
 
         btnNext.setOnClickListener(v -> {
             if (currentBuf >= buffers.length - 1) {
-                //onBackPressed();
                 return;
             }
             btnNext.setVisibility(View.INVISIBLE);
@@ -426,52 +308,33 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
 
             calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
             calibrateBtn.setEnabled(true);
-
-            //phView.moveTo(buffers[currentBuf]);
             updateBufferValue((float) buffers[currentBuf]);
-
-            //tvCoefficient.setVisibility(View.INVISIBLE);
-            //tvCoefficientLabel.setVisibility(View.INVISIBLE);
         });
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-        // setupGraph();
         setupListeners();
         loadBuffers();
     }
 
-    //edit dialog
-    private void onClick(View v){
+    private void onClick(View v) {
         switch (v.getId()) {
             case R.id.phEdit1:
             case R.id.phEdit3:
             case R.id.phEdit2:
-
 
                 EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(String.valueOf(ph));
                 });
                 dialog.show(getParentFragmentManager(), null);
-
-
                 break;
-
-
             default:
-
                 break;
         }
     }
 
-
-
-
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        //Toast.makeText(requireContext(),mode[i] , Toast.LENGTH_LONG).show();
-        //calibrationType = spin.getItemAtPosition(i).toString();
         if (spin.getSelectedItemPosition() == 0) {
             buffers = new float[]{4.0F, 7.0F, 9.0F};
             bufferLabels = new String[]{"B_2", "B_3", "B_4"};
@@ -481,7 +344,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
             point3.setVisibility(View.VISIBLE);
             point5.setVisibility(View.GONE);
         } else if (spin.getSelectedItemPosition() == 1) {
-
             buffers = new float[]{4.0F, 7.0F, 9.0F};
             bufferLabels = new String[]{"B_2", "B_3", "B_4"};
             coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
@@ -499,32 +361,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
     private void updateBufferValue(Float value) {
         String newValue = String.valueOf(value);
         ph2.setText(newValue);
-
-/*        Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        Animation slideInBottom = AnimationUtils.loadAnimation(this, R.anim.slide_in_bottom);
-
-        fadeOut.setAnimationListener(new Animation.AnimationListener() {
-          @Override
-        public void onAnimationStart(Animation animation) {
-        }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                tvBufferCurr.setVisibility(View.INVISIBLE);
-                TextView t = tvBufferCurr;
-                tvBufferCurr = tvBufferNext;
-                tvBufferNext = t;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        tvBufferCurr.startAnimation(fadeOut);
-        tvBufferNext.setVisibility(View.VISIBLE);
-        tvBufferNext.startAnimation(slideInBottom);*/
     }
 
     public void calibrate() {
@@ -559,8 +395,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
                             if (coeff == null) return;
                             displayCoeffAndPrepareNext(coeff);
                         });
-
-                        //handler.postDelayed(runnable, 1000);
                     }
                 };
                 runnable.run();
@@ -583,8 +417,6 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         public void onCancelled(@NonNull @NotNull DatabaseError error) {
         }
     };
-    boolean isTimeOptionsVisible = false;
-
 
     @Override
     public void onBackPressed() {
@@ -608,6 +440,5 @@ public class PhCalibFragment extends Fragment implements AdapterView.OnItemSelec
         } else {
             getActivity().getSupportFragmentManager().popBackStack();
         }
-
     }
 }

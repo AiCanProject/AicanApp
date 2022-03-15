@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="22/02/2022"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:layout_margin= "10dp"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -73,7 +73,7 @@
         android:layout_margin="20dp"
         android:text="End Date    : "
         android:textColor="@color/black"
-        android:textSize="32dp"
+        android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:hint="22/02/2022"
         android:layout_margin="10dp"
-        android:textSize="30dp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/authenticateRole"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"></androidx.constraintlayout.widget.Guideline>
+        app:layout_constraintGuide_percent="0.5"/>
 
     <TextView
         android:id="@+id/nofiles_textview"

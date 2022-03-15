@@ -3,13 +3,10 @@ package com.aican.aicanapp.Dashboard;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,18 +17,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.data.SQLiteDb;
-import com.aican.aicanapp.data.SqlDataClass;
+import com.aican.aicanapp.Source;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    private static final String FILE_NAME = "user_info.txt";
 
     EditText name, passcode, userId;
     Button generate, addSign;
     Spinner spinner;
     ImageView imageView;
-    String[] r = { "Operator", "Supervisor"};
+    String[] r = {"Operator", "Supervisor"};
     String Role;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
@@ -48,64 +49,55 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         passcode = findViewById(R.id.assignedPwd);
         generate = findViewById(R.id.assignRole);
         spinner = findViewById(R.id.selectRole);
-        ArrayAdapter role = new ArrayAdapter(this,android.R.layout.simple_spinner_item,r);
-        role.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //Setting the ArrayAdapter data on the Spinner
-
         addSign = findViewById(R.id.addSignature);
         imageView = findViewById(R.id.signature);
 
         addSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-//                {
-//                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-//                }
-//                else
-//                {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
-
             }
         });
 
+        ArrayAdapter role = new ArrayAdapter(this,android.R.layout.simple_spinner_item,r);
+        role.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(role);
+        spinner.setOnItemSelectedListener(this);
         mDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
-
-        SQLiteDb db = new SQLiteDb(this);
 
         generate.setOnClickListener(view -> {
             if(isEmailValid() && isPassCodeValid()){
-                Log.d("Insert: ", "Inserting ..");
-                db.addDetails(new SqlDataClass(name.getText().toString().trim(), passcode.getText().toString().trim(),userId.getText().toString().trim() ));
-
-
-//                    FirebaseDatabase.getInstance(PrimaryAccount.getInstance(SettingActivity.this))
-//                            .getReference().child(FirebaseAuth.getInstance(PrimaryAccount.getInstance(SettingActivity.this)).getCurrentUser().getUid())
-//                            .child("SUB_USER").push()
-//                            .setValue(FieldValue.arrayUnion(Role.trim(),name.getText().toString().trim(), passcode.getText().toString().trim()));
-
-
+                String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
+                Source.userRole = Role;
+                FileOutputStream fos = null;
+                try {
+                    fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                    fos.write(details.getBytes());
+                    Toast.makeText(getApplicationContext(), "Role Assigned", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fos != null) {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         });
-
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(spinner.getSelectedItemPosition() == 0){
-            Role = spinner.getSelectedItem().toString();
-
-        }else if (spinner.getSelectedItemPosition() == 1) {
-            Role = spinner.getSelectedItem().toString();
-
-        }
+        Role = adapterView.getItemAtPosition(i).toString();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
+        Role = spinner.getSelectedItem().toString();
     }
 
     private boolean isPassCodeValid() {
@@ -113,7 +105,6 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         if (validName.isEmpty()) {
             Toast.makeText(this, "Enter Passcode!", Toast.LENGTH_SHORT).show();
         }
-
         return true;
     }
 
@@ -149,6 +140,5 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             addSign.setText("Ok!");
             addSign.setEnabled(false);
         }
-
     }
 }

@@ -67,7 +67,7 @@ public class DialogMain extends AppCompatDialogFragment {
             public void onClick(View view) {
                 Source.userId = userID.getText().toString();
                 Source.userPasscode = passcode.getText().toString();
-                if (Source.userPasscode.equals(lines[2]) && Source.userId.equals(lines[3])) {
+                if (Source.userPasscode.equals(lines[2]) && Source.userId.equals(lines[3]) && Source.userRole.equals("Operator")) {
                     Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                     dismiss();
                     Source.status = true;
