@@ -56,7 +56,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
         holder.ph.setText(list.get(position).getpH());
         holder.mv.setText(list.get(position).getmV());
         holder.dt.setText(list.get(position).getDate());
-        holder.tim.setText(list.get(position).getTime());
+        //holder.tim.setText(list.get(position).getTime());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
             ph = itemView.findViewById(R.id.phLog);
             mv = itemView.findViewById(R.id.mVLog);
             dt = itemView.findViewById(R.id.date);
-            tim = itemView.findViewById(R.id.time);
+            //tim = itemView.findViewById(R.id.time);
         }
     }
 }

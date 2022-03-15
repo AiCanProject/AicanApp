@@ -25,6 +25,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".specificactivities.Export"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
+        <activity
             android:name=".dialogs.AuthenticateRoleDialog"
             android:exported="false"
             tools:ignore="Instantiatable" />

@@ -4,6 +4,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -35,6 +36,7 @@ import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.graph.ForegroundService;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
@@ -96,11 +98,13 @@ public class phLogFragment extends Fragment {
         //GraphView graphView = view.findViewById(R.id.graph);
         Button export = view.findViewById(R.id.export);
         Button logBtn = view.findViewById(R.id.logBtn);
+        Button clear = view.findViewById(R.id.clear);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         phData phData = new phData();
         ArrayList<phData> list = new ArrayList<>();
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
+<<<<<<< HEAD
         setupGraph();
 
         if (checkPermission()) {
@@ -120,6 +124,21 @@ public class phLogFragment extends Fragment {
                 BufferedReader br = new BufferedReader(isr);
                 StringBuilder sb = new StringBuilder();
                 String text;
+=======
+        clear.setOnClickListener(v -> {
+            list.clear();
+        });
+
+        setupGraph();
+
+        export.setOnClickListener(v ->{
+
+            Intent i = new Intent(getContext(), Export.class);
+            startActivity(i);
+
+            //generatePDF();
+        });
+>>>>>>> 998ffc26d23ff0c10cc5846523b07fdea8d17917
 
                 while ((text = br.readLine()) != null) {
                     sb.append(text).append("\n");
@@ -184,6 +203,7 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
+<<<<<<< HEAD
     private void generatePDF() {
         Source.status = false;
         PdfDocument pdfDocument = new PdfDocument();
@@ -266,6 +286,8 @@ public class phLogFragment extends Fragment {
         pdfDocument.close();
     }
 
+=======
+>>>>>>> 998ffc26d23ff0c10cc5846523b07fdea8d17917
     private boolean checkPermission() {
         // checking of permissions.
         int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);

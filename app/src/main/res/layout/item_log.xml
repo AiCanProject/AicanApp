@@ -24,7 +24,7 @@
                             android:textColor="@color/black"
                             android:background="@color/white"
                             android:textAlignment="center" />
-
+<!--
                         <TextView
                             android:id="@+id/time"
                             style="@style/table_row_item"
@@ -35,7 +35,7 @@
                             android:textColor="@color/black"
                             android:background="@color/white"
                             android:textAlignment="center" />
-
+-->
                         <TextView
                             android:id="@+id/phLog"
                             style="@style/table_row_item"
