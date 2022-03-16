@@ -161,7 +161,10 @@ public class phLogFragment extends Fragment {
                 }
             }
             if (Source.status) {
-                generatePDF();
+                Intent i = new Intent(getContext(), Export.class);
+                startActivity(i);
+
+                //                generatePDF();
             } else {
                 Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
             }

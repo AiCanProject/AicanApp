@@ -21,12 +21,13 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated = "true"
         android:theme="@style/Theme.AicanApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
         <activity
             android:name=".specificactivities.Export"
-            android:exported="false"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".dialogs.AuthenticateRoleDialog"
