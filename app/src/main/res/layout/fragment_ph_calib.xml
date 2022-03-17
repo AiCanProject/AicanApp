@@ -28,7 +28,7 @@ tools:context=".fragments.ph.PhCalibFragment">
             <androidx.cardview.widget.CardView
                 android:id="@+id/phLevelCard"
                 android:layout_width="220dp"
-                android:layout_height="100dp"
+                android:layout_height="90dp"
                 android:layout_margin="10dp"
                 android:backgroundTint="@color/white"
                 android:elevation="52dp"
@@ -62,11 +62,11 @@ tools:context=".fragments.ph.PhCalibFragment">
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="110dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/montserrat_medium"
                     android:text="7.4"
                     android:textColor="@color/black"
-                    android:textSize="39sp"
+                    android:textSize="33sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -90,7 +90,7 @@ tools:context=".fragments.ph.PhCalibFragment">
             <androidx.cardview.widget.CardView
                 android:id="@+id/tempCard"
                 android:layout_width="180dp"
-                android:layout_height="100dp"
+                android:layout_height="90dp"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="10dp"
                 android:background="@color/white"
@@ -114,11 +114,11 @@ tools:context=".fragments.ph.PhCalibFragment">
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/type_TV"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginTop="30dp"
                     android:layout_toEndOf="@+id/IV"
                     android:text="20 C"
                     android:textColor="@color/black"
-                    android:textSize="40sp" />
+                    android:textSize="37sp" />
 
                 <TextView
                     android:id="@+id/tvTempNext"
@@ -139,7 +139,7 @@ tools:context=".fragments.ph.PhCalibFragment">
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView3"
                 android:layout_width="180dp"
-                android:layout_height="100dp"
+                android:layout_height="90dp"
                 android:layout_margin="10dp"
                 android:background="@color/white"
                 android:backgroundTint="@color/white"
@@ -161,10 +161,10 @@ tools:context=".fragments.ph.PhCalibFragment">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginTop="32dp"
                     android:text="123"
                     android:textColor="@color/blueDark"
-                    android:textSize="40sp"
+                    android:textSize="37sp"
                     android:textStyle="bold" />
 
 
@@ -177,6 +177,7 @@ tools:context=".fragments.ph.PhCalibFragment">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="-12dp"
             android:orientation="horizontal">
 
             <TextView
@@ -232,9 +233,8 @@ tools:context=".fragments.ph.PhCalibFragment">
                 android:id="@+id/lastCalibration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginStart="18dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="0dp"
                 android:text="Last Calibrated at: \n 12/03/2022 20:05"
                 android:textSize="16dp" />
 
@@ -279,6 +279,23 @@ tools:context=".fragments.ph.PhCalibFragment">
                         android:layout_marginStart="23dp"
                         android:layout_marginBottom="2dp"
                         android:layout_weight="1"
+                        android:text="Date &amp; Time"
+                        android:textSize="22sp" />
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:background="#DFE6ED" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="23dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_weight="1"
                         android:text="pH"
                         android:textSize="22sp" />
 
@@ -302,8 +319,13 @@ tools:context=".fragments.ph.PhCalibFragment">
 
                 </LinearLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/buffer_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-                <LinearLayout
+
+                <!-- <LinearLayout
                     android:id="@+id/log3point"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -474,7 +496,7 @@ tools:context=".fragments.ph.PhCalibFragment">
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:id="@+id/log4"
@@ -502,7 +524,6 @@ tools:context=".fragments.ph.PhCalibFragment">
                             android:layout_marginBottom="8dp"
                             android:drawablePadding="2dp"
                             android:padding="2dp"
-                            android:text="Edit"
                             android:textAllCaps="true"
                             android:textColor="@color/blueDark"
                             android:textSize="14sp"
@@ -526,21 +547,6 @@ tools:context=".fragments.ph.PhCalibFragment">
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/mvEdit4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:drawablePadding="2dp"
-                            android:padding="2dp"
-                            android:text="Edit"
-                            android:textAllCaps="true"
-                            android:textColor="@color/blueDark"
-                            android:textSize="14sp"
-                            app:drawableStartCompat="@drawable/ic_edit"
-                            app:drawableTint="@color/blueDark" />
 
 
                     </LinearLayout>
@@ -572,7 +578,6 @@ tools:context=".fragments.ph.PhCalibFragment">
                             android:layout_marginBottom="8dp"
                             android:drawablePadding="2dp"
                             android:padding="2dp"
-                            android:text="Edit"
                             android:textAllCaps="true"
                             android:textColor="@color/blueDark"
                             android:textSize="14sp"
@@ -596,25 +601,12 @@ tools:context=".fragments.ph.PhCalibFragment">
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/mvEdit5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:drawablePadding="2dp"
-                            android:padding="2dp"
-                            android:text="Edit"
-                            android:textAllCaps="true"
-                            android:textColor="@color/blueDark"
-                            android:textSize="14sp"
-                            app:drawableStartCompat="@drawable/ic_edit"
-                            app:drawableTint="@color/blueDark" />
 
 
                     </LinearLayout>
                 </LinearLayout>
+            -->
+
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
