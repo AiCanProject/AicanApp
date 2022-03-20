@@ -31,6 +31,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.graph.ForegroundService;
@@ -126,6 +127,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                         .simple_spinner_dropdown_item);
         probesVal.setAdapter(ad);
 
+        DialogMain dialogMain = new DialogMain();
+        dialogMain.setCancelable(false);
+        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+
         /*
         calibrateBtn.setOnClickListener(v -> {
             SelectCalibrationPointsDialog dialog = new SelectCalibrationPointsDialog();
@@ -201,9 +206,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             e.printStackTrace();
         }
     }
-
-
-
 
     private boolean checkStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

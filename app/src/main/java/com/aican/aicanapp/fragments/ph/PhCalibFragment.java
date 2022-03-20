@@ -299,6 +299,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         spin.setAdapter(aa);
 
         DialogMain dialogMain = new DialogMain();
+        dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         calibrateBtn.setOnClickListener(new View.OnClickListener() {

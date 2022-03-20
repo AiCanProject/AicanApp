@@ -19,6 +19,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.Dashboard.SettingActivity;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.UserDatabase;
 import com.aican.aicanapp.adapters.ViewPagerAdapter;
 import com.aican.aicanapp.fragments.ph.EcFragment;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
@@ -41,7 +42,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     ProgressLabelView currentPh, phChange;
     AppCompatSeekBar phSeekBar;
 
-    ImageView setting;
+    ImageView setting, user_database;
     TabLayout tabLayout;
     ViewPager2 viewPager;
     Toolbar toolbar;
@@ -81,6 +82,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         tabItemCalib = findViewById(R.id.select2);
 
         setting = findViewById(R.id.settings);
+        user_database = findViewById(R.id.user_database);
         ph.setOnClickListener(this);
         calibrate.setOnClickListener(this);
         log.setOnClickListener(this);
@@ -91,6 +93,13 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             public void onClick(View view) {
                 Intent intent = new Intent(PhActivity.this, SettingActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        user_database.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PhActivity.this, UserDatabase.class));
             }
         });
 

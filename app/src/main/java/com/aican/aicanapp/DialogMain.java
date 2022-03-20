@@ -38,6 +38,7 @@ public class DialogMain extends AppCompatDialogFragment {
         authenticate = view.findViewById(R.id.authenticateRole);
 
         builder.setView(view).setTitle("Verification");
+        builder.setCancelable(false);
 
         FileInputStream fis = null;
         try {
@@ -68,12 +69,7 @@ public class DialogMain extends AppCompatDialogFragment {
             public void onClick(View view) {
                 Source.userId = userID.getText().toString();
                 Source.userPasscode = passcode.getText().toString();
-                Log.d("416551", Source.userRole.toString());
-                Log.d("416551", Source.userPasscode.toString());
-                Log.d("416551", Source.userPasscode.toString());
-                Log.d("416551", lines[2]);
-                Log.d("416551", lines[3]);
-                if (Source.userPasscode.equals(lines[2]) && Source.userId.equals(lines[3]) && Source.userRole.equals("Operator")) {
+                if (Source.userPasscode.equals(lines[2]) && Source.userId.equals(lines[3])) {
                     Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                     dismiss();
                     Source.status = true;
@@ -82,7 +78,6 @@ public class DialogMain extends AppCompatDialogFragment {
                 }
             }
         });
-
         return builder.create();
     }
 }

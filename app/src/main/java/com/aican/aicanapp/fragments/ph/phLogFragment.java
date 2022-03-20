@@ -113,6 +113,7 @@ public class phLogFragment extends Fragment {
         }
 
         DialogMain dialogMain = new DialogMain();
+        dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         export.setOnClickListener(v -> {
