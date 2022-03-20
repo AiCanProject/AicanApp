@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,15 +38,14 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
 
-
     private DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        userId = findViewById(R.id.assignedName);
-        name = findViewById(R.id.assignedId);
+        userId = findViewById(R.id.assignedId);
+        name = findViewById(R.id.assignedName);
         passcode = findViewById(R.id.assignedPwd);
         generate = findViewById(R.id.assignRole);
         spinner = findViewById(R.id.selectRole);
@@ -72,6 +72,10 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 Source.userRole = Role;
                 FileOutputStream fos = null;
                 try {
+                    Log.d("416551", Role.toString());
+                    Log.d("416551", name.getText().toString());
+                    Log.d("416551", passcode.getText().toString());
+                    Log.d("416551", userId.getText().toString());
                     fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                     fos.write(details.getBytes());
                     Toast.makeText(getApplicationContext(), "Role Assigned", Toast.LENGTH_SHORT).show();

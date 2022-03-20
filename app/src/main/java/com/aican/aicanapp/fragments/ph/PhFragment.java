@@ -142,15 +142,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
          */
 
-
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         // setupGraph();
         setupListeners();
-
-
-
 }
-
 
     private void rescaleGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
@@ -165,7 +160,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }
         }
     }
-
         //lineChart.getLineData().clearValues();
 
         //LineDataSet lds = new LineDataSet(entries, "pH");
@@ -353,7 +347,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 phView.moveTo(ph);
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
-                //updatePh(ph);
                 PhFragment.this.ph = ph;
             }
 
@@ -387,8 +380,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String temp = snapshot.getValue(Integer.class).toString();
                 tvTempCurr.setText(temp + "°C");
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -402,8 +393,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String ec = snapshot.getValue(Integer.class).toString();
                 tvEcCurr.setText(ec);
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -417,14 +406,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String offSet = snapshot.getValue(Integer.class).toString();
                 offsetCurr.setText(offSet);
-
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -434,8 +419,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String battery = snapshot.getValue(Integer.class).toString();
                 batteryCurr.setText(battery);
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
