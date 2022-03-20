@@ -32,7 +32,6 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(users_list != null && users_list.size() > 0){
             UserDatabaseModel model = users_list.get(position);
-            holder.user_id.setText(model.getUser_id());
             holder.user_role.setText(model.getUser_role());
             holder.user_name.setText(model.getUser_name());
         }
@@ -47,13 +46,11 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView user_role, user_id, user_name;
+        TextView user_role, user_name;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             user_role = itemView.findViewById(R.id.user_role);
             user_name = itemView.findViewById(R.id.user_name);
-            user_id = itemView.findViewById(R.id.user_id);
         }
     }
 }

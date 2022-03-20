@@ -60,11 +60,10 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
     private static final String FILE_NAME = "user_info.txt";
 
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
-    TextView ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, phEdit1, phEdit2, phEdit3, phEdit4, phEdit5;
+    TextView ph1, mv1, phEdit1;
     DatabaseReference deviceRef;
     RecyclerView bufferRecycler;
-    LinearLayout point3, point5;
-    Button calibrateBtn, btnNext, export, generate;
+    Button calibrateBtn, btnNext;
     Spinner spin;
     String[] mode = { "5"};
 
@@ -90,20 +89,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
-                //bufferData.setPh(String.valueOf(buffers[i]));
             }
-
-            //ph1.setText(String.valueOf(buffers[0]));
-            //ph2.setText(String.valueOf(buffers[1]));
-            //ph3.setText(String.valueOf(buffers[2]));
-            //ph4.setText(String.valueOf(buffers[3]));
-            // ph5.setText(String.valueOf(buffers[4]));
-
-/*            if (point3.getVisibility() == View.VISIBLE && point5.getVisibility() == View.VISIBLE) {
-                ph4.setText(String.valueOf(buffers[3]));
-                ph5.setText(String.valueOf(buffers[4]));
-            }
-*/
         });
     }
 
@@ -125,9 +111,6 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         }
         btnNext.setVisibility(View.VISIBLE);
         bufferData.setMv(String.format(Locale.UK, "%.2f", coeff));
-
-        //mv1.setText(String.format(Locale.UK, "%.2f", coeff));
-        //mv2.setText(String.format(Locale.UK, "%.2f", coeff));
     }
 
     private void setupCoeffListener() {
@@ -239,28 +222,9 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
 
         lastCalib = view.findViewById(R.id.lastCalibration);
         ph1 = view.findViewById(R.id.ph1);
-/*      ph2 = view.findViewById(R.id.ph2);
-        ph3 = view.findViewById(R.id.ph3);
-        ph4 = view.findViewById(R.id.ph4);
-        ph5 = view.findViewById(R.id.ph5);
-  */
         mv1 = view.findViewById(R.id.mv1);
-
-    /*  mv2 = view.findViewById(R.id.mv2);
-        mv3 = view.findViewById(R.id.mv3);
-        mv4 = view.findViewById(R.id.mv4);
-        mv5 = view.findViewById(R.id.mv5);
-      */
         ll1 = view.findViewById(R.id.ll1);
-
         phEdit1 = view.findViewById(R.id.phEdit1);
-/*
-        phEdit2 = view.findViewById(R.id.phEdit2);
-        phEdit3 = view.findViewById(R.id.phEdit3);
-        phEdit4 = view.findViewById(R.id.phEdit4);
-        phEdit5 = view.findViewById(R.id.phEdit5);
- */
-
         tvTimer = view.findViewById(R.id.tvTimer);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
@@ -269,37 +233,19 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         calibrateBtn = view.findViewById(R.id.startBtn);
         btnNext = view.findViewById(R.id.btnNext);
-        //point3 = view.findViewById(R.id.log3point);
-        //point5 = view.findViewById(R.id.log5Point);
         spin = view.findViewById(R.id.calibMode);
-//        spin.setOnItemSelectedListener(this);
         bufferRecycler = view.findViewById(R.id.buffer_items);
-
-//        bufferData.setPh(String.valueOf(buffers));
         ArrayList<BufferData> bufferList = new ArrayList<>();
 
 
 
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
-        /*
-        phEdit1.setOnClickListener(this::onClick);
-        phEdit2.setOnClickListener(this::onClick);
-        phEdit3.setOnClickListener(this::onClick);
-        phEdit4.setOnClickListener(this::onClick);
-        phEdit5.setOnClickListener(this::onClick);
-         */
-
-//        ll1.setOnClickListener(onClickListener);
-
-
-
-
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
         DialogMain dialogMain = new DialogMain();
-        dialogMain.setCancelable(false);
+    //    dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
@@ -373,10 +319,6 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
     private void onClick(View v) {
         switch (v.getId()) {
             case R.id.phEdit1:
-  //          case R.id.phEdit3:
-    //        case R.id.phEdit2:
-      //      case R.id.phEdit4:
-        //    case R.id.phEdit5:
 
                 EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
@@ -388,35 +330,6 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
                 break;
         }
     }
-
-    /*
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (spin.getSelectedItemPosition() == 1) {
-            buffers = new float[]{4.0F, 7.0F, 9.0F};
-            bufferLabels = new String[]{"B_2", "B_3", "B_4"};
-            coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
-            calValues = new int[]{20, 30, 40};
-
-          //  point3.setVisibility(View.VISIBLE);
-            //point5.setVisibility(View.GONE);
-        } else if (spin.getSelectedItemPosition() == 0) {
-            buffers = new float[]{2.0F,4.0F, 7.0F, 9.0F, 11.0F};
-            bufferLabels = new String[]{"B_1","B_2", "B_3", "B_4","B_5"};
-            coeffLabels = new String[]{"VAL_1","VAL_2", "VAL_3", "VAL_4","VAL_5"};
-            calValues = new int[]{10,20, 30, 40, 50};
-
-//            point5.setVisibility(View.VISIBLE);
-  //          point3.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-    }*/
-
-
-
 
     private void updateBufferValue(Float value) {
         String newValue = String.valueOf(value);

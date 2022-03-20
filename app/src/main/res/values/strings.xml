@@ -18,4 +18,8 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="user_name">User Name</string>
     <string name="user_id">User ID</string>
     <string name="user_role">User Role</string>
+    <string name="verification">Verification</string>
+    <string name="enter_userid">Enter UserID</string>
+    <string name="passcode">Passcode</string>
+    <string name="authenticate">Authenticate</string>
 </resources>

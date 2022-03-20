@@ -3,7 +3,6 @@ package com.aican.aicanapp;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +36,7 @@ public class DialogMain extends AppCompatDialogFragment {
         passcode = view.findViewById(R.id.userPwd);
         authenticate = view.findViewById(R.id.authenticateRole);
 
-        builder.setView(view).setTitle("Verification");
+        builder.setView(view);
         builder.setCancelable(false);
 
         FileInputStream fis = null;

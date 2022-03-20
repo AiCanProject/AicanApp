@@ -128,7 +128,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         probesVal.setAdapter(ad);
 
         DialogMain dialogMain = new DialogMain();
-        dialogMain.setCancelable(false);
+        //dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         /*
