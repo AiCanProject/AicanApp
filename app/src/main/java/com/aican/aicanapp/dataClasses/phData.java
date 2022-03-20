@@ -17,6 +17,10 @@ public class phData {
 
     }
 
+    public phData(String currentTime) {
+        this.time =currentTime;
+    }
+
     public String getDate() {
         return date;
     }
@@ -48,4 +52,5 @@ public class phData {
     public void setmV(String mV) {
         this.mV = mV;
     }
+
 }

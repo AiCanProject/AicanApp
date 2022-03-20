@@ -74,7 +74,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     float ph = 0;
     int skipPoints = 0;
     int skipCount = 0;
-    String[] probe = {"Glass","Others"};
+    String[] probe = {"Unbreakable","Glass","Others"};
 
     ArrayList<Entry> entriesOriginal;
 
@@ -378,8 +378,13 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String temp = snapshot.getValue(Integer.class).toString();
-                tvTempCurr.setText(temp + "°C");
+                String tempp = snapshot.getValue(Integer.class).toString();
+                tvTempCurr.setText(tempp + "°C");
+                Float temp = snapshot.getValue(Float.class);
+                String tempForm = String.format(Locale.UK, "%.1f", temp);
+                tvTempCurr.setText(tempForm + "°C");
+                //updatePh(tempp);
+                //PhFragment.this.ph = tempp;
             }
 
             @Override
@@ -391,8 +396,13 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String ec = snapshot.getValue(Integer.class).toString();
-                tvEcCurr.setText(ec);
+                String ecc = snapshot.getValue(Integer.class).toString();
+                tvEcCurr.setText(ecc);
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                tvEcCurr.setText(ecForm);
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -404,8 +414,14 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         deviceRef.child("Data").child("OFFSET").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String offSet = snapshot.getValue(Integer.class).toString();
-                offsetCurr.setText(offSet);
+                String offset = snapshot.getValue(Integer.class).toString();
+                offsetCurr.setText(offset);
+                Float offSet = snapshot.getValue(Float.class);
+                String offsetForm = String.format(Locale.UK, "%.2f", offSet);
+                offsetCurr.setText(offsetForm);
+
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -419,6 +435,9 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String battery = snapshot.getValue(Integer.class).toString();
                 batteryCurr.setText(battery);
+                batteryCurr.setText(battery+" %");
+                //updatePh(temp);
+                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -431,7 +450,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String slope = snapshot.getValue(Integer.class).toString();
-                slopeCurr.setText(slope);
+                slopeCurr.setText(slope+" %");
                 //updatePh(temp);
                 //PhFragment.this.ph = temp;
             }

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.FileAdapter;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -62,8 +63,15 @@ public class Export extends AppCompatActivity {
         deviceId = findViewById(R.id.DeviceId);
         setFirebaseListeners();
 
+
+        if (checkPermission()) {
+            Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
+
         String pdfPattern = ".pdf";
-        String path = Environment.getExternalStorageDirectory().getPath() + "/Downloads/";
+        String path = Environment.getExternalStorageDirectory().getPath() + "/Download/";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -79,14 +87,8 @@ public class Export extends AppCompatActivity {
         }
 
         noFilesText.setVisibility(View.INVISIBLE);
-        recyclerView.setAdapter(new FileAdapter(getApplicationContext(),filesAndFolders));
+        recyclerView.setAdapter(new FileAdapter(this,filesAndFolders));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        if (checkPermission()) {
-            Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            requestPermission();
-        }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,95 +102,9 @@ public class Export extends AppCompatActivity {
         endDate.setOnClickListener(view -> getCurrentDate(endDate));
     }
 
-    private void generatePDF() {
-
-        PdfDocument pdfDocument = new PdfDocument();
-        Paint paint = new Paint();
-
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-        Canvas canvas = myPage.getCanvas();
-
-        paint.setTextSize(60);
-        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
-
-        paint.setTextSize(40);
-        paint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Device Id:"+ deviceId.getText().toString() , 200, 190, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Slope: 60%", canvas.getWidth()-40, 190, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Temperature: 30", canvas.getWidth()-40, 230, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Offset: 40", canvas.getWidth()-40, 270, paint);
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight()-30, paint);
-        pdfDocument.finishPage(myPage);
-
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
-//        File dir = new File(path);
-//        if (!dir.exists())
-//            dir.mkdirs();
-//
-//        File filePath = new File(dir, "Test.pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(filePath));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//            //btn_generate.setText("Check PDF");
-//            //boolean_save=true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        pdfDocument.close();
-
-//        File yourAppDir = new File(Environment.getExternalStorageDirectory()+File.separator+"aicanPdf");
-//        if (!yourAppDir.exists()) {
-//            yourAppDir.mkdirs();
-//        }
-
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + File.separator+ "/Download/ProgrammerWorld.pdf";
-        File file = new File(stringFilePath);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
-//        }
-//        else
-//        {
-//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-//        }
-
-//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-
-        try {
-            pdfDocument.writeTo(new FileOutputStream(file));
-            Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pdfDocument.close();
-    }
-
     private boolean checkPermission() {
-        int permission1 = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+        int permission1 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
         return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -204,16 +120,16 @@ public class Export extends AppCompatActivity {
                 boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
                 if (writeStorage && readStorage) {
-                    Toast.makeText(this, "Permission Granted..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Permission Granted..", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Permission Denined.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Permission Denined.", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
     public void getCurrentDate(TextView tvDate) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(), (view, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
@@ -238,4 +154,87 @@ public class Export extends AppCompatActivity {
             }
         });
     }
+
+    private void generatePDF() {
+        //Source.status = false;
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+
+        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
+        Canvas canvas = myPage.getCanvas();
+
+        paint.setTextSize(60);
+        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
+
+        paint.setTextSize(40);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
+
+        paint.setColor(Color.rgb(150, 150, 150));
+        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
+
+        paint.setTextSize(20);
+        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
+
+        paint.setTextSize(20);
+        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
+
+        paint.setTextSize(30);
+        canvas.drawText("Slope: 60%", canvas.getWidth() - 40, 190, paint);
+
+        paint.setTextSize(30);
+        canvas.drawText("Temperature: 30", canvas.getWidth() - 40, 230, paint);
+
+        paint.setTextSize(30);
+        canvas.drawText("Offset: 40", canvas.getWidth() - 40, 270, paint);
+
+        paint.setColor(Color.rgb(150, 150, 150));
+        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight() - 30, paint);
+
+        pdfDocument.finishPage(myPage);
+
+//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
+//        File dir = new File(path);
+//        if (!dir.exists())
+//            dir.mkdirs();
+//
+//        File filePath = new File(dir, "Test.pdf");
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(filePath));
+//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//            //btn_generate.setText("Check PDF");
+//            //boolean_save=true;
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
+//        }
+//
+//        pdfDocument.close();
+
+        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
+        File file = new File(stringFilePath);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
+//        }
+//        else
+//        {
+//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
+//        }
+
+//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
+
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file));
+            Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pdfDocument.close();
+    }
+
 }
