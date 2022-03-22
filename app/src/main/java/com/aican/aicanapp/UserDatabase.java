@@ -4,26 +4,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDatabase extends AppCompatActivity {
 
-    private static final String FILE_NAME = "user_log.txt";
+    String name_fetched, role_fetched;
+    ArrayList<UserDatabaseModel> userDatabaseModelList = new ArrayList<>();
 
-    private String[] lines;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_database);
+
+        databaseHelper = new DatabaseHelper(this);
 
         RecyclerView recyclerView = findViewById(R.id.user_database_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -33,47 +34,14 @@ public class UserDatabase extends AppCompatActivity {
     }
 
     private List<UserDatabaseModel> getList(){
-
-        int count=0;
-        FileInputStream fis = null;
-        try {
-            fis = this.openFileInput(FILE_NAME);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            StringBuilder sb = new StringBuilder();
-            String text;
-
-            while ((text = br.readLine()) != null) {
-                sb.append(text).append("\n");
-                count++;
-            }
-            //Log.d("86461651", String.valueOf(sb.capacity()));
-        /*    Log.d("86461651", String.valueOf(sb));
-            Log.d("86461651", String.valueOf(count));*/
-            lines = sb.toString().split("\\n");
-       /* //    Log.d("86461651", String.valueOf(lines[0]));
-         //   Log.d("86461651", String.valueOf(lines[3]));
-            for(int i=0;i<count;i++){
-                Log.d("86461651", String.valueOf(lines[i]) + "     aaa");
-            }*/
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        Cursor res = databaseHelper.get_data();
+        if(res.getCount()==0){
+            Toast.makeText(UserDatabase.this, "No entry", Toast.LENGTH_SHORT).show();
         }
-
-        List<UserDatabaseModel> userDatabaseModelList = new ArrayList<>();
-        for(int i=1;i<count;i=i+2){
-            Log.d("86461651", String.valueOf(lines[i]) + "      bbb");
-            Log.d("86461651", String.valueOf(lines[i+1]) + "       bbb");
-            userDatabaseModelList.add(new UserDatabaseModel(lines[i],lines[i+1]));
+        while(res.moveToNext()){
+            name_fetched = res.getString(0);
+            role_fetched = res.getString(1);
+            userDatabaseModelList.add(new UserDatabaseModel(name_fetched,role_fetched));
         }
         return userDatabaseModelList;
     }

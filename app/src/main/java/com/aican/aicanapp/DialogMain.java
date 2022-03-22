@@ -3,6 +3,7 @@ package com.aican.aicanapp;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +30,7 @@ public class DialogMain extends AppCompatDialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.alert_dialog_layout, null);
 
         userID = view.findViewById(R.id.userId);
@@ -51,6 +52,8 @@ public class DialogMain extends AppCompatDialogFragment {
                 sb.append(text).append("\n");
             }
             lines = sb.toString().split("\\n");
+            String xyz = sb.deleteCharAt(0).toString();
+            Log.d("56511", xyz);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

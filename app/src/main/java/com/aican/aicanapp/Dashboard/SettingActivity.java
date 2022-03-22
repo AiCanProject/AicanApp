@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,31 +15,29 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.aican.aicanapp.DatabaseHelper;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String FILE_NAME = "user_info.txt";
-    private static final String FILE_NAMEE = "user_log.txt";
+
+    DatabaseHelper databaseHelper;
 
     EditText name, passcode, userId;
     Button generate, addSign;
     Spinner spinner;
     ImageView imageView;
     String[] r = {"Operator", "Supervisor"};
-    String[] lines;
-    String Role, user_log = "";
+    String Role;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
 
@@ -72,58 +69,22 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         spinner.setOnItemSelectedListener(this);
         mDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
 
-
+        databaseHelper = new DatabaseHelper(this);
 
         generate.setOnClickListener(view -> {
             if(isEmailValid() && isPassCodeValid()){
 
-                FileInputStream fis = null;
-                int countt=-1;
-                try {
-                    fis = this.openFileInput(FILE_NAMEE);
-                    InputStreamReader isr = new InputStreamReader(fis);
-                    BufferedReader br = new BufferedReader(isr);
-                    StringBuilder sb = new StringBuilder();
-                    String text;
-
-                    while ((text = br.readLine()) != null) {
-                        sb.append(text).append("\n");
-                        countt++;
-                    }
-                    lines = sb.toString().split("\\n");
-               /*     for(int i=1;i<countt;i++){
-                        user_log = user_log + "\n" + lines[i+1];
-                    }
-                    Log.d("6651631", "5161632");
-               //     Log.d("6651631", String.valueOf(lines));
-                  //  Log.d("6651631", lines[1]);
-                  //  user_log = lines[1];
-                    Log.d("6651631", user_log);*/
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-
-               // Log.d("615151", user_log);
-                user_log = user_log + "\n" + Role + "\n" + name.getText().toString();
-              //  Log.d("615151", user_log);
+                String nameTXT = name.getText().toString();
+                String roleTXT = Role;
+                databaseHelper.insert_data(nameTXT, roleTXT);
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
                 Source.userRole = Role;
                 FileOutputStream fos = null;
+
                 Toast.makeText(getApplicationContext(), "Role Assigned", Toast.LENGTH_SHORT).show();
                 try {
                     fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                     fos.write(details.getBytes());
-                    fos = openFileOutput(FILE_NAMEE, MODE_PRIVATE);
-                    fos.write(user_log.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {

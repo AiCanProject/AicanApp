@@ -45,6 +45,5 @@ public class SQLiteDb extends SQLiteOpenHelper {
         db.insert(USER_TABLE_ROLE,null, values);
         db.close();
         //Toast.makeText(this, "The new Row Id is " + newRowId, Toast.LENGTH_LONG).show();
-
     }
 }

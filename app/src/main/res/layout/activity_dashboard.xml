@@ -27,7 +27,18 @@
             android:background="@color/main1"
             android:textAlignment="center"
             app:title="DASHBOARD"
-            app:titleTextColor="@color/white" />
+            app:titleTextColor="@color/white" >
+
+            <ImageView
+                android:id="@+id/settings"
+                android:layout_width="wrap_content"
+                android:src="@drawable/settings_ic"
+                android:layout_gravity="end"
+                android:clickable="true"
+                android:layout_marginEnd="20dp"
+                android:layout_height="wrap_content"/>
+
+        </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -199,33 +210,6 @@
                 android:paddingVertical="16dp"
                 android:paddingHorizontal="22dp"
                 android:textSize="18sp"/>
-
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_weight="1"/>-->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:padding="5dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:background="#505050">-->
-<!--                <ImageView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:paddingTop="10dp"-->
-<!--                    android:paddingLeft="50dp"-->
-<!--                    android:src="@drawable/settings_ic"/>-->
-<!--                <androidx.appcompat.widget.SwitchCompat-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:paddingTop="10dp"-->
-<!--                    android:paddingLeft="80dp"-->
-<!--                    android:layout_height="wrap_content"/>-->
-
-<!--            </LinearLayout>-->
 
         </LinearLayout>
 

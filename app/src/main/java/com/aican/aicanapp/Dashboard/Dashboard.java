@@ -31,6 +31,7 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -57,6 +58,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     DatabaseReference primaryDatabase;
     String mUid;
+    ImageView setting;
 
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
@@ -100,7 +102,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
-        
+        setting = findViewById(R.id.settings);
 
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
@@ -121,6 +123,16 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 startActivity(toAddDevice);
             }
         });
+
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Dashboard.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         ivLogout.setOnClickListener(v->{
             FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
             Intent intent = new Intent(this, LoginActivity.class);
