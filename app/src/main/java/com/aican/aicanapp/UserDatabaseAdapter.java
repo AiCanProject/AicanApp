@@ -1,17 +1,27 @@
 package com.aican.aicanapp;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.auth.User;
+
 import java.util.List;
 
 public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapter.ViewHolder> {
+
+    DatabaseHelper databaseHelper;
 
     Context context;
     List<UserDatabaseModel> users_list;
@@ -29,7 +39,10 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
+        databaseHelper = new DatabaseHelper(context.getApplicationContext());
+
         if(users_list != null && users_list.size() > 0){
             UserDatabaseModel model = users_list.get(position);
             holder.user_role.setText(model.getUser_role());
@@ -38,6 +51,34 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
         else{
             return;
         }
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle("Are you sure?")
+                        .setMessage("Do you want to delete this record")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                UserDatabaseModel model = users_list.get(position);
+                                databaseHelper.delete_data(model.getUser_name());
+                                Toast.makeText(view.getContext(), "Record Deleted Successfully", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(context, UserDatabase.class);
+                                context.startActivity(intent);
+                                ((Activity) context).finish();
+                            }
+                        }).setNegativeButton("No", null)
+                        .show();
+                return true;
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
     }
 
     @Override
