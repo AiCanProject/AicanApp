@@ -1,38 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/bft_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:layout_marginBottom="2dp"
-            android:layout_weight="1"
-            android:text=""
-            android:textAlignment="center"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/ph1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="1"
             android:text=""
-            android:textAlignment="textEnd"
+            android:textAlignment="textStart"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/phEdit1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="1dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:drawablePadding="2dp"
@@ -46,12 +35,24 @@
 
         <TextView
             android:id="@+id/mv1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
             android:layout_marginBottom="2dp"
             android:layout_weight="1"
             android:textAlignment="textEnd"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:text=""
+            android:textAlignment="center"
             android:textSize="16sp" />
 
 </LinearLayout>
