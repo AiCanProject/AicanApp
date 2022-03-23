@@ -202,7 +202,7 @@ public class phLogFragment extends Fragment {
 
                 }
             });
-            LogAdapter adapter = new LogAdapter(list);
+            LogAdapter adapter = new LogAdapter( requireContext() ,list);
             list.add(phData);
             adapter.notifyDataSetChanged();
             recyclerView.setAdapter(adapter);
