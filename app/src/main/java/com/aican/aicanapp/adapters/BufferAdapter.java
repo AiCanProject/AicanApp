@@ -1,9 +1,13 @@
 package com.aican.aicanapp.adapters;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,9 +22,12 @@ import java.util.ArrayList;
 
 public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder> {
 
+    private Context context;
     ArrayList<BufferData> list ;
-    public BufferAdapter(ArrayList<BufferData> mlist) {
+
+    public BufferAdapter(ArrayList<BufferData> mlist, Context context) {
         this.list = mlist;
+        this.context = context;
     }
 
     @NonNull
@@ -37,6 +44,14 @@ public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder
         holder.ph.setText(list.get(position).getPh());
         holder.mv.setText(list.get(position).getMv());
         holder.time.setText(list.get(position).getTime());
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
     }
 
     @Override
@@ -44,18 +59,20 @@ public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder
         return list.size();
     }
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView ph, mv, time, editPh;
 
+        public TextView ph, mv, time, editPh;
+        LinearLayout bftItem;
+        View mView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ph = itemView.findViewById(R.id.ph1);
             mv = itemView.findViewById(R.id.mv1);
             editPh = itemView.findViewById(R.id.phEdit1);
             time = itemView.findViewById(R.id.time);
+            bftItem = itemView.findViewById(R.id.bft_item);
+            mView = itemView;
         }
     }
-
 }

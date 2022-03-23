@@ -52,7 +52,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PhCalibFragment extends Fragment implements  OnBackPressed {
@@ -67,7 +69,6 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
     Spinner spin;
     String[] mode = { "5"};
 
-
     ArrayList<BufferData> bufferList = new ArrayList<>();
     BufferData bufferData = new BufferData();
     String[] lines;
@@ -80,7 +81,6 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
     int currentBuf = 0;
 
     DatabaseReference coeffRef = null;
-
     float coeff = 0;
     float ph = 0;
     boolean isCalibrating = false;
@@ -89,7 +89,10 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
+
             }
+
+            bufferData.setPh(String.valueOf(buffers));
         });
     }
 
@@ -110,7 +113,8 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
             isCalibrating = false;
         }
         btnNext.setVisibility(View.VISIBLE);
-        bufferData.setMv(String.format(Locale.UK, "%.2f", coeff));
+        bufferList.add(new BufferData(null,String.format(Locale.UK, "%.2f", coeff)));
+        //bufferData.setMv(String.format(Locale.UK, "%.2f", coeff));
     }
 
     private void setupCoeffListener() {
@@ -232,12 +236,10 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         tvTempNext = view.findViewById(R.id.tvTempNext);
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         calibrateBtn = view.findViewById(R.id.startBtn);
-        btnNext = view.findViewById(R.id.btnNext);
+        btnNext = view.findViewById(R.id.nextBtn);
         spin = view.findViewById(R.id.calibMode);
         bufferRecycler = view.findViewById(R.id.buffer_items);
         ArrayList<BufferData> bufferList = new ArrayList<>();
-
-
 
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
@@ -245,7 +247,8 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         spin.setAdapter(aa);
 
         DialogMain dialogMain = new DialogMain();
-    //    dialogMain.setCancelable(false);
+        // dialogMain.setCancelable(false);
+
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
@@ -301,13 +304,14 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         setupListeners();
 
         loadBuffers();
-        bufferList.add(new BufferData("1"));
-        bufferList.add(new BufferData("3"));
-        bufferList.add(new BufferData("9"));
-        bufferList.add(new BufferData("11.2"));
-        bufferList.add(new BufferData("13"));
+//        bufferList.add(new BufferData("1", String.format(Locale.UK, "%.2f", coeff)));
+//        bufferList.add(new BufferData("3", String.format(Locale.UK, "%.2f", coeff)));
+//        bufferList.add(new BufferData("9", String.format(Locale.UK, "%.2f", coeff)));
+//        bufferList.add(new BufferData("11.2", String.format(Locale.UK, "%.2f", coeff)));
+//        bufferList.add(new BufferData("13", String.format(Locale.UK, "%.2f", coeff)));
 
-        BufferAdapter bufferAdapter = new BufferAdapter(bufferList);
+        bufferList.add(bufferData);
+        BufferAdapter bufferAdapter = new BufferAdapter(bufferList, requireContext());
         bufferRecycler.setAdapter(bufferAdapter);
         bufferAdapter.notifyDataSetChanged();
         bufferRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -370,6 +374,12 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
                             Float coeff = dataSnapshot.getValue(Float.class);
                             if (coeff == null) return;
                             displayCoeffAndPrepareNext(coeff);
+
+                            Date date = new Date();
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
+                            String strDate = simpleDateFormat.format(date);
+                            bufferData.setTime(strDate);
+
                         });
                     }
                 };
