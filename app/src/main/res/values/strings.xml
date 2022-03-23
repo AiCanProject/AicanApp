@@ -22,4 +22,8 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="enter_userid">Enter UserID</string>
     <string name="passcode">Passcode</string>
     <string name="authenticate">Authenticate</string>
+    <string name="clear">Clear</string>
+    <string name="export">Export</string>
+    <string name="enter_compound_name">Enter Compound Name</string>
+    <string name="log">Log</string>
 </resources>

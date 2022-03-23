@@ -122,9 +122,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
 //        probesVal.setOnClickListener((View.OnClickListener) this);
         ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
-        ad.setDropDownViewResource(
-                android.R.layout
-                        .simple_spinner_dropdown_item);
+        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         probesVal.setAdapter(ad);
 
         DialogMain dialogMain = new DialogMain();
@@ -373,7 +371,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -391,7 +388,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -409,7 +405,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -431,7 +426,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }
         });
 
-
         deviceRef.child("Data").child("BATTERY").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -444,7 +438,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -459,11 +452,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
-
-
     }
 
     private void updatePh(float ph) {
@@ -521,12 +511,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     //probes adapter
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 /*
     private void setupGraph() {

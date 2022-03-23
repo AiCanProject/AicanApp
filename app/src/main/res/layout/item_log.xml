@@ -3,64 +3,64 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <TableLayout
-            android:id="@+id/table_heading_layout"
+    <TableLayout
+        android:id="@+id/table_heading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/table_border"
+        tools:ignore="UselessParent">
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/table_border"
-            tools:ignore="UselessParent">
+            android:layout_height="match_parent">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/date"
+                style="@style/table_row_item"
+                android:layout_width="0dp"
+                android:layout_column="0"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
 
-                        <TextView
-                            android:id="@+id/date"
-                            style="@style/table_row_item"
-                            android:layout_width="0dp"
-                            android:layout_column="0"
-                            android:layout_margin="1dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black"
-                            android:background="@color/white"
-                            android:textAlignment="center" />
-<!--
-                        <TextView
-                            android:id="@+id/time"
-                            style="@style/table_row_item"
-                            android:layout_width="0dp"
-                            android:layout_column="1"
-                            android:layout_margin="1dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black"
-                            android:background="@color/white"
-                            android:textAlignment="center" />
--->
-                        <TextView
-                            android:id="@+id/phLog"
-                            style="@style/table_row_item"
-                            android:layout_width="0dp"
-                            android:layout_column="2"
-                            android:layout_margin="1dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black"
-                            android:background="@color/white"
-                            android:baselineAligned="false"
-                            android:textAlignment="center" />
+            <TextView
+                android:id="@+id/phLog"
+                style="@style/table_row_item"
+                android:layout_width="0dp"
+                android:layout_column="2"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:baselineAligned="false"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
 
+            <TextView
+                android:id="@+id/mVLog"
+                style="@style/table_row_item"
+                android:layout_width="0dp"
+                android:layout_column="2"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:baselineAligned="false"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
 
-                        <TextView
-                            android:id="@+id/mVLog"
-                            style="@style/table_row_item"
-                            android:layout_width="0dp"
-                            android:layout_column="2"
-                            android:layout_margin="1dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black"
-                            android:background="@color/white"
-                            android:baselineAligned="false"
-                            android:textAlignment="center" />
-                </TableRow>
-        </TableLayout>
+            <TextView
+                android:id="@+id/compound"
+                style="@style/table_row_item"
+                android:layout_width="0dp"
+                android:layout_column="2"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:baselineAligned="false"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>

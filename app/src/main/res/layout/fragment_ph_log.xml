@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context=".fragments.ph.phLogFragment">
 
     <LinearLayout
         android:id="@+id/ll1"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         tools:ignore="UselessParent">
 
         <com.github.mikephil.charting.charts.LineChart
@@ -26,12 +26,12 @@
         </com.github.mikephil.charting.charts.LineChart>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="22dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
             <Button
@@ -39,10 +39,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:backgroundTint="#3CEA43"
-                android:text="Log"
                 android:layout_marginEnd="25dp"
+                android:backgroundTint="#3CEA43"
                 android:gravity="center_horizontal"
+                android:text="@string/log"
                 android:textAllCaps="false"
                 android:textSize="20sp" />
 
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:text="Clear"
+                android:text="@string/clear"
                 android:textAllCaps="false"
                 android:textSize="20sp"
                 android:visibility="visible" />
@@ -62,22 +62,28 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginEnd="25dp"
-                android:text="Export"
+                android:text="@string/export"
                 android:textAllCaps="false"
                 android:textSize="20sp"
                 android:visibility="visible" />
+
+            <EditText
+                android:id="@+id/compound_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_compound_name" />
         </LinearLayout>
     </LinearLayout>
 
     <TableLayout
         android:id="@+id/table_heading_layout"
         android:layout_width="match_parent"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/table_border"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll1">
+        android:layout_below="@id/ll1"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/table_border">
 
         <TableRow>
 
@@ -86,48 +92,47 @@
                 android:layout_width="0dp"
                 android:layout_height="30dp"
                 android:layout_column="0"
-                android:layout_weight="1"
-                android:textAlignment="center"
                 android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="Date"/>
-<!--
-            <TextView
-                android:layout_height="30dp"
-                android:layout_width="0dp"
-                android:layout_column="1"
-                android:layout_weight="1"
-                android:text="Time"
-                style="@style/table_header"
-                android:paddingEnd="5dp"
-                android:textAlignment="center"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"/>
--->
+                android:text="Date"
+                android:textAlignment="center" />
 
             <TextView
-                android:layout_height="30dp"
+                style="@style/table_header"
                 android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:layout_column="2"
+                android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:paddingEnd="5dp"
                 android:text="pH"
-                style="@style/table_header"
-                android:paddingEnd="5dp"
-                android:textAlignment="center"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"/>
+                android:textAlignment="center" />
 
             <TextView
-                android:layout_height="30dp"
-                android:layout_width="0dp"
-                android:layout_column="2"
-                android:layout_weight="1"
-                android:text="mV"
                 style="@style/table_header"
-                android:paddingEnd="5dp"
-                android:textAlignment="center"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_column="2"
                 android:layout_gravity="center_horizontal"
-                android:gravity="center"/>
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingEnd="5dp"
+                android:text="mV"
+                android:textAlignment="center" />
+
+            <TextView
+                style="@style/table_header"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_column="2"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingEnd="5dp"
+                android:text="Compound Name"
+                android:textAlignment="center" />
         </TableRow>
     </TableLayout>
 

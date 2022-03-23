@@ -6,7 +6,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,12 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aican.aicanapp.DialogMain;
@@ -35,15 +32,13 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
-import com.aican.aicanapp.graph.ForegroundService;
+
+import com.aican.aicanapp.logTable;
+import com.aican.aicanapp.phLogAdapter;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -55,11 +50,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
-import com.itextpdf.text.pdf.parser.Line;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,8 +60,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class phLogFragment extends Fragment {
 
@@ -84,10 +74,22 @@ public class phLogFragment extends Fragment {
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
 
+    View view;
+    private RecyclerView recyclerView;
+    private List<logTable> listt;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ph_log, container, false);
+        view = inflater.inflate(R.layout.fragment_ph_log, container, false);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        listt = new ArrayList<>();
+        listt.add(new logTable("aaaa", "bbbb", "cccc"));
+        listt.add(new logTable("aaaa", "bbbb", "cccc"));
+        phLogAdapter adapter = new phLogAdapter(getContext(),listt);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+        return view;
     }
 
     @Override
@@ -173,6 +175,12 @@ public class phLogFragment extends Fragment {
 
         logBtn.setOnClickListener(v -> {
             String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+
+          /*  listt = new ArrayList<>();
+            listt.add(new logTable("aaaa", "bbbb", "cccc"));
+            listt.add(new logTable("aaaa", "bbbb", "cccc"));
+
+*/
             phData.setDate(currentTime);
 
             deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
@@ -185,7 +193,6 @@ public class phLogFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                 }
             });
 
@@ -199,7 +206,6 @@ public class phLogFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                 }
             });
             LogAdapter adapter = new LogAdapter(list);

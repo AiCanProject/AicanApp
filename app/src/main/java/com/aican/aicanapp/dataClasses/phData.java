@@ -6,15 +6,12 @@ public class phData {
     String date;
     String time;
 
-
-
     public phData(String pH, String mV) {
         this.pH = pH;
         this.mV = mV;
     }
 
     public phData() {
-
     }
 
     public phData(String currentTime) {

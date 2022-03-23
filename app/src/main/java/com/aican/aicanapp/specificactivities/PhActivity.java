@@ -101,7 +101,6 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             int size = calibrate.getWidth() * 2;
             tabItemPh.animate().x(size).setDuration(100);
 
-
         } else if (view.getId() == R.id.item4) {
             loadFragments(phAlarmFragment);
 
@@ -111,8 +110,6 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             log.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 3;
             tabItemPh.animate().x(size).setDuration(100);
-
-
         }
     }
 
