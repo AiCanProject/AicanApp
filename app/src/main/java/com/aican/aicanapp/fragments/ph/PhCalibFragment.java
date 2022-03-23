@@ -1,6 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
 import android.app.Dialog;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -31,6 +32,8 @@ import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 
 import com.aican.aicanapp.Source;
+import com.aican.aicanapp.UserDatabase;
+import com.aican.aicanapp.UserDatabaseModel;
 import com.aican.aicanapp.adapters.BufferAdapter;
 import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.specificactivities.PhActivity;
@@ -71,6 +74,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
 
     ArrayList<BufferData> bufferList = new ArrayList<>();
     BufferData bufferData = new BufferData();
+
     String[] lines;
     LinearLayout ll1;
 
@@ -92,7 +96,8 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
 
             }
 
-            bufferData.setPh(String.valueOf(buffers));
+
+            //bufferData.setPh(String.valueOf(buffers));
         });
     }
 
@@ -241,6 +246,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         bufferRecycler = view.findViewById(R.id.buffer_items);
         ArrayList<BufferData> bufferList = new ArrayList<>();
 
+        btnNext.setEnabled(false);
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -254,6 +260,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                 FileInputStream fis = null;
                 try {
@@ -304,20 +311,26 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         setupListeners();
 
         loadBuffers();
-//        bufferList.add(new BufferData("1", String.format(Locale.UK, "%.2f", coeff)));
-//        bufferList.add(new BufferData("3", String.format(Locale.UK, "%.2f", coeff)));
-//        bufferList.add(new BufferData("9", String.format(Locale.UK, "%.2f", coeff)));
-//        bufferList.add(new BufferData("11.2", String.format(Locale.UK, "%.2f", coeff)));
-//        bufferList.add(new BufferData("13", String.format(Locale.UK, "%.2f", coeff)));
 
-        bufferList.add(bufferData);
-        BufferAdapter bufferAdapter = new BufferAdapter(bufferList, requireContext());
+        BufferAdapter bufferAdapter = new BufferAdapter(getBuffer(), requireContext());
         bufferRecycler.setAdapter(bufferAdapter);
         bufferAdapter.notifyDataSetChanged();
         bufferRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         bufferRecycler.setHasFixedSize(true);
 
+    }
 
+    private List<BufferData> getBuffer(){
+
+        bufferList.add(new BufferData("1"));
+        bufferList.add(new BufferData("3"));
+        bufferList.add(new BufferData("9"));
+        bufferList.add(new BufferData("11.2"));
+        bufferList.add(new BufferData("13"));
+
+        bufferData.setMv(String.valueOf(coeff));
+
+        return bufferList;
     }
 
     private void onClick(View v) {
@@ -368,17 +381,18 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
                     public void run() {
                         tvTimer.setVisibility(View.INVISIBLE);
                         String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-                        bufferList.add(new BufferData(currentTime));
+                        bufferList.add(new BufferData(null, null, currentTime));
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
                         deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                             Float coeff = dataSnapshot.getValue(Float.class);
                             if (coeff == null) return;
                             displayCoeffAndPrepareNext(coeff);
-
+                            btnNext.setEnabled(true);
                             Date date = new Date();
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
                             String strDate = simpleDateFormat.format(date);
                             bufferData.setTime(strDate);
+
 
                         });
                     }

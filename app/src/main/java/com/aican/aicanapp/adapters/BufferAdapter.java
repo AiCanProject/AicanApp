@@ -1,6 +1,7 @@
 package com.aican.aicanapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -15,17 +16,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.UserDatabaseModel;
 import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.dataClasses.phData;
+import com.aican.aicanapp.dialogs.EditPhBufferDialog;
+import com.aican.aicanapp.fragments.ph.PhCalibFragment;
+import com.aican.aicanapp.specificactivities.PhActivity;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder> {
 
-    private Context context;
-    ArrayList<BufferData> list ;
+    //private Context context;
+    //ArrayList<BufferData> list ;
 
-    public BufferAdapter(ArrayList<BufferData> mlist, Context context) {
+    Context context;
+    List<BufferData> list;
+
+    public BufferAdapter(List<BufferData> mlist, Context context) {
         this.list = mlist;
         this.context = context;
     }
@@ -41,14 +52,21 @@ public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BufferAdapter.ViewHolder holder, int position) {
-        holder.ph.setText(list.get(position).getPh());
-        holder.mv.setText(list.get(position).getMv());
-        holder.time.setText(list.get(position).getTime());
+        BufferData data = list.get(position);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.ph.setText(data.getPh());
+        holder.mv.setText(data.getMv());
+        holder.time.setText(data.getTime());
+
+
+
+        holder.editPh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
 
+                });
+                dialog.show(dialog.getParentFragmentManager(), null);
 
             }
         });
