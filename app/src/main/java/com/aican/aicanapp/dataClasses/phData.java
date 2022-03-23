@@ -4,35 +4,14 @@ public class phData {
     String pH;
     String mV;
     String date;
-    String time;
 
-    public phData(String pH, String mV) {
+    public phData(String pH, String mV, String date) {
         this.pH = pH;
         this.mV = mV;
-    }
-
-    public phData() {
-    }
-
-    public phData(String currentTime) {
-        this.time =currentTime;
-    }
-
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
         this.date = date;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public phData() {
     }
 
     public String getpH() {
@@ -51,4 +30,11 @@ public class phData {
         this.mV = mV;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

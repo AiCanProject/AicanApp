@@ -3,7 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/background_selector.xml" value="0.2075" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/buttonlayout2.xml" value="0.2075" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/gradient_color.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/ic_arrow_down.xml" value="0.145" />
@@ -16,13 +15,12 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_ph_calibrate.xml" value="0.14" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_pump_calibrate.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_setting.xml" value="0.18" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/buffer_items.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/calib_item.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_edit_name.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_edit_ph_buffer.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_select_calib_points.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_alarm.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.12" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.14" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.18" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.18" />
@@ -77,7 +75,7 @@
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_ec.xml" value="0.2578125" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_eleven_tutorial.xml" value="0.2578125" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_four_tutorial.xml" value="0.2578125" />
-        <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_log.xml" value="0.5" />
+        <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_log.xml" value="0.33" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_main.xml" value="0.2578125" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_nine_tutorial.xml" value="0.2578125" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/fragment_ph_tds.xml" value="0.2578125" />
