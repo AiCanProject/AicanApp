@@ -4,9 +4,9 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.app.Activity;
-import android.content.Intent;
+
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,28 +22,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
+
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
-import com.aican.aicanapp.graph.ForegroundService;
-import com.aican.aicanapp.specificactivities.Export;
+
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.utils.DecimalValueFormatter;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -55,34 +49,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
-import com.itextpdf.text.pdf.parser.Line;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class phLogFragment extends Fragment {
 
-    private static final String FILE_NAME = "user_info.txt";
-
+    String ph, m, currentTime;
     LineChart lineChart;
     int pageHeight = 900;
     int pagewidth = 1280;
-    String[] lines;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
+    ArrayList<phData> phDataModelList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,12 +80,12 @@ public class phLogFragment extends Fragment {
 
         lineChart = view.findViewById(R.id.graph);
         //GraphView graphView = view.findViewById(R.id.graph);
-        Button export = view.findViewById(R.id.export);
         Button logBtn = view.findViewById(R.id.logBtn);
-        Button clear = view.findViewById(R.id.clear);
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        phData phData = new phData();
-        ArrayList<phData> list = new ArrayList<>();
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         setupGraph();
@@ -116,7 +100,7 @@ public class phLogFragment extends Fragment {
       //  dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
-        export.setOnClickListener(v -> {
+      /*  export.setOnClickListener(v -> {
             FileInputStream fis = null;
             try {
                 fis = getActivity().openFileInput(FILE_NAME);
@@ -169,23 +153,21 @@ public class phLogFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
 
         logBtn.setOnClickListener(v -> {
-            String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-            phData.setDate(currentTime);
+
+            currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
 
             deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Float p = snapshot.getValue(Float.class);
-                    String ph = String.format(Locale.UK, "%.2f", p);
-                    phData.setpH(ph);
+                    ph = String.format(Locale.UK, "%.2f", p);
                 }
 
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                 }
             });
 
@@ -193,23 +175,25 @@ public class phLogFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Float mv = snapshot.getValue(Float.class);
-                    String m = String.format(Locale.UK, "%.2f", mv);
-                    phData.setmV(m);
+                    m = String.format(Locale.UK, "%.2f", mv);
                 }
 
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                 }
             });
-            LogAdapter adapter = new LogAdapter( requireContext() ,list);
-            list.add(phData);
-            adapter.notifyDataSetChanged();
+
+            LogAdapter adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
         });
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
+
+    private List<phData> getList(){
+        phDataModelList.add(new phData(ph,m,currentTime));
+        return phDataModelList;
     }
 
     private void generatePDF() {
@@ -294,25 +278,34 @@ public class phLogFragment extends Fragment {
         pdfDocument.close();
     }
 
+    /**
+     * checking of permissions.
+     * @return
+     */
     private boolean checkPermission() {
-        // checking of permissions.
         int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
         int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
         return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * requesting permissions if not provided.
+     */
     private void requestPermission() {
-        // requesting permissions if not provided.
         ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
     }
 
+    /**
+     * after requesting permissions we are showing
+     * users a toast message of permission granted.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0) {
-
-                // after requesting permissions we are showing
-                // users a toast message of permission granted.
                 boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
@@ -323,30 +316,6 @@ public class phLogFragment extends Fragment {
                 }
             }
         }
-    }
-
-    ArrayList<Entry> entriesOriginal;
-    int skipPoints = 0;
-
-    Float ph;
-
-    private void setupListeners() {
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
-                ph = snapshot.getValue(Float.class);
-                if (ph == null) return;
-
-                //phView.moveTo(ph);
-                //updatePh(ph);
-                //PhFragment.this.ph = ph;
-            }
-
-            @Override
-            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
-
-            }
-        });
     }
 
     private void setupGraph() {
@@ -419,90 +388,4 @@ public class phLogFragment extends Fragment {
         lineChart.setTouchEnabled(true);
 
     }
-/*
-    private void  addEntry() {
-        LineData data = lineChart.getData();
-        if (data != null){
-            LineDataSet set = (LineDataSet) data.getDataSetByIndex(0);
-
-            if (set == null){
-                set = createSet();
-                data.addDataSet(set);
-            }
-
-            //data.addXValue("");
-            data.addEntry(new Entry(((float)Math.random() * 7) + 6f , set.getEntryCount()),0);
-        }
-        lineChart.notifyDataSetChanged();
-        lineChart.moveViewToX(data.getXMax() - 7);
-    }
-
-    private LineDataSet createSet(){
-        LineDataSet set = new LineDataSet(null, "pH");
-        set.setFillAlpha(65);
-        set.setValueTextSize(10);
-        set.setLineWidth(2f);
-
-        return set;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i< 100; i++){
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            addEntry();
-                        }
-                    }, 1000);
-                    try {
-                        Thread.sleep(600);
-                    }catch (InterruptedException e){
-
-                    }
-
-                }
-
-
-
-            }
-        }).start();
-
- */
 }
-
-//    private void rescaleGraph() {
-//        ArrayList<Entry> entries = new ArrayList<>();
-//        int count = 0;
-//        for (Entry entry : entriesOriginal) {
-//            if (count == 0) {
-//                entries.add(entry);
-//            }
-//            ++count;
-//            if (count >= skipPoints) {
-//                count = 0;
-//            }
-//        }
-//    }
-//
-//    lineChart.getLineData().clearValues();
-//
-//    LineDataSet lds = new LineDataSet(entries, "pH");
-//
-//        lds.setLineWidth(2);
-//        lds.setCircleRadius(4);
-//        lds.setValueTextSize(10);
-//
-//
-//        ArrayList<ILineDataSet> ds = new ArrayList<>();
-//      ds.add(lds);
-//
-//    LineData ld = new LineData(ds);
-//    lineChart.setData(ld);
-//    lineChart.invalidate();
