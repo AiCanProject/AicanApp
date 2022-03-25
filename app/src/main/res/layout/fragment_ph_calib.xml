@@ -201,7 +201,7 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"
                 android:text="Start" />
-
+<!--
             <Button
                 android:id="@+id/nextBtn"
                 android:layout_width="127dp"
@@ -210,7 +210,7 @@
                 android:visibility="gone"
                 android:backgroundTint="#9037C7"
                 android:text="Next" />
-
+-->
             <Button
                 android:id="@+id/saveBtn"
                 android:layout_width="127dp"

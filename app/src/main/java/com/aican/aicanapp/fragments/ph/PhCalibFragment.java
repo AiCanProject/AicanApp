@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanapp.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 
@@ -73,6 +74,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     Spinner spin;
     String[] mode = { "5"};
 
+
+    DatabaseHelper databaseHelper;
     ArrayList<BufferData> bufferList = new ArrayList<>();
 
     String[] lines;
@@ -342,6 +345,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
                     strDate = simpleDateFormat.format(new Date());
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
                     calibrateBtn.setText("DONE");
                     currentBuf += 1;
 
@@ -502,11 +506,16 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         tvTempNext = view.findViewById(R.id.tvTempNext);
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         calibrateBtn = view.findViewById(R.id.startBtn);
-        btnNext = view.findViewById(R.id.nextBtn);
+        //btnNext = view.findViewById(R.id.nextBtn);
         spin = view.findViewById(R.id.calibMode);
+        lastCalib = view.findViewById(R.id.lastCalibration);
         //bufferRecycler = view.findViewById(R.id.buffer_items);
 
-        btnNext.setEnabled(false);
+        databaseHelper = new DatabaseHelper(requireContext());
+        //Cursor res = databaseHelper.get_data();
+
+        lastCalib.setText("Last Calibrated By ");
+        //btnNext.setEnabled(false);
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -671,14 +680,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             Float coeff = dataSnapshot.getValue(Float.class);
                             if (coeff == null) return;
                             displayCoeffAndPrepareNext(coeff);
-                            btnNext.setEnabled(true);
-
-                            Date date = new Date();
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
-                            strDate = simpleDateFormat.format(date);
-                            //bufferData.setTime(strDate);
-
-
+                            //btnNext.setEnabled(true);
 
                         });
                     }
