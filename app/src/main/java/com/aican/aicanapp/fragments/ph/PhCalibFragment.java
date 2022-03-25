@@ -60,12 +60,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class PhCalibFragment extends Fragment implements  OnBackPressed {
+public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private static final String FILE_NAME = "user_info.txt";
 
+
+    String deviceId;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
-    TextView ph1, mv1, phEdit1;
+    TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5;
     DatabaseReference deviceRef;
     RecyclerView bufferRecycler;
     Button calibrateBtn, btnNext;
@@ -73,10 +75,10 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
     String[] mode = { "5"};
 
     ArrayList<BufferData> bufferList = new ArrayList<>();
-    BufferData bufferData = new BufferData();
 
     String[] lines;
     LinearLayout ll1;
+
 
     float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
@@ -89,16 +91,24 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
     float ph = 0;
     boolean isCalibrating = false;
 
+    String buff;
+    String coef;
+    String currentTime;
+    String strDate;
+
     private void loadBuffers() {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
-
             }
 
-
-            //bufferData.setPh(String.valueOf(buffers));
+            ph1.setText(String.valueOf(buffers[0]));
+            ph2.setText(String.valueOf(buffers[1]));
+            ph3.setText(String.valueOf(buffers[2]));
+            ph4.setText(String.valueOf(buffers[3]));
+            ph5.setText(String.valueOf(buffers[4]));
         });
+
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -118,7 +128,9 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
             isCalibrating = false;
         }
         btnNext.setVisibility(View.VISIBLE);
-        bufferList.add(new BufferData(null,String.format(Locale.UK, "%.2f", coeff)));
+
+        coef = String.format(Locale.UK, "%.2f", coeff);
+        //bufferList.add(new BufferData(null,String.format(Locale.UK, "%.2f", coeff)));
         //bufferData.setMv(String.format(Locale.UK, "%.2f", coeff));
     }
 
@@ -170,6 +182,81 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                tvEcCurr.setText(ecForm);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_1").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                mv1.setText(ecForm);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_2").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                mv2.setText(ecForm);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_3").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                mv3.setText(ecForm);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_4").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                mv4.setText(ecForm);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_5").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float ec = snapshot.getValue(Float.class);
+                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                mv5.setText(ecForm);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
     }
 
     private void updatePh(float ph) {
@@ -232,6 +319,15 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         lastCalib = view.findViewById(R.id.lastCalibration);
         ph1 = view.findViewById(R.id.ph1);
         mv1 = view.findViewById(R.id.mv1);
+        ph2 = view.findViewById(R.id.ph2);
+        mv2 = view.findViewById(R.id.mv2);
+        ph3 = view.findViewById(R.id.ph3);
+        mv3 = view.findViewById(R.id.mv3);
+        ph4 = view.findViewById(R.id.ph4);
+        mv4 = view.findViewById(R.id.mv4);
+        ph5 = view.findViewById(R.id.ph5);
+        mv5 = view.findViewById(R.id.mv5);
+
         ll1 = view.findViewById(R.id.ll1);
         phEdit1 = view.findViewById(R.id.phEdit1);
         tvTimer = view.findViewById(R.id.tvTimer);
@@ -243,14 +339,15 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
         calibrateBtn = view.findViewById(R.id.startBtn);
         btnNext = view.findViewById(R.id.nextBtn);
         spin = view.findViewById(R.id.calibMode);
-        bufferRecycler = view.findViewById(R.id.buffer_items);
-        ArrayList<BufferData> bufferList = new ArrayList<>();
+        //bufferRecycler = view.findViewById(R.id.buffer_items);
 
         btnNext.setEnabled(false);
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
+
+
 
         DialogMain dialogMain = new DialogMain();
         // dialogMain.setCancelable(false);
@@ -312,30 +409,23 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
 
         loadBuffers();
 
-        BufferAdapter bufferAdapter = new BufferAdapter(getBuffer(), requireContext());
-        bufferRecycler.setAdapter(bufferAdapter);
-        bufferAdapter.notifyDataSetChanged();
-        bufferRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        bufferRecycler.setHasFixedSize(true);
+        //bufferRecycler.setHasFixedSize(true);
+        //bufferRecycler.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
+        //BufferAdapter bufferAdapter = new BufferAdapter(getBuffer(), requireContext());
+        //bufferAdapter.notifyDataSetChanged();
+        //bufferRecycler.setAdapter(bufferAdapter);
 
     }
 
-    private List<BufferData> getBuffer(){
-
-        bufferList.add(new BufferData("1"));
-        bufferList.add(new BufferData("3"));
-        bufferList.add(new BufferData("9"));
-        bufferList.add(new BufferData("11.2"));
-        bufferList.add(new BufferData("13"));
-
-        bufferData.setMv(String.valueOf(coeff));
-
-        return bufferList;
-    }
 
     private void onClick(View v) {
         switch (v.getId()) {
             case R.id.phEdit1:
+            case R.id.phEdit2:
+            case R.id.phEdit3:
+            case R.id.phEdit4:
+            case R.id.phEdit5:
+
 
                 EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
@@ -350,7 +440,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
 
     private void updateBufferValue(Float value) {
         String newValue = String.valueOf(value);
-        bufferData.setPh(newValue);
+        //bufferData.setPh(newValue);
         //ph2.setText(newValue);
     }
 
@@ -380,7 +470,7 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
                     @Override
                     public void run() {
                         tvTimer.setVisibility(View.INVISIBLE);
-                        String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+                        currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
                         bufferList.add(new BufferData(null, null, currentTime));
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
                         deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
@@ -388,10 +478,11 @@ public class PhCalibFragment extends Fragment implements  OnBackPressed {
                             if (coeff == null) return;
                             displayCoeffAndPrepareNext(coeff);
                             btnNext.setEnabled(true);
+
                             Date date = new Date();
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
-                            String strDate = simpleDateFormat.format(date);
-                            bufferData.setTime(strDate);
+                            strDate = simpleDateFormat.format(date);
+                            //bufferData.setTime(strDate);
 
 
                         });

@@ -8,18 +8,18 @@ public class BufferData {
     public BufferData() {
     }
 
-    public BufferData(String ph, String mv) {
+
+    public BufferData(String ph, String mv, String time) {
         this.ph = ph;
         this.mv = mv;
+        this.time = time;
     }
 
     public BufferData(String ph) {
         this.ph = ph;
     }
 
-
-    public BufferData(String ph, String mv, String time) {
-        this.ph = ph;
+    public BufferData( String mv, String time) {
         this.mv = mv;
         this.time = time;
     }

@@ -30,9 +30,6 @@ import java.util.List;
 
 public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder> {
 
-    //private Context context;
-    //ArrayList<BufferData> list ;
-
     Context context;
     List<BufferData> list;
 
@@ -58,8 +55,7 @@ public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder
         holder.mv.setText(data.getMv());
         holder.time.setText(data.getTime());
 
-
-
+/*
         holder.editPh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +65,7 @@ public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder
                 dialog.show(dialog.getParentFragmentManager(), null);
 
             }
-        });
+        }); */
     }
 
     @Override
@@ -78,8 +74,6 @@ public class BufferAdapter extends RecyclerView.Adapter<BufferAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
-
         public TextView ph, mv, time, editPh;
         LinearLayout bftItem;
         View mView;
