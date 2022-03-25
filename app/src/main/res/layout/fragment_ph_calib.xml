@@ -207,6 +207,7 @@
                 android:layout_width="127dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:visibility="gone"
                 android:backgroundTint="#9037C7"
                 android:text="Next" />
 
@@ -254,8 +255,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="192dp"
-            android:layout_marginEnd="192dp"
             android:layout_marginTop="-5dp"
+            android:layout_marginEnd="192dp"
             android:backgroundTint="@color/white"
             android:elevation="12dp"
             app:cardCornerRadius="14dp">
@@ -274,9 +275,9 @@
 
 
                     <TextView
-                        android:layout_width="72dp"
+                        android:layout_width="43dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="23dp"
+                        android:layout_marginStart="21dp"
                         android:layout_marginBottom="1dp"
                         android:layout_weight="1"
                         android:text="pH"
@@ -291,9 +292,9 @@
 
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="22dp"
+                        android:layout_marginStart="21dp"
                         android:layout_marginBottom="1dp"
                         android:layout_weight="1"
                         android:text="mV"
@@ -304,8 +305,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginStart="5dp"
-                        android:background="#DFE6ED"
-                        android:visibility="gone" />
+                        android:background="#DFE6ED" />
 
 
                     <TextView
@@ -315,8 +315,7 @@
                         android:layout_marginBottom="2dp"
                         android:layout_weight="1"
                         android:text="Date &amp; Time"
-                        android:textSize="22sp"
-                        android:visibility="gone" />
+                        android:textSize="22sp" />
 
                 </LinearLayout>
 
@@ -383,6 +382,21 @@
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/dt1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
 
 
                     </LinearLayout>
@@ -436,6 +450,21 @@
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/dt2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
 
 
                     </LinearLayout>
@@ -482,6 +511,22 @@
 
                         <TextView
                             android:id="@+id/mv3"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/dt3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="22dp"
@@ -550,6 +595,23 @@
                             android:textSize="16sp" />
 
 
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
+
+
+                        <TextView
+                            android:id="@+id/dt4"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
+
+
                     </LinearLayout>
 
 
@@ -601,7 +663,21 @@
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:background="#DFE6ED" />
 
+
+                        <TextView
+                            android:id="@+id/dt5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_weight="1"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
                 </LinearLayout>

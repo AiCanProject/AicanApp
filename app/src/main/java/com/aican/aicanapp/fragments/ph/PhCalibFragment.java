@@ -64,10 +64,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private static final String FILE_NAME = "user_info.txt";
 
-
     String deviceId;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
-    TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5;
+    TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1,dt2, dt3, dt4, dt5;
     DatabaseReference deviceRef;
     RecyclerView bufferRecycler;
     Button calibrateBtn, btnNext;
@@ -90,6 +89,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     float coeff = 0;
     float ph = 0;
     boolean isCalibrating = false;
+
+    LinearLayout l1,l2,l3,l4,l5;
 
     String buff;
     String coef;
@@ -257,6 +258,152 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                int ec = snapshot.getValue(Integer.class);
+                //String ecForm = String.format(Locale.UK, "%.2f", ec);
+
+                if (ec == 10 || ec == 0){
+                    l1.setBackgroundColor(Color.GRAY);
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.WHITE);
+                    l5.setBackgroundColor(Color.WHITE);
+                }else if (ec == 20 || ec == 11) {
+                    l1.setBackgroundColor(Color.WHITE);
+                    l2.setBackgroundColor(Color.GRAY);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.WHITE);
+                    l5.setBackgroundColor(Color.WHITE);
+
+                }else if (ec == 30 || ec == 21) {
+                    l1.setBackgroundColor(Color.WHITE);
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.GRAY);
+                    l4.setBackgroundColor(Color.WHITE);
+                    l5.setBackgroundColor(Color.WHITE);
+
+                }else if (ec == 40 || ec == 31) {
+                    l1.setBackgroundColor(Color.WHITE);
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.GRAY);
+                    l5.setBackgroundColor(Color.WHITE);
+
+                }else if (ec == 50 || ec == 41) {
+                    l1.setBackgroundColor(Color.WHITE);
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.WHITE);
+                    l5.setBackgroundColor(Color.GRAY);
+                }else {
+                    l1.setBackgroundColor(Color.WHITE);
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.WHITE);
+                    l5.setBackgroundColor(Color.WHITE);
+                }
+
+                if (ec ==11  ) {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
+                    currentBuf += 1;
+                }else if (ec == 21){
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
+                    currentBuf += 1;
+
+                }else if (ec == 31) {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
+                    currentBuf += 1;
+
+
+                }else if (ec == 41) {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
+                    currentBuf += 1;
+
+
+                }else if (ec == 51) {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    strDate = simpleDateFormat.format(new Date());
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+                    calibrateBtn.setText("DONE");
+                    currentBuf += 1;
+
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String time = snapshot.getValue(String.class);
+                dt1.setText(time);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String time = snapshot.getValue(String.class);
+                dt2.setText(time);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String time = snapshot.getValue(String.class);
+                dt3.setText(time);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String time = snapshot.getValue(String.class);
+                dt4.setText(time);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String time = snapshot.getValue(String.class);
+                dt5.setText(time);
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
     }
 
     private void updatePh(float ph) {
@@ -333,6 +480,19 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         phEdit4 = view.findViewById(R.id.phEdit4);
         phEdit5 = view.findViewById(R.id.phEdit5);
 
+        dt1 = view.findViewById(R.id.dt1);
+        dt2 = view.findViewById(R.id.dt2);
+        dt3 = view.findViewById(R.id.dt3);
+        dt4 = view.findViewById(R.id.dt4);
+        dt5 = view.findViewById(R.id.dt5);
+
+
+        l1 = view.findViewById(R.id.log1);
+        l2 = view.findViewById(R.id.log2);
+        l3 = view.findViewById(R.id.log3);
+        l4 = view.findViewById(R.id.log4);
+        l5 = view.findViewById(R.id.log5);
+
         ll1 = view.findViewById(R.id.ll1);
         phEdit1 = view.findViewById(R.id.phEdit1);
         tvTimer = view.findViewById(R.id.tvTimer);
@@ -367,6 +527,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onClick(View view) {
 
+                //calibrate();
                 FileInputStream fis = null;
                 try {
                     fis = getActivity().openFileInput(FILE_NAME);
@@ -397,10 +558,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             }
         });
-
         lastCalib.setText("Last Calibration by ");
 
-        btnNext.setOnClickListener(v -> {
+        /*btnNext.setOnClickListener(v -> {
             if (currentBuf >= buffers.length - 1) {
                 return;
             }
@@ -411,6 +571,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             calibrateBtn.setEnabled(true);
             updateBufferValue((float) buffers[currentBuf]);
         });
+         */
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupListeners();
@@ -516,6 +677,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
                             strDate = simpleDateFormat.format(date);
                             //bufferData.setTime(strDate);
+
 
 
                         });
