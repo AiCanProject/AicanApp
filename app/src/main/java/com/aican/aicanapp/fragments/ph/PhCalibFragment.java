@@ -200,7 +200,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv1.setText(ecForm);
             }
             @Override
@@ -212,7 +212,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv2.setText(ecForm);
             }
             @Override
@@ -225,7 +225,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv3.setText(ecForm);
             }
             @Override
@@ -237,7 +237,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv4.setText(ecForm);
             }
             @Override
@@ -249,7 +249,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
+                String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv5.setText(ecForm);
             }
             @Override
@@ -348,7 +348,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         spin.setAdapter(aa);
 
 
-
         DialogMain dialogMain = new DialogMain();
         // dialogMain.setCancelable(false);
 
@@ -357,7 +356,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 FileInputStream fis = null;
                 try {
