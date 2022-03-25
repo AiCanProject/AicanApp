@@ -328,6 +328,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         ph5 = view.findViewById(R.id.ph5);
         mv5 = view.findViewById(R.id.mv5);
 
+        phEdit2 = view.findViewById(R.id.phEdit2);
+        phEdit3 = view.findViewById(R.id.phEdit3);
+        phEdit4 = view.findViewById(R.id.phEdit4);
+        phEdit5 = view.findViewById(R.id.phEdit5);
+
         ll1 = view.findViewById(R.id.ll1);
         phEdit1 = view.findViewById(R.id.phEdit1);
         tvTimer = view.findViewById(R.id.tvTimer);
@@ -347,6 +352,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
+        phEdit1.setOnClickListener(this::onClick);
+        phEdit2.setOnClickListener(this::onClick);
+        phEdit3.setOnClickListener(this::onClick);
+        phEdit4.setOnClickListener(this::onClick);
+        phEdit5.setOnClickListener(this::onClick);
 
         DialogMain dialogMain = new DialogMain();
         // dialogMain.setCancelable(false);
@@ -419,17 +429,42 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     private void onClick(View v) {
         switch (v.getId()) {
             case R.id.phEdit1:
-            case R.id.phEdit2:
-            case R.id.phEdit3:
-            case R.id.phEdit4:
-            case R.id.phEdit5:
-
-
                 EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels[currentBuf]).setValue(String.valueOf(ph));
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
                 });
                 dialog.show(getParentFragmentManager(), null);
+                break;
+
+            case R.id.phEdit2:
+
+                EditPhBufferDialog dialog1 = new EditPhBufferDialog(ph -> {
+                    updateBufferValue(ph);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
+                });
+                dialog1.show(getParentFragmentManager(), null);
+                break;
+            case R.id.phEdit3:
+                EditPhBufferDialog dialog2 = new EditPhBufferDialog(ph -> {
+                    updateBufferValue(ph);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
+                });
+                dialog2.show(getParentFragmentManager(), null);
+                break;
+            case R.id.phEdit4:
+                EditPhBufferDialog dialog3 = new EditPhBufferDialog(ph -> {
+                    updateBufferValue(ph);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
+                });
+                dialog3.show(getParentFragmentManager(), null);
+                break;
+
+            case R.id.phEdit5:
+                EditPhBufferDialog dialog5 = new EditPhBufferDialog(ph -> {
+                    updateBufferValue(ph);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
+                });
+                dialog5.show(getParentFragmentManager(), null);
                 break;
             default:
                 break;
