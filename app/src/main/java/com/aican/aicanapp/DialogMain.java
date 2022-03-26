@@ -3,7 +3,6 @@ package com.aican.aicanapp;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -53,7 +52,6 @@ public class DialogMain extends AppCompatDialogFragment {
             }
             lines = sb.toString().split("\\n");
             String xyz = sb.deleteCharAt(0).toString();
-            Log.d("56511", xyz);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -74,7 +72,6 @@ public class DialogMain extends AppCompatDialogFragment {
                 if (Source.userPasscode.equals(lines[2]) && Source.userId.equals(lines[3])) {
                     Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                     dismiss();
-                    Source.status = true;
                 } else {
                     Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
                 }

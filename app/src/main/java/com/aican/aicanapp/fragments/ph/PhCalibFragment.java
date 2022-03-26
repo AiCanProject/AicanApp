@@ -58,20 +58,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     String deviceId;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
-    TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1,dt2, dt3, dt4, dt5;
+    TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     DatabaseReference deviceRef;
     RecyclerView bufferRecycler;
     Button calibrateBtn, btnNext;
     Spinner spin;
-    String[] mode = { "5"};
-
+    String[] mode = {"5"};
 
     DatabaseHelper databaseHelper;
     ArrayList<BufferData> bufferList = new ArrayList<>();
 
     String[] lines;
     LinearLayout ll1;
-
 
     float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
@@ -84,7 +82,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     float ph = 0;
     boolean isCalibrating = false;
 
-    LinearLayout l1,l2,l3,l4,l5;
+    LinearLayout l1, l2, l3, l4, l5;
 
     String buff;
     String coef;
@@ -96,14 +94,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
-
             ph1.setText(String.valueOf(buffers[0]));
             ph2.setText(String.valueOf(buffers[1]));
             ph3.setText(String.valueOf(buffers[2]));
             ph4.setText(String.valueOf(buffers[3]));
             ph5.setText(String.valueOf(buffers[4]));
         });
-
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -198,6 +194,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv1.setText(ecForm);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -210,6 +207,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv2.setText(ecForm);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -223,6 +221,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv3.setText(ecForm);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -235,6 +234,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv4.setText(ecForm);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -247,6 +247,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv5.setText(ecForm);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -258,40 +259,40 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 int ec = snapshot.getValue(Integer.class);
                 //String ecForm = String.format(Locale.UK, "%.2f", ec);
 
-                if (ec == 10 || ec == 0){
+                if (ec == 10 || ec == 0) {
                     l1.setBackgroundColor(Color.GRAY);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
-                }else if (ec == 20 || ec == 11) {
+                } else if (ec == 20 || ec == 11) {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.GRAY);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
 
-                }else if (ec == 30 || ec == 21) {
+                } else if (ec == 30 || ec == 21) {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.GRAY);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
 
-                }else if (ec == 40 || ec == 31) {
+                } else if (ec == 40 || ec == 31) {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.GRAY);
                     l5.setBackgroundColor(Color.WHITE);
 
-                }else if (ec == 50 || ec == 41) {
+                } else if (ec == 50 || ec == 41) {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.GRAY);
-                }else {
+                } else {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
@@ -299,7 +300,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     l5.setBackgroundColor(Color.WHITE);
                 }
 
-                if (ec ==11  ) {
+                if (ec == 11) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
@@ -309,7 +310,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //                        return;
 //                    }
 //                    currentBuf += 1;
-                }else if (ec == 21){
+                } else if (ec == 21) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
@@ -320,7 +321,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //                    }
 //                    currentBuf += 1;
 
-                }else if (ec == 31) {
+                } else if (ec == 31) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
@@ -332,7 +333,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //                    currentBuf += 1;
 
 
-                }else if (ec == 41) {
+                } else if (ec == 41) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
@@ -344,7 +345,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //                    currentBuf += 1;
 
 
-                }else if (ec == 51) {
+                } else if (ec == 51) {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(new Date());
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
@@ -359,6 +360,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
 
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -370,6 +372,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String time = snapshot.getValue(String.class);
                 dt1.setText(time);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -381,6 +384,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String time = snapshot.getValue(String.class);
                 dt2.setText(time);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -391,6 +395,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String time = snapshot.getValue(String.class);
                 dt3.setText(time);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -401,6 +406,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String time = snapshot.getValue(String.class);
                 dt4.setText(time);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -411,6 +417,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String time = snapshot.getValue(String.class);
                 dt5.setText(time);
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
@@ -542,7 +549,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onClick(View view) {
 
-                //calibrate();
                 FileInputStream fis = null;
                 try {
                     fis = getActivity().openFileInput(FILE_NAME);
@@ -566,11 +572,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }
                 }
-                if (Source.status) {
-                    calibrate();
-                } else {
-                    Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
-                }
+                calibrate();
             }
         });
         lastCalib.setText("Last Calibration by ");
@@ -654,7 +656,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     }
 
     public void calibrate() {
-        Source.status = false;
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);

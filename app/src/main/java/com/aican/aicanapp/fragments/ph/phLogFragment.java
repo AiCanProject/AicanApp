@@ -266,7 +266,6 @@ public class phLogFragment extends Fragment {
      * To generate PDFs
      */
     private void generatePDF() {
-        Source.status = false;
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
 

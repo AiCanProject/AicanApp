@@ -78,9 +78,11 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 String nameTXT = name.getText().toString();
                 String roleTXT = Role;
                 Boolean status  = databaseHelper.insert_data(nameTXT, roleTXT);
-                Log.d("65116566666", String.valueOf(status) + "   aaaa");
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
                 Source.userRole = Role;
+                Source.userId = userId.getText().toString();
+                Source.userName = name.getText().toString();
+                Source.userPasscode = passcode.getText().toString();
                 FileOutputStream fos = null;
 
                 Toast.makeText(getApplicationContext(), "Role Assigned", Toast.LENGTH_SHORT).show();
