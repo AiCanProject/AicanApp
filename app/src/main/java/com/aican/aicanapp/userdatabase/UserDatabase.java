@@ -21,6 +21,7 @@ public class UserDatabase extends AppCompatActivity {
     String name_fetched, role_fetched;
     ArrayList<UserDatabaseModel> userDatabaseModelList = new ArrayList<>();
 
+
     DatabaseHelper databaseHelper;
 
     @Override
