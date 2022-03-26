@@ -254,9 +254,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="192dp"
+            android:layout_marginStart="172dp"
             android:layout_marginTop="-5dp"
-            android:layout_marginEnd="192dp"
+            android:layout_marginEnd="172dp"
             android:backgroundTint="@color/white"
             android:elevation="12dp"
             app:cardCornerRadius="14dp">
@@ -393,7 +393,7 @@
                             android:id="@+id/dt1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
+                            android:layout_marginStart="20dp"
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
@@ -461,7 +461,7 @@
                             android:id="@+id/dt2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
+                            android:layout_marginStart="20dp"
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
@@ -529,7 +529,7 @@
                             android:id="@+id/dt3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
+                            android:layout_marginStart="20dp"
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
@@ -606,7 +606,7 @@
                             android:id="@+id/dt4"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
+                            android:layout_marginStart="20dp"
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
@@ -674,7 +674,7 @@
                             android:id="@+id/dt5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
+                            android:layout_marginStart="20dp"
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />

@@ -131,7 +131,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
             isCalibrating = false;
         }
-        btnNext.setVisibility(View.VISIBLE);
+        //btnNext.setVisibility(View.VISIBLE);
 
         coef = String.format(Locale.UK, "%.2f", coeff);
         //bufferList.add(new BufferData(null,String.format(Locale.UK, "%.2f", coeff)));
@@ -310,44 +310,60 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 if (ec ==11  ) {
                     Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
                     calibrateBtn.setEnabled(true);
-                    currentBuf += 1;
+//                    if (currentBuf >= buffers.length - 1) {
+//                        return;
+//                    }
+//                    currentBuf += 1;
                 }else if (ec == 21){
                     Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
                     calibrateBtn.setEnabled(true);
-                    currentBuf += 1;
+//                    if (currentBuf >= buffers.length - 1) {
+//                        return;
+//                    }
+//                    currentBuf += 1;
 
                 }else if (ec == 31) {
                     Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
                     calibrateBtn.setEnabled(true);
-                    currentBuf += 1;
+//                    if (currentBuf >= buffers.length - 1) {
+//                        return;
+//                    }
+//                    currentBuf += 1;
 
 
                 }else if (ec == 41) {
                     Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                     calibrateBtn.setEnabled(true);
-                    currentBuf += 1;
+//                    if (currentBuf >= buffers.length - 1) {
+//                        return;
+//                    }
+//                    currentBuf += 1;
 
 
                 }else if (ec == 51) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(new Date());
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                     calibrateBtn.setEnabled(true);
                     calibrateBtn.setText("DONE");
-                    currentBuf += 1;
+
+//                    if (currentBuf >= buffers.length - 1) {
+//                        return;
+//                    }
+//                    currentBuf += 1;
 
                 }
 
@@ -680,6 +696,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             Float coeff = dataSnapshot.getValue(Float.class);
                             if (coeff == null) return;
                             displayCoeffAndPrepareNext(coeff);
+
+                            if (currentBuf >= buffers.length - 1) {
+                                return;
+                            }
+                            currentBuf += 1;
+
                             //btnNext.setEnabled(true);
 
                         });
@@ -715,7 +737,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                     dialog1.dismiss();
                     isCalibrating = false;
-                    onBackPressed();
+                    //onBackPressed();
                 }
 
                 @Override
