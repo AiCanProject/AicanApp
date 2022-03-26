@@ -95,13 +95,10 @@
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/tablelayout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/temp_activity.xml" value="0.2578125" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/temp_item.xml" value="0.2578125" />
-        <entry key="..\:/Users/agarw/OneDrive/Desktop/adada/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/agarw/OneDrive/Desktop/adada/AicanApp/app/src/main/res/layout/activity_user_database.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/agarw/OneDrive/Desktop/adada/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
