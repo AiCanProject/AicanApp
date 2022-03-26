@@ -5,6 +5,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.app.Activity;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.database.Cursor;
@@ -38,6 +39,7 @@ import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
@@ -53,9 +55,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,7 +77,9 @@ public class phLogFragment extends Fragment {
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
     LogAdapter adapter;
+    String[] lines;
     DatabaseHelper databaseHelper;
+    Button logBtn, exportBtn, clearBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,7 +93,9 @@ public class phLogFragment extends Fragment {
 
         lineChart = view.findViewById(R.id.graph);
         //GraphView graphView = view.findViewById(R.id.graph);
-        Button logBtn = view.findViewById(R.id.logBtn);
+        logBtn = view.findViewById(R.id.logBtn);
+        exportBtn = view.findViewById(R.id.export);
+        clearBtn = view.findViewById(R.id.clear);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -110,60 +119,65 @@ public class phLogFragment extends Fragment {
         }
 
         DialogMain dialogMain = new DialogMain();
-        //  dialogMain.setCancelable(false);
+        dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
-      /*  export.setOnClickListener(v -> {
-            FileInputStream fis = null;
-            try {
-                fis = getActivity().openFileInput(FILE_NAME);
-                InputStreamReader isr = new InputStreamReader(fis);
-                BufferedReader br = new BufferedReader(isr);
-                StringBuilder sb = new StringBuilder();
-                String text;
+       /* exportBtn.setOnClickListener(v -> {
+            if(!Source.userRole.equals("Operator")){
+                FileInputStream fis = null;
+                try {
+                    fis = getActivity().openFileInput(FILE_NAME);
+                    InputStreamReader isr = new InputStreamReader(fis);
+                    BufferedReader br = new BufferedReader(isr);
+                    StringBuilder sb = new StringBuilder();
+                    String text;
 
-                clear.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                    clearBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                        list.clear();
+                            list.clear();
+                        }
+                    });
+
+                    setupGraph();
+
+                    exportBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent i = new Intent(getContext(), Export.class);
+                            startActivity(i);
+
+                        }
+                        //generatePDF();
+                    });
+
+                    while ((text = br.readLine()) != null) {
+                        sb.append(text).append("\n");
                     }
-                });
-
-                setupGraph();
-
-                export.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Intent i = new Intent(getContext(), Export.class);
-                        startActivity(i);
-
+                    lines = sb.toString().split("\\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    //generatePDF();
-                });
-
-                while ((text = br.readLine()) != null) {
-                    sb.append(text).append("\n");
                 }
-                lines = sb.toString().split("\\n");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                if (Source.status) {
+                    Intent i = new Intent(getContext(), Export.class);
+                    startActivity(i);
+
+                    //                generatePDF();
+                } else {
+                    Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
                 }
             }
-            if (Source.status) {
-                Intent i = new Intent(getContext(), Export.class);
-                startActivity(i);
-
-                //                generatePDF();
-            } else {
+            else{
                 Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
             }
         });*/

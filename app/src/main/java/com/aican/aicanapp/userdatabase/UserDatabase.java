@@ -18,11 +18,9 @@ import java.util.List;
 
 public class UserDatabase extends AppCompatActivity {
 
-    String name_fetched, role_fetched;
-    ArrayList<UserDatabaseModel> userDatabaseModelList = new ArrayList<>();
-
-
-    DatabaseHelper databaseHelper;
+    private String name_fetched, role_fetched;
+    private ArrayList<UserDatabaseModel> userDatabaseModelList = new ArrayList<>();
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

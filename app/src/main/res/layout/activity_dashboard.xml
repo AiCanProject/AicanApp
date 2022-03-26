@@ -27,14 +27,15 @@
             android:background="@color/main1"
             android:textAlignment="center"
             app:title="DASHBOARD"
-            app:titleTextColor="@color/white" >
+            app:titleTextColor="@color/white">
 
-            <ImageView
+            <Button
                 android:id="@+id/settings"
                 android:layout_width="wrap_content"
-                android:src="@drawable/settings_ic"
                 android:layout_gravity="end"
-                android:clickable="true"
+                android:backgroundTint="@color/orange"
+                android:text="@string/add_user"
+                android:textSize="17sp"
                 android:layout_marginEnd="20dp"
                 android:layout_height="wrap_content"/>
 

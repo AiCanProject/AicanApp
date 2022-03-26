@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -58,7 +59,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     DatabaseReference primaryDatabase;
     String mUid;
-    ImageView setting;
+    Button setting;
 
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
