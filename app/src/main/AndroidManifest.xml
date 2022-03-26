@@ -26,7 +26,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".UserDatabase"
+            android:name=".userdatabase.UserDatabase"
             android:exported="true"
             android:screenOrientation="landscape"/>
         <activity

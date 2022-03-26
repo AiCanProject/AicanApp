@@ -7,6 +7,7 @@ import android.app.Activity;
 
 import android.content.pm.PackageManager;
 
+import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,12 +23,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
@@ -60,13 +63,15 @@ import java.util.Locale;
 
 public class phLogFragment extends Fragment {
 
-    String ph, m, currentTime;
+    String ph, mv, time, ph_fetched, m_fetched, currentTime_fetched;
     LineChart lineChart;
     int pageHeight = 900;
     int pagewidth = 1280;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
+    LogAdapter adapter;
+    DatabaseHelper databaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,9 +89,16 @@ public class phLogFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        databaseHelper = new DatabaseHelper(getContext());
+        adapter = new LogAdapter(getContext(), getSQLList());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        fetch_logs();
 
         setupGraph();
 
@@ -155,47 +167,93 @@ public class phLogFragment extends Fragment {
             }
         });*/
 
+        /**
+         * Getting a log of pH, mV, the time and date of that respective moment, and the name of the compound
+         */
         logBtn.setOnClickListener(v -> {
 
-            currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+            fetch_logs();
 
-            deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float p = snapshot.getValue(Float.class);
-                    ph = String.format(Locale.UK, "%.2f", p);
+            if(ph == null || mv == null){
+                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Log.d("6516451", String.valueOf(ph));
+                Log.d("6516451", String.valueOf(mv));
+                Log.d("6516451", String.valueOf(time));
+                Boolean status = databaseHelper.insert_log_data(time, ph, mv);
+                Log.d("6516451", String.valueOf(status) + "    bbbb");
+                if(status){
+                    Toast.makeText(getContext(), "Inserted", Toast.LENGTH_SHORT).show();
                 }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                else{
+                    Toast.makeText(getContext(), "NOT Inserted", Toast.LENGTH_SHORT).show();
                 }
-            });
-
-            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float mv = snapshot.getValue(Float.class);
-                    m = String.format(Locale.UK, "%.2f", mv);
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            LogAdapter adapter = new LogAdapter(getContext(), getList());
+            }
+            adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
         });
-
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
+    /**
+     * Passing on the data to LogAdapter
+     * @return
+     */
     private List<phData> getList(){
-        phDataModelList.add(new phData(ph,m,currentTime));
+        phDataModelList.add(new phData(ph, mv, time));
         return phDataModelList;
     }
 
+    private void fetch_logs(){
+        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float p = snapshot.getValue(Float.class);
+                ph = String.format(Locale.UK, "%.2f", p);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float mv = snapshot.getValue(Float.class);
+                phLogFragment.this.mv = String.format(Locale.UK, "%.2f", mv);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+    }
+
+    /**
+     * Fetching log entries from SQL Database
+     * @return
+     */
+    private ArrayList<phData> getSQLList(){
+        Cursor res = databaseHelper.get_log();
+        if(res.getCount()==0){
+            Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
+        }
+        while(res.moveToNext()){
+            currentTime_fetched = res.getString(0);
+            ph_fetched = res.getString(1);
+            m_fetched = res.getString(2);
+            phDataModelList.add(new phData(ph_fetched,m_fetched,currentTime_fetched));
+        }
+        return phDataModelList;
+    }
+
+    /**
+     * To generate PDFs
+     */
     private void generatePDF() {
         Source.status = false;
         PdfDocument pdfDocument = new PdfDocument();

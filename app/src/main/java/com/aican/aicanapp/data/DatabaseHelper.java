@@ -1,13 +1,13 @@
-package com.aican.aicanapp;
+package com.aican.aicanapp.data;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
-
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -19,11 +19,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
+        sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, mv TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Userdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetails");
         onCreate(sqLiteDatabase);
     }
 
@@ -33,6 +35,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("name", name);
         contentValues.put("role", role);
         long result = db.insert("Userdetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public Boolean insert_log_data(String time, String ph, String mv){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("time", time);
+        contentValues.put("ph", ph);
+        contentValues.put("mv", mv);
+        long result = db.insert("LogUserdetails", null, contentValues);
         if(result == -1){
             return false;
         }else{
@@ -58,6 +74,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor get_data(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails", null);
+        return cursor;
+    }
+
+    public Cursor get_log(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from LogUserdetails", null);
         return cursor;
     }
 }

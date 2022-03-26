@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:stretchColumns="1,2,3"
     android:layout_margin="10dp"
-    tools:context=".UserDatabase">
+    tools:context=".userdatabase.UserDatabase">
 
     <TableRow android:background="@color/grey">
         <TextView

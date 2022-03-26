@@ -1,4 +1,4 @@
-package com.aican.aicanapp;
+package com.aican.aicanapp.userdatabase;
 
 public class UserDatabaseModel {
     String user_name;

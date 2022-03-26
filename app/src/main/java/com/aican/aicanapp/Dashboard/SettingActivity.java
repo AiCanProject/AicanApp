@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.aican.aicanapp.DatabaseHelper;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
@@ -76,7 +77,8 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
 
                 String nameTXT = name.getText().toString();
                 String roleTXT = Role;
-                databaseHelper.insert_data(nameTXT, roleTXT);
+                Boolean status  = databaseHelper.insert_data(nameTXT, roleTXT);
+                Log.d("65116566666", String.valueOf(status) + "   aaaa");
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
                 Source.userRole = Role;
                 FileOutputStream fos = null;

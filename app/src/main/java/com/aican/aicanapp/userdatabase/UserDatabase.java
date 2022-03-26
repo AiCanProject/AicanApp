@@ -1,4 +1,4 @@
-package com.aican.aicanapp;
+package com.aican.aicanapp.userdatabase;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +8,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 
 import android.widget.Toast;
+
+import com.aican.aicanapp.R;
+import com.aican.aicanapp.adapters.UserDatabaseAdapter;
+import com.aican.aicanapp.data.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;

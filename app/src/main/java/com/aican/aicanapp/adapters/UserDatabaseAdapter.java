@@ -1,4 +1,4 @@
-package com.aican.aicanapp;
+package com.aican.aicanapp.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.aican.aicanapp.data.DatabaseHelper;
+import com.aican.aicanapp.R;
+import com.aican.aicanapp.userdatabase.UserDatabase;
+import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 
 import java.util.List;
 
