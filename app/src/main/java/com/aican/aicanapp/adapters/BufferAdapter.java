@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.UserDatabaseModel;
+import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;

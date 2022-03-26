@@ -1,7 +1,6 @@
 package com.aican.aicanapp.fragments.ph;
 
 import android.app.Dialog;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -9,18 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -28,14 +24,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aican.aicanapp.DatabaseHelper;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 
 import com.aican.aicanapp.Source;
-import com.aican.aicanapp.UserDatabase;
-import com.aican.aicanapp.UserDatabaseModel;
-import com.aican.aicanapp.adapters.BufferAdapter;
 import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
@@ -56,9 +49,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class PhCalibFragment extends Fragment implements OnBackPressed {

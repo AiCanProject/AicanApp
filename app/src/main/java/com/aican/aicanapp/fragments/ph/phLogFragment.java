@@ -52,6 +52,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -109,7 +110,7 @@ public class phLogFragment extends Fragment {
         }
 
         DialogMain dialogMain = new DialogMain();
-      //  dialogMain.setCancelable(false);
+        //  dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
       /*  export.setOnClickListener(v -> {
@@ -175,19 +176,13 @@ public class phLogFragment extends Fragment {
             time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
             fetch_logs();
 
-            if(ph == null || mv == null){
+            if (ph == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Log.d("6516451", String.valueOf(ph));
-                Log.d("6516451", String.valueOf(mv));
-                Log.d("6516451", String.valueOf(time));
+            } else {
                 Boolean status = databaseHelper.insert_log_data(time, ph, mv);
-                Log.d("6516451", String.valueOf(status) + "    bbbb");
-                if(status){
+                if (status) {
                     Toast.makeText(getContext(), "Inserted", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     Toast.makeText(getContext(), "NOT Inserted", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -200,14 +195,15 @@ public class phLogFragment extends Fragment {
 
     /**
      * Passing on the data to LogAdapter
+     *
      * @return
      */
-    private List<phData> getList(){
+    private List<phData> getList() {
         phDataModelList.add(new phData(ph, mv, time));
         return phDataModelList;
     }
 
-    private void fetch_logs(){
+    private void fetch_logs() {
         deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -235,18 +231,19 @@ public class phLogFragment extends Fragment {
 
     /**
      * Fetching log entries from SQL Database
+     *
      * @return
      */
-    private ArrayList<phData> getSQLList(){
+    private ArrayList<phData> getSQLList() {
         Cursor res = databaseHelper.get_log();
-        if(res.getCount()==0){
+        if (res.getCount() == 0) {
             Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
         }
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             currentTime_fetched = res.getString(0);
             ph_fetched = res.getString(1);
             m_fetched = res.getString(2);
-            phDataModelList.add(new phData(ph_fetched,m_fetched,currentTime_fetched));
+            phDataModelList.add(new phData(ph_fetched, m_fetched, currentTime_fetched));
         }
         return phDataModelList;
     }
@@ -338,6 +335,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * checking of permissions.
+     *
      * @return
      */
     private boolean checkPermission() {
@@ -356,6 +354,7 @@ public class phLogFragment extends Fragment {
     /**
      * after requesting permissions we are showing
      * users a toast message of permission granted.
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
