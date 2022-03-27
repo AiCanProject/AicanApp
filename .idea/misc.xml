@@ -20,7 +20,7 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_edit_ph_buffer.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/dialog_select_calib_points.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_alarm.xml" value="0.2" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.14" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.14" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.18" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.18" />
@@ -95,6 +95,18 @@
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/tablelayout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/temp_activity.xml" value="0.2578125" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp-Key/app/src/main/res/layout/temp_item.xml" value="0.2578125" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/drawable/secondary_button_selected_bg.xml" value="0.189" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/drawable/secondary_button_selector.xml" value="0.189" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout-land/activity_admin_login.xml" value="0.23333333333333334" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.2" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/activity_admin_login.xml" value="0.22521367521367522" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/activity_login.xml" value="0.22521367521367522" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/activity_setting.xml" value="0.205859375" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/activity_sign_up.xml" value="0.22521367521367522" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.264" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.205859375" />
+        <entry key="..\:/debz codes/Internship/LabAutomation/AicanApp/app/src/main/res/layout/layout_admin_dialog.xml" value="0.205859375" />
       </map>
     </option>
   </component>

@@ -1,9 +1,10 @@
 package com.aican.aicanapp.Authentication;
 
-import android.app.Activity;
+
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,13 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -30,8 +30,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -78,8 +77,16 @@ public class LoginActivity extends AppCompatActivity {
                     etEmail.getText().toString(),
                     etPassword.getText().toString()
             ).addOnSuccessListener(authResult -> {
-//                    getUserFirebaseAccount(authResult.getUser().getUid());
+//              getUserFirebaseAccount(authResult.getUser().getUid());
                 startMainActivity();
+
+                SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("email", etEmail.getText().toString());
+                myEdit.commit();
+
             }).addOnFailureListener(exception -> {
                 if (exception instanceof FirebaseAuthInvalidUserException) {
                     tilEmail.setError("This Email ID is not registered");

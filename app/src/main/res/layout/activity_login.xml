@@ -39,6 +39,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="110dp"
         android:text="Welcome\nBack"
+        android:fontFamily="@font/sofia_bold"
         android:textColor="@color/white_force"
         android:textSize="32sp"
         android:transitionName="@string/title_transition" />
@@ -53,6 +54,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilEmail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintEnabled="false">
@@ -63,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_email"
                 android:drawablePadding="8dp"
+                android:fontFamily="@font/sofia_medium"
                 android:drawableTint="@color/grey_force"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
@@ -75,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/grey_light_force">
 
@@ -84,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_password"
                 android:drawablePadding="8dp"
+                android:fontFamily="@font/sofia_medium"
                 android:drawableTint="@color/grey_force"
                 android:hint="Password"
                 android:inputType="textPassword"
@@ -97,6 +102,8 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/primary_button_selector"
             android:text="Login"
+            android:textSize="15sp"
+            android:fontFamily="@font/sofia_medium"
             android:textAllCaps="false"
             android:textColor="@color/white_force" />
 
@@ -119,6 +126,7 @@
                 android:background="?android:attr/colorBackground"
                 android:paddingHorizontal="8dp"
                 android:text="OR"
+                android:fontFamily="@font/sofia_regular"
                 android:textColor="@color/grey_force" />
         </FrameLayout>
 
@@ -129,6 +137,8 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/secondary_button_selector"
             android:text="SignUp"
+            android:textSize="15sp"
+            android:fontFamily="@font/sofia_medium"
             android:textAllCaps="false"
             android:textColor="@color/grey_force" />
 

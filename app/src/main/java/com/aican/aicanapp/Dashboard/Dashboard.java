@@ -32,7 +32,6 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
-import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -128,8 +127,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Dashboard.this, SettingActivity.class);
+                Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -154,6 +154,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         //----------------------------------------
 
     }
+
 
     private void setUpNavDrawer() {
         String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();

@@ -167,8 +167,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:background="@color/main2"
+                android:orientation="vertical"
                 android:padding="8dp">
 
                 <ImageView
@@ -178,6 +178,7 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/profile_pic_placeholder"
                     android:padding="5dp"/>
+
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
