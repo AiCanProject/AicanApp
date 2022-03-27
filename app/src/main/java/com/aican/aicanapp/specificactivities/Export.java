@@ -217,16 +217,6 @@ public class Export extends AppCompatActivity {
         String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
         File file = new File(stringFilePath);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
-//        }
-//        else
-//        {
-//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-//        }
-
-//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-
         try {
             pdfDocument.writeTo(new FileOutputStream(file));
             Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
