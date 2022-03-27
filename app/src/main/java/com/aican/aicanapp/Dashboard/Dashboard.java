@@ -1,6 +1,7 @@
 package com.aican.aicanapp.Dashboard;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,10 +24,12 @@ import com.aican.aicanapp.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.CoolingAdapter;
 import com.aican.aicanapp.adapters.PhAdapter;
 import com.aican.aicanapp.adapters.PumpAdapter;
 import com.aican.aicanapp.adapters.TempAdapter;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
@@ -33,6 +37,8 @@ import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.userdatabase.UserDatabase;
+import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,6 +52,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
@@ -76,6 +83,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     PhAdapter phAdapter;
     PumpAdapter pumpAdapter;
 
+    private DatabaseHelper databaseHelper;
+
     private DrawerLayout drawerLayout;
     //Recyclerviews-------------------------------------------------------------------
     private Toolbar toolbar;
@@ -90,6 +99,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        databaseHelper = new DatabaseHelper(this);
+        Source.id_fetched = new ArrayList<>();
+        Source.passcode_fetched = new ArrayList<>();
+        getList();
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
@@ -133,26 +147,34 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
         });
 
-
         ivLogout.setOnClickListener(v->{
             FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
+
         tvConnectDevice.setOnClickListener(v->{
             startActivity(new Intent(this, ConnectDeviceActivity.class));
         });
 
-        //----------------------------------------
         setUpNavDrawer();
         setUpToolBar();
         setUpTemp();
         setUpCooling();
         setUpPh();
         setUpPump();
-        //----------------------------------------
+    }
 
+    private void getList(){
+        Cursor res = databaseHelper.get_data();
+        if(res.getCount()==0){
+            Toast.makeText(Dashboard.this, "No entry", Toast.LENGTH_SHORT).show();
+        }
+        while(res.moveToNext()){
+            Source.id_fetched.add(res.getString(res.getColumnIndex("id")));
+            Source.passcode_fetched.add(res.getString(res.getColumnIndex("passcode")));
+        }
     }
 
     private void setUpNavDrawer() {

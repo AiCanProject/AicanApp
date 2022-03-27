@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.UserDatabaseAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 
@@ -18,7 +19,6 @@ import java.util.List;
 
 public class UserDatabase extends AppCompatActivity {
 
-    private String name_fetched, role_fetched;
     private ArrayList<UserDatabaseModel> userDatabaseModelList = new ArrayList<>();
     private DatabaseHelper databaseHelper;
 
@@ -28,6 +28,8 @@ public class UserDatabase extends AppCompatActivity {
         setContentView(R.layout.activity_user_database);
 
         databaseHelper = new DatabaseHelper(this);
+        Source.id_fetched = new ArrayList<>();
+        Source.passcode_fetched = new ArrayList<>();
 
         RecyclerView recyclerView = findViewById(R.id.user_database_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -42,9 +44,7 @@ public class UserDatabase extends AppCompatActivity {
             Toast.makeText(UserDatabase.this, "No entry", Toast.LENGTH_SHORT).show();
         }
         while(res.moveToNext()){
-            name_fetched = res.getString(0);
-            role_fetched = res.getString(1);
-            userDatabaseModelList.add(new UserDatabaseModel(name_fetched,role_fetched));
+            userDatabaseModelList.add(new UserDatabaseModel(res.getString(0),res.getString(1)));
         }
         return userDatabaseModelList;
     }

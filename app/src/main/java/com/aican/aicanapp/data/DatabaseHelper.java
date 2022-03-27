@@ -29,11 +29,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public Boolean insert_data(String name, String role){
+    public Boolean insert_data(String name, String role,String id, String passcode){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("role", role);
+        contentValues.put("id", id);
+        contentValues.put("passcode", passcode);
         long result = db.insert("Userdetails", null, contentValues);
         if(result == -1){
             return false;

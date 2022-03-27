@@ -75,14 +75,13 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         generate.setOnClickListener(view -> {
             if(isEmailValid() && isPassCodeValid()){
 
-                String nameTXT = name.getText().toString();
-                String roleTXT = Role;
-                Boolean status  = databaseHelper.insert_data(nameTXT, roleTXT);
-                String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
                 Source.userRole = Role;
                 Source.userId = userId.getText().toString();
                 Source.userName = name.getText().toString();
                 Source.userPasscode = passcode.getText().toString();
+                databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode);
+                String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
+
                 FileOutputStream fos = null;
 
                 Toast.makeText(getApplicationContext(), "Role Assigned", Toast.LENGTH_SHORT).show();
