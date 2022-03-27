@@ -36,12 +36,6 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
-<<<<<<< HEAD
-import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.userdatabase.UserDatabase;
-import com.aican.aicanapp.userdatabase.UserDatabaseModel;
-=======
->>>>>>> 14530f7e3d00b35b4fafdd12e8182f98123efe63
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -55,7 +49,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
