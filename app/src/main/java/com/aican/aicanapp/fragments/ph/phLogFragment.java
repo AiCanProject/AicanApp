@@ -205,6 +205,8 @@ public class phLogFragment extends Fragment {
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+
     }
 
     /**

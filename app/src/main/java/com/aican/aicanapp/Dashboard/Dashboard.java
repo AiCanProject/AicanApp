@@ -36,9 +36,12 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+<<<<<<< HEAD
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabaseModel;
+=======
+>>>>>>> 14530f7e3d00b35b4fafdd12e8182f98123efe63
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -142,8 +145,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Dashboard.this, SettingActivity.class);
+                Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -176,6 +180,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             Source.passcode_fetched.add(res.getString(res.getColumnIndex("passcode")));
         }
     }
+
 
     private void setUpNavDrawer() {
         String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
