@@ -19,12 +19,17 @@ import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
 import com.aican.aicanapp.fragments.ph.phLogFragment;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class PhActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView ph, calibrate, log, alarm, tabItemPh, tabItemCalib;
 
     ImageView setting, user_database;
+
+    DatabaseReference deviceRef;
 
     PhFragment phFragment = new PhFragment();
     PhCalibFragment phCalibFragment = new PhCalibFragment();
@@ -49,6 +54,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             throw new RuntimeException();
         }
 
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
         loadFragments(phFragment);
         ph = findViewById(R.id.item1);
         calibrate = findViewById(R.id.item2);
@@ -57,7 +64,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         tabItemPh = findViewById(R.id.tabItemP);
         tabItemCalib = findViewById(R.id.select2);
 
-        setting = findViewById(R.id.settings);
+        //setting = findViewById(R.id.settings);
         user_database = findViewById(R.id.user_database);
         ph.setOnClickListener(this);
         calibrate.setOnClickListener(this);
@@ -129,6 +136,9 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                     .replace(R.id.fragmentContainerView, fragment)
                     .addToBackStack(null)
                     .commit();
+
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
 
             return true;
         }

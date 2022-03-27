@@ -349,8 +349,17 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(new Date());
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
                     calibrateBtn.setText("DONE");
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            calibrateBtn.setText("START");
+                            calibrateBtn.setEnabled(true);
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                        }
+                    }, 5000);   //5 seconds
+
 
 //                    if (currentBuf >= buffers.length - 1) {
 //                        return;
@@ -575,7 +584,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 calibrate();
             }
         });
-        lastCalib.setText("Last Calibration by ");
+        lastCalib.setText("Last Calibration by " );
 
         /*btnNext.setOnClickListener(v -> {
             if (currentBuf >= buffers.length - 1) {
@@ -690,8 +699,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                             if (currentBuf >= buffers.length - 1) {
                                 return;
-                            }
-                            currentBuf += 1;
+                            }else
+                                currentBuf += 1;
 
                             //btnNext.setEnabled(true);
 
@@ -722,22 +731,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     @Override
     public void onBackPressed() {
         if (isCalibrating) {
-            ExitConfirmDialog dialog = new ExitConfirmDialog((new ExitConfirmDialog.DialogCallbacks() {
+            ExitConfirmDialog dialogs = new ExitConfirmDialog((new ExitConfirmDialog.DialogCallbacks() {
                 @Override
-                public void onYesClicked(Dialog dialog1) {
+                public void onYesClicked(Dialog dialogs) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                    dialog1.dismiss();
+                    dialogs.dismiss();
                     isCalibrating = false;
                     //onBackPressed();
                 }
 
                 @Override
-                public void onNoClicked(Dialog dialog1) {
-                    dialog1.dismiss();
+                public void onNoClicked(Dialog dialogs) {
+                    dialogs.dismiss();
                 }
             }));
 
-            dialog.show(getParentFragmentManager(), null);
+            dialogs.show(getParentFragmentManager(), null);
         } else {
             getActivity().getSupportFragmentManager().popBackStack();
         }
