@@ -65,6 +65,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     Spinner spin;
     String[] mode = {"5"};
 
+    TextView title;
     DatabaseHelper databaseHelper;
     ArrayList<BufferData> bufferList = new ArrayList<>();
 
@@ -327,6 +328,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
                     calibrateBtn.setEnabled(true);
+
 //                    if (currentBuf >= buffers.length - 1) {
 //                        return;
 //                    }
@@ -339,10 +341,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                     calibrateBtn.setEnabled(true);
+
 //                    if (currentBuf >= buffers.length - 1) {
 //                        return;
 //                    }
-//                    currentBuf += 1;
+                    //currentBuf += 1;
 
 
                 } else if (ec == 51) {
@@ -514,6 +517,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         dt5 = view.findViewById(R.id.dt5);
 
 
+        title = view.findViewById(R.id.tvTitle);
         l1 = view.findViewById(R.id.log1);
         l2 = view.findViewById(R.id.log2);
         l3 = view.findViewById(R.id.log3);
@@ -536,7 +540,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         databaseHelper = new DatabaseHelper(requireContext());
         //Cursor res = databaseHelper.get_data();
-
+        title.setText("Do not exit/change fragments \n while calibrating");
         lastCalib.setText("Last Calibrated By ");
         //btnNext.setEnabled(false);
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
@@ -699,8 +703,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                             if (currentBuf >= buffers.length - 1) {
                                 return;
-                            }else
-                                currentBuf += 1;
+                            }
+                            currentBuf += 1;
 
                             //btnNext.setEnabled(true);
 
