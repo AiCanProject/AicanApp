@@ -99,7 +99,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         databaseHelper = new DatabaseHelper(this);
         Source.id_fetched = new ArrayList<>();
         Source.passcode_fetched = new ArrayList<>();
-        getList();
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
@@ -182,6 +181,27 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 .addOnSuccessListener(documentSnapshot -> {
                     tvName.setText(documentSnapshot.get("NAME",String.class));
                 });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        getList();
+        super.onStart();
     }
 
     @Override
