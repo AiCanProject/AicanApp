@@ -1,6 +1,8 @@
 package com.aican.aicanapp.fragments.ph;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -33,6 +35,8 @@ import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.ExitConfirmDialog;
+import com.aican.aicanapp.userdatabase.UserDatabase;
+import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 import com.aican.aicanapp.utils.OnBackPressed;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -56,11 +60,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private static final String FILE_NAME = "user_info.txt";
 
-    String deviceId;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     DatabaseReference deviceRef;
-    RecyclerView bufferRecycler;
     Button calibrateBtn, btnNext;
     Spinner spin;
     String[] mode = {"5"};
@@ -80,12 +82,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     DatabaseReference coeffRef = null;
     float coeff = 0;
-    float ph = 0;
     boolean isCalibrating = false;
 
     LinearLayout l1, l2, l3, l4, l5;
 
-    String buff;
     String coef;
     String currentTime;
     String strDate;
@@ -119,11 +119,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
             isCalibrating = false;
         }
-        //btnNext.setVisibility(View.VISIBLE);
-
         coef = String.format(Locale.UK, "%.2f", coeff);
-        //bufferList.add(new BufferData(null,String.format(Locale.UK, "%.2f", coeff)));
-        //bufferData.setMv(String.format(Locale.UK, "%.2f", coeff));
     }
 
     private void setupCoeffListener() {
@@ -258,7 +254,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int ec = snapshot.getValue(Integer.class);
-                //String ecForm = String.format(Locale.UK, "%.2f", ec);
 
                 if (ec == 10 || ec == 0) {
                     l1.setBackgroundColor(Color.GRAY);
@@ -308,21 +303,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
                     calibrateBtn.setEnabled(true);
 
-//                    if (currentBuf >= buffers.length - 1) {
-//                        return;
-//                    }
-//                    currentBuf += 1;
-
                 } else if (ec == 21) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
                     calibrateBtn.setEnabled(true);
-//                    if (currentBuf >= buffers.length - 1) {
-//                        return;
-//                    }
-//                    currentBuf += 1;
 
                 } else if (ec == 31) {
                     Date date = new Date();
@@ -331,24 +317,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
                     calibrateBtn.setEnabled(true);
 
-//                    if (currentBuf >= buffers.length - 1) {
-//                        return;
-//                    }
-//                    currentBuf += 1;
-
-
                 } else if (ec == 41) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                     calibrateBtn.setEnabled(true);
-
-//                    if (currentBuf >= buffers.length - 1) {
-//                        return;
-//                    }
-                    //currentBuf += 1;
-
 
                 } else if (ec == 51) {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
@@ -364,15 +338,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                         }
                     }, 5000);   //5 seconds
-
-
-//                    if (currentBuf >= buffers.length - 1) {
-//                        return;
-//                    }
-//                    currentBuf += 1;
-
                 }
-
             }
 
             @Override
@@ -491,6 +457,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         return inflater.inflate(R.layout.fragment_ph_calib, container, false);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -535,16 +502,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         tvTempNext = view.findViewById(R.id.tvTempNext);
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         calibrateBtn = view.findViewById(R.id.startBtn);
-        //btnNext = view.findViewById(R.id.nextBtn);
         spin = view.findViewById(R.id.calibMode);
         lastCalib = view.findViewById(R.id.lastCalibration);
-        //bufferRecycler = view.findViewById(R.id.buffer_items);
 
         databaseHelper = new DatabaseHelper(requireContext());
-        //Cursor res = databaseHelper.get_data();
-        title.setText("Do not exit/change fragments \n while calibrating");
-        lastCalib.setText("Last Calibrated By ");
-        //btnNext.setEnabled(false);
+
+        Cursor res = databaseHelper.get_data();
+        while(res.moveToNext()){
+            Source.userName = res.getString(0);
+        }
+
+        title.setText("Do not exit/change fragments \nwhile calibrating");
+        lastCalib.setText("Last Calibrated By " + Source.userName);
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -590,32 +559,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 calibrate();
             }
         });
-        lastCalib.setText("Last Calibration by " );
-
-        /*btnNext.setOnClickListener(v -> {
-            if (currentBuf >= buffers.length - 1) {
-                return;
-            }
-            btnNext.setVisibility(View.INVISIBLE);
-            currentBuf += 1;
-
-            calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
-            calibrateBtn.setEnabled(true);
-            updateBufferValue((float) buffers[currentBuf]);
-        });
-         */
+        lastCalib.setText("Last Calibration by " + Source.userName);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupListeners();
 
         loadBuffers();
-
-        //bufferRecycler.setHasFixedSize(true);
-        //bufferRecycler.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
-        //BufferAdapter bufferAdapter = new BufferAdapter(getBuffer(), requireContext());
-        //bufferAdapter.notifyDataSetChanged();
-        //bufferRecycler.setAdapter(bufferAdapter);
-
     }
 
 
@@ -666,8 +615,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private void updateBufferValue(Float value) {
         String newValue = String.valueOf(value);
-        //bufferData.setPh(newValue);
-        //ph2.setText(newValue);
     }
 
     public void calibrate() {
@@ -707,9 +654,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 return;
                             }
                             currentBuf += 1;
-
-                            //btnNext.setEnabled(true);
-
                         });
                     }
                 };

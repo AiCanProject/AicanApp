@@ -77,7 +77,6 @@ public class phLogFragment extends Fragment {
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
     LogAdapter adapter;
-    String[] lines;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, clearBtn;
     ImageButton enterBtn;
@@ -94,7 +93,6 @@ public class phLogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         lineChart = view.findViewById(R.id.graph);
-        //GraphView graphView = view.findViewById(R.id.graph);
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
         clearBtn = view.findViewById(R.id.clear);
@@ -114,8 +112,6 @@ public class phLogFragment extends Fragment {
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         fetch_logs();
 
-//        setupGraph();
-
         if (checkPermission()) {
             Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
@@ -125,68 +121,6 @@ public class phLogFragment extends Fragment {
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
-
-       /* exportBtn.setOnClickListener(v -> {
-            if(!Source.userRole.equals("Operator")){
-                FileInputStream fis = null;
-                try {
-                    fis = getActivity().openFileInput(FILE_NAME);
-                    InputStreamReader isr = new InputStreamReader(fis);
-                    BufferedReader br = new BufferedReader(isr);
-                    StringBuilder sb = new StringBuilder();
-                    String text;
-
-                    clearBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            list.clear();
-                        }
-                    });
-
-                    setupGraph();
-
-                    exportBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            Intent i = new Intent(getContext(), Export.class);
-                            startActivity(i);
-
-                        }
-                        //generatePDF();
-                    });
-
-                    while ((text = br.readLine()) != null) {
-                        sb.append(text).append("\n");
-                     }
-                    lines = sb.toString().split("\\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                if (Source.status) {
-                    Intent i = new Intent(getContext(), Export.class);
-                    startActivity(i);
-
-                    //                generatePDF();
-                } else {
-                    Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else{
-                Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        */
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,7 +156,6 @@ public class phLogFragment extends Fragment {
                 Intent i = new Intent(getContext(), Export.class);
                 startActivity(i);
             }
-            //generatePDF();
         });
 
         /**
@@ -275,8 +208,6 @@ public class phLogFragment extends Fragment {
 
     public void showChart() {
         int countColumns = columns();
-        Log.d("ryu", String.valueOf(countColumns));
-
 
         ArrayList<Entry> yValues = new ArrayList<>();
         for(int i =0; i<countColumns; i++){
@@ -293,7 +224,6 @@ public class phLogFragment extends Fragment {
             lineChart.setPinchZoom(true);
             lineChart.setTouchEnabled(true);
         }
-        Log.d("debz", ph);
 
         LineDataSet set = new LineDataSet(yValues, "pH");
         set.setFillAlpha(110);
@@ -306,8 +236,6 @@ public class phLogFragment extends Fragment {
 
         lineChart.setPinchZoom(true);
         lineChart.setTouchEnabled(true);
-
-
     }
 
     private void fetch_logs() {
@@ -407,38 +335,8 @@ public class phLogFragment extends Fragment {
 
         pdfDocument.finishPage(myPage);
 
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
-//        File dir = new File(path);
-//        if (!dir.exists())
-//            dir.mkdirs();
-//
-//        File filePath = new File(dir, "Test.pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(filePath));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//            //btn_generate.setText("Check PDF");
-//            //boolean_save=true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        pdfDocument.close();
-
         String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
         File file = new File(stringFilePath);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-//            file = new File(getActivity().getExternalFilesDir(String.valueOf(Environment.getExternalStorageDirectory())), "gfg.pdf");
-//        }
-//        else
-//        {
-//            file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
-//        }
-
-//        File file = new File(Environment.getExternalStorageDirectory(), "GFG.pdf");
 
         try {
             pdfDocument.writeTo(new FileOutputStream(file));
@@ -490,76 +388,5 @@ public class phLogFragment extends Fragment {
                 }
             }
         }
-    }
-
-    private void setupGraph() {
-
-
-        ArrayList<Entry> yValues = new ArrayList<>();
-        yValues.add(new Entry(0, 40f));
-        yValues.add(new Entry(1, 50f));
-        yValues.add(new Entry(2, 70f));
-        yValues.add(new Entry(3, 80f));
-        yValues.add(new Entry(4, 30f));
-        yValues.add(new Entry(5, 90f));
-        yValues.add(new Entry(6, 20f));
-        yValues.add(new Entry(7, 100f));
-
-
-        LineDataSet set = new LineDataSet(yValues, "pH");
-        set.setFillAlpha(110);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set);
-
-        lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-
-        lineChart.setPinchZoom(true);
-        lineChart.setTouchEnabled(true);
-
-        /*
-        lineChart = new LineChart(getContext());
-        lineChart.setPinchZoom(true);
-        lineChart.setTouchEnabled(true);
-
-        LineData lineData = new LineData();
-        lineChart.setData(lineData);
-
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setAvoidFirstLastClipping(true);
-
-        YAxis yAxis = lineChart.getAxisLeft();
-        yAxis.setAxisMaximum(14f);
-        yAxis.setDrawGridLines(true);
-
-        YAxis yAxis1 = lineChart.getAxisRight();
-        yAxis1.setEnabled(false);
-         */
-        /*
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<Entry> dataVal = new ArrayList<Entry>();
-                if (snapshot.hasChildren()){
-                    for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                        DataPoint dataPoint = dataSnapshot.getValue(DataPoint.class);
-                        dataVal.add(new Entry((float)dataPoint.getX(),(float)dataPoint.getY()));
-                    }
-                    showChart(dataVal);
-                }else{
-                    lineChart.clear();
-                    lineChart.invalidate();
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-         */
     }
 }

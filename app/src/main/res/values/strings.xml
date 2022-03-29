@@ -32,4 +32,5 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="compound_name">Compound Name</string>
     <string name="ph">pH</string>
     <string name="date">Date</string>
+    <string name="tip_long_press_to_delete_the_record">TIP: Long Press to Delete the Record</string>
 </resources>
