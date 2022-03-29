@@ -40,6 +40,7 @@ dependencies {
     implementation files('libs\\GraphView-4.2.1.jar')
     implementation 'com.google.firebase:firebase-firestore:22.1.2'
     implementation files('libs\\opencsv-5.4.jar')
+    implementation 'org.jetbrains:annotations:15.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -180,11 +180,25 @@ public class phLogFragment extends Fragment {
             else{
                 Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
+
+        */
+
+        exportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(getContext(), Export.class);
+                startActivity(i);
+
+            }
+            //generatePDF();
+        });
 
         /**
          * Getting a log of pH, mV, the time and date of that respective moment, and the name of the compound
          */
+
         logBtn.setOnClickListener(v -> {
 
             time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());

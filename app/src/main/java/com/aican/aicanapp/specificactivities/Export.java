@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +28,8 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.FileAdapter;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +46,7 @@ import java.util.Calendar;
 
 public class Export extends AppCompatActivity {
 
+    Button startDat;
     TextView startDate, endDate;
     TextView deviceId;
     Button button;
@@ -55,13 +59,33 @@ public class Export extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export);
 
+        startDat = findViewById(R.id.textView2);
         button = findViewById(R.id.authenticateRole);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         TextView noFilesText = findViewById(R.id.nofiles_textview);
         startDate = findViewById(R.id.date);
-        endDate = findViewById(R.id.endDate);
         deviceId = findViewById(R.id.DeviceId);
         setFirebaseListeners();
+
+
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setTitleText("SELECT A RANGE OF DATE");
+        final MaterialDatePicker materialDatePicker = builder.build();
+
+        //Range OF DATE
+        startDat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+            }
+        });
+
+        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(Object selection) {
+            startDate.setText(materialDatePicker.getHeaderText());
+            }
+        });
 
 
         if (checkPermission()) {
@@ -97,9 +121,6 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        startDate.setOnClickListener(view -> getCurrentDate(startDate));
-
-        endDate.setOnClickListener(view -> getCurrentDate(endDate));
     }
 
     private boolean checkPermission() {
@@ -126,18 +147,6 @@ public class Export extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public void getCurrentDate(TextView tvDate) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(), (view, year, month, dayOfMonth) -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            tvDate.setText(simpleDateFormat.format(calendar.getTime()));
-        }, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
     }
 
     private void setFirebaseListeners() {
