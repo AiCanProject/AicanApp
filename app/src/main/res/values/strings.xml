@@ -27,4 +27,5 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="enter_compound_name">Enter Compound Name</string>
     <string name="log">Log</string>
     <string name="add_user">Add User</string>
+    <string name="home">Home</string>
 </resources>

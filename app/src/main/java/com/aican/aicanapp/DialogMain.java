@@ -2,6 +2,7 @@ package com.aican.aicanapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
+
 public class DialogMain extends AppCompatDialogFragment {
     @NonNull
     public EditText userID, passcode;
-    public Button authenticate;
+    public Button authenticate, homeBtn;
 
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -28,9 +31,17 @@ public class DialogMain extends AppCompatDialogFragment {
         userID = view.findViewById(R.id.userId);
         passcode = view.findViewById(R.id.userPwd);
         authenticate = view.findViewById(R.id.authenticateRole);
+        homeBtn = view.findViewById(R.id.homeBtn);
 
         builder.setView(view);
         builder.setCancelable(false);
+
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), Dashboard.class));
+            }
+        });
 
         authenticate.setOnClickListener(new View.OnClickListener() {
             @Override
