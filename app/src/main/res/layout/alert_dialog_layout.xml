@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:background="@color/white"
     android:layout_height="match_parent"
-    tools:context=".DialogPrompt">
+    >
 
     <LinearLayout
         android:id="@+id/ll1"
@@ -60,6 +60,7 @@
                 android:id="@+id/userPwd"
                 android:layout_width="match_parent"
                 android:textColor="@color/black"
+                android:inputType="textPassword"
                 android:layout_height="wrap_content"
                 android:maxLines="1" />
 

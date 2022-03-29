@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +83,7 @@ public class phLogFragment extends Fragment {
     String[] lines;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, clearBtn;
+    String TABLE_NAME = "LogUserdetails";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,10 +114,16 @@ public class phLogFragment extends Fragment {
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         fetch_logs();
 
-        setupGraph();
+//        setupGraph();
+
+        if (checkPermission()) {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
 
         DialogMain dialogMain = new DialogMain();
-        //dialogMain.setCancelable(false);
+        dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
        /* exportBtn.setOnClickListener(v -> {
@@ -149,7 +159,7 @@ public class phLogFragment extends Fragment {
 
                     while ((text = br.readLine()) != null) {
                         sb.append(text).append("\n");
-                    }
+                     }
                     lines = sb.toString().split("\\n");
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -177,6 +187,14 @@ public class phLogFragment extends Fragment {
         });
 
         */
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showChart();
+            }
+            }, 5000);
 
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +231,14 @@ public class phLogFragment extends Fragment {
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        Handler handlerr = new Handler();
+        handlerr.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showChart();
+            }
+        }, 5000);
     }
 
     /**
@@ -223,6 +249,53 @@ public class phLogFragment extends Fragment {
     private List<phData> getList() {
         phDataModelList.add(new phData(ph, mv, time));
         return phDataModelList;
+    }
+
+
+    public int columns() {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.databaseHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    public void showChart() {
+        int countColumns = columns();
+        Log.d("ryu", String.valueOf(countColumns));
+
+
+        ArrayList<Entry> yValues = new ArrayList<>();
+        for(int i =0; i<countColumns; i++){
+            yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
+            LineDataSet set = new LineDataSet(yValues, "pH");
+            set.setFillAlpha(110);
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            dataSets.add(set);
+
+            lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
+            LineData data = new LineData(dataSets);
+            lineChart.setData(data);
+
+            lineChart.setPinchZoom(true);
+            lineChart.setTouchEnabled(true);
+        }
+        Log.d("debz", ph);
+
+        LineDataSet set = new LineDataSet(yValues, "pH");
+        set.setFillAlpha(110);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set);
+
+        lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+
+        lineChart.setPinchZoom(true);
+        lineChart.setTouchEnabled(true);
+
+
     }
 
     private void fetch_logs() {
@@ -354,7 +427,73 @@ public class phLogFragment extends Fragment {
         pdfDocument.close();
     }
 
+    /**
+     * checking of permissions.
+     *
+     * @return
+     */
+    private boolean checkPermission() {
+        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * requesting permissions if not provided.
+     */
+    private void requestPermission() {
+        ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+    /**
+     * after requesting permissions we are showing
+     * users a toast message of permission granted.
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (writeStorage && readStorage) {
+                    Toast.makeText(requireContext(), "Permission Granted..", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Permission Denined.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     private void setupGraph() {
+
+
+        ArrayList<Entry> yValues = new ArrayList<>();
+        yValues.add(new Entry(0, 40f));
+        yValues.add(new Entry(1, 50f));
+        yValues.add(new Entry(2, 70f));
+        yValues.add(new Entry(3, 80f));
+        yValues.add(new Entry(4, 30f));
+        yValues.add(new Entry(5, 90f));
+        yValues.add(new Entry(6, 20f));
+        yValues.add(new Entry(7, 100f));
+
+
+        LineDataSet set = new LineDataSet(yValues, "pH");
+        set.setFillAlpha(110);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set);
+
+        lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
+        LineData data = new LineData(dataSets);
+        lineChart.setData(data);
+
+        lineChart.setPinchZoom(true);
+        lineChart.setTouchEnabled(true);
 
         /*
         lineChart = new LineChart(getContext());
@@ -399,29 +538,5 @@ public class phLogFragment extends Fragment {
             }
         });
          */
-
-        ArrayList<Entry> yValues = new ArrayList<>();
-        yValues.add(new Entry(0, 40f));
-        yValues.add(new Entry(1, 50f));
-        yValues.add(new Entry(2, 70f));
-        yValues.add(new Entry(3, 80f));
-        yValues.add(new Entry(4, 30f));
-        yValues.add(new Entry(5, 90f));
-        yValues.add(new Entry(6, 20f));
-        yValues.add(new Entry(7, 100f));
-
-
-        LineDataSet set = new LineDataSet(yValues, "pH");
-        set.setFillAlpha(110);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set);
-
-        lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-
-        lineChart.setPinchZoom(true);
-        lineChart.setTouchEnabled(true);
-
     }
 }
