@@ -28,4 +28,8 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="log">Log</string>
     <string name="add_user">Add User</string>
     <string name="home">Home</string>
+    <string name="temp">Temp</string>
+    <string name="compound_name">Compound Name</string>
+    <string name="ph">pH</string>
+    <string name="date">Date</string>
 </resources>

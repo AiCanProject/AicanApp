@@ -83,13 +83,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private DatabaseHelper databaseHelper;
 
     private DrawerLayout drawerLayout;
-    //Recyclerviews-------------------------------------------------------------------
+
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    //---------------------------------------------------------------------------------
+
     private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView;
     private FloatingActionButton addNewDevice;
-    private TextView tvTemp,tvCooling, tvPump, tvPh, tvName, tvConnectDevice;
+    private TextView tvTemp, tvCooling, tvPump, tvPh, tvName, tvConnectDevice;
     private ImageView ivLogout;
 
     @Override
@@ -114,10 +114,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
         setting = findViewById(R.id.settings);
-
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
-        primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
-                .child("USERS").child(mUid);
+        primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("USERS").child(mUid);
         deviceIds = new ArrayList<>();
         phDevices = new ArrayList<>();
         pumpDevices = new ArrayList<>();
@@ -144,15 +142,14 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
         });
 
-
-        ivLogout.setOnClickListener(v->{
+        ivLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
 
-        tvConnectDevice.setOnClickListener(v->{
+        tvConnectDevice.setOnClickListener(v -> {
             startActivity(new Intent(this, ConnectDeviceActivity.class));
         });
 
@@ -164,24 +161,23 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpPump();
     }
 
-    private void getList(){
+    private void getList() {
         Cursor res = databaseHelper.get_data();
-        if(res.getCount()==0){
+        if (res.getCount() == 0) {
             Toast.makeText(Dashboard.this, "No entry", Toast.LENGTH_SHORT).show();
         }
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             Source.id_fetched.add(res.getString(res.getColumnIndex("id")));
             Source.passcode_fetched.add(res.getString(res.getColumnIndex("passcode")));
         }
     }
-
 
     private void setUpNavDrawer() {
         String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this))
                 .collection("NAMES").document(uid).get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    tvName.setText(documentSnapshot.get("NAME",String.class));
+                    tvName.setText(documentSnapshot.get("NAME", String.class));
                 });
     }
 
@@ -265,16 +261,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         getDeviceIds();
     }
 
+    /**
+     * Connect to devices account and get device details
+     */
     private void getDeviceIds() {
         primaryDatabase.child("DEVICES").get().addOnSuccessListener(dataSnapshot -> {
-            //Connect to devices account and get device details
             if (dataSnapshot.hasChildren()) {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     String deviceId = deviceSnapshot.getValue(String.class);
                     deviceIds.add(deviceId);
                     deviceIdIds.put(deviceId, deviceSnapshot.getKey());
                 }
-
                 getDeviceAccounts();
             }
         });
@@ -295,7 +292,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 if (accountsLoaded.get() == deviceIds.size()) {
                     getDevices();
                 }
-            }).addOnFailureListener(exception->{
+            }).addOnFailureListener(exception -> {
                 exception.printStackTrace();
             }).addOnCanceledListener(new OnCanceledListener() {
                 @Override
@@ -399,24 +396,24 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     coolingAdapter.notifyDataSetChanged();
                     phAdapter.notifyDataSetChanged();
                     pumpAdapter.notifyDataSetChanged();
-                    if(tempDevices.size()==0){
+                    if (tempDevices.size() == 0) {
                         tvTemp.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         tvTemp.setVisibility(View.VISIBLE);
                     }
-                    if(coolingDevices.size()==0){
+                    if (coolingDevices.size() == 0) {
                         tvCooling.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         tvCooling.setVisibility(View.VISIBLE);
                     }
-                    if(phDevices.size()==0){
+                    if (phDevices.size() == 0) {
                         tvPh.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         tvPh.setVisibility(View.VISIBLE);
                     }
-                    if(pumpDevices.size()==0){
+                    if (pumpDevices.size() == 0) {
                         tvPump.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         tvPump.setVisibility(View.VISIBLE);
                     }
                 }

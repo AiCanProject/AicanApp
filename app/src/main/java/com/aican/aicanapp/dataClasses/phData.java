@@ -4,14 +4,21 @@ public class phData {
     String pH;
     String mV;
     String date;
+    String compound_name;
 
-    public phData(String pH, String mV, String date) {
+    public phData(String pH, String mV, String date, String compound_name) {
         this.pH = pH;
         this.mV = mV;
         this.date = date;
+        this.compound_name = compound_name;
     }
 
-    public phData() {
+    public String getCompound_name() {
+        return compound_name;
+    }
+
+    public void setCompound_name(String compound_name) {
+        this.compound_name = compound_name;
     }
 
     public String getpH() {

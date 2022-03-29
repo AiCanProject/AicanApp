@@ -38,7 +38,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/mVLog"
+                android:id="@+id/tempLog"
                 style="@style/table_row_item"
                 android:layout_width="0dp"
                 android:layout_column="2"
@@ -62,5 +62,4 @@
                 android:textColor="@color/black" />
         </TableRow>
     </TableLayout>
-
 </LinearLayout>

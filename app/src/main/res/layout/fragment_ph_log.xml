@@ -16,7 +16,7 @@
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/graph"
-            android:layout_width="620dp"
+            android:layout_width="400dp"
             android:layout_height="150dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
@@ -74,13 +74,26 @@
                 android:textSize="20sp"
                 android:visibility="visible" />
 
-            <EditText
-                android:id="@+id/compound_name"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/enter_compound_name"
-                android:textColorHint="#000"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
+                <EditText
+                    android:id="@+id/compound_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_compound_name"
+                    android:textColor="#000"
+                    android:textColorHint="#000" />
+
+                <ImageButton
+                    android:id="@+id/enter_text"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_play_arrow" />
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -94,7 +107,7 @@
         android:layout_marginEnd="30dp"
         android:background="@drawable/table_border">
 
-        <TableRow>
+        <TableRow tools:ignore="UselessParent">
 
             <TextView
                 style="@style/table_header"
@@ -104,7 +117,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Date"
+                android:text="@string/date"
                 android:textAlignment="center" />
 
             <TextView
@@ -116,7 +129,20 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingEnd="5dp"
-                android:text="pH"
+                android:text="@string/ph"
+                android:textAlignment="center"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                style="@style/table_header"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_column="2"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingEnd="5dp"
+                android:text="@string/temp"
                 android:textAlignment="center" />
 
             <TextView
@@ -128,20 +154,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingEnd="5dp"
-                android:text="mV"
-                android:textAlignment="center" />
-
-            <TextView
-                style="@style/table_header"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_column="2"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingEnd="5dp"
-                android:text="Compound Name"
-                android:textAlignment="center" />
+                android:text="@string/compound_name"
+                android:textAlignment="center"
+                tools:ignore="RtlSymmetry" />
         </TableRow>
     </TableLayout>
 
@@ -150,11 +165,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/table_heading_layout"
-        android:orientation="vertical"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:orientation="vertical"
         tools:listitem="@layout/item_log" />
-
 
 </RelativeLayout>

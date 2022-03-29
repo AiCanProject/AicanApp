@@ -36,11 +36,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull LogAdapter.ViewHolder holder, int position) {
         if(logs_list != null && logs_list.size() > 0){
             holder.ph.setText(logs_list.get(position).getpH());
-            holder.mv.setText(logs_list.get(position).getmV());
+            holder.temp.setText(logs_list.get(position).getmV());
             holder.dt.setText(logs_list.get(position).getDate());
-        }
-        else{
-            return;
+            holder.compound_name.setText(logs_list.get(position).getCompound_name());
         }
     }
 
@@ -50,13 +48,14 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ph, mv, dt;
+        TextView ph, temp, dt, compound_name;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ph = itemView.findViewById(R.id.phLog);
-            mv = itemView.findViewById(R.id.mVLog);
+            temp = itemView.findViewById(R.id.tempLog);
             dt = itemView.findViewById(R.id.date);
+            compound_name = itemView.findViewById(R.id.compound);
         }
     }
 }

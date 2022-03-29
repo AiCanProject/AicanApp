@@ -1,12 +1,6 @@
 package com.aican.aicanapp.fragments.ph;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-import android.app.Activity;
-
 import android.content.Intent;
-import android.content.pm.PackageManager;
 
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -17,8 +11,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,12 +21,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.Source;
 
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
@@ -55,12 +48,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,7 +59,7 @@ import java.util.Locale;
 
 public class phLogFragment extends Fragment {
 
-    String ph, mv, time, ph_fetched, m_fetched, currentTime_fetched;
+    String ph, temp, time, compound_name, ph_fetched, m_fetched, currentTime_fetched,compound_name_fetched;
     LineChart lineChart;
     int pageHeight = 900;
     int pagewidth = 1280;
@@ -80,10 +70,11 @@ public class phLogFragment extends Fragment {
     String[] lines;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, clearBtn;
+    ImageButton enterBtn;
+    EditText compound_name_txt;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ph_log, container, false);
     }
 
@@ -96,6 +87,8 @@ public class phLogFragment extends Fragment {
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
         clearBtn = view.findViewById(R.id.clear);
+        enterBtn = view.findViewById(R.id.enter_text);
+        compound_name_txt = view.findViewById(R.id.compound_name);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -113,7 +106,7 @@ public class phLogFragment extends Fragment {
         setupGraph();
 
         DialogMain dialogMain = new DialogMain();
-        //dialogMain.setCancelable(false);
+        dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
        /* exportBtn.setOnClickListener(v -> {
@@ -178,19 +171,38 @@ public class phLogFragment extends Fragment {
 
         */
 
+        enterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                compound_name = compound_name_txt.getText().toString();
+                if (compound_name.matches("")) {
+                    Toast.makeText(getContext(), "Enter Compound Name", Toast.LENGTH_SHORT).show();
+                } else {
+                    deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            snapshot.getRef().setValue(compound_name);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+            }
+        });
+
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent i = new Intent(getContext(), Export.class);
                 startActivity(i);
-
             }
             //generatePDF();
         });
 
         /**
-         * Getting a log of pH, mV, the time and date of that respective moment, and the name of the compound
+         * Getting a log of pH, temp, the time and date of that respective moment, and the name of the compound
          */
 
         logBtn.setOnClickListener(v -> {
@@ -198,15 +210,10 @@ public class phLogFragment extends Fragment {
             time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
             fetch_logs();
 
-            if (ph == null || mv == null) {
+            if (ph == null || temp == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                Boolean status = databaseHelper.insert_log_data(time, ph, mv);
-                if (status) {
-                    Toast.makeText(getContext(), "Inserted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "NOT Inserted", Toast.LENGTH_SHORT).show();
-                }
+                databaseHelper.insert_log_data(time, ph, temp, compound_name);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -217,11 +224,10 @@ public class phLogFragment extends Fragment {
 
     /**
      * Passing on the data to LogAdapter
-     *
      * @return
      */
     private List<phData> getList() {
-        phDataModelList.add(new phData(ph, mv, time));
+        phDataModelList.add(new phData(ph, temp, time, compound_name));
         return phDataModelList;
     }
 
@@ -238,11 +244,22 @@ public class phLogFragment extends Fragment {
             }
         });
 
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float mv = snapshot.getValue(Float.class);
-                phLogFragment.this.mv = String.format(Locale.UK, "%.2f", mv);
+                Float temp = snapshot.getValue(Float.class);
+                phLogFragment.this.temp = String.format(Locale.UK, "%.2f", temp);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                compound_name = (String) snapshot.getValue();
             }
 
             @Override
@@ -253,8 +270,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * Fetching log entries from SQL Database
-     *
-     * @return
+       * @return
      */
     private ArrayList<phData> getSQLList() {
         Cursor res = databaseHelper.get_log();
@@ -265,7 +281,8 @@ public class phLogFragment extends Fragment {
             currentTime_fetched = res.getString(0);
             ph_fetched = res.getString(1);
             m_fetched = res.getString(2);
-            phDataModelList.add(new phData(ph_fetched, m_fetched, currentTime_fetched));
+            compound_name_fetched = res.getString(3);
+            phDataModelList.add(new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
         }
         return phDataModelList;
     }

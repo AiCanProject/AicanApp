@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
-        sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, mv TEXT)");
+        sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
     }
 
     @Override
@@ -44,12 +44,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insert_log_data(String time, String ph, String mv){
+    public Boolean insert_log_data(String time, String ph, String temperature, String compound){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
         contentValues.put("ph", ph);
-        contentValues.put("mv", mv);
+        contentValues.put("temperature", temperature);
+        contentValues.put("compound", compound);
         long result = db.insert("LogUserdetails", null, contentValues);
         if(result == -1){
             return false;
