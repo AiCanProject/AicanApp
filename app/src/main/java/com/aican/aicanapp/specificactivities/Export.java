@@ -11,14 +11,17 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.FileAdapter;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,12 +46,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Export extends AppCompatActivity {
 
     Button startDat;
-    TextView startDate, endDate;
+    TextView startDate;
     TextView deviceId;
     Button button;
     int pageHeight = 900;
@@ -203,37 +208,37 @@ public class Export extends AppCompatActivity {
 
         pdfDocument.finishPage(myPage);
 
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
-//        File dir = new File(path);
-//        if (!dir.exists())
-//            dir.mkdirs();
-//
-//        File filePath = new File(dir, "Test.pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(filePath));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//            //btn_generate.setText("Check PDF");
-//            //boolean_save=true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        pdfDocument.close();
+        String path = Environment.getExternalStorageDirectory().getPath() + "/Download/";
+        File dir = new File(path);
+        if (!dir.exists())
+            dir.mkdirs();
 
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
-        File file = new File(stringFilePath);
+        File filePath = new File(dir, "Test.pdf");
 
         try {
-            pdfDocument.writeTo(new FileOutputStream(file));
+            pdfDocument.writeTo(new FileOutputStream(filePath));
             Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+            //btn_generate.setText("Check PDF");
+            //boolean_save=true;
 
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
         }
+
         pdfDocument.close();
+
+//        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
+//        File file = new File(stringFilePath);
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(file));
+//            Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        pdfDocument.close();
     }
 
 }
