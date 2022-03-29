@@ -137,16 +137,18 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
+                intent.putExtra("checkBtn","addUser");
                 startActivity(intent);
 
             }
         });
 
         ivLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
-            Intent intent = new Intent(this, LoginActivity.class);
+//            FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
+//            finish();
+            Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
+            intent.putExtra("checkBtn","logout");
             startActivity(intent);
-            finish();
         });
 
         tvConnectDevice.setOnClickListener(v -> {

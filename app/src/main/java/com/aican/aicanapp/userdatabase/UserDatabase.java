@@ -4,15 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
 import android.widget.Toast;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.Dashboard.SettingActivity;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.UserDatabaseAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.aican.aicanapp.fragments.ph.PhFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,5 +51,14 @@ public class UserDatabase extends AppCompatActivity {
             userDatabaseModelList.add(new UserDatabaseModel(res.getString(0),res.getString(1)));
         }
         return userDatabaseModelList;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(UserDatabase.this, Dashboard.class));
+        finish();
+
     }
 }

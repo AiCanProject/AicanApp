@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+
+import com.aican.aicanapp.Dashboard.AdminLoginActivity;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.userdatabase.UserDatabase;
@@ -63,7 +65,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         tabItemCalib = findViewById(R.id.select2);
 
         //setting = findViewById(R.id.settings);
-        user_database = findViewById(R.id.user_database);
+        user_database = findViewById(R.id.btnUserDatabase);
         ph.setOnClickListener(this);
         calibrate.setOnClickListener(this);
         log.setOnClickListener(this);
@@ -72,7 +74,10 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         user_database.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PhActivity.this, UserDatabase.class));
+//                startActivity(new Intent(PhActivity.this, UserDatabase.class));
+                Intent intent = new Intent(getApplicationContext(), AdminLoginActivity.class);
+                intent.putExtra("checkBtn","checkDatabase");
+                startActivity(intent);
             }
         });
     }

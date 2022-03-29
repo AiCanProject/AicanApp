@@ -12,8 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.aican.aicanapp.Authentication.LoginActivity;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -52,7 +54,15 @@ public class AdminLoginActivity extends AppCompatActivity {
                 auth.signInWithEmailAndPassword(
                         email, password
                 ).addOnSuccessListener(authResult -> {
-                    startSettingActivity();
+                    Intent intent = getIntent();
+                    String checkFlag = intent.getStringExtra("checkBtn");
+                    if(checkFlag.equals("addUser")){
+                        startSettingActivity();
+                    }else if(checkFlag.equals("logout")){
+                        logout();
+                    } else if(checkFlag.equals("checkDatabase")){
+                        userDatabase();
+                    }
                 }).addOnFailureListener(exception -> {
                     if (exception instanceof FirebaseAuthInvalidUserException) {
                         ilEmail.setError("This Email ID is not registered");
@@ -72,6 +82,18 @@ public class AdminLoginActivity extends AppCompatActivity {
 
     private void startSettingActivity() {
         Intent intent = new Intent(this,SettingActivity.class);
+        startActivity(intent);
+    }
+
+    private void logout(){
+        FirebaseAuth.getInstance(PrimaryAccount.getInstance(getApplicationContext())).signOut();
+        finish();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void userDatabase(){
+        Intent intent = new Intent(this, UserDatabase.class);
         startActivity(intent);
     }
 }

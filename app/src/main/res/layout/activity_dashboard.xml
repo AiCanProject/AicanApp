@@ -196,11 +196,14 @@
                     android:id="@+id/ivLogout"
                     android:layout_width="24dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_logout"
-                    app:tint="@color/white"
-                    android:layout_margin="12dp"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"/>
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_logout"
+                    app:tint="@color/white" />
             </RelativeLayout>
 
             <TextView
