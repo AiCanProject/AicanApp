@@ -103,6 +103,16 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        startActivity(new Intent(SettingActivity.this, Dashboard.class));
+        finish();
+
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         Role = adapterView.getItemAtPosition(i).toString();
