@@ -112,12 +112,6 @@ public class phLogFragment extends Fragment {
 
         setupGraph();
 
-        if (checkPermission()) {
-            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
-        } else {
-            requestPermission();
-        }
-
         DialogMain dialogMain = new DialogMain();
         //dialogMain.setCancelable(false);
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
@@ -180,11 +174,25 @@ public class phLogFragment extends Fragment {
             else{
                 Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
+
+        */
+
+        exportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(getContext(), Export.class);
+                startActivity(i);
+
+            }
+            //generatePDF();
+        });
 
         /**
          * Getting a log of pH, mV, the time and date of that respective moment, and the name of the compound
          */
+
         logBtn.setOnClickListener(v -> {
 
             time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
@@ -344,48 +352,6 @@ public class phLogFragment extends Fragment {
             e.printStackTrace();
         }
         pdfDocument.close();
-    }
-
-    /**
-     * checking of permissions.
-     *
-     * @return
-     */
-    private boolean checkPermission() {
-        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
-        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * requesting permissions if not provided.
-     */
-    private void requestPermission() {
-        ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-    }
-
-    /**
-     * after requesting permissions we are showing
-     * users a toast message of permission granted.
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0) {
-                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
-                if (writeStorage && readStorage) {
-                    Toast.makeText(requireContext(), "Permission Granted..", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "Permission Denined.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
     }
 
     private void setupGraph() {

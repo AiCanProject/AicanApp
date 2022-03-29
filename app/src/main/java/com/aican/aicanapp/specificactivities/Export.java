@@ -7,17 +7,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,6 +31,9 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.FileAdapter;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,11 +46,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Export extends AppCompatActivity {
 
-    TextView startDate, endDate;
+    Button startDat;
+    TextView startDate;
     TextView deviceId;
     Button button;
     int pageHeight = 900;
@@ -55,13 +64,33 @@ public class Export extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export);
 
+        startDat = findViewById(R.id.textView2);
         button = findViewById(R.id.authenticateRole);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         TextView noFilesText = findViewById(R.id.nofiles_textview);
         startDate = findViewById(R.id.date);
-        endDate = findViewById(R.id.endDate);
         deviceId = findViewById(R.id.DeviceId);
         setFirebaseListeners();
+
+
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setTitleText("SELECT A RANGE OF DATE");
+        final MaterialDatePicker materialDatePicker = builder.build();
+
+        //Range OF DATE
+        startDat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
+            }
+        });
+
+        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(Object selection) {
+            startDate.setText(materialDatePicker.getHeaderText());
+            }
+        });
 
 
         if (checkPermission()) {
@@ -97,9 +126,6 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        startDate.setOnClickListener(view -> getCurrentDate(startDate));
-
-        endDate.setOnClickListener(view -> getCurrentDate(endDate));
     }
 
     private boolean checkPermission() {
@@ -126,18 +152,6 @@ public class Export extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public void getCurrentDate(TextView tvDate) {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(), (view, year, month, dayOfMonth) -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            tvDate.setText(simpleDateFormat.format(calendar.getTime()));
-        }, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
     }
 
     private void setFirebaseListeners() {
@@ -194,37 +208,37 @@ public class Export extends AppCompatActivity {
 
         pdfDocument.finishPage(myPage);
 
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/PdfTest/";
-//        File dir = new File(path);
-//        if (!dir.exists())
-//            dir.mkdirs();
-//
-//        File filePath = new File(dir, "Test.pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(filePath));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//            //btn_generate.setText("Check PDF");
-//            //boolean_save=true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Toast.makeText(requireContext(), "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        pdfDocument.close();
+        String path = Environment.getExternalStorageDirectory().getPath() + "/Download/";
+        File dir = new File(path);
+        if (!dir.exists())
+            dir.mkdirs();
 
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
-        File file = new File(stringFilePath);
+        File filePath = new File(dir, "Test.pdf");
 
         try {
-            pdfDocument.writeTo(new FileOutputStream(file));
+            pdfDocument.writeTo(new FileOutputStream(filePath));
             Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+            //btn_generate.setText("Check PDF");
+            //boolean_save=true;
 
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Something wrong: " + e.toString(), Toast.LENGTH_LONG).show();
         }
+
         pdfDocument.close();
+
+//        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
+//        File file = new File(stringFilePath);
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(file));
+//            Toast.makeText(this, "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        pdfDocument.close();
     }
 
 }

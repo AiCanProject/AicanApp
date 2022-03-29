@@ -307,10 +307,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
                     calibrateBtn.setEnabled(true);
+
 //                    if (currentBuf >= buffers.length - 1) {
 //                        return;
 //                    }
 //                    currentBuf += 1;
+
                 } else if (ec == 21) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");

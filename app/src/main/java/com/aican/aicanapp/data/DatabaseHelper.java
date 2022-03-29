@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -81,7 +81,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor get_log(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from LogUserdetails", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM LogUserDetails", null);
         return cursor;
     }
+
 }

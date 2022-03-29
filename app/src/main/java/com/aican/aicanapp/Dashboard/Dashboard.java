@@ -36,6 +36,7 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -62,7 +63,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     DatabaseReference primaryDatabase;
     String mUid;
-    Button setting;
+    Button setting, export;
 
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
@@ -142,6 +143,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
             }
         });
+
 
         ivLogout.setOnClickListener(v->{
             FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
