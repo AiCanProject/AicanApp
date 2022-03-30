@@ -46,9 +46,12 @@ import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -86,8 +89,6 @@ public class phLogFragment extends Fragment {
 
     String ph, temp, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
     LineChart lineChart;
-    int pageHeight = 900;
-    int pagewidth = 1280;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
@@ -157,6 +158,8 @@ public class phLogFragment extends Fragment {
                 }
             }
         });
+
+        //showChart();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -195,13 +198,15 @@ public class phLogFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        Handler handlerr = new Handler();
+    /*    Handler handlerr = new Handler();
         handlerr.postDelayed(new Runnable() {
             @Override
             public void run() {
                 showChart();
             }
         }, 5000);
+
+     */
     }
 
     /**
@@ -228,29 +233,33 @@ public class phLogFragment extends Fragment {
         int countColumns = columns();
 
         ArrayList<Entry> yValues = new ArrayList<>();
+        //ArrayList<Entry> xValues = new ArrayList<>();
         for (int i = 0; i < countColumns; i++) {
             yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
             LineDataSet set = new LineDataSet(yValues, "pH");
             set.setFillAlpha(110);
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);
-
-            lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
             LineData data = new LineData(dataSets);
             lineChart.setData(data);
+
 
             lineChart.setPinchZoom(true);
             lineChart.setTouchEnabled(true);
         }
 
+
+        lineChart.getDescription().setText("Tap on graph to Plot!");
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(250);
+        xAxis.setLabelCount(3);
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+
         LineDataSet set = new LineDataSet(yValues, "pH");
         set.setFillAlpha(110);
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set);
-
-        lineChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter());
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
 
         lineChart.setPinchZoom(true);
         lineChart.setTouchEnabled(true);

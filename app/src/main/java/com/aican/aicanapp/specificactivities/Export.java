@@ -78,7 +78,7 @@ public class Export extends AppCompatActivity {
         TextView noFilesText = findViewById(R.id.nofiles_textview);
         startDate = findViewById(R.id.date);
         deviceId = findViewById(R.id.DeviceId);
-        exportPdf = findViewById(R.id.exportPdf);
+        exportPdf = findViewById(R.id.authenticateRole);
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
