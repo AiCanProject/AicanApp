@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
+import com.aican.aicanapp.specificactivities.Export;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,7 @@ public class AuthenticateRoleDialog extends DialogFragment {
         userId = view.findViewById(R.id.userId);
         passCode = view.findViewById(R.id.userPwd);
         generate = view.findViewById(R.id.authenticateRole);
+
         generate.setOnClickListener(v -> {
 
             Intent intent = new Intent(requireContext(), PhCalibFragment.class);

@@ -57,10 +57,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,7 +84,7 @@ import java.util.Locale;
 
 public class phLogFragment extends Fragment {
 
-    String ph, temp, time, compound_name, ph_fetched, m_fetched, currentTime_fetched,compound_name_fetched;
+    String ph, temp, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
     LineChart lineChart;
     int pageHeight = 900;
     int pagewidth = 1280;
@@ -148,15 +163,17 @@ public class phLogFragment extends Fragment {
             public void run() {
                 showChart();
             }
-            }, 5000);
+        }, 5000);
 
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getContext(), Export.class);
                 startActivity(i);
+
             }
         });
+
 
         /**
          * Getting a log of pH, temp, the time and date of that respective moment, and the name of the compound
@@ -189,6 +206,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * Passing on the data to LogAdapter
+     *
      * @return
      */
     private List<phData> getList() {
@@ -210,7 +228,7 @@ public class phLogFragment extends Fragment {
         int countColumns = columns();
 
         ArrayList<Entry> yValues = new ArrayList<>();
-        for(int i =0; i<countColumns; i++){
+        for (int i = 0; i < countColumns; i++) {
             yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
             LineDataSet set = new LineDataSet(yValues, "pH");
             set.setFillAlpha(110);
@@ -277,7 +295,8 @@ public class phLogFragment extends Fragment {
 
     /**
      * Fetching log entries from SQL Database
-       * @return
+     *
+     * @return
      */
     private ArrayList<phData> getSQLList() {
         Cursor res = databaseHelper.get_log();
@@ -294,59 +313,105 @@ public class phLogFragment extends Fragment {
         return phDataModelList;
     }
 
+    /*
+     * Convert sqlite database to csv file
+     *
+     */
+//
+//    public void exportDatabaseCsv() {
+//        String state = Environment.getExternalStorageState();
+//
+//        //We use the Download directory for saving our .csv file.
+//        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+//        if (!exportDir.exists()) {
+//            exportDir.mkdirs();
+//        }
+//
+//        File file;
+//        PrintWriter printWriter = null;
+//
+//        try{
+//
+//            file = new File(exportDir, "LogCSV.csv");
+//            file.createNewFile();
+//            printWriter = new PrintWriter(new FileWriter(file), true);
+//
+//            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+//
+//            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+//            printWriter.println("TIME,pH,TEMP,NAME");
+//
+//            while(curCSV.moveToNext()){
+//                String time = curCSV.getString(curCSV.getColumnIndex("time"));
+//                String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
+//                String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+//                String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
+//
+//                String record = time + "," + pH + "," + temp + "," + comp;
+//                printWriter.println(record);
+//            }
+//            curCSV.close();
+//            db.close();
+//
+//        } catch(Exception e) {
+//            Log.d("csvexception", String.valueOf(e));
+//        }
+//    }
+
+
     /**
      * To generate PDFs
      */
-    private void generatePDF() {
-        PdfDocument pdfDocument = new PdfDocument();
-        Paint paint = new Paint();
-
-        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-        Canvas canvas = myPage.getCanvas();
-
-        paint.setTextSize(60);
-        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
-
-        paint.setTextSize(40);
-        paint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
-
-        paint.setTextSize(20);
-        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Slope: 60%", canvas.getWidth() - 40, 190, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Temperature: 30", canvas.getWidth() - 40, 230, paint);
-
-        paint.setTextSize(30);
-        canvas.drawText("Offset: 40", canvas.getWidth() - 40, 270, paint);
-
-        paint.setColor(Color.rgb(150, 150, 150));
-        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight() - 30, paint);
-
-        pdfDocument.finishPage(myPage);
-
-        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/ProgrammerWorld.pdf";
-        File file = new File(stringFilePath);
-
-        try {
-            pdfDocument.writeTo(new FileOutputStream(file));
-            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pdfDocument.close();
-    }
+//    private void generatePDF() {
+//        PdfDocument pdfDocument = new PdfDocument();
+//        Paint paint = new Paint();
+//
+//        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+//        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
+//        Canvas canvas = myPage.getCanvas();
+//
+//        paint.setTextSize(60);
+//        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
+//
+//        paint.setTextSize(40);
+//        paint.setTextAlign(Paint.Align.RIGHT);
+//        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
+//
+//        paint.setColor(Color.rgb(150, 150, 150));
+//        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
+//
+//        paint.setTextSize(20);
+//        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
+//
+//        paint.setTextSize(20);
+//        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
+//
+//        paint.setTextSize(30);
+//        canvas.drawText("Slope: 60%", canvas.getWidth() - 40, 190, paint);
+//
+//        paint.setTextSize(30);
+//        canvas.drawText("Temperature: 30", canvas.getWidth() - 40, 230, paint);
+//
+//        paint.setTextSize(30);
+//        canvas.drawText("Offset: 40", canvas.getWidth() - 40, 270, paint);
+//
+//        paint.setColor(Color.rgb(150, 150, 150));
+//        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight() - 30, paint);
+//
+//        pdfDocument.finishPage(myPage);
+//
+//        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/World.pdf";
+//        File file = new File(stringFilePath);
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(file));
+//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        pdfDocument.close();
+//    }
 
     /**
      * checking of permissions.
