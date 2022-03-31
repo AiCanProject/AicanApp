@@ -57,6 +57,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Export extends AppCompatActivity {
 
@@ -106,7 +107,6 @@ public class Export extends AppCompatActivity {
         ph3 = "7.0";
         ph4 = "9.2";
         ph5 = "12.0";
-
 
 
         exportPdf.setOnClickListener(new View.OnClickListener() {
@@ -189,8 +189,9 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
+            String fileName = new SimpleDateFormat("yyyyMMddHHmmss'.csv'").format(new Date());
 
-            file = new File(exportDir, "LogCSV.csv");
+            file = new File(exportDir, fileName);
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
@@ -243,8 +244,7 @@ public class Export extends AppCompatActivity {
         }
     }
 
-    public void deleteAll()
-    {
+    public void deleteAll() {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.execSQL("DELETE FROM Calibdetails");
         db.close();
