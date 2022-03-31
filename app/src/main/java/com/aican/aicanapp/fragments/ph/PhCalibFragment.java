@@ -2,6 +2,8 @@ package com.aican.aicanapp.fragments.ph;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +69,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     Button calibrateBtn, btnNext;
     Spinner spin;
     String[] mode = {"5"};
+    String test1,test2,test3;
+    String mV1,mV2,mV3,mV4,mV5;
+    String tm1,tm2,tm3,tm4,tm5;
 
     TextView title;
     DatabaseHelper databaseHelper;
@@ -190,6 +196,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 Float ec = snapshot.getValue(Float.class);
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv1.setText(ecForm);
+                mV1 = mv1.getText().toString();
+                Log.d("test1", mV1);
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("MV1", mV1);
+                myEdit.commit();
             }
 
             @Override
@@ -203,6 +217,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 Float ec = snapshot.getValue(Float.class);
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv2.setText(ecForm);
+                mV2 = mv2.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("MV2", mV2);
+                myEdit.commit();
             }
 
             @Override
@@ -217,6 +238,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 Float ec = snapshot.getValue(Float.class);
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv3.setText(ecForm);
+                mV3 = mv3.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("MV3", mV3);
+                myEdit.commit();
             }
 
             @Override
@@ -230,6 +258,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 Float ec = snapshot.getValue(Float.class);
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv4.setText(ecForm);
+                mV4 = mv4.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("MV4", mV4);
+                myEdit.commit();
             }
 
             @Override
@@ -243,6 +278,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 Float ec = snapshot.getValue(Float.class);
                 String ecForm = String.format(Locale.UK, "%.2f", ec);
                 mv5.setText(ecForm);
+                mV5 = mv5.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("MV5", mV5);
+                myEdit.commit();
             }
 
             @Override
@@ -351,6 +393,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String time = snapshot.getValue(String.class);
                 dt1.setText(time);
+                tm1 = dt1.getText().toString();
+                Log.d("tm1", tm1);
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("DT1", tm1);
+                myEdit.commit();
             }
 
             @Override
@@ -363,6 +413,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String time = snapshot.getValue(String.class);
                 dt2.setText(time);
+                tm2 = dt2.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("DT2", tm2);
+                myEdit.commit();
             }
 
             @Override
@@ -374,6 +431,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String time = snapshot.getValue(String.class);
                 dt3.setText(time);
+                tm3 = dt3.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("DT3", tm3);
+                myEdit.commit();
             }
 
             @Override
@@ -385,6 +449,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String time = snapshot.getValue(String.class);
                 dt4.setText(time);
+                tm4 = dt4.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("DT4", tm4);
+                myEdit.commit();
             }
 
             @Override
@@ -396,12 +467,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String time = snapshot.getValue(String.class);
                 dt5.setText(time);
+                tm5 = dt5.getText().toString();
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                myEdit.putString("DT5", tm5);
+                myEdit.commit();
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+//        Log.d("check1", test1);
+//        Log.d("check2", test2);
     }
 
     private void updatePh(float ph) {
@@ -565,6 +646,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         setupListeners();
 
         loadBuffers();
+
+        test3 = mv2.getText().toString();
+        Log.d("test3", test3);
     }
 
 

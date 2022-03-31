@@ -20,13 +20,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Userdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
         onCreate(sqLiteDatabase);
+    }
+
+    public Boolean insertCalibData(String pH, String mV,String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("pH", pH);
+        contentValues.put("mV", mV);
+        contentValues.put("date", date);
+        long result = db.insert("Calibdetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public Boolean insert_data(String name, String role,String id, String passcode){

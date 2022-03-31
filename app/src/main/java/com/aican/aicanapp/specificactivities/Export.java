@@ -59,6 +59,8 @@ import java.util.Calendar;
 
 public class Export extends AppCompatActivity {
 
+
+    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button startDat, exportPdf;
     TextView startDate;
     TextView deviceId;
@@ -84,11 +86,43 @@ public class Export extends AppCompatActivity {
         nullEntry = " ";
         setFirebaseListeners();
 
+        SharedPreferences shp = getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+        mv1 = shp.getString("MV1", "");
+        mv2 = shp.getString("MV2", "");
+        mv3 = shp.getString("MV3", "");
+        mv4 = shp.getString("MV4", "");
+        mv5 = shp.getString("MV5", "");
+
+        dt1 = shp.getString("DT1", "");
+        dt2 = shp.getString("DT2", "");
+        dt3 = shp.getString("DT3", "");
+        dt4 = shp.getString("DT4", "");
+        dt5 = shp.getString("DT5", "");
+
+        ph1 = "1.2";
+        ph2 = "4.0";
+        ph3 = "7.0";
+        ph4 = "9.2";
+        ph5 = "12.0";
+
+
 
         exportPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 exportDatabaseCsv();
+
+                deleteAll();
+
+                databaseHelper.insertCalibData(ph1, mv1, dt1);
+                databaseHelper.insertCalibData(ph2, mv2, dt2);
+                databaseHelper.insertCalibData(ph3, mv3, dt3);
+                databaseHelper.insertCalibData(ph4, mv4, dt4);
+                databaseHelper.insertCalibData(ph5, mv5, dt5);
+
+
             }
         });
 //        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
@@ -142,7 +176,7 @@ public class Export extends AppCompatActivity {
 
     public void exportDatabaseCsv() {
 
-        companyName ="Company: " + companyNameEditText.getText().toString();
+        companyName = "Company: " + companyNameEditText.getText().toString();
 
         //We use the Download directory for saving our .csv file.
         File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -164,18 +198,40 @@ public class Export extends AppCompatActivity {
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
+            Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(user + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("pH,mV,DATE");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+
+
+            while (calibCSV.moveToNext()) {
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("pH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("mV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("date"));
+
+                String record1 = ph + "," + mv + "," + date;
+
+                printWriter.println(record1);
+            }
+
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("TIME,pH,TEMP,NAME");
 
             while (curCSV.moveToNext()) {
+
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
                 String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 
                 String record = time + "," + pH + "," + temp + "," + comp;
+
                 printWriter.println(record);
             }
             curCSV.close();
@@ -184,6 +240,13 @@ public class Export extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
         }
+    }
+
+    public void deleteAll()
+    {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM Calibdetails");
+        db.close();
     }
 
 //    private void generatePDFOLD() {
