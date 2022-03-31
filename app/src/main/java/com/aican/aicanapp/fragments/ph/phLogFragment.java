@@ -2,10 +2,12 @@ package com.aican.aicanapp.fragments.ph;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -89,6 +91,7 @@ import java.util.Locale;
 public class phLogFragment extends Fragment {
 
     String ph, temp, mv, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
+    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     LineChart lineChart;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
@@ -135,6 +138,26 @@ public class phLogFragment extends Fragment {
             requestPermission();
         }
 
+        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+        mv1 = shp.getString("MV1", "");
+        mv2 = shp.getString("MV2", "");
+        mv3 = shp.getString("MV3", "");
+        mv4 = shp.getString("MV4", "");
+        mv5 = shp.getString("MV5", "");
+
+        dt1 = shp.getString("DT1", "");
+        dt2 = shp.getString("DT2", "");
+        dt3 = shp.getString("DT3", "");
+        dt4 = shp.getString("DT4", "");
+        dt5 = shp.getString("DT5", "");
+
+        ph1 = "1.2";
+        ph2 = "4.0";
+        ph3 = "7.0";
+        ph4 = "9.2";
+        ph5 = "12.0";
+
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
         Source.userTrack= "PhLogFragment logged in by " + Source.userName;
@@ -173,6 +196,15 @@ public class phLogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv);
+
+                deleteAll();
+
+                databaseHelper.insertCalibData(ph1, mv1, dt1);
+                databaseHelper.insertCalibData(ph2, mv2, dt2);
+                databaseHelper.insertCalibData(ph3, mv3, dt3);
+                databaseHelper.insertCalibData(ph4, mv4, dt4);
+                databaseHelper.insertCalibData(ph5, mv5, dt5);
+
                 Intent i = new Intent(getContext(), Export.class);
                 startActivity(i);
             }
@@ -210,6 +242,11 @@ public class phLogFragment extends Fragment {
         return phDataModelList;
     }
 
+    public void deleteAll() {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM Calibdetails");
+        db.close();
+    }
 
     public int columns() {
         String countQuery = "SELECT  * FROM " + TABLE_NAME;

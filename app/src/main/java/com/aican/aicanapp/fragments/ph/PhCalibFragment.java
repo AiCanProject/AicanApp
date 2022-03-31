@@ -394,7 +394,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String time = snapshot.getValue(String.class);
                 dt1.setText(time);
                 tm1 = dt1.getText().toString();
-                Log.d("tm1", tm1);
 
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();

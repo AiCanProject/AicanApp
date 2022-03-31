@@ -62,7 +62,7 @@ import java.util.Date;
 public class Export extends AppCompatActivity {
 
 
-    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
+//    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button startDat, exportPdf;
     TextView startDate;
     TextView deviceId;
@@ -88,25 +88,25 @@ public class Export extends AppCompatActivity {
         nullEntry = " ";
         setFirebaseListeners();
 
-        SharedPreferences shp = getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-
-        mv1 = shp.getString("MV1", "");
-        mv2 = shp.getString("MV2", "");
-        mv3 = shp.getString("MV3", "");
-        mv4 = shp.getString("MV4", "");
-        mv5 = shp.getString("MV5", "");
-
-        dt1 = shp.getString("DT1", "");
-        dt2 = shp.getString("DT2", "");
-        dt3 = shp.getString("DT3", "");
-        dt4 = shp.getString("DT4", "");
-        dt5 = shp.getString("DT5", "");
-
-        ph1 = "1.2";
-        ph2 = "4.0";
-        ph3 = "7.0";
-        ph4 = "9.2";
-        ph5 = "12.0";
+//        SharedPreferences shp = getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+//
+//        mv1 = shp.getString("MV1", "");
+//        mv2 = shp.getString("MV2", "");
+//        mv3 = shp.getString("MV3", "");
+//        mv4 = shp.getString("MV4", "");
+//        mv5 = shp.getString("MV5", "");
+//
+//        dt1 = shp.getString("DT1", "");
+//        dt2 = shp.getString("DT2", "");
+//        dt3 = shp.getString("DT3", "");
+//        dt4 = shp.getString("DT4", "");
+//        dt5 = shp.getString("DT5", "");
+//
+//        ph1 = "1.2";
+//        ph2 = "4.0";
+//        ph3 = "7.0";
+//        ph4 = "9.2";
+//        ph5 = "12.0";
 
 
         exportPdf.setOnClickListener(new View.OnClickListener() {
@@ -115,13 +115,13 @@ public class Export extends AppCompatActivity {
 
                 exportDatabaseCsv();
 
-                deleteAll();
-
-                databaseHelper.insertCalibData(ph1, mv1, dt1);
-                databaseHelper.insertCalibData(ph2, mv2, dt2);
-                databaseHelper.insertCalibData(ph3, mv3, dt3);
-                databaseHelper.insertCalibData(ph4, mv4, dt4);
-                databaseHelper.insertCalibData(ph5, mv5, dt5);
+//                deleteAll();
+//
+//                databaseHelper.insertCalibData(ph1, mv1, dt1);
+//                databaseHelper.insertCalibData(ph2, mv2, dt2);
+//                databaseHelper.insertCalibData(ph3, mv3, dt3);
+//                databaseHelper.insertCalibData(ph4, mv4, dt4);
+//                databaseHelper.insertCalibData(ph5, mv5, dt5);
 
 
             }
