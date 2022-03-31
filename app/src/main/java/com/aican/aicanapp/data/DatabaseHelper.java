@@ -17,10 +17,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
+        sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT)");
     }
 
     @Override
@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Userdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
         onCreate(sqLiteDatabase);
     }
 
@@ -75,6 +76,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("time", time);
+        contentValues.put("useraction", useraction);
+        contentValues.put("ph", ph);
+        contentValues.put("temperature", temperature);
+        contentValues.put("mv", mv);
+        long result = db.insertOrThrow("UserActiondetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public Boolean delete_data(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails where name = ?", new String[]{name});
@@ -101,5 +118,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM LogUserDetails", null);
         return cursor;
     }
-
 }

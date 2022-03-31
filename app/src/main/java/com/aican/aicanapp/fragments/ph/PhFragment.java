@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ import androidx.fragment.app.Fragment;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dialogs.SelectCalibrationPointsDialog;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.ph.PhView;
@@ -64,17 +67,13 @@ import java.util.Locale;
 public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "PhFragment";
     PhView phView;
-    Button calibrateBtn;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr;
-    LineChart lineChart;
 
+    DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
-    LinearLayout llStart, llStop, llClear, llExport;
-    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
 
     float ph = 0;
     int skipPoints = 0;
-    int skipCount = 0;
     String[] probe = {"Unbreakable","Glass","Others"};
 
     ArrayList<Entry> entriesOriginal;
@@ -103,30 +102,26 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         slopeCurr = view.findViewById(R.id.slopeVal);
 
         phView = view.findViewById(R.id.phView);
-        //calibrateBtn = view.findViewById(R.id.calibrateBtn);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
-        //lineChart = view.findViewById(R.id.line_chart);
-        //llStart = view.findViewById(R.id.llStart);
-        //llStop = view.findViewById(R.id.llStop);
-        //llClear = view.findViewById(R.id.llClear);
-        //llExport = view.findViewById(R.id.llExport);
-        //cv5Min = view.findViewById(R.id.cv5min);
-        //cv1Min = view.findViewById(R.id.cv1min);
-        //cv10Min = view.findViewById(R.id.cv10min);
-        //cv15Min = view.findViewById(R.id.cv15min);
-        //cvClock = view.findViewById(R.id.cvClock);
 
         phView.setCurrentPh(7.0F);
         entriesOriginal = new ArrayList<>();
 
-//        probesVal.setOnClickListener((View.OnClickListener) this);
         ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         probesVal.setAdapter(ad);
 
+        databaseHelper = new DatabaseHelper(requireContext());
+
+        Cursor res = databaseHelper.get_data();
+        while(res.moveToNext()){
+            Source.userName = res.getString(0);
+        }
+
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
+        Source.userTrack= "PhFragment logged in by " + Source.userName;
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         /*
@@ -352,7 +347,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
 
@@ -366,7 +360,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 }else if (hold != 1){
                     tvPhCurr.setTextColor(Color.BLACK);
                 }
-
             }
 
             @Override
@@ -382,8 +375,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 Float temp = snapshot.getValue(Float.class);
                 String tempForm = String.format(Locale.UK, "%.1f", temp);
                 tvTempCurr.setText(tempForm + "°C");
-                //updatePh(tempp);
-                //PhFragment.this.ph = tempp;
             }
 
             @Override
@@ -399,8 +390,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 Float ec = snapshot.getValue(Float.class);
                 String ecForm = String.format(Locale.UK, "%.1f", ec);
                 tvEcCurr.setText(ecForm);
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -416,9 +405,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 Float offSet = snapshot.getValue(Float.class);
                 String offsetForm = String.format(Locale.UK, "%.2f", offSet);
                 offsetCurr.setText(offsetForm);
-
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -432,8 +418,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String battery = snapshot.getValue(Integer.class).toString();
                 batteryCurr.setText(battery);
                 batteryCurr.setText(battery+" %");
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -446,8 +430,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String slope = snapshot.getValue(Integer.class).toString();
                 slopeCurr.setText(slope+" %");
-                //updatePh(temp);
-                //PhFragment.this.ph = temp;
             }
 
             @Override
@@ -456,7 +438,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         });
     }
 
-    private void updatePh(float ph) {
+   /* private void updatePh(float ph) {
         String newText;
         if (ph < 0 || ph > 14) {
             newText = "--";
@@ -466,7 +448,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tvPhNext.setText(newText);
 
         if (getContext() != null) {
-           /* Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
+           *//* Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
             Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
 
             fadeOut.setAnimationListener(new Animation.AnimationListener() {
@@ -493,7 +475,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             tvPhNext.setVisibility(View.VISIBLE);
             tvPhNext.startAnimation(slideInBottom);
 
-            */
+            *//*
         }else{
             tvPhCurr.setText(newText);
         }
@@ -505,10 +487,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         requireActivity().getTheme().resolveAttribute(attrRes, typedValue, true);
 
         return typedValue.data;
-    }
+    }*/
 
-
-    //probes adapter
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
     }
@@ -516,119 +496,4 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
     }
-/*
-    private void setupGraph() {
-        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "pH");
-
-        lineDataSet.setLineWidth(2);
-        lineDataSet.setCircleRadius(4);
-        lineDataSet.setValueTextSize(10);
-
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(lineDataSet);
-
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-        lineChart.invalidate();
-
-        lineChart.setDrawGridBackground(true);
-        lineChart.setDrawBorders(true);
-        Description d = new Description();
-        d.setText("pH Graph");
-        lineChart.setDescription(d);
-
-        data.setValueFormatter(new DecimalValueFormatter());
-
-        llStart.setOnClickListener(v -> {
-            if (ForegroundService.isRunning()) {
-                Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-            startLogging();
-        });
-        llStop.setOnClickListener(v -> {
-            llStart.setVisibility(View.VISIBLE);
-            llStop.setVisibility(View.INVISIBLE);
-            llClear.setVisibility(View.VISIBLE);
-            llExport.setVisibility(View.VISIBLE);
-            stopLogging();
-        });
-        llClear.setOnClickListener(v -> {
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-            clearLogs();
-        });
-        llExport.setOnClickListener(v -> {
-            exportLogs();
-        });
-
-        cv1Min.setOnClickListener(v -> {
-            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-        cv5Min.setOnClickListener(v -> {
-            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-        cv10Min.setOnClickListener(v -> {
-            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-        cv15Min.setOnClickListener(v -> {
-            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-    }
-*/
-
-    /*
-    private void showTimeOptions() {
-        cv1Min.setVisibility(View.VISIBLE);
-        cv5Min.setVisibility(View.VISIBLE);
-        cv10Min.setVisibility(View.VISIBLE);
-        cv15Min.setVisibility(View.VISIBLE);
-
-        Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
-        cv1Min.startAnimation(zoomIn);
-        cv5Min.startAnimation(zoomIn);
-        cv10Min.startAnimation(zoomIn);
-        cv15Min.startAnimation(zoomIn);
-    }
-
-    private void hideTimeOptions() {
-        Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
-        zoomOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                cv1Min.setVisibility(View.INVISIBLE);
-                cv5Min.setVisibility(View.INVISIBLE);
-                cv10Min.setVisibility(View.INVISIBLE);
-                cv15Min.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        cv1Min.startAnimation(zoomOut);
-        cv5Min.startAnimation(zoomOut);
-        cv10Min.startAnimation(zoomOut);
-        cv15Min.startAnimation(zoomOut);
-    }
-
-     */
-
 }

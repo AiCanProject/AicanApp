@@ -18,12 +18,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.specificactivities.Export;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class DialogMain extends AppCompatDialogFragment {
     @NonNull
     public EditText userID, passcode;
     public Button authenticate, homeBtn;
+
+    DatabaseHelper databaseHelper;
 
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -35,6 +42,8 @@ public class DialogMain extends AppCompatDialogFragment {
         passcode = view.findViewById(R.id.userPwd);
         authenticate = view.findViewById(R.id.authenticateRole);
         homeBtn = view.findViewById(R.id.homeBtn);
+
+        databaseHelper = new DatabaseHelper(getContext());
 
         builder.setView(view);
         builder.setCancelable(false);
@@ -55,11 +64,13 @@ public class DialogMain extends AppCompatDialogFragment {
                     if(Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))){
                         Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
 
+                        String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+                        databaseHelper.insert_action_data(time, Source.userTrack, "", "", "" );
+
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor myShared = sharedPreferences.edit();
 
                         myShared.putString("userid", Source.userId);
-
                         myShared.commit();
 
                         dismiss();

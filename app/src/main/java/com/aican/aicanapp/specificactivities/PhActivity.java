@@ -27,7 +27,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
     TextView ph, calibrate, log, alarm, tabItemPh, tabItemCalib;
 
-    ImageView setting, user_database;
+    ImageView user_database;
 
     DatabaseReference deviceRef;
 
@@ -64,7 +64,6 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         tabItemPh = findViewById(R.id.tabItemP);
         tabItemCalib = findViewById(R.id.select2);
 
-        //setting = findViewById(R.id.settings);
         user_database = findViewById(R.id.btnUserDatabase);
         ph.setOnClickListener(this);
         calibrate.setOnClickListener(this);
@@ -74,14 +73,12 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         user_database.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(PhActivity.this, UserDatabase.class));
                 Intent intent = new Intent(getApplicationContext(), AdminLoginActivity.class);
                 intent.putExtra("checkBtn","checkDatabase");
                 startActivity(intent);
             }
         });
     }
-
 
     @Override
     public void onClick(View view) {

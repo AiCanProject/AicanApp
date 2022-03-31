@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
@@ -87,7 +88,7 @@ import java.util.Locale;
 
 public class phLogFragment extends Fragment {
 
-    String ph, temp, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
+    String ph, temp, mv, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
     LineChart lineChart;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
@@ -136,6 +137,7 @@ public class phLogFragment extends Fragment {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
+        Source.userTrack= "PhLogFragment logged in by " + Source.userName;
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +161,6 @@ public class phLogFragment extends Fragment {
             }
         });
 
-        //showChart();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -171,12 +172,11 @@ public class phLogFragment extends Fragment {
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv);
                 Intent i = new Intent(getContext(), Export.class);
                 startActivity(i);
-
             }
         });
-
 
         /**
          * Getting a log of pH, temp, the time and date of that respective moment, and the name of the compound
@@ -187,26 +187,17 @@ public class phLogFragment extends Fragment {
             time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
             fetch_logs();
 
-            if (ph == null || temp == null) {
+            if (ph == null || temp == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
                 databaseHelper.insert_log_data(time, ph, temp, compound_name);
+                databaseHelper.insert_action_data(time, "Log button pressed by " + Source.userName, ph, temp, mv);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-    /*    Handler handlerr = new Handler();
-        handlerr.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showChart();
-            }
-        }, 5000);
-
-     */
     }
 
     /**
@@ -233,7 +224,6 @@ public class phLogFragment extends Fragment {
         int countColumns = columns();
 
         ArrayList<Entry> yValues = new ArrayList<>();
-        //ArrayList<Entry> xValues = new ArrayList<>();
         for (int i = 0; i < countColumns; i++) {
             yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
             LineDataSet set = new LineDataSet(yValues, "pH");
@@ -247,7 +237,6 @@ public class phLogFragment extends Fragment {
             lineChart.setPinchZoom(true);
             lineChart.setTouchEnabled(true);
         }
-
 
         lineChart.getDescription().setText("Tap on graph to Plot!");
         XAxis xAxis = lineChart.getXAxis();
@@ -300,11 +289,22 @@ public class phLogFragment extends Fragment {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float p = snapshot.getValue(Float.class);
+                mv = String.format(Locale.UK, "%.2f", p);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
     }
 
     /**
      * Fetching log entries from SQL Database
-     *
      * @return
      */
     private ArrayList<phData> getSQLList() {
@@ -322,109 +322,8 @@ public class phLogFragment extends Fragment {
         return phDataModelList;
     }
 
-    /*
-     * Convert sqlite database to csv file
-     *
-     */
-//
-//    public void exportDatabaseCsv() {
-//        String state = Environment.getExternalStorageState();
-//
-//        //We use the Download directory for saving our .csv file.
-//        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-//        if (!exportDir.exists()) {
-//            exportDir.mkdirs();
-//        }
-//
-//        File file;
-//        PrintWriter printWriter = null;
-//
-//        try{
-//
-//            file = new File(exportDir, "LogCSV.csv");
-//            file.createNewFile();
-//            printWriter = new PrintWriter(new FileWriter(file), true);
-//
-//            SQLiteDatabase db = databaseHelper.getWritableDatabase();
-//
-//            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
-//            printWriter.println("TIME,pH,TEMP,NAME");
-//
-//            while(curCSV.moveToNext()){
-//                String time = curCSV.getString(curCSV.getColumnIndex("time"));
-//                String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
-//                String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
-//                String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
-//
-//                String record = time + "," + pH + "," + temp + "," + comp;
-//                printWriter.println(record);
-//            }
-//            curCSV.close();
-//            db.close();
-//
-//        } catch(Exception e) {
-//            Log.d("csvexception", String.valueOf(e));
-//        }
-//    }
-
-
-    /**
-     * To generate PDFs
-     */
-//    private void generatePDF() {
-//        PdfDocument pdfDocument = new PdfDocument();
-//        Paint paint = new Paint();
-//
-//        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-//        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-//        Canvas canvas = myPage.getCanvas();
-//
-//        paint.setTextSize(60);
-//        canvas.drawText("AICAN AUTOMATE", 30, 80, paint);
-//
-//        paint.setTextSize(40);
-//        paint.setTextAlign(Paint.Align.RIGHT);
-//        canvas.drawText("12/02/2022 6:30", canvas.getWidth() - 40, 80, paint);
-//
-//        paint.setColor(Color.rgb(150, 150, 150));
-//        canvas.drawRect(30, 150, canvas.getWidth() - 30, 160, paint);
-//
-//        paint.setTextSize(20);
-//        canvas.drawText("Device Id: EPT2001", 200, 190, paint);
-//
-//        paint.setTextSize(20);
-//        canvas.drawText("Last Calibration Date & Time: 16/02/2022 4:45", 380, 220, paint);
-//
-//        paint.setTextSize(30);
-//        canvas.drawText("Slope: 60%", canvas.getWidth() - 40, 190, paint);
-//
-//        paint.setTextSize(30);
-//        canvas.drawText("Temperature: 30", canvas.getWidth() - 40, 230, paint);
-//
-//        paint.setTextSize(30);
-//        canvas.drawText("Offset: 40", canvas.getWidth() - 40, 270, paint);
-//
-//        paint.setColor(Color.rgb(150, 150, 150));
-//        canvas.drawRect(30, 180, canvas.getWidth() - 30, canvas.getHeight() - 30, paint);
-//
-//        pdfDocument.finishPage(myPage);
-//
-//        String stringFilePath = Environment.getExternalStorageDirectory().getPath() + "/Download/World.pdf";
-//        File file = new File(stringFilePath);
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(file));
-//            Toast.makeText(requireContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        pdfDocument.close();
-//    }
-
     /**
      * checking of permissions.
-     *
      * @return
      */
     private boolean checkPermission() {
@@ -443,7 +342,6 @@ public class phLogFragment extends Fragment {
     /**
      * after requesting permissions we are showing
      * users a toast message of permission granted.
-     *
      * @param requestCode
      * @param permissions
      * @param grantResults
