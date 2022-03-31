@@ -153,7 +153,8 @@ public class Export extends AppCompatActivity {
         }
 
         String pdfPattern = ".csv";
-        String path = Environment.getExternalStorageDirectory().getPath() + "/Download/";
+        //String path = Environment.getExternalStorageDirectory().getPath() + "/AICAN/";
+        String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -162,9 +163,10 @@ public class Export extends AppCompatActivity {
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                if (filesAndFolders[i].getName().endsWith(pdfPattern)) {
-                    return;
-                }
+                filesAndFolders[i].getName().endsWith(pdfPattern);
+//                if (filesAndFolders[i].getName().endsWith(pdfPattern)) {
+//                    return;
+//                }
             }
         }
 
@@ -181,6 +183,7 @@ public class Export extends AppCompatActivity {
 
         //We use the Download directory for saving our .csv file.
         File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        //File exportDir = new File(Environment.getExternalStorageDirectory()+ File.separator+ "AICAN");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
