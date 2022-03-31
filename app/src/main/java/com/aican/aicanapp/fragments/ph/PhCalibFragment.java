@@ -566,7 +566,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         dt4 = view.findViewById(R.id.dt4);
         dt5 = view.findViewById(R.id.dt5);
 
-
         title = view.findViewById(R.id.tvTitle);
         l1 = view.findViewById(R.id.log1);
         l2 = view.findViewById(R.id.log2);
@@ -608,6 +607,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
+        Source.userTrack= "PhCalibFragment logged in by " + Source.userName;
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
@@ -702,6 +702,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     }
 
     public void calibrate() {
+        String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+        databaseHelper.insert_action_data(time, "Calibrated by " + Source.userName, "", "", "");
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
@@ -771,7 +773,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                     dialogs.dismiss();
                     isCalibrating = false;
-                    //onBackPressed();
                 }
 
                 @Override

@@ -103,10 +103,13 @@
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/drawable/ic_slider.xml" value="0.306" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/activity_ph.xml" value="0.35104166666666664" />
+        <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/activity_ph_calibrate.xml" value="0.2864583333333333" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/activity_setting.xml" value="0.33" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/activity_user_database.xml" value="0.25" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/alert_dialog_layout.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.2864583333333333" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.33" />
+        <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.2864583333333333" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/AicanApp/app/src/main/res/layout/item_log.xml" value="0.5245597775718258" />
       </map>
     </option>
