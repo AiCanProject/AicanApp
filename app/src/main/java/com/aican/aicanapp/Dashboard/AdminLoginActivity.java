@@ -1,13 +1,11 @@
 package com.aican.aicanapp.Dashboard;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +13,7 @@ import android.widget.Toast;
 import com.aican.aicanapp.Authentication.LoginActivity;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,7 +47,6 @@ public class AdminLoginActivity extends AppCompatActivity {
             SharedPreferences sh = getSharedPreferences("loginprefs", MODE_PRIVATE);
             primaryEmail = sh.getString("email", "").trim();
 
-
             if (email.equals(primaryEmail)) {
 
                 auth.signInWithEmailAndPassword(
@@ -62,6 +60,10 @@ public class AdminLoginActivity extends AppCompatActivity {
                         logout();
                     } else if(checkFlag.equals("checkDatabase")){
                         userDatabase();
+                    } else if(checkFlag.equals("Export")){
+                        Intent i = new Intent(AdminLoginActivity.this, Export.class);
+                        startActivity(i);
+                        finish();
                     }
                 }).addOnFailureListener(exception -> {
                     if (exception instanceof FirebaseAuthInvalidUserException) {

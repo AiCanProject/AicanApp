@@ -13,13 +13,4 @@
     android:background="@drawable/gradient_color"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/btnUserDatabase"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_users"
-        android:layout_gravity="end"
-        android:clickable="true"
-        android:layout_marginEnd="20dp"
-        android:layout_height="wrap_content"/>
-
 </androidx.appcompat.widget.Toolbar>

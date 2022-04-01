@@ -2,12 +2,12 @@ package com.aican.aicanapp.Dashboard;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,13 +36,15 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
     EditText name, passcode, userId;
     Button generate, addSign;
     Spinner spinner;
-    ImageView imageView;
+    ImageView imageView, user_database;
     String[] r = {"Operator", "Supervisor"};
     String Role;
+
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
 
     private DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         spinner = findViewById(R.id.selectRole);
         addSign = findViewById(R.id.addSignature);
         imageView = findViewById(R.id.signature);
+        user_database = findViewById(R.id.btnUserDatabase);
 
         addSign.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +67,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
-        ArrayAdapter<String> role = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,r);
+        ArrayAdapter<String> role = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, r);
         role.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(role);
         spinner.setOnItemSelectedListener(this);
@@ -72,9 +75,17 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
 
         databaseHelper = new DatabaseHelper(this);
 
-        generate.setOnClickListener(view -> {
-            if(isEmailValid() && isPassCodeValid()){
+        user_database.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AdminLoginActivity.class);
+                intent.putExtra("checkBtn", "checkDatabase");
+                startActivity(intent);
+            }
+        });
 
+        generate.setOnClickListener(view -> {
+            if (isEmailValid() && isPassCodeValid()) {
                 Source.userRole = Role;
                 Source.userId = userId.getText().toString();
                 Source.userName = name.getText().toString();
@@ -100,17 +111,17 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                     }
                 }
             }
+            else{
+                Toast.makeText(this, "Role Not Assigned", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(SettingActivity.this, Dashboard.class));
         finish();
-
     }
 
     @Override
