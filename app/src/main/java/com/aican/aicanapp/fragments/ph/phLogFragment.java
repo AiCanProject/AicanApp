@@ -10,12 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,9 +21,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.aican.aicanapp.Dashboard.AdminLoginActivity;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
@@ -45,16 +40,13 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 
-import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -63,25 +55,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,7 +72,7 @@ public class phLogFragment extends Fragment {
     ArrayList<phData> phDataModelList = new ArrayList<>();
     LogAdapter adapter;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, clearBtn;
+    Button logBtn, exportBtn;
     ImageButton enterBtn;
     EditText compound_name_txt;
     String TABLE_NAME = "LogUserdetails";
@@ -115,7 +89,6 @@ public class phLogFragment extends Fragment {
         lineChart = view.findViewById(R.id.graph);
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
-        clearBtn = view.findViewById(R.id.clear);
         enterBtn = view.findViewById(R.id.enter_text);
         compound_name_txt = view.findViewById(R.id.compound_name);
 
@@ -125,9 +98,13 @@ public class phLogFragment extends Fragment {
 
         databaseHelper = new DatabaseHelper(getContext());
         adapter = new LogAdapter(getContext(), getSQLList());
+        adapter.notifyItemInserted(0);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(requireContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         fetch_logs();
@@ -205,15 +182,15 @@ public class phLogFragment extends Fragment {
                 databaseHelper.insertCalibData(ph4, mv4, dt4);
                 databaseHelper.insertCalibData(ph5, mv5, dt5);
 
-                Intent i = new Intent(getContext(), Export.class);
-                startActivity(i);
+                Intent intent = new Intent(getContext(), AdminLoginActivity.class);
+                intent.putExtra("checkBtn", "Export");
+                startActivity(intent);
             }
         });
 
         /**
          * Getting a log of pH, temp, the time and date of that respective moment, and the name of the compound
          */
-
         logBtn.setOnClickListener(v -> {
 
             time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
@@ -234,11 +211,10 @@ public class phLogFragment extends Fragment {
 
     /**
      * Passing on the data to LogAdapter
-     *
      * @return
      */
     private List<phData> getList() {
-        phDataModelList.add(new phData(ph, temp, time, compound_name));
+        phDataModelList.add(0, new phData(ph, temp, time, compound_name));
         return phDataModelList;
     }
 
@@ -269,8 +245,6 @@ public class phLogFragment extends Fragment {
             dataSets.add(set);
             LineData data = new LineData(dataSets);
             lineChart.setData(data);
-
-
             lineChart.setPinchZoom(true);
             lineChart.setTouchEnabled(true);
         }
@@ -350,11 +324,14 @@ public class phLogFragment extends Fragment {
             Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
         }
         while (res.moveToNext()) {
+            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
             currentTime_fetched = res.getString(0);
             ph_fetched = res.getString(1);
             m_fetched = res.getString(2);
             compound_name_fetched = res.getString(3);
-            phDataModelList.add(new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
+            if(time.equals(currentTime_fetched)){
+                phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
+            }
         }
         return phDataModelList;
     }
