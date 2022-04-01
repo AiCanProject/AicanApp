@@ -35,6 +35,7 @@ import com.aican.aicanapp.R;
 
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.dataClasses.BufferData;
+import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.ExitConfirmDialog;
@@ -73,6 +74,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String mV1,mV2,mV3,mV4,mV5;
     String tm1,tm2,tm3,tm4,tm5;
 
+    PhView phView;
     TextView title;
     DatabaseHelper databaseHelper;
     ArrayList<BufferData> bufferList = new ArrayList<>();
@@ -106,6 +108,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             ph3.setText(String.valueOf(buffers[2]));
             ph4.setText(String.valueOf(buffers[3]));
             ph5.setText(String.valueOf(buffers[4]));
+
         });
     }
 
@@ -144,6 +147,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 if (ph == null) return;
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
+                phView.moveTo(ph);
             }
 
             @Override
@@ -542,6 +546,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        phView = view.findViewById(R.id.phView);
         lastCalib = view.findViewById(R.id.lastCalibration);
         ph1 = view.findViewById(R.id.ph1);
         mv1 = view.findViewById(R.id.mv1);
@@ -585,6 +591,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         lastCalib = view.findViewById(R.id.lastCalibration);
 
         databaseHelper = new DatabaseHelper(requireContext());
+
+
 
         Cursor res = databaseHelper.get_data();
         while(res.moveToNext()){

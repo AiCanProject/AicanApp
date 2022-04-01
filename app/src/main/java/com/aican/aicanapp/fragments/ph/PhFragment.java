@@ -75,7 +75,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
 
-        phView.setCurrentPh(7.0F);
         entriesOriginal = new ArrayList<>();
 
         ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
@@ -122,6 +121,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
                 PhFragment.this.ph = ph;
+                phView.moveTo(ph);
             }
 
             @Override
