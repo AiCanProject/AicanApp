@@ -63,7 +63,10 @@ public class DialogMain extends AppCompatDialogFragment {
                 for(int i=0; i<Source.id_fetched.size(); i++){
                     if(Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))){
                         Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
-
+                        if(Source.status_export){
+                            Intent intent = new Intent(getContext(), Export.class);
+                            startActivity(intent);
+                        }
                         String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
                         databaseHelper.insert_action_data(time, Source.userTrack, "", "", "" );
 

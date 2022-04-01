@@ -60,10 +60,6 @@ public class AdminLoginActivity extends AppCompatActivity {
                         logout();
                     } else if(checkFlag.equals("checkDatabase")){
                         userDatabase();
-                    } else if(checkFlag.equals("Export")){
-                        Intent i = new Intent(AdminLoginActivity.this, Export.class);
-                        startActivity(i);
-                        finish();
                     }
                 }).addOnFailureListener(exception -> {
                     if (exception instanceof FirebaseAuthInvalidUserException) {

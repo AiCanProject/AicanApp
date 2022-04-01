@@ -5,7 +5,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
-import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -31,7 +30,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.aican.aicanapp.Dashboard.AdminLoginActivity;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
@@ -80,6 +78,21 @@ public class phLogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_ph_log, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -172,6 +185,7 @@ public class phLogFragment extends Fragment {
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Source.status_export = true;
                 databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv);
 
                 deleteAll();
@@ -182,9 +196,7 @@ public class phLogFragment extends Fragment {
                 databaseHelper.insertCalibData(ph4, mv4, dt4);
                 databaseHelper.insertCalibData(ph5, mv5, dt5);
 
-                Intent intent = new Intent(getContext(), AdminLoginActivity.class);
-                intent.putExtra("checkBtn", "Export");
-                startActivity(intent);
+                dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
             }
         });
 
@@ -324,12 +336,13 @@ public class phLogFragment extends Fragment {
             Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
         }
         while (res.moveToNext()) {
-            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(new Date());
             currentTime_fetched = res.getString(0);
+            String[] date = currentTime_fetched.split("\\s+");
             ph_fetched = res.getString(1);
             m_fetched = res.getString(2);
             compound_name_fetched = res.getString(3);
-            if(time.equals(currentTime_fetched)){
+            if(time.equals(date[0])){
                 phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
             }
         }
