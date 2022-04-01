@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.FileOpen;
@@ -21,6 +22,7 @@ import com.aican.aicanapp.specificactivities.Export;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 

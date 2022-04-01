@@ -97,7 +97,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recyclerViewCSV"
         android:layout_width="0dp"
         android:layout_margin="20dp"
         android:layout_height="wrap_content"

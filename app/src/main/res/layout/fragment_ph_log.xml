@@ -151,7 +151,7 @@
     </TableLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recyclerViewLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/table_heading_layout"
