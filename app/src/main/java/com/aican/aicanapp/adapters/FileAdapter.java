@@ -43,8 +43,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
         File selectedFile = files[position];
         holder.textView.setText(selectedFile.getName());
-        holder.imageView.setImageResource(R.drawable.pdf_109);
-
+        holder.imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +52,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                     try {
                         Intent intent = new Intent();
                         intent.setAction(android.content.Intent.ACTION_VIEW);
-                        String type = ".pdf/*";
+                        String type = ".csv/*";
                         intent.setDataAndType(Uri.parse(selectedFile.getAbsolutePath()), type);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);

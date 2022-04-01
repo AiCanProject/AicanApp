@@ -34,56 +34,76 @@
                 android:elevation="52dp"
                 app:cardCornerRadius="16dp">
 
-                <com.aican.aicanapp.ph.PhView
-                    android:id="@+id/phView"
-                    android:layout_width="20dp"
-                    android:layout_height="75dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="20dp"
-                    app:vertical="true" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.aican.aicanapp.ph.PhView
+                        android:id="@+id/phView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:vertical="true" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.4" />
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="113dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="45dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="pH"
-                    android:textColor="@color/black"
-                    android:textSize="22sp" />
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="pH"
+                        android:textColor="@color/black"
+                        android:textSize="22sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/phView"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tvPhCurr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/Current_Ph_TV"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="110dp"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:text="7.4"
-                    android:textColor="@color/black"
-                    android:textSize="33sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvPhCurr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="17dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="7.4"
+                        android:textColor="@color/black"
+                        android:textSize="33sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/textView3"
+                        app:layout_constraintStart_toStartOf="@+id/textView3"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-                <TextView
-                    android:id="@+id/tvPhNext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/Current_Ph_TV"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="110dp"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/montserrat_medium"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="42sp"
-                    android:visibility="invisible" />
+                    <TextView
+                        android:id="@+id/tvPhNext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="42sp"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/textView3"
+                        app:layout_constraintStart_toStartOf="@+id/textView3"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 
@@ -185,8 +205,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:layout_marginBottom="4dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="4dp"
                 android:padding="10dp"
                 android:text="Do not Exit/Change \n while calibrating."
                 android:textColor="@color/black"
@@ -214,7 +234,7 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"
                 android:text="Start" />
-<!--
+            <!--
             <Button
                 android:id="@+id/nextBtn"
                 android:layout_width="127dp"
@@ -395,6 +415,7 @@
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
+
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
@@ -463,6 +484,7 @@
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
+
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
@@ -676,6 +698,7 @@
                             android:layout_marginBottom="1dp"
                             android:layout_weight="1"
                             android:textSize="16sp" />
+
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
