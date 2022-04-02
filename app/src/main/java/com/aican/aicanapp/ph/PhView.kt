@@ -19,10 +19,10 @@ class PhView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private val maxPh = 14
     private val minPh = 0
 
-    private val scaleWidth = 30F.toPx()
+    private val scaleWidth = 25F.toPx()
     private val gap = (1.0F / (maxPh - minPh + 1)) / 2.0F
-    private val arrowScale = 5F
-    private val arrowHeight = 11F
+    private val arrowScale = 2F
+    private val arrowHeight = 5F
 
     private var currentPh = 14F
 

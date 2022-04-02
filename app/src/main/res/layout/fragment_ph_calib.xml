@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="17dp"
+                        android:layout_marginTop="1dp"
                         android:fontFamily="@font/montserrat_medium"
                         android:text="7.4"
                         android:textColor="@color/black"
@@ -95,8 +95,9 @@
                         android:layout_gravity="center_vertical"
                         android:fontFamily="@font/montserrat_medium"
                         android:text=""
+                        android:layout_marginTop="1dp"
                         android:textColor="@color/black"
-                        android:textSize="42sp"
+                        android:textSize="33sp"
                         android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/textView3"
@@ -204,14 +205,10 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="4dp"
                 android:padding="10dp"
                 android:text="Do not Exit/Change \n while calibrating."
                 android:textColor="@color/black"
                 android:textSize="16sp" />
-
 
             <TextView
                 android:id="@+id/tvTimer"
