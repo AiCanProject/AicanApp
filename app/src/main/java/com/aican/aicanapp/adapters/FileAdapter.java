@@ -13,12 +13,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aican.aicanapp.FileOpen;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.specificactivities.Export;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
@@ -48,17 +52,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    //open thte file
-                    try {
-                        Intent intent = new Intent();
-                        intent.setAction(android.content.Intent.ACTION_VIEW);
-                        String type = ".csv/*";
-                        intent.setDataAndType(Uri.parse(selectedFile.getAbsolutePath()), type);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
-                    }catch (Exception e){
-                        Toast.makeText(context.getApplicationContext(),"Cannot open the file",Toast.LENGTH_SHORT).show();
-                    }
+
+
+                String selectedFilePath = "/sdcard/Download/" + holder.textView.getText().toString();
+                File file = new File(selectedFilePath);
+                try {
+                    FileOpen.openFile(v.getContext(), file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 }
         });
 
@@ -68,8 +70,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
                 PopupMenu popupMenu = new PopupMenu(context, v);
                 popupMenu.getMenu().add("DELETE");
-                popupMenu.getMenu().add("MOVE");
-                popupMenu.getMenu().add("RENAME");
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -80,14 +80,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                                 Toast.makeText(context.getApplicationContext(), "DELETED ", Toast.LENGTH_SHORT).show();
                                 v.setVisibility(View.GONE);
                             }
-                        }
-                        if (item.getTitle().equals("MOVE")) {
-                            Toast.makeText(context.getApplicationContext(), "MOVED ", Toast.LENGTH_SHORT).show();
-
-                        }
-                        if (item.getTitle().equals("RENAME")) {
-                            Toast.makeText(context.getApplicationContext(), "RENAME ", Toast.LENGTH_SHORT).show();
-
                         }
                         return true;
                     }

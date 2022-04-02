@@ -105,7 +105,7 @@ public class phLogFragment extends Fragment {
         enterBtn = view.findViewById(R.id.enter_text);
         compound_name_txt = view.findViewById(R.id.compound_name);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 

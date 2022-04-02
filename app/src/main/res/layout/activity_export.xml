@@ -69,7 +69,7 @@
 
 
     <Button
-        android:id="@+id/authenticateRole"
+        android:id="@+id/exportCSV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Export"
@@ -77,6 +77,18 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date" />
+
+    <Button
+        android:id="@+id/exportUserData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Export User Activity"
+        android:layout_margin="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exportCSV" />
+
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="match_parent"
@@ -97,7 +109,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recyclerViewCSV"
         android:layout_width="0dp"
         android:layout_margin="20dp"
         android:layout_height="wrap_content"
