@@ -100,6 +100,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         databaseHelper = new DatabaseHelper(this);
         Source.id_fetched = new ArrayList<>();
         Source.passcode_fetched = new ArrayList<>();
+        Source.role_fetched = new ArrayList<>();
+        Source.name_fetched = new ArrayList<>();
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
@@ -171,6 +173,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         while (res.moveToNext()) {
             Source.id_fetched.add(res.getString(res.getColumnIndex("id")));
             Source.passcode_fetched.add(res.getString(res.getColumnIndex("passcode")));
+            Source.role_fetched.add(res.getString(res.getColumnIndex("role")));
+            Source.name_fetched.add(res.getString(res.getColumnIndex("name")));
         }
     }
 

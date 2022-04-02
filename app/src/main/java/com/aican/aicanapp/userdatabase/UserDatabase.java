@@ -32,8 +32,6 @@ public class UserDatabase extends AppCompatActivity {
         setContentView(R.layout.activity_user_database);
 
         databaseHelper = new DatabaseHelper(this);
-        Source.id_fetched = new ArrayList<>();
-        Source.passcode_fetched = new ArrayList<>();
 
         RecyclerView recyclerView = findViewById(R.id.user_database_recycler_view);
         recyclerView.setHasFixedSize(true);

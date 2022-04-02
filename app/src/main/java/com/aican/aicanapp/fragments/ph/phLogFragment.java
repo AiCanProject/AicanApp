@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,7 @@ public class phLogFragment extends Fragment {
         adapter.notifyItemInserted(0);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(requireContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -150,7 +151,8 @@ public class phLogFragment extends Fragment {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack= "PhLogFragment logged in by " + Source.userName;
+        Log.d("685645", Source.userName);
+        Source.userTrack = "PhLogFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +188,8 @@ public class phLogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Source.status_export = true;
-                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv);
+                time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "");
 
                 deleteAll();
 
@@ -212,7 +215,7 @@ public class phLogFragment extends Fragment {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
                 databaseHelper.insert_log_data(time, ph, temp, compound_name);
-                databaseHelper.insert_action_data(time, "Log button pressed by " + Source.userName, ph, temp, mv);
+                databaseHelper.insert_action_data(time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -223,6 +226,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * Passing on the data to LogAdapter
+     *
      * @return
      */
     private List<phData> getList() {
@@ -328,6 +332,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * Fetching log entries from SQL Database
+     *
      * @return
      */
     private ArrayList<phData> getSQLList() {
@@ -342,7 +347,7 @@ public class phLogFragment extends Fragment {
             ph_fetched = res.getString(1);
             m_fetched = res.getString(2);
             compound_name_fetched = res.getString(3);
-            if(time.equals(date[0])){
+            if (time.equals(date[0])) {
                 phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
             }
         }
@@ -351,6 +356,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * checking of permissions.
+     *
      * @return
      */
     private boolean checkPermission() {
@@ -369,6 +375,7 @@ public class phLogFragment extends Fragment {
     /**
      * after requesting permissions we are showing
      * users a toast message of permission granted.
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults

@@ -3,6 +3,7 @@ package com.aican.aicanapp.fragments.ph;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,11 +87,15 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         Cursor res = databaseHelper.get_data();
         while(res.moveToNext()){
             Source.userName = res.getString(0);
+            Source.userRole = res.getString(1);
+            Source.userId = res.getString(2);
+            Source.userPasscode = res.getString(3);
         }
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack= "PhFragment logged in by " + Source.userName;
+        Log.d("685645", Source.userName);
+        Source.userTrack= "PhFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);

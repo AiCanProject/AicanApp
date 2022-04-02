@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
-        sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT)");
+        sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
     }
 
     @Override
@@ -76,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv){
+    public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv, String compound){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
@@ -84,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("ph", ph);
         contentValues.put("temperature", temperature);
         contentValues.put("mv", mv);
+        contentValues.put("compound", compound);
         long result = db.insertOrThrow("UserActiondetails", null, contentValues);
         if(result == -1){
             return false;

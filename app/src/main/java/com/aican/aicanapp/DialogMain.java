@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -62,19 +61,30 @@ public class DialogMain extends AppCompatDialogFragment {
                 Source.userPasscode = passcode.getText().toString();
                 for(int i=0; i<Source.id_fetched.size(); i++){
                     if(Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))){
-                        Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
-                        if(Source.status_export){
-                            Intent intent = new Intent(getContext(), Export.class);
-                            startActivity(intent);
-                        }
+
                         String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-                        databaseHelper.insert_action_data(time, Source.userTrack, "", "", "" );
+                        databaseHelper.insert_action_data(time, Source.userTrack + Source.name_fetched.get(i), "", "", "", "" );
 
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor myShared = sharedPreferences.edit();
 
                         myShared.putString("userid", Source.userId);
                         myShared.commit();
+
+                        if(Source.status_export && Source.role_fetched.get(i).equals("Supervisor")){
+                            Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
+                            Source.status_export = false;
+                            Intent intent = new Intent(getContext(), Export.class);
+                            startActivity(intent);
+                        }
+                        else if(Source.status_export){
+                            Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
+                        }
+
+                        if(!Source.status_export){
+                            Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
+                        }
+                        Source.status_export = false;
 
                         dismiss();
                         return;
