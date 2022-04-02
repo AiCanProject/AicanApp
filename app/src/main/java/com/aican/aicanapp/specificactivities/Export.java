@@ -45,7 +45,7 @@ public class Export extends AppCompatActivity {
 
 
 //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
-    Button startDat, exportPdf;
+    Button exportUserData, exportCSV;
     TextView startDate;
     TextView deviceId;
     String user;
@@ -65,13 +65,14 @@ public class Export extends AppCompatActivity {
         TextView noFilesText = findViewById(R.id.nofiles_textview);
         startDate = findViewById(R.id.date);
         deviceId = findViewById(R.id.DeviceId);
-        exportPdf = findViewById(R.id.authenticateRole);
+        exportCSV = findViewById(R.id.exportCSV);
+        exportUserData = findViewById(R.id.exportUserData);
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
         setFirebaseListeners();
 
-        exportPdf.setOnClickListener(new View.OnClickListener() {
+        exportCSV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -99,6 +100,33 @@ public class Export extends AppCompatActivity {
             }
         });
 
+        exportUserData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exportUserData();
+
+                String pdfPattern = ".csv";
+                String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+                File root = new File(path);
+                File[] filesAndFolders = root.listFiles();
+
+                if (filesAndFolders == null || filesAndFolders.length == 0) {
+                    noFilesText.setVisibility(View.VISIBLE);
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFolders.length; i++) {
+                        filesAndFolders[i].getName().endsWith(pdfPattern);
+                    }
+                }
+
+                noFilesText.setVisibility(View.INVISIBLE);
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFolders);
+                recyclerView.setAdapter(fAdapter);
+                fAdapter.notifyDataSetChanged();
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+            }
+        });
 
         String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
         File root = new File(path);
@@ -145,7 +173,6 @@ public class Export extends AppCompatActivity {
 
         //We use the Download directory for saving our .csv file.
         File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        //File exportDir = new File(Environment.getExternalStorageDirectory()+ File.separator+ "AICAN");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -185,7 +212,7 @@ public class Export extends AppCompatActivity {
 
                 printWriter.println(record1);
             }
-
+            calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("TIME,pH,TEMP,NAME");
@@ -202,6 +229,58 @@ public class Export extends AppCompatActivity {
                 printWriter.println(record);
             }
             curCSV.close();
+            db.close();
+
+        } catch (Exception e) {
+            Log.d("csvexception", String.valueOf(e));
+        }
+    }
+
+    public void exportUserData(){
+        //We use the Download directory for saving our .csv file.
+        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        File file;
+        PrintWriter printWriter = null;
+
+        try {
+            String fileName = new SimpleDateFormat("yyyyMMddHHmmss'.csv'").format(new Date());
+
+            file = new File(exportDir, fileName);
+            file.createNewFile();
+            printWriter = new PrintWriter(new FileWriter(file), true);
+
+
+
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+
+            Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
+
+
+            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println("TIME,ACTIVITY,pH,TEMPERATURE,mV");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+
+
+            while (userCSV.moveToNext()) {
+                String Time = userCSV.getString(userCSV.getColumnIndex("time"));
+                String Activity = userCSV.getString(userCSV.getColumnIndex("useraction"));
+                String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
+                String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
+                String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
+
+                String record2 = Time + "," + Activity + "," + Ph+ "," + Temp+ "," + Mv;
+
+                printWriter.println(record2);
+            }
+
+            userCSV.close();
             db.close();
 
         } catch (Exception e) {

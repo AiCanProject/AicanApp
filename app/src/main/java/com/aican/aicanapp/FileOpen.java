@@ -16,12 +16,6 @@ public class FileOpen {
         if (url.toString().contains(".doc") || url.toString().contains(".docx")) {
             // Word document
             intent.setDataAndType(uri, "application/msword");
-        } else if(url.toString().contains(".pdf")) {
-            // PDF file
-            intent.setDataAndType(uri, "application/pdf");
-        } else if(url.toString().contains(".ppt") || url.toString().contains(".pptx")) {
-            // Powerpoint file
-            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
         } else if(url.toString().contains(".xls") || url.toString().contains(".xlsx")) {
             // Excel file
             intent.setDataAndType(uri, "application/vnd.ms-excel");
