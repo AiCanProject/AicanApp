@@ -6,11 +6,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     DatabaseReference database;
     ProgressDialog dialog;
+    Button btn;
     TextInputLayout tilEmail,tilPassword;
 
     @Override
@@ -51,10 +54,16 @@ public class LoginActivity extends AppCompatActivity {
         TextView tvTitle = findViewById(R.id.tvTitle);
         LinearLayout llBackground = findViewById(R.id.backgroundll);
 
+        btn = findViewById(R.id.wifi);
+
         View view = findViewById(R.id.view);
 
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
+
+        btn.setOnClickListener(V -> {
+            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        });
 
         findViewById(R.id.btnSignUp).setOnClickListener(v -> {
             startActivity(
