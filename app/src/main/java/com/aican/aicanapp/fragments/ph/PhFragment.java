@@ -94,13 +94,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Log.d("685645", Source.userName);
         Source.userTrack= "PhFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupListeners();
-}
+    }
 
     private void rescaleGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
