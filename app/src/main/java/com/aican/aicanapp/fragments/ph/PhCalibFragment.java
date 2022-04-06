@@ -592,8 +592,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         databaseHelper = new DatabaseHelper(requireContext());
 
-
-
         Cursor res = databaseHelper.get_data();
         while(res.moveToNext()){
             Source.userName = res.getString(0);

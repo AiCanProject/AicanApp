@@ -33,4 +33,7 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="ph">pH</string>
     <string name="date">Date</string>
     <string name="tip_long_press_to_delete_the_record">TIP: Long Press to Delete the Record</string>
+    <string name="ok">Ok</string>
+    <string name="battery_low">pH Meter Battery Low</string>
+    <string name="the_battery_is_getting_low_nplease_charge_the_device_with_switch_off">The battery is getting low.\nPlease charge the device with switch off</string>
 </resources>

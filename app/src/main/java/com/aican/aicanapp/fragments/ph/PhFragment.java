@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.aican.aicanapp.BatteryDialog;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
@@ -42,6 +43,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
+
+    BatteryDialog batteryDialog;
 
     float ph = 0;
     int skipPoints = 0;
@@ -92,6 +95,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Source.userPasscode = res.getString(3);
         }
 
+        batteryDialog = new BatteryDialog();
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
         Source.userTrack= "PhFragment logged in by ";
@@ -201,6 +205,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String battery = snapshot.getValue(Integer.class).toString();
                 batteryCurr.setText(battery);
                 batteryCurr.setText(battery+" %");
+
+                Log.d("6516516", battery);
+
+                if(battery.equals("25") || battery.equals("20") || battery.equals("15") || battery.equals("10") || battery.equals("5")){
+                    batteryDialog.show(getActivity().getSupportFragmentManager(), "example dialog");
+                }
             }
 
             @Override

@@ -41,7 +41,6 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView ivBackBtn;
     TextInputLayout tilName, tilEmail, tilPassword;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,37 +151,4 @@ public class SignUpActivity extends AppCompatActivity {
     private void saveUid(String uid) {
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString(MY_USER_ID, uid).apply();
     }
-
-
-//    private void lookForAvailableAccounts(String uid) {
-//        database.child("Available").get().addOnSuccessListener(dataSnapshot -> {
-//            if(dataSnapshot.getChildrenCount()==0){
-//                Toast.makeText(this, "Sorry, no accounts available", Toast.LENGTH_SHORT).show();
-//                dialog.dismiss();
-//            }else {
-//                DataSnapshot availableAccount = dataSnapshot.getChildren().iterator().next();
-//                String accountKey = Objects.requireNonNull(availableAccount.getKey());
-//                String accountId = availableAccount.getValue(String.class);
-//                setupAccount(uid, accountId);
-//                database.child("Available").child(accountKey).removeValue();
-//                database.child("UsedAccounts").child(accountId).push().setValue(uid);
-//            }
-//        });
-//
-//    }
-//
-//    private void setupAccount(String uid, String accountId) {
-//        database.child("Users").child(uid).setValue(accountId);
-//        database.child("Accounts").child(accountId).get().addOnSuccessListener(dataSnapshot -> {
-//            UserAccount.DATABASE_URL = dataSnapshot.child("database").getValue(String.class);
-//            UserAccount.API_KEY = dataSnapshot.child("api").getValue(String.class);
-//            UserAccount.APP_ID = dataSnapshot.child("app").getValue(String.class);
-//            UserAccount.PROJECT_ID = dataSnapshot.child("project").getValue(String.class);
-//
-//            dialog.dismiss();
-//            startActivity(new Intent(this, MainActivity.class));
-//        });
-//    }
-
-
 }

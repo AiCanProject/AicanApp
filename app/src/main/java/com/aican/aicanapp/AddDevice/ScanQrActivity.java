@@ -8,6 +8,7 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -28,16 +29,25 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.mlkit.vision.barcode.Barcode;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -58,6 +68,8 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
     ImageView iv;
     private ExecutorService cameraExecutor;
     EditText etId;
+
+    //private final FirebaseFirestore db = FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +103,6 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
                 onQrResult(etId.getText().toString());
                 return true;
             }
-
             return false;
         });
     }
@@ -127,8 +138,6 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(this));
-
-
     }
 
     @Override
@@ -169,7 +178,6 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
                 startCamera();
             }
         }
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -182,18 +190,39 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
     }
 
     private void linkDeviceOnFirebase(String deviceId) {
+
         String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         if (uid == null) return;
-        DatabaseReference ref = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
-        ref.child("USERS").child(uid).child("DEVICES").push().setValue(deviceId)
-                .addOnSuccessListener(d -> {
-                    Toast.makeText(ScanQrActivity.this, "Linked Successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this, Dashboard.class);
-                    startActivity(intent);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(ScanQrActivity.this, "Failed to link device", Toast.LENGTH_SHORT).show();
-                });
+
+        DocumentReference documentReference = FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this)).collection("Devices Registered").document(deviceId);
+
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (!documentSnapshot.exists()) {
+                        DatabaseReference ref = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(ScanQrActivity.this)).getReference();
+                        ref.child("USERS").child(uid).child("DEVICES").push().setValue(deviceId)
+                                .addOnSuccessListener(d -> {
+                                    Map<String, Object> deviceIDs = new HashMap<>();
+                                    deviceIDs.put("UID", uid);
+                                    FirebaseFirestore.getInstance(PrimaryAccount.getInstance(getApplicationContext())).collection("Devices Registered").document(deviceId).set(deviceIDs);
+                                    Toast.makeText(ScanQrActivity.this, "Linked Successfully", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(ScanQrActivity.this, Dashboard.class);
+                                    startActivity(intent);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(ScanQrActivity.this, "Failed to link device", Toast.LENGTH_SHORT).show();
+                                });
+                    }else{
+                        Toast.makeText(ScanQrActivity.this, "Device Already Registered", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Exception e = task.getException();
+                }
+            }
+        });
     }
 
     private class ImageScanner implements ImageAnalysis.Analyzer {
