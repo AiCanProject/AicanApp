@@ -108,10 +108,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         coolingRecyclerView = findViewById(R.id.cooling_recyclerview);
         phRecyclerView = findViewById(R.id.ph_recyclerview);
         pumpRecyclerView = findViewById(R.id.pump_recyclerview);
-        tvTemp = findViewById(R.id.tvTemp);
-        tvCooling = findViewById(R.id.tvCooling);
-        tvPh = findViewById(R.id.tvPh);
-        tvPump = findViewById(R.id.tvPump);
+//        tvTemp = findViewById(R.id.tvTemp);
+  //      tvCooling = findViewById(R.id.tvCooling);
+    //    tvPh = findViewById(R.id.tvPh);
+      //  tvPump = findViewById(R.id.tvPump);
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
@@ -127,6 +127,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
 
+        //tvName.setText();
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -403,24 +404,32 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     phAdapter.notifyDataSetChanged();
                     pumpAdapter.notifyDataSetChanged();
                     if (tempDevices.size() == 0) {
-                        tvTemp.setVisibility(View.GONE);
+                        tempRecyclerView.setVisibility(View.GONE);
+//                        tvTemp.setVisibility(View.GONE);
                     } else {
-                        tvTemp.setVisibility(View.VISIBLE);
+                        tempRecyclerView.setVisibility(View.VISIBLE);
+  //                      tvTemp.setVisibility(View.VISIBLE);
                     }
                     if (coolingDevices.size() == 0) {
-                        tvCooling.setVisibility(View.GONE);
+                        coolingRecyclerView.setVisibility(View.GONE);
+    //                    tvCooling.setVisibility(View.GONE);
                     } else {
-                        tvCooling.setVisibility(View.VISIBLE);
+                        coolingRecyclerView.setVisibility(View.VISIBLE);
+      //                  tvCooling.setVisibility(View.VISIBLE);
                     }
                     if (phDevices.size() == 0) {
-                        tvPh.setVisibility(View.GONE);
+                        phRecyclerView.setVisibility(View.GONE);
+        //                tvPh.setVisibility(View.GONE);
                     } else {
-                        tvPh.setVisibility(View.VISIBLE);
+                        phRecyclerView.setVisibility(View.VISIBLE);
+          //              tvPh.setVisibility(View.VISIBLE);
                     }
                     if (pumpDevices.size() == 0) {
-                        tvPump.setVisibility(View.GONE);
+                        pumpRecyclerView.setVisibility(View.GONE);
+            //            tvPump.setVisibility(View.GONE);
                     } else {
-                        tvPump.setVisibility(View.VISIBLE);
+                        pumpRecyclerView.setVisibility(View.VISIBLE);
+              //          tvPump.setVisibility(View.VISIBLE);
                     }
                 }
             });

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="350dp"
-android:layout_height="200dp"
+android:layout_width="240dp"
+android:layout_height="310dp"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 app:cardCornerRadius="24dp"
 android:layout_margin="10dp"
@@ -13,7 +13,7 @@ app:cardElevation="10dp">
     android:id="@+id/background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pump_custom_bg"
+    android:background="@color/lightWhite"
     android:padding="5dp">
 
     <ImageView
@@ -25,16 +25,19 @@ app:cardElevation="10dp">
         android:layout_marginHorizontal="4dp"
         android:layout_marginTop="18dp"
         android:src="@drawable/ic_three_dots"
-        app:tint="@color/white" />
+        app:tint="@color/black" />
 
     <LinearLayout
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
         android:id="@+id/image_ll"
-        android:layout_marginEnd="12dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
+        <!--
         <ImageView
             android:id="@+id/pump_image"
             android:layout_width="100dp"
@@ -42,16 +45,17 @@ app:cardElevation="10dp">
             android:layout_marginTop="36dp"
             android:src="@drawable/pump_logo"
             android:layout_centerVertical="true" />
+            -->
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch1"
             android:layout_width="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@color/black_force"
-            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:thumb="@drawable/sw_thumb"
+            android:layout_gravity="center_horizontal"
             android:enabled="false"
+            android:textColor="@color/black_force"
+            android:textStyle="bold"
+            android:thumb="@drawable/sw_thumb"
             app:track="@drawable/sw_track" />
 
     </LinearLayout>
@@ -61,7 +65,7 @@ app:cardElevation="10dp">
         android:layout_height="wrap_content"
         android:text="Custom Device Name"
         android:textSize="20sp"
-        android:textColor="@color/white"
+        android:textColor="@color/grey_dark"
         android:paddingHorizontal="30dp"
         android:paddingTop="10dp"/>
 
@@ -71,13 +75,14 @@ app:cardElevation="10dp">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/custom_device_name"
-        android:text="Mode: Dose"
-        android:textColor="@color/white"
-        android:textSize="16dp"
-        android:paddingTop="8dp"
-        android:paddingHorizontal="30dp"
-        android:layout_toLeftOf="@id/image_ll"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toLeftOf="@id/image_ll"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="8dp"
+        android:text="Mode: Dose"
+        android:textColor="@color/grey_dark"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
 
@@ -86,28 +91,30 @@ app:cardElevation="10dp">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/mode"
-        android:text="Vol: 50mL"
-        android:paddingTop="8dp"
-        android:paddingHorizontal="30dp"
-        android:layout_toLeftOf="@id/image_ll"
         android:layout_alignParentStart="true"
-        android:textColor="@color/white"
+        android:layout_alignParentEnd="true"
+        android:layout_toLeftOf="@id/image_ll"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="8dp"
+        android:text="Vol: 50mL"
+        android:textColor="@color/grey_dark"
         android:textSize="16dp"
         android:textStyle="bold"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/tvSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvVol"
-        android:text="Speed: 10mL/Min"
-        android:textColor="@color/white"
-        android:textSize="16dp"
-        android:paddingTop="8dp"
-        android:paddingHorizontal="30dp"
-        android:layout_toLeftOf="@id/image_ll"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toLeftOf="@id/image_ll"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="8dp"
+        android:text="Speed: 10mL/Min"
+        android:textColor="@color/grey_dark"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
     <TextView
@@ -115,13 +122,14 @@ app:cardElevation="10dp">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvSpeed"
-        android:text="Direction: ClockWise"
-        android:textColor="@color/white"
-        android:textSize="16dp"
-        android:paddingTop="8dp"
-        android:paddingHorizontal="30dp"
-        android:layout_toLeftOf="@id/image_ll"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toLeftOf="@id/image_ll"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="8dp"
+        android:text="Direction: ClockWise"
+        android:textColor="@color/grey_dark"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
 
