@@ -3,8 +3,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/phone_Cardview"
-    android:layout_width="350dp"
-    android:layout_height="200dp"
+    android:layout_width="240dp"
+    android:layout_height="310dp"
     android:layout_margin="10dp"
     app:cardCornerRadius="24dp"
     app:cardElevation="10dp">
@@ -13,7 +13,7 @@
         android:id="@+id/background_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/temp_custom_bg"
+        android:background="@color/lightWhite"
         android:padding="5dp">
 
 
@@ -26,15 +26,16 @@
             android:layout_marginHorizontal="4dp"
             android:layout_marginTop="18dp"
             android:src="@drawable/ic_three_dots"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/temp_image"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/temp_logo" />
+-->
 
         <TextView
             android:id="@+id/custom_device_name"
@@ -43,10 +44,10 @@
             android:paddingHorizontal="30dp"
             android:paddingTop="10dp"
             android:text="Custom Device Name"
-            android:textColor="@color/white"
+            android:textColor="@color/grey_dark"
             android:textSize="20sp" />
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/current_temp_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,19 +58,32 @@
             android:text="Current Temperature"
             android:textColor="@color/white"
             android:textSize="14dp" />
+-->
 
         <TextView
             android:id="@+id/ph"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/custom_device_name"
-            android:layout_marginTop="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:layout_alignParentBottom="true"
             android:paddingHorizontal="30dp"
+            android:layout_marginBottom="60dp"
             android:text="89℃"
-            android:textColor="@color/white"
-            android:textSize="55dp"
+            android:textColor="@color/grey_dark"
+            android:textSize="40dp"
             android:textStyle="bold" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="65dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/shape_ph"/>
 
     </RelativeLayout>
 

@@ -24,7 +24,7 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
-            android:background="@color/main1"
+            android:background="@drawable/gradient_color"
             android:textAlignment="center"
             app:title="DASHBOARD"
             app:titleTextColor="@color/white">
@@ -33,9 +33,10 @@
                 android:id="@+id/settings"
                 android:layout_width="wrap_content"
                 android:layout_gravity="end"
-                android:backgroundTint="@color/orange"
+                android:backgroundTint="@color/lightWhite"
                 android:text="@string/add_user"
                 android:textSize="17sp"
+                android:textColor="@color/black"
                 android:layout_marginEnd="20dp"
                 android:layout_height="wrap_content"/>
 
@@ -145,7 +146,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@color/main2"
+            android:backgroundTint="#9037C7"
+            android:background="@drawable/gradient_color"
             android:clickable="true"
             app:srcCompat="@drawable/plus_ic" />
 
@@ -167,7 +169,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/main2"
+                android:background="@drawable/gradient_color"
                 android:orientation="vertical"
                 android:padding="8dp">
 

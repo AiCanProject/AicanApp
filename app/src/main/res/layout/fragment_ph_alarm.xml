@@ -10,21 +10,19 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ph.phAlarmFragment">
 
-    <LinearLayout
+  <!--  <LinearLayout
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:ignore="UselessParent">
+        tools:ignore="UselessParent"> -->
 
         <androidx.cardview.widget.CardView
             android:id="@+id/phLevelCard"
-            android:layout_width="606dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_margin="10dp"
             android:backgroundTint="@color/white"
             android:elevation="52dp"
             app:cardCornerRadius="26dp">
@@ -69,6 +67,35 @@
                         android:textSize="20sp"
                         app:boxStrokeColor="@color/colorPrimary" />
 
+                    <RadioGroup
+                        android:id="@+id/groupradio"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/greater"
+                            android:theme="@style/MyCheckBox"
+                            android:textColor="@color/black"
+                            android:text="Greater than"
+                            android:textSize="20dp"/>
+
+                        <RadioButton
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/lesser"
+                            android:textColor="@color/black"
+                            android:theme="@style/MyCheckBox"
+                            android:text="Less than"
+                            android:textSize="20dp"/>
+
+                    </RadioGroup>
+
+
+<!--
                     <CheckBox
                         android:id="@+id/checkBox"
                         android:layout_width="wrap_content"
@@ -76,9 +103,9 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="15dp"
                         android:text="Greater than"
-
                         android:textColor="@color/black"
                         android:textSize="20sp"
+                        android:theme="@style/MyCheckBox"
                         app:boxStrokeColor="@color/colorPrimary" />
 
                     <CheckBox
@@ -88,8 +115,9 @@
                         android:layout_marginTop="20dp"
                         android:text="Less than"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
-
+                        android:textSize="20sp"
+                        android:theme="@style/MyCheckBox" />
+-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -129,7 +157,7 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <!-- <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -170,12 +198,23 @@
 
 
                 </LinearLayout>
+                -->
 
+                <Button
+                    android:id="@+id/startAlarm"
+                    android:layout_width="235dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll1"
+                    android:layout_marginStart="30dp"
+                    android:backgroundTint="#9037C7"
+                    android:gravity="center"
+                    android:text="Start Alarm"
+                    android:textAllCaps="false" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
+     <!--   <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -186,7 +225,7 @@
             android:elevation="52dp"
             app:cardCornerRadius="26dp">
 
-            <LinearLayout
+           <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -299,19 +338,10 @@
 
 
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/startAlarm"
-        android:layout_width="235dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll1"
-        android:layout_marginStart="502dp"
-        android:backgroundTint="#9037C7"
-        android:gravity="center"
-        android:text="Start Alarm"
-        android:textAllCaps="false" />
+-->
 
 </RelativeLayout>
