@@ -1,5 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -48,7 +50,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
     float ph = 0;
     int skipPoints = 0;
-    String[] probe = {"Unbreakable","Glass","Others"};
+    String[] probe = {"Unbreakable", "Glass", "Others"};
 
     ArrayList<Entry> entriesOriginal;
 
@@ -88,7 +90,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             Source.userName = res.getString(0);
             Source.userRole = res.getString(1);
             Source.userId = res.getString(2);
@@ -98,7 +100,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         batteryDialog = new BatteryDialog();
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack= "PhFragment logged in by ";
+        Source.userTrack = "PhFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
@@ -124,7 +126,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
-                if(ph==null) return;
+                if (ph == null) return;
                 phView.moveTo(ph);
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
@@ -142,9 +144,9 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float hold = snapshot.getValue(Float.class);
 
-                if (hold == 1 ) {
+                if (hold == 1) {
                     tvPhCurr.setTextColor(Color.GREEN);
-                }else if (hold != 1){
+                } else if (hold != 1) {
                     tvPhCurr.setTextColor(Color.BLACK);
                 }
             }
@@ -162,6 +164,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 Float temp = snapshot.getValue(Float.class);
                 String tempForm = String.format(Locale.UK, "%.1f", temp);
                 tvTempCurr.setText(tempForm + "°C");
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putString("temp", tvTempCurr.getText().toString());
+                edit.commit();
             }
 
             @Override
@@ -192,6 +199,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 Float offSet = snapshot.getValue(Float.class);
                 String offsetForm = String.format(Locale.UK, "%.2f", offSet);
                 offsetCurr.setText(offsetForm);
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putString("offset", offsetCurr.getText().toString());
+                edit.commit();
             }
 
             @Override
@@ -204,11 +216,15 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String battery = snapshot.getValue(Integer.class).toString();
                 batteryCurr.setText(battery);
-                batteryCurr.setText(battery+" %");
+                batteryCurr.setText(battery + " %");
 
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putString("battery", batteryCurr.getText().toString() + "%");
+                edit.commit();
                 Log.d("6516516", battery);
 
-                if(battery.equals("25") || battery.equals("20") || battery.equals("15") || battery.equals("10") || battery.equals("5")){
+                if (battery.equals("25") || battery.equals("20") || battery.equals("15") || battery.equals("10") || battery.equals("5")) {
                     batteryDialog.show(getActivity().getSupportFragmentManager(), "example dialog");
                 }
             }
@@ -222,7 +238,13 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String slope = snapshot.getValue(Integer.class).toString();
-                slopeCurr.setText(slope+" %");
+                slopeCurr.setText(slope + " %");
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putString("slope", slopeCurr.getText().toString());
+                edit.commit();
+
             }
 
             @Override

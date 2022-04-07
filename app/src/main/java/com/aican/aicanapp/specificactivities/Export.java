@@ -48,7 +48,8 @@ public class Export extends AppCompatActivity {
     Button exportUserData, exportCSV;
     TextView startDate;
     TextView deviceId;
-    String user;
+    String user, roleExport;
+    String offset, battery, slope, temp;
     String companyName;
     String nullEntry;
     FileAdapter fAdapter;
@@ -137,24 +138,6 @@ public class Export extends AppCompatActivity {
         recyclerView.setAdapter(fAdapter);
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-//        builder.setTitleText("SELECT A RANGE OF DATE");
-//        final MaterialDatePicker materialDatePicker = builder.build();
-
-        //Range OF DATE
-//        startDat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
-//            }
-//        });
-
-//        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-//            @Override
-//            public void onPositiveButtonClick(Object selection) {
-//            startDate.setText(materialDatePicker.getHeaderText());
-//            }
-//        });
 
 
         if (checkPermission()) {
@@ -181,14 +164,23 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-            String fileName = new SimpleDateFormat("yyyyMMddHHmmss'.csv'").format(new Date());
+            String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
 
-            file = new File(exportDir, fileName);
+            file = new File(exportDir, "SensorData" + fileName + ".csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
-            SharedPreferences shp = getSharedPreferences("MySharedPrefs", MODE_PRIVATE);
-            user = "User: " + shp.getString("userid", "");
+            SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
+            offset = "Offset: " + shp.getString("offset", "");
+            battery = "Battery: " + shp.getString("battery", "");
+            slope = "Slope: " + shp.getString("slope", "");
+            temp = "Temperature: " + shp.getString("temp", "");
+
+//            SharedPreferences shp1 = getSharedPreferences("MySharedPrefs", MODE_PRIVATE);
+//            user = "User: " + shp1.getString("userid", "");
+
+            SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
+            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
@@ -196,7 +188,9 @@ public class Export extends AppCompatActivity {
             Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
 
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(user + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("pH,mV,DATE");
@@ -247,9 +241,9 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-            String fileName = new SimpleDateFormat("yyyyMMddHHmmss'.csv'").format(new Date());
+            String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
 
-            file = new File(exportDir, fileName);
+            file = new File(exportDir, "UserActivity" + fileName + ".csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
@@ -257,11 +251,17 @@ public class Export extends AppCompatActivity {
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
+            SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
+            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
 
             Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
 
 
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
             printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
             printWriter.println("TIME,ACTIVITY,pH,TEMPERATURE,mV");

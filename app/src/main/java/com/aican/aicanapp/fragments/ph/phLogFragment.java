@@ -191,6 +191,14 @@ public class phLogFragment extends Fragment {
                 time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
                 databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "");
 
+                SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
+                SharedPreferences.Editor roleE = sh.edit();
+                String roleSuper = Source.userName;
+                roleE.putString("roleSuper", roleSuper);
+                roleE.commit();
+
+                Log.d("debz", roleSuper);
+
                 deleteAll();
 
                 databaseHelper.insertCalibData(ph1, mv1, dt1);
