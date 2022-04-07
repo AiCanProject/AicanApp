@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +29,8 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.FileAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,10 +49,11 @@ public class Export extends AppCompatActivity {
 
 
 //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
-    Button exportUserData, exportCSV;
-    TextView startDate;
+    Button mDateBtn, exportUserData, exportCSV;
+    TextView tvStartDate, tvEndDate;
     TextView deviceId;
     String user, roleExport;
+    String startDateString,endDateString;
     String offset, battery, slope, temp;
     String companyName;
     String nullEntry;
@@ -64,9 +69,11 @@ public class Export extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewCSV);
         TextView noFilesText = findViewById(R.id.nofiles_textview);
-        startDate = findViewById(R.id.date);
         deviceId = findViewById(R.id.DeviceId);
+        tvStartDate = findViewById(R.id.dateStart);
+        tvEndDate = findViewById(R.id.dateEnd);
         exportCSV = findViewById(R.id.exportCSV);
+        mDateBtn = findViewById(R.id.materialDateBtn);
         exportUserData = findViewById(R.id.exportUserData);
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
@@ -139,6 +146,26 @@ public class Export extends AppCompatActivity {
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        mDateBtn.setOnClickListener(v -> {
+            MaterialDatePicker datePicker =
+                    MaterialDatePicker.Builder.dateRangePicker()
+                            .setSelection(new Pair(MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                                    MaterialDatePicker.todayInUtcMilliseconds()))
+                            .setTitleText("Select dates")
+                            .build();
+            datePicker.show(getSupportFragmentManager(), "date");
+
+            datePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>) selection -> {
+                Long startDate = selection.first;
+                Long endDate = selection.second;
+                startDateString = DateFormat.format("yyyy.MM.dd", new Date(startDate)).toString();
+                endDateString = DateFormat.format("yyyy.MM.dd", new Date(endDate)).toString();
+                String date = "Start: " + startDateString + " End: " + endDateString;
+                Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
+                tvStartDate.setText(startDateString);
+                tvEndDate.setText(endDateString);
+            });
+        });
 
         if (checkPermission()) {
             Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();

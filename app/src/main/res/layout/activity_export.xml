@@ -14,7 +14,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="50dp"
-        android:hint="Enter Company Name"
+        android:hint="@string/enter_company_name"
         app:boxStrokeColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
 
 
     <Button
-        android:id="@+id/textView2"
+        android:id="@+id/materialDateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
@@ -56,27 +56,40 @@
         app:layout_constraintTop_toBottomOf="@+id/DeviceId" />
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/dateStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="22/02/2022"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        android:textColor="@color/black"
+        android:fontFamily="@font/sofia_medium"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/dateEnd"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
-
+    <TextView
+        android:id="@+id/dateEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="22/02/2022"
+        android:textColor="@color/black"
+        android:fontFamily="@font/sofia_medium"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toEndOf="@+id/dateStart"
+        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
     <Button
         android:id="@+id/exportCSV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Export"
+        android:text="@string/export"
         android:layout_margin="30dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date" />
+        app:layout_constraintTop_toBottomOf="@+id/dateStart" />
 
     <Button
         android:id="@+id/exportUserData"
