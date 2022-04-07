@@ -37,4 +37,5 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="the_battery_is_getting_low_nplease_charge_the_device_with_switch_off">The battery is getting low.\nPlease charge the device with switch off</string>
     <string name="enter_company_name">Enter Company Name</string>
     <string name="export">Export</string>
+    <string name="_7_4">7.4</string>
 </resources>

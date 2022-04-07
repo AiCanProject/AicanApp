@@ -30,6 +30,7 @@ import java.io.IOException;
 public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String FILE_NAME = "user_info.txt";
+    private static final String FILE_NAMEE = "user_calibrate.txt";
 
     DatabaseHelper databaseHelper;
 

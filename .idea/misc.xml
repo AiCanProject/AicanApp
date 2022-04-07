@@ -12,7 +12,7 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_add_device_option.xml" value="0.13" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_authenticate_role_dialog.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_connect_device.xml" value="0.1" />
-        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.25" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_export.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
@@ -123,6 +123,7 @@
         <entry key="..\:/Users/agarw/OneDrive/Desktop/adadad/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.3098958333333333" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/adadad/AicanApp/app/src/main/res/layout/alert_dialog_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/adadad/AicanApp/app/src/main/res/layout/battery_dialog_alert.xml" value="0.33" />
+        <entry key="..\:/Users/agarw/OneDrive/Desktop/adadad/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/dada/AicanApp/app/src/main/res/drawable/ic_users.xml" value="0.2815" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/dada/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.275" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/dada/AicanApp/app/src/main/res/layout/activity_admin_login.xml" value="0.36666666666666664" />
@@ -131,6 +132,7 @@
         <entry key="..\:/Users/agarw/OneDrive/Desktop/dada/AicanApp/app/src/main/res/layout/app_bar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/dada/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/agarw/OneDrive/Desktop/dada/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/debz codes/Internship/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.205859375" />
       </map>
     </option>
   </component>

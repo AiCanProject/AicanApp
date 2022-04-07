@@ -1,5 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -54,6 +56,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -64,6 +67,7 @@ import java.util.Locale;
 public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private static final String FILE_NAME = "user_info.txt";
+    private static final String FILE_NAMEE = "user_calibrate.txt";
 
     int ec;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
@@ -81,7 +85,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     DatabaseHelper databaseHelper;
     ArrayList<BufferData> bufferList = new ArrayList<>();
 
-    String[] lines;
+    String[] lines, liness;
     LinearLayout ll1;
 
     float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
@@ -123,15 +127,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         }
     };
-
-    private void displayCoeffAndPrepareNext(float coeff) {
-        if (currentBuf == buffers.length - 1) {
-            btnNext.setText("Done");
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-            isCalibrating = false;
-        }
-        coef = String.format(Locale.UK, "%.2f", coeff);
-    }
 
     private void setupCoeffListener() {
         if (coeffRef != null) {
@@ -205,7 +200,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 mV1 = mv1.getText().toString();
                 Log.d("test1", mV1);
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV1", mV1);
@@ -225,7 +220,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 mv2.setText(ecForm);
                 mV2 = mv2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV2", mV2);
@@ -246,7 +241,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 mv3.setText(ecForm);
                 mV3 = mv3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV3", mV3);
@@ -266,7 +261,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 mv4.setText(ecForm);
                 mV4 = mv4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV4", mV4);
@@ -286,7 +281,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 mv5.setText(ecForm);
                 mV5 = mv5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV5", mV5);
@@ -411,7 +406,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 dt1.setText(time);
                 tm1 = dt1.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT1", tm1);
@@ -430,7 +425,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 dt2.setText(time);
                 tm2 = dt2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT2", tm2);
@@ -441,6 +436,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -448,7 +444,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 dt3.setText(time);
                 tm3 = dt3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT3", tm3);
@@ -459,6 +455,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -466,7 +463,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 dt4.setText(time);
                 tm4 = dt4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT4", tm4);
@@ -477,6 +474,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -484,7 +482,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 dt5.setText(time);
                 tm5 = dt5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT5", tm5);
@@ -495,53 +493,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
-
-//        Log.d("check1", test1);
-//        Log.d("check2", test2);
-    }
-
-    private void updatePh(float ph) {
-        String newText;
-        if (ph < 0 || ph > 14) {
-            newText = "--";
-        } else {
-            newText = String.format(Locale.UK, "%.2f", ph);
-        }
-        tvPhNext.setText(newText);
-
-        if (getContext() != null) {
-            Animation fadeOut = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out);
-            Animation slideInBottom = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_bottom);
-
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    tvPhCurr.setVisibility(View.INVISIBLE);
-                    TextView t = tvPhCurr;
-                    tvPhCurr = tvPhNext;
-                    tvPhNext = t;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-
-            tvPhCurr.startAnimation(fadeOut);
-            tvPhNext.setVisibility(View.VISIBLE);
-            tvPhNext.startAnimation(slideInBottom);
-        } else {
-            tvPhCurr.setText(newText);
-        }
     }
 
     /**
      * Inflate the layout for this fragment
-     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -557,7 +512,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         btnNext = view.findViewById(R.id.nextBtn);
         phView = view.findViewById(R.id.phView);
@@ -610,8 +564,34 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             Source.userName = res.getString(0);
         }
 
+        FileInputStream fis = null;
+        try {
+            fis = getActivity().openFileInput(FILE_NAMEE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String text;
+
+            while ((text = br.readLine()) != null) {
+                sb.append(text).append("\n");
+            }
+            liness = sb.toString().split("\\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         title.setText("Do not exit/change fragments \nwhile calibrating");
-        lastCalib.setText("Last Calibrated By \n" + Source.userName);
+        if(liness != null){
+            lastCalib.setText("Last Calibrated By \n" + liness[0]);
+        }
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
 
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -628,32 +608,26 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         Source.userTrack= "PhCalibFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
-      /*  btnNext.setOnClickListener(v -> {
-            if (currentBuf >= buffers.length - 1) {
-                onBackPressed();
-                return;
-            }
-            btnNext.setVisibility(View.INVISIBLE);
-            currentBuf += 1;
-
-            calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
-            calibrateBtn.setEnabled(true);
-
-            //phView.moveTo(buffers[currentBuf]);
-            updateBufferValue(buffers[currentBuf]);
-
-            //tvCoefficient.setVisibility(View.INVISIBLE);
-            //tvCoefficientLabel.setVisibility(View.INVISIBLE);
-
-        });
-
-       */
-
-
-
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                FileOutputStream fos = null;
+
+                try {
+                    fos = getContext().openFileOutput(FILE_NAMEE, MODE_PRIVATE);
+                    fos.write(Source.userName.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fos != null) {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
                 FileInputStream fis = null;
                 try {
@@ -681,7 +655,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 calibrate();
             }
         });
-        lastCalib.setText("Last Calibration by " + Source.userName);
+       // lastCalib.setText("Last Calibration by " + Source.userName);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupListeners();
@@ -689,7 +663,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         loadBuffers();
 
         test3 = mv2.getText().toString();
-        Log.d("test3", test3);
     }
 
 
@@ -775,29 +748,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                             Float coeff = dataSnapshot.getValue(Float.class);
                             if (coeff == null) return;
-                            //displayCoeffAndPrepareNext(coeff);
-
-//                                if (currentBuf >= buffers.length - 1) {
-//                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-//                                    return;
-//                                }
                                 currentBuf += 1;
-
-                              //  updateBufferValue(buffers[currentBuf]);
                         });
-
-
                     }
                 };
                 runnable.run();
             }
         };
+
         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
             timer.start();
         });
     }
-
-
 
     ValueEventListener coeffListener = new ValueEventListener() {
         @Override

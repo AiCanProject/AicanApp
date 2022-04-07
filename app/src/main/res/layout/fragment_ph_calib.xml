@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -78,7 +77,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="1dp"
                         android:fontFamily="@font/montserrat_medium"
-                        android:text="7.4"
+                        android:text="@string/_7_4"
                         android:textColor="@color/black"
                         android:textSize="33sp"
                         android:textStyle="bold"
@@ -93,9 +92,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginTop="1dp"
                         android:fontFamily="@font/montserrat_medium"
                         android:text=""
-                        android:layout_marginTop="1dp"
                         android:textColor="@color/black"
                         android:textSize="33sp"
                         android:visibility="invisible"
@@ -237,9 +236,9 @@
                 android:layout_width="127dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:visibility="gone"
                 android:backgroundTint="#9037C7"
-                android:text="Next" />
+                android:text="Next"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/saveBtn"
@@ -275,7 +274,7 @@
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="0dp"
                 android:text="Last Calibrated at: \n 12/03/2022 20:05"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
 
         </LinearLayout>
@@ -296,13 +295,11 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="2dp">
-
 
                     <TextView
                         android:layout_width="43dp"
@@ -320,7 +317,6 @@
                         android:layout_marginStart="5dp"
                         android:background="#DFE6ED" />
 
-
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -337,7 +333,6 @@
                         android:layout_marginStart="5dp"
                         android:background="#DFE6ED" />
 
-
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -349,20 +344,12 @@
 
                 </LinearLayout>
 
-                <!--                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/buffer_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_selector" />
--->
-
                 <LinearLayout
                     android:id="@+id/log3point"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:visibility="visible">
-
 
                     <LinearLayout
                         android:id="@+id/log1"
@@ -396,13 +383,11 @@
                             app:drawableStartCompat="@drawable/ic_edit"
                             app:drawableTint="@color/blueDark" />
 
-
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
-
 
                         <TextView
                             android:id="@+id/mv1"
@@ -419,7 +404,6 @@
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
 
-
                         <TextView
                             android:id="@+id/dt1"
                             android:layout_width="0dp"
@@ -429,9 +413,7 @@
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/log2"
@@ -465,13 +447,11 @@
                             app:drawableStartCompat="@drawable/ic_edit"
                             app:drawableTint="@color/blueDark" />
 
-
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
-
 
                         <TextView
                             android:id="@+id/mv2"
@@ -488,7 +468,6 @@
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
 
-
                         <TextView
                             android:id="@+id/dt2"
                             android:layout_width="0dp"
@@ -498,9 +477,7 @@
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/log3"
@@ -540,7 +517,6 @@
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
 
-
                         <TextView
                             android:id="@+id/mv3"
                             android:layout_width="0dp"
@@ -556,7 +532,6 @@
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
 
-
                         <TextView
                             android:id="@+id/dt3"
                             android:layout_width="0dp"
@@ -566,8 +541,8 @@
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-
                     </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -609,13 +584,11 @@
                             app:drawableStartCompat="@drawable/ic_edit"
                             app:drawableTint="@color/blueDark" />
 
-
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
-
 
                         <TextView
                             android:id="@+id/mv4"
@@ -626,13 +599,11 @@
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
-
 
                         <TextView
                             android:id="@+id/dt4"
@@ -643,9 +614,7 @@
                             android:layout_weight="1"
                             android:textSize="16sp" />
 
-
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/log5"
@@ -679,13 +648,11 @@
                             app:drawableStartCompat="@drawable/ic_edit"
                             app:drawableTint="@color/blueDark" />
 
-
                         <View
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
-
 
                         <TextView
                             android:id="@+id/mv5"
@@ -702,7 +669,6 @@
                             android:layout_gravity="center"
                             android:background="#DFE6ED" />
 
-
                         <TextView
                             android:id="@+id/dt5"
                             android:layout_width="0dp"
@@ -714,7 +680,6 @@
 
                     </LinearLayout>
                 </LinearLayout>
-
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

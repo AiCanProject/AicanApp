@@ -29,7 +29,6 @@ public class AddDeviceOption extends AppCompatActivity {
         cvPh = findViewById(R.id.cvPh);
         cvPump = findViewById(R.id.cvPump);
 
-
         cvTemp.setOnClickListener(v->{
             startQrActivity(TYPE_TEMP);
         });
