@@ -50,7 +50,7 @@
             android:layout_marginStart="18dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/sofia_bold"
-            android:text="Recently Used"
+            android:text="Categories"
             android:textColor="@color/grey_dark"
             android:textSize="16sp" />
 
@@ -61,7 +61,8 @@
             android:layout_below="@+id/recently_used">
             
             <androidx.cardview.widget.CardView
-                android:layout_width="251dp"
+                android:id="@+id/ph_dev"
+                android:layout_width="221dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="24dp"
                 app:cardElevation="10dp"
@@ -71,9 +72,41 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="pH"
-                    android:textSize="40sp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginStart="40dp"
+                    android:textSize="30sp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="22dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Meter"
+                    android:textSize="20sp"
+                    android:layout_marginTop="49dp"
+                    android:layout_marginStart="22dp"
+                    android:fontFamily="@font/sofia_light"
+                    android:textColor="@color/black"/>
+
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/temp_dev"
+                android:layout_width="221dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                android:layout_height="100dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Oil Bath"
+                    android:textSize="30sp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="22dp"
                     android:fontFamily="@font/sofia_bold"
                     android:textColor="@color/black"/>
 
@@ -82,8 +115,72 @@
                     android:layout_height="wrap_content"
                     android:text="controller"
                     android:textSize="20sp"
-                    android:layout_marginTop="70dp"
-                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="49dp"
+                    android:layout_marginStart="22dp"
+                    android:fontFamily="@font/sofia_light"
+                    android:textColor="@color/black"/>
+
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/peristaltic_dev"
+                android:layout_width="221dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                android:layout_height="100dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Peristaltic"
+                    android:textSize="30sp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="22dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pump"
+                    android:textSize="20sp"
+                    android:layout_marginTop="49dp"
+                    android:layout_marginStart="22dp"
+                    android:fontFamily="@font/sofia_light"
+                    android:textColor="@color/black"/>
+
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/indusPh_dev"
+                android:layout_width="221dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp"
+                android:layout_height="100dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Industrial"
+                    android:textSize="30sp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="22dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="pH"
+                    android:textSize="20sp"
+                    android:layout_marginTop="49dp"
+                    android:layout_marginStart="22dp"
                     android:fontFamily="@font/sofia_light"
                     android:textColor="@color/black"/>
 
@@ -121,25 +218,10 @@
                         android:paddingTop="3dp"
                         android:paddingEnd="20dp"
                         android:paddingBottom="5dp"
-                        android:text="Active Device"
+                        android:text="Connected Device"
                         android:textColor="@color/white"
                         android:textSize="19sp" />
 
-                    <TextView
-                        android:id="@+id/all_device"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/device_button"
-                        android:fontFamily="@font/sofia_bold"
-                        android:paddingStart="40dp"
-                        android:paddingTop="3dp"
-                        android:paddingEnd="20dp"
-                        android:paddingBottom="5dp"
-                        android:text="All Device"
-                        android:textColor="@color/lightWhite"
-                        android:textSize="19sp" />
                 </LinearLayout>
 
                 <LinearLayout

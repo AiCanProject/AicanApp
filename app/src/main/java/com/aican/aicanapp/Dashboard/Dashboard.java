@@ -2,6 +2,7 @@ package com.aican.aicanapp.Dashboard;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,6 +63,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
 
+    CardView phDev, tempDev, IndusDev, peristalticDev;
+
+
     DatabaseReference primaryDatabase;
     String mUid;
     Button setting, export;
@@ -103,15 +108,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         Source.role_fetched = new ArrayList<>();
         Source.name_fetched = new ArrayList<>();
 
+        phDev = findViewById(R.id.ph_dev);
+        IndusDev = findViewById(R.id.indusPh_dev);
+        peristalticDev = findViewById(R.id.peristaltic_dev);
+        tempDev = findViewById(R.id.temp_dev);
+
+
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
         coolingRecyclerView = findViewById(R.id.cooling_recyclerview);
         phRecyclerView = findViewById(R.id.ph_recyclerview);
         pumpRecyclerView = findViewById(R.id.pump_recyclerview);
-//        tvTemp = findViewById(R.id.tvTemp);
-  //      tvCooling = findViewById(R.id.tvCooling);
-    //    tvPh = findViewById(R.id.tvPh);
-      //  tvPump = findViewById(R.id.tvPump);
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
@@ -126,6 +133,92 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceTypes = new HashMap<>();
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
+
+
+        phDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (phDevices.size() != 0) {
+                    phRecyclerView.setVisibility(View.VISIBLE);
+                }else {
+                    phRecyclerView.setVisibility(View.GONE);
+                }
+                tempRecyclerView.setVisibility(View.GONE);
+                coolingRecyclerView.setVisibility(View.GONE);
+                pumpRecyclerView.setVisibility(View.GONE);
+
+                phDev.setCardBackgroundColor(Color.GRAY);
+                tempDev.setCardBackgroundColor(Color.WHITE);
+                peristalticDev.setCardBackgroundColor(Color.WHITE);
+                IndusDev.setCardBackgroundColor(Color.WHITE);
+            }
+        });
+
+        tempDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tempDevices.size() != 0) {
+                    tempRecyclerView.setVisibility(View.VISIBLE);
+                }else {
+                    tempRecyclerView.setVisibility(View.GONE);
+                }
+                phRecyclerView.setVisibility(View.GONE);
+                coolingRecyclerView.setVisibility(View.GONE);
+                pumpRecyclerView.setVisibility(View.GONE);
+
+
+                tempDev.setCardBackgroundColor(Color.GRAY);
+                phDev.setCardBackgroundColor(Color.WHITE);
+                peristalticDev.setCardBackgroundColor(Color.WHITE);
+                IndusDev.setCardBackgroundColor(Color.WHITE);
+
+
+            }
+        });
+
+        peristalticDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pumpDevices.size() != 0) {
+                    pumpRecyclerView.setVisibility(View.VISIBLE);
+                }else {
+                    pumpRecyclerView.setVisibility(View.GONE);
+                }
+                tempRecyclerView.setVisibility(View.GONE);
+                coolingRecyclerView.setVisibility(View.GONE);
+                phRecyclerView.setVisibility(View.GONE);
+
+
+                peristalticDev.setCardBackgroundColor(Color.GRAY);
+                tempDev.setCardBackgroundColor(Color.WHITE);
+                phDev.setCardBackgroundColor(Color.WHITE);
+                IndusDev.setCardBackgroundColor(Color.WHITE);
+
+            }
+        });
+
+        IndusDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (coolingDevices.size() != 0) {
+                    coolingRecyclerView.setVisibility(View.VISIBLE);
+                }else {
+                    coolingRecyclerView.setVisibility(View.GONE);
+                }
+                phRecyclerView.setVisibility(View.GONE);
+                tempRecyclerView.setVisibility(View.GONE);
+                pumpRecyclerView.setVisibility(View.GONE);
+
+
+
+                IndusDev.setCardBackgroundColor(Color.GRAY);
+                tempDev.setCardBackgroundColor(Color.WHITE);
+                peristalticDev.setCardBackgroundColor(Color.WHITE);
+                phDev.setCardBackgroundColor(Color.WHITE);
+
+            }
+        });
+
 
         //tvName.setText();
         addNewDevice.setOnClickListener(new View.OnClickListener() {

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ph_Cardview"
     android:layout_width="220dp"
-    android:layout_height="230dp"
+    android:layout_height="250dp"
     android:layout_margin="10dp"
     app:cardCornerRadius="24dp"
     app:cardElevation="10dp">
@@ -43,7 +43,7 @@
             android:paddingHorizontal="30dp"
             android:paddingTop="10dp"
             android:layout_marginTop="8dp"
-            android:text="pH Controller"
+            android:text="pH Meter"
             android:textColor="@color/grey_dark"
             android:textSize="14sp" />
 
@@ -113,8 +113,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="mV: 10.00"
                 android:fontFamily="@font/sofia_light"
+                android:text="mV: 10.00"
                 android:textColor="@color/grey_dark"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -126,8 +126,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="12dp"
                 android:layout_marginTop="2dp"
-                android:text="Temp: 10"
                 android:fontFamily="@font/sofia_light"
+                android:text="Temp: 10"
                 android:textColor="@color/grey_dark"
                 android:textSize="17sp"
                 android:textStyle="bold" />
