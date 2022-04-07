@@ -82,7 +82,6 @@ public class SetTempFragment extends Fragment {
     private boolean isLogging = false;
     private boolean light = false;
 
-
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override

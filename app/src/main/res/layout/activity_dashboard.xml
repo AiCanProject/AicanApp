@@ -328,6 +328,7 @@
 
             </LinearLayout>
         </ScrollView>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_new_device"
             android:layout_width="wrap_content"
@@ -336,8 +337,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="#9037C7"
             android:background="@drawable/gradient_color"
+            android:backgroundTint="#9037C7"
             android:clickable="true"
             app:srcCompat="@drawable/plus_ic" />
 

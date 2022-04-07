@@ -38,4 +38,17 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="enter_company_name">Enter Company Name</string>
     <string name="export">Export</string>
     <string name="_7_4">7.4</string>
+    <string name="set_temperature">Set Temperature</string>
+    <string name="current_temperature">Current Temperature</string>
+    <string name="temperature">Temperature</string>
+    <string name="set">Set</string>
+    <string name="start">Start</string>
+    <string name="device_status">Device Status</string>
+    <string name="end_time">End Time</string>
+    <string name="start_time">Start Time</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="mode">Mode</string>
+    <string name="temperature_1">Temperature 1</string>
+    <string name="temperature_2">Temperature 2</string>
 </resources>
