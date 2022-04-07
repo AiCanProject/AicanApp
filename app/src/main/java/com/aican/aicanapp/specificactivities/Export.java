@@ -48,12 +48,12 @@ import java.util.Date;
 public class Export extends AppCompatActivity {
 
 
-//    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
+    //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button mDateBtn, exportUserData, exportCSV;
     TextView tvStartDate, tvEndDate;
     TextView deviceId;
     String user, roleExport;
-    String startDateString,endDateString;
+    String startDateString, endDateString, startDate, endDate;
     String offset, battery, slope, temp;
     String companyName;
     String nullEntry;
@@ -158,8 +158,8 @@ public class Export extends AppCompatActivity {
             datePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>) selection -> {
                 Long startDate = selection.first;
                 Long endDate = selection.second;
-                startDateString = DateFormat.format("yyyy.MM.dd", new Date(startDate)).toString();
-                endDateString = DateFormat.format("yyyy.MM.dd", new Date(endDate)).toString();
+                startDateString = DateFormat.format("yyyy-MM-dd", new Date(startDate)).toString();
+                endDateString = DateFormat.format("yyyy-MM-dd", new Date(endDate)).toString();
                 String date = "Start: " + startDateString + " End: " + endDateString;
                 Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
                 tvStartDate.setText(startDateString);
@@ -172,7 +172,6 @@ public class Export extends AppCompatActivity {
         } else {
             requestPermission();
         }
-
 
 
     }
@@ -191,7 +190,7 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-            String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
+            String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
             file = new File(exportDir, "SensorData" + fileName + ".csv");
             file.createNewFile();
@@ -209,10 +208,12 @@ public class Export extends AppCompatActivity {
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
             roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
 
+            Log.d("debzdate", startDateString + "," + endDateString);
+
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(time) BETWEEN '"+ startDateString +"' AND '"+ endDateString +"'", null);
 
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -257,7 +258,7 @@ public class Export extends AppCompatActivity {
         }
     }
 
-    public void exportUserData(){
+    public void exportUserData() {
         //We use the Download directory for saving our .csv file.
         File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         if (!exportDir.exists()) {
@@ -275,7 +276,6 @@ public class Export extends AppCompatActivity {
             printWriter = new PrintWriter(new FileWriter(file), true);
 
 
-
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
@@ -284,15 +284,15 @@ public class Export extends AppCompatActivity {
             Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
 
 
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(offset + "," + battery + "," + slope + "," + temp);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
-            printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("TIME,ACTIVITY,pH,TEMPERATURE,mV");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
             while (userCSV.moveToNext()) {
@@ -302,7 +302,7 @@ public class Export extends AppCompatActivity {
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
 
-                String record2 = Time + "," + Activity + "," + Ph+ "," + Temp+ "," + Mv;
+                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
 
                 printWriter.println(record2);
             }

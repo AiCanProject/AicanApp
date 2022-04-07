@@ -216,7 +216,7 @@ public class phLogFragment extends Fragment {
          */
         logBtn.setOnClickListener(v -> {
 
-            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             fetch_logs();
 
             if (ph == null || temp == null || mv == null) {
