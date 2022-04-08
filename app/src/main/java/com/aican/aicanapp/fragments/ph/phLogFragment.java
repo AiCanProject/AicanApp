@@ -196,8 +196,6 @@ public class phLogFragment extends Fragment {
                 roleE.putString("roleSuper", roleSuper);
                 roleE.commit();
 
-                Log.d("debz", roleSuper);
-
                 deleteAll();
 
                 databaseHelper.insertCalibData(ph1, mv1, dt1);
@@ -233,7 +231,6 @@ public class phLogFragment extends Fragment {
 
     /**
      * Passing on the data to LogAdapter
-     *
      * @return
      */
     private List<phData> getList() {
@@ -288,6 +285,9 @@ public class phLogFragment extends Fragment {
         lineChart.setTouchEnabled(true);
     }
 
+    /**
+     * Fetching the values from firebase
+     */
     private void fetch_logs() {
         deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
@@ -339,7 +339,6 @@ public class phLogFragment extends Fragment {
 
     /**
      * Fetching log entries from SQL Database
-     *
      * @return
      */
     private ArrayList<phData> getSQLList() {
@@ -348,13 +347,12 @@ public class phLogFragment extends Fragment {
             Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
         }
         while (res.moveToNext()) {
-            time = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
             currentTime_fetched = res.getString(0);
-            String[] date = currentTime_fetched.split("\\s+");
             ph_fetched = res.getString(1);
             m_fetched = res.getString(2);
             compound_name_fetched = res.getString(3);
-            if (time.equals(date[0])) {
+            if (time.equals(currentTime_fetched)) {
                 phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
             }
         }
@@ -363,7 +361,6 @@ public class phLogFragment extends Fragment {
 
     /**
      * checking of permissions.
-     *
      * @return
      */
     private boolean checkPermission() {
