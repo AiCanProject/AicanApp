@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aican.aicanapp.Source;
@@ -39,6 +40,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 
+import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
@@ -63,6 +65,8 @@ import java.util.Locale;
 
 public class phLogFragment extends Fragment {
 
+    PhView phView;
+    TextView tvPhCurr, tvPhNext;
     String ph, temp, mv, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     LineChart lineChart;
@@ -99,6 +103,10 @@ public class phLogFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        phView = view.findViewById(R.id.phView);
+        tvPhCurr = view.findViewById(R.id.tvPhCurr);
+        tvPhNext = view.findViewById(R.id.tvPhNext);
 
         lineChart = view.findViewById(R.id.graph);
         logBtn = view.findViewById(R.id.logBtn);
@@ -294,6 +302,8 @@ public class phLogFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float p = snapshot.getValue(Float.class);
                 ph = String.format(Locale.UK, "%.2f", p);
+
+                tvPhCurr.setText(ph);
             }
 
             @Override

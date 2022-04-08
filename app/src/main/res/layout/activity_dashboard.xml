@@ -210,8 +210,8 @@
                         android:id="@+id/active_device"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
                         android:background="@drawable/device_button"
                         android:fontFamily="@font/sofia_bold"
                         android:paddingStart="40dp"
@@ -236,6 +236,20 @@
                     android:orientation="horizontal"
                     android:weightSum="4">
 
+
+                    <!--
+                <TextView
+                    android:id="@+id/tvTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="10dp"
+                    android:text="Oil Bath Controllers"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black_force"
+                    android:textSize="16sp"
+                    android:visibility="gone" /> -->
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/temp_recyclerview"
                         android:layout_width="match_parent"
@@ -243,6 +257,20 @@
                         android:layout_weight="1"
                         android:paddingTop="5dp"
                         android:visibility="gone" />
+
+
+                    <!--
+                <TextView
+                    android:id="@+id/tvCooling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="10dp"
+                    android:text="Laboratory Chiller"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black_force"
+                    android:textSize="16sp"
+                    android:visibility="gone" /> -->
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/cooling_recyclerview"
@@ -252,6 +280,20 @@
                         android:paddingTop="5dp"
                         android:visibility="gone" />
 
+                    <!--
+                <TextView
+                    android:id="@+id/tvPh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="10dp"
+                    android:text="pH Meter"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black_force"
+                    android:textSize="16sp"
+                    android:visibility="gone" />  -->
+
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/ph_recyclerview"
                         android:layout_width="match_parent"
@@ -259,6 +301,20 @@
                         android:layout_weight="1"
                         android:paddingTop="5dp"
                         android:visibility="gone" />
+
+
+                    <!--
+                <TextView
+                    android:id="@+id/tvPump"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingTop="10dp"
+                    android:text="Peristaltic Pump"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black_force"
+                    android:textSize="16sp"
+                    android:visibility="gone" />  -->
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/pump_recyclerview"
@@ -271,7 +327,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
         </ScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -287,6 +342,7 @@
             android:clickable="true"
             app:srcCompat="@drawable/plus_ic" />
 
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -295,7 +351,6 @@
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:visibility="gone"
         tools:layout_gravity="">
 
         <LinearLayout
@@ -315,21 +370,21 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/profile_pic_placeholder"
-                    android:padding="5dp"/>
+                    android:padding="5dp"
+                    android:src="@drawable/profile_pic_placeholder" />
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="UserName"
-                    android:padding="3dp"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:layout_marginStart="4dp"
                     android:layout_below="@id/iv"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/white"/>
+                    android:padding="3dp"
+                    android:text="UserName"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/ivLogout"
@@ -349,14 +404,27 @@
                 android:id="@+id/tvConnectDevice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="16dp"
                 android:text="Setup Device"
                 android:textColor="@color/black"
-                android:paddingVertical="16dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingHorizontal="22dp"
-                android:textSize="18sp"/>
+                android:paddingVertical="16dp"
+                android:text="Instruction Manual"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
 
         </LinearLayout>
 
+
     </RelativeLayout>
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

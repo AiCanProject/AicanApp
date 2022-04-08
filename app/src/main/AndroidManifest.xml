@@ -26,9 +26,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".Dashboard.AdminLoginActivity"
+            android:name=".specificactivities.InstructionActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
+        <activity
+            android:name=".Dashboard.AdminLoginActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".userdatabase.UserDatabase"
             android:exported="true"
