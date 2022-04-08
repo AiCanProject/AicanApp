@@ -151,7 +151,6 @@ public class phLogFragment extends Fragment {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Log.d("685645", Source.userName);
         Source.userTrack = "PhLogFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 

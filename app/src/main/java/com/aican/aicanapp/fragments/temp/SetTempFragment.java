@@ -60,7 +60,6 @@ import kotlin.jvm.functions.Function1;
 
 public class SetTempFragment extends Fragment {
 
-
     DatabaseReference deviceRef = null;
     ProgressLabelView currTemp;
     ProgressLabelView tempTextView;
@@ -327,7 +326,6 @@ public class SetTempFragment extends Fragment {
         lds.setLineWidth(2);
         lds.setCircleRadius(4);
         lds.setValueTextSize(10);
-
 
         ArrayList<ILineDataSet> ds = new ArrayList<>();
         ds.add(lds);

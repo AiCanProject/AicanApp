@@ -5,8 +5,6 @@
     <string name="room_transition">room_transition</string>
     <string name="room_name_transition">room_name_transition</string>
     <string name="advanced_controls_transition">advanced_controls_transition</string>
-
-
     <string name="return_temperature">Return temperature</string>
     <string name="current_humidity">Current humidity</string>
     <string name="warning_message"><![CDATA[<font color=#F9DA0A>•</font> - extreme humidity levels.

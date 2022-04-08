@@ -210,8 +210,8 @@
                         android:id="@+id/active_device"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
                         android:background="@drawable/device_button"
                         android:fontFamily="@font/sofia_bold"
                         android:paddingStart="40dp"
@@ -236,20 +236,6 @@
                     android:orientation="horizontal"
                     android:weightSum="4">
 
-
-                    <!--
-                <TextView
-                    android:id="@+id/tvTemp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Oil Bath Controllers"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black_force"
-                    android:textSize="16sp"
-                    android:visibility="gone" /> -->
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/temp_recyclerview"
                         android:layout_width="match_parent"
@@ -257,20 +243,6 @@
                         android:layout_weight="1"
                         android:paddingTop="5dp"
                         android:visibility="gone" />
-
-
-                    <!--
-                <TextView
-                    android:id="@+id/tvCooling"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Laboratory Chiller"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black_force"
-                    android:textSize="16sp"
-                    android:visibility="gone" /> -->
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/cooling_recyclerview"
@@ -280,20 +252,6 @@
                         android:paddingTop="5dp"
                         android:visibility="gone" />
 
-                    <!--
-                <TextView
-                    android:id="@+id/tvPh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:paddingTop="10dp"
-                    android:text="pH Meter"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black_force"
-                    android:textSize="16sp"
-                    android:visibility="gone" />  -->
-
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/ph_recyclerview"
                         android:layout_width="match_parent"
@@ -301,20 +259,6 @@
                         android:layout_weight="1"
                         android:paddingTop="5dp"
                         android:visibility="gone" />
-
-
-                    <!--
-                <TextView
-                    android:id="@+id/tvPump"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Peristaltic Pump"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black_force"
-                    android:textSize="16sp"
-                    android:visibility="gone" />  -->
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/pump_recyclerview"
@@ -327,6 +271,7 @@
                 </LinearLayout>
 
             </LinearLayout>
+
         </ScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -341,7 +286,6 @@
             android:backgroundTint="#9037C7"
             android:clickable="true"
             app:srcCompat="@drawable/plus_ic" />
-
 
     </RelativeLayout>
 
@@ -413,8 +357,6 @@
 
         </LinearLayout>
 
-
     </RelativeLayout>
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
