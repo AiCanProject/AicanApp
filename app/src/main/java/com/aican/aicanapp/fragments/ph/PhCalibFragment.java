@@ -191,7 +191,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_1").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
@@ -212,7 +212,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_2").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
@@ -233,7 +233,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         });
 
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_3").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_3").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
@@ -253,7 +253,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_4").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_4").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
@@ -273,7 +273,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("VAL_5").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_5").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ec = snapshot.getValue(Float.class);
