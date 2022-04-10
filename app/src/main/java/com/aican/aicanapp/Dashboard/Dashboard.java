@@ -1,9 +1,15 @@
 package com.aican.aicanapp.Dashboard;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -136,9 +143,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceNames = new HashMap<>();
 
 
+        showNetworkDialog();
+
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showNetworkDialog();
                 Intent intent = new Intent(Dashboard.this, InstructionActivity.class);
                 startActivity(intent);
             }
@@ -146,6 +156,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -165,6 +176,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showNetworkDialog();
                 if (tempDevices.size() != 0) {
                     tempRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -187,6 +199,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         peristalticDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showNetworkDialog();
                 if (pumpDevices.size() != 0) {
                     pumpRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -208,6 +221,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         IndusDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showNetworkDialog();
                 if (coolingDevices.size() != 0) {
                     coolingRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -232,6 +246,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showNetworkDialog();
                 Intent toAddDevice = new Intent(Dashboard.this, AddDeviceOption.class);
                 startActivity(toAddDevice);
             }
@@ -265,6 +280,27 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpCooling();
         setUpPh();
         setUpPump();
+    }
+
+    private void showNetworkDialog(){
+        if(!isNetworkAvailable()==true)
+        {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Internet Connection Alert")
+                    .setMessage("Please Check Your Internet Connection")
+                    .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).show();
+        }
+        else if(isNetworkAvailable()==true)
+        {
+            Toast.makeText(Dashboard.this,
+                    "Welcome", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void getList() {
@@ -541,6 +577,35 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public void onBackPressed() {
         finishAffinity();
     }
+
+    public boolean isNetworkAvailable() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+
+                        return true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+
+                        return true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+
+    }
+
 
     @Override
     public void onOptionsIconClicked(View view, String deviceId) {
