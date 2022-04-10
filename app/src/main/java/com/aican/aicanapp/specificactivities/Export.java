@@ -128,7 +128,7 @@ public class Export extends AppCompatActivity {
                 }
 
                 noFilesText.setVisibility(View.INVISIBLE);
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFolders);
+                fAdapter = new FileAdapter(Export.this, filesAndFolders);
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -190,9 +190,9 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-            String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+//            String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-            file = new File(exportDir, "SensorData" + fileName + ".csv");
+            file = new File(exportDir, "SensorData.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 

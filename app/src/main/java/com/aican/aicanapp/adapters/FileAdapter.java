@@ -3,6 +3,8 @@ package com.aican.aicanapp.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,9 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aican.aicanapp.BuildConfig;
 import com.aican.aicanapp.FileOpen;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.specificactivities.Export;
@@ -30,7 +34,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
     File[] files;
     //ImageView imageView;
 
-    public FileAdapter(Context context, File[] files){
+    public FileAdapter(Context context, File[] files) {
         this.context = context;
         this.files = files;
     }
@@ -38,7 +42,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
     @NonNull
     @Override
     public FileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.file_item,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.file_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -61,7 +65,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                }
+            }
         });
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -70,6 +74,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
                 PopupMenu popupMenu = new PopupMenu(context, v);
                 popupMenu.getMenu().add("DELETE");
+                popupMenu.getMenu().add("SHARE");
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -81,6 +86,39 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                                 v.setVisibility(View.GONE);
                             }
                         }
+                        if (item.getTitle().equals("SHARE")) {
+
+                            String file = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+
+                             Uri csvUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(file));
+
+                            Log.d("urifile", file);
+
+                            Intent intentShare = new Intent();
+
+                            intentShare.setAction(Intent.ACTION_SEND);
+                            intentShare.setType("plain/text");
+                            intentShare.putExtra(Intent.EXTRA_STREAM, csvUri);
+                            intentShare.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            intentShare.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                            Intent chooserIntent = Intent.createChooser(intentShare, "Sharing CSV");
+                            chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.getApplicationContext().startActivity(chooserIntent);
+
+
+
+
+//                            intentShare.setAction(Intent.ACTION_SEND);
+//                            intentShare.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                            intentShare.putExtra(Intent.EXTRA_STREAM, Uri.parse(file));
+//                            intentShare.setType("text/csv");
+//
+
+                        }
+
                         return true;
                     }
                 });
@@ -99,6 +137,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         ImageView imageView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.file_name_text_view);

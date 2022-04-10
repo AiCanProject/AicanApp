@@ -20,7 +20,7 @@ public class FileOpen {
             // Excel file
             intent.setDataAndType(uri, "application/vnd.ms-excel");
         }  else if (url.toString().contains(".csv")){
-            intent.setDataAndType(uri,"*/*");
+            intent.setDataAndType(uri,"text/csv");
         }
         else {
             intent.setDataAndType(uri, "*/*");
