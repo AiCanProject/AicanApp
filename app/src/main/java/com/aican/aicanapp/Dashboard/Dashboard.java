@@ -142,8 +142,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
 
-
         showNetworkDialog();
+
+        phRecyclerView.setVisibility(View.VISIBLE);
+        phDev.setCardBackgroundColor(Color.GRAY);
+        tempRecyclerView.setVisibility(View.GONE);
+        coolingRecyclerView.setVisibility(View.GONE);
+        pumpRecyclerView.setVisibility(View.GONE);
 
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +182,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             @Override
             public void onClick(View v) {
                 showNetworkDialog();
+
+
                 if (tempDevices.size() != 0) {
                     tempRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -227,6 +234,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 }else {
                     coolingRecyclerView.setVisibility(View.GONE);
                 }
+
                 phRecyclerView.setVisibility(View.GONE);
                 tempRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
@@ -342,6 +350,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     @Override
     protected void onStart() {
+
+        if (phDevices.size() != 0) {
+            phRecyclerView.setVisibility(View.VISIBLE);
+            phDev.setCardBackgroundColor(Color.GRAY);
+        }else {
+            phRecyclerView.setVisibility(View.GONE);
+        }
+        tempRecyclerView.setVisibility(View.GONE);
+        coolingRecyclerView.setVisibility(View.GONE);
+        pumpRecyclerView.setVisibility(View.GONE);
+
         getList();
         super.onStart();
     }
