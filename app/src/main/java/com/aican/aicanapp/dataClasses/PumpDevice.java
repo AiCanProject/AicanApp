@@ -3,11 +3,12 @@ package com.aican.aicanapp.dataClasses;
 public class PumpDevice {
     String id;
     String name;
-    int mode;
-    int speed;
-    int dir;
+    Integer mode;
+    Integer speed;
+    Integer dir;
     Integer vol;
-    int status;
+    Integer status;
+
 
     public int getVol() {
         return vol;
@@ -17,7 +18,7 @@ public class PumpDevice {
         this.vol = vol;
     }
 
-    public PumpDevice(String id, String name, int mode, int speed, int dir, Integer vol, int status) {
+    public PumpDevice(String id, String name, int mode, int speed, int dir, int vol, int status) {
         this.id = id;
         this.name = name;
         this.mode = mode;
@@ -27,6 +28,18 @@ public class PumpDevice {
         this.status = status;
     }
 
+    public PumpDevice(String id, String name, int speed, int direction, int volume) {
+        this.id = id;
+        this.name = name;
+        this.speed =speed;
+        this.dir = direction;
+        this.vol = volume;
+    }
+
+    public PumpDevice(String id, String name) {
+        this.id = id;
+        this.name = name;
+         }
     public String getId() {
         return id;
     }

@@ -31,6 +31,7 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+import com.aican.aicanapp.specificactivities.PumpActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -277,6 +278,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         for (String id : deviceIds) {
             FirebaseApp app = FirebaseApp.getInstance(id);
             Log.e(TAG, "getDevices: "+id +", "+deviceTypes.get(id));
+
+
             FirebaseDatabase.getInstance(app).getReference().child(deviceTypes.get(id)).child(id).get()
                     .addOnSuccessListener(dataSnapshot -> {
                 devicesLoaded.incrementAndGet();
@@ -284,7 +287,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 DataSnapshot ui = dataSnapshot.child("UI");
                 String name = dataSnapshot.child("NAME").getValue(String.class);
                 deviceNames.put(id, name);
-//                Log.e(TAG, "getDevices: "+id+", "+deviceTypes.get(id) );
+                Log.e(TAG, "getDevices: "+id+", "+deviceTypes.get(id) );
+                Log.e(TAG, "value: "+id+", "+deviceTypes.get(id) + ui.child("Mode").getValue() );
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
                         PhDevice device = new PhDevice(
@@ -300,30 +304,47 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         break;
                     }
                     case "P_PUMP": {
-                        int mode = ui.child("MODE").child("MODE_VAL").getValue(Integer.class);
-                        int status = ui.child("STATUS").getValue(Integer.class);
-                        if (mode == 0) {
-                            pumpDevices.add(new PumpDevice(
-                                    id,
-                                    name,
-                                    mode,
-                                    ui.child("MODE").child("DOSE").child("SPEED").getValue(Integer.class),
-                                    ui.child("MODE").child("DOSE").child("DIR").getValue(Integer.class),
-                                    ui.child("MODE").child("DOSE").child("VOL").getValue(Integer.class),
-                                    status
+                        Integer mode = ui.child("Mode").getValue(Integer.class);
+                        Integer status = ui.child("Start").getValue(Integer.class);
+//                        if (mode == 0) {
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name,
+//                                    mode,
+//                                    ui.child("SPEED").getValue(Integer.class),
+//                                    ui.child("DIRECTION").getValue(Integer.class),
+//                                    ui.child("VOLUME").getValue(Integer.class),
+//                                    status
+//
+//                            ));
+//                        } else {
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name,
+//                                    mode,
+//                                    ui.child("SPEED").getValue(Integer.class),
+//                                    ui.child("DIRECTION").getValue(Integer.class),
+//                                    0,
+//                                    status
+//                            ));
+//                        }
 
-                            ));
-                        } else {
-                            pumpDevices.add(new PumpDevice(
-                                    id,
-                                    name,
-                                    mode,
-                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
-                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
-                                    null,
-                                    status
-                            ));
-                        }
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name
+//                            ));
+
+                        pumpDevices.add(new PumpDevice(
+                                id,
+                                name,
+                                mode,
+                                ui.child("Speed").getValue(Integer.class),
+                                ui.child("Direction").getValue(Integer.class),
+                                ui.child("Volume").getValue(Integer.class),
+                                status
+
+                        ));
+
 
                         break;
                     }

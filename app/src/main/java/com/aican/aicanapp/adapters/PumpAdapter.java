@@ -8,15 +8,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.specificactivities.PumpActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -105,7 +108,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 onOffSwitch.setChecked(false);
             }
 
-            tvName.setText(device.getName());
+            tvName.setText(device.getName()+ " "+ device.getId());
             tvMode.setText(mode);
             tvSpeed.setText(speed);
             tvDir.setText(dir);
@@ -119,20 +122,20 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
 
-            setFirebaseListeners(device);
+             setFirebaseListeners(device);
         }
 
         private void setFirebaseListeners(PumpDevice device) {
             DatabaseReference uiRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_PUMP).child(device.getId())
                     .child("UI");
 
-            uiRef.child("MODE").addValueEventListener(new ValueEventListener() {
+            uiRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    device.setMode(snapshot.child("MODE_VAL").getValue(Integer.class));
-                    device.setDir(snapshot.child("DOSE").child("DIR").getValue(Integer.class));
-                    device.setSpeed(snapshot.child("DOSE").child("SPEED").getValue(Integer.class));
-                    device.setVol(snapshot.child("DOSE").child("VOL").getValue(Integer.class));
+                    device.setMode(snapshot.child("Mode").getValue(Integer.class));
+                    device.setDir(snapshot.child("Direction").getValue(Integer.class));
+                    device.setSpeed(snapshot.child("Speed").getValue(Integer.class));
+                    device.setVol(snapshot.child("Volume").getValue(Integer.class));
                     notifyItemChanged(getAdapterPosition());
                 }
 
@@ -141,7 +144,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
 
                 }
             });
-            uiRef.child("STATUS").addValueEventListener(new ValueEventListener() {
+            uiRef.child("Start").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     device.setStatus(snapshot.getValue(Integer.class));
@@ -154,6 +157,73 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 }
             });
         }
+
+
+
+//        private void setFirebaseListeners(PumpDevice device) {
+//
+//            DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_PUMP).child(device.getId()).child("UI");
+//
+//            dataRef.addChildEventListener(new ChildEventListener() {
+//                @Override
+//                public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+//
+//                }
+//
+//                @Override
+//                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+//                    if (snapshot.getKey() == null || snapshot.getValue() == null) return;
+//                    switch (snapshot.getKey()) {
+//                        case "Mode": {
+//                           Integer mode = snapshot.getValue(Integer.class);
+//                            if (mode == null) return;
+//                            device.setMode(mode);
+//                            break;
+//                        }
+//                        case "Direction": {
+//                            Integer dir = snapshot.getValue(Integer.class);
+//                            if (dir == null) return;
+//                            device.setDir(dir);
+//                            break;
+//                        }
+//                        case "Speed": {
+//                            Integer speed = snapshot.getValue(Integer.class);
+//                            if (speed == null) return;
+//                            device.setSpeed(speed);
+//                            break;
+//                        }
+//                        case "Volume": {
+//                            Integer vol = snapshot.getValue(Integer.class);
+//                            if (vol == null) return;
+//                            device.setVol(vol);
+//                            break;
+//                        }
+//                        case "Start": {
+//                            Integer start = snapshot.getValue(Integer.class);
+//                            if (start == null) return;
+//                            device.setStatus(start);
+//                            break;
+//                        }
+//                    }
+//                    notifyItemChanged(getAdapterPosition());
+//                }
+//
+//                @Override
+//                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+//
+//                }
+//
+//                @Override
+//                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//
+//                }
+//            });
+//        }
 
         //Viewholder-----------------------------------------------------------------------------------------
     }

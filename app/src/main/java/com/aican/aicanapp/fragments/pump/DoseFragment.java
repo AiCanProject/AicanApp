@@ -93,7 +93,7 @@ public class DoseFragment extends Fragment {
             isStarted = true;
             showProgressBarLayout();
             startProgressBar();
-            deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_DOSE);
+            deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE);
         });
 
         btnStop.setOnClickListener(v -> {
@@ -185,7 +185,7 @@ public class DoseFragment extends Fragment {
             @Override
             public void onFinish() {
                 progressBar.setProgress(100);
-                deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_DOSE_COMPLETED);
+                deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE_COMPLETED);
             }
         };
         timer.start();
@@ -196,12 +196,12 @@ public class DoseFragment extends Fragment {
             timer.cancel();
         }
         progressBar.setProgress(0);
-        deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_OFF);
+        deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_OFF);
 
     }
 
     private void checkModeAndSetListeners() {
-        deviceRef.child("UI").child("MODE").child("MODE_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("Mode").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Integer mode = snapshot.getValue(Integer.class);
@@ -228,28 +228,28 @@ public class DoseFragment extends Fragment {
 
     private void setupListeners() {
 
-        deviceRef.child("UI").child("MODE").child("DOSE").child("DIR").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Direction").get().addOnSuccessListener(snapshot -> {
             Integer dir = snapshot.getValue(Integer.class);
             if (dir == null) return;
 
             switchDir.setChecked(dir == 0);
         });
 
-        deviceRef.child("UI").child("MODE").child("DOSE").child("SPEED").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
             Integer speed = snapshot.getValue(Integer.class);
             if (speed == null) return;
 
             speedController.setProgress(speed);
         });
 
-        deviceRef.child("UI").child("MODE").child("DOSE").child("VOL").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Volume").get().addOnSuccessListener(snapshot -> {
             Integer vol = snapshot.getValue(Integer.class);
             if (vol == null) return;
 
             volController.setProgress(vol);
         });
 
-        deviceRef.child("UI").child("STATUS").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Start").get().addOnSuccessListener(snapshot -> {
             Integer status = snapshot.getValue(Integer.class);
             if (status == null) return;
 
@@ -261,15 +261,15 @@ public class DoseFragment extends Fragment {
         });
 
         speedController.setOnProgressChangeListener(progress -> {
-            deviceRef.child("UI").child("MODE").child("DOSE").child("SPEED").setValue(progress);
+            deviceRef.child("UI").child("Speed").setValue(progress);
         });
 
         volController.setOnProgressChangeListener(progress -> {
-            deviceRef.child("UI").child("MODE").child("DOSE").child("VOL").setValue(progress);
+            deviceRef.child("UI").child("Volume").setValue(progress);
         });
 
         switchDir.setOnCheckedChangeListener((v, isChecked) -> {
-            deviceRef.child("UI").child("MODE").child("DOSE").child("DIR").setValue(isChecked ? 0 : 1);
+            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
         });
     }
 
