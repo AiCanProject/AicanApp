@@ -83,7 +83,7 @@ public class DoseFragment extends Fragment {
         volController.setProgress((int) 0.0);
         speedController.setProgress((int) 0.0);
 
-        speedController.setMaxRange((int) 150.0);
+        speedController.setMaxRange((int) 60.0);
 
         calibrateBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), PumpCalibrateActivity.class);
