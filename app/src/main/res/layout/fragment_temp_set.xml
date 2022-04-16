@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -128,4 +128,302 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
+</androidx.constraintlayout.widget.ConstraintLayout> -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    tools:context=".specificactivities.TemperatureActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!--Horizontal guideline-->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.65"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.72"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.77"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.84"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.91"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHorizontal6"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.99"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/graphBtn"
+        android:layout_width="70pt"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/graph_btn_background"
+        android:drawableEnd="@drawable/arrow_for"
+        android:paddingHorizontal="5pt"
+        android:text="Graph"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <com.aican.aicanapp.tempController.CurveSeekView
+        android:id="@+id/curveSeekView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/graphBtn">
+
+    </com.aican.aicanapp.tempController.CurveSeekView>
+      <TextView
+        android:id="@+id/temperatureLabelTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:layout_marginStart="10dp"
+        android:text="Current Temperature"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/temperatureTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/curveSeekView"
+        app:layout_constraintTop_toBottomOf="@id/graphBtn" />
+    <com.aican.aicanapp.tempController.ProgressLabelView
+        android:id="@+id/temperatureTextView"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/lay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/temperatureLabelTextView" />
+    <LinearLayout
+        android:id="@+id/lay"
+        android:layout_width="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/humidityTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/temperatureTextView">
+
+        <TextView
+            android:id="@+id/tempLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:fontFamily="sans-serif-light"
+            android:text="Temperature"
+            android:textAllCaps="true"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp"
+            android:drawablePadding="4dp"
+            android:padding="2dp"
+            android:text="Edit"
+            android:textAllCaps="true"
+            android:textColor="@color/blueDark"
+            android:textSize="14sp"
+            app:drawableStartCompat="@drawable/ic_edit"
+            app:drawableTint="@color/blueDark"
+            app:layout_constraintBottom_toBottomOf="@id/flBuffer"
+            app:layout_constraintStart_toEndOf="@id/flBuffer" />
+
+    </LinearLayout>
+    <com.aican.aicanapp.tempController.ProgressLabelView
+        android:id="@+id/humidityTextView"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/themButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
+        app:layout_constraintTop_toBottomOf="@id/lay" />
+    <Button
+        android:id="@+id/themButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/colorPrimary"
+        android:text="Set Temperature"
+        android:textColor="@color/white"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/curveSeekView" />
+    <TextView
+        android:id="@+id/divState"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_horizontal"
+        android:text="Device State is - ON"
+        android:textColor="#BD1256"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal2"
+        app:layout_constraintTop_toBottomOf="@id/guidelineHorizontal1" />
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Mode : "
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/relay"
+        app:layout_constraintEnd_toStartOf="@+id/relay"
+        app:layout_constraintTop_toTopOf="@+id/relay" />
+    <RelativeLayout
+        android:id="@+id/relay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_border"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal2">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/black"
+            android:entries="@array/modes"
+            android:gravity="start"
+            android:popupBackground="@android:color/white"
+            android:spinnerMode="dropdown"
+            tools:ignore="TouchTargetSizeCheck" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/onTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="ON Time : Jan 21 2021 08:30 am"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal4"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal3" />
+    <TextView
+        android:id="@+id/offTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="OFF Time : Jan 21 2021 08:30 am"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal5"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal4" />
+    <Button
+        android:id="@+id/modeButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="Start"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHorizontal6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal5" />
+
+    <!--
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <include
+        layout="@layout/graph_time_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="26dp"
+        app:layout_constraintBottom_toBottomOf="@id/line_chart"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <include
+        android:id="@+id/graphLoggingOptions"
+        layout="@layout/graph_logging_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+-->
 </androidx.constraintlayout.widget.ConstraintLayout>
