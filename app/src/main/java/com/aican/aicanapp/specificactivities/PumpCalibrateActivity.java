@@ -113,7 +113,7 @@ public class PumpCalibrateActivity extends AppCompatActivity {
         });
 
         btnSave.setOnClickListener(v -> {
-            int calVal = slider.getProgress();
+            Float calVal = slider.getProgress();
             deviceRef.child("UI").child("Cal").setValue(calVal);
             onBackPressed();
         });

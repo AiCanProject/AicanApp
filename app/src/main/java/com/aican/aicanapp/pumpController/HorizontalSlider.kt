@@ -15,7 +15,7 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
 
     var onProgressChangeListener: OnProgressChangeListener? = null
 
-    private var progress = 0
+    private var progress = 0.0F
 
     private var progressX = 0F
     private var progressY = 0F
@@ -28,12 +28,12 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
             setColors()
         }
 
-    private var minRange = 0
-    private var maxRange = 50
+    private var minRange = 0.0F
+    private var maxRange = 50.0F
     private val strokeWidth = 4F.toPx()
-    private val labelTextSize = 18F.toPx()
-    private val currentLabelTextSize = 20F.toPx()
-    private val textPadding = 8F.toPx()
+    private val labelTextSize = 16F.toPx()
+    private val currentLabelTextSize = 18F.toPx()
+    private val textPadding = 14F.toPx()
     private val labelPaddingFactor = 0.1F
     private val sliderPaddingFactor = 0.15F
     private val scaleWidth = 8F.toPx()
@@ -139,7 +139,7 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
         canvas.drawPath(boxPath, whiteFillPaint)
         canvas.drawPath(boxPath, boxPaint)
 
-        val text = progress.toString()
+        val text = String.format("%.2f", progress)
         val bounds = Rect()
         currentLabelPaint.getTextBounds(text, 0, text.length, bounds)
         canvas.drawText(
@@ -166,7 +166,7 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
             scalePaint
         )
 
-        var text = minRange.toString()
+        var text = String.format("%.2f", minRange)
         val bounds = Rect()
         labelPaint.getTextBounds(text, 0, text.length, bounds)
         canvas.drawText(
@@ -176,7 +176,7 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
             labelPaint
         )
 
-        text = maxRange.toString()
+        text = String.format("%.2f", maxRange)
         labelPaint.getTextBounds(text, 0, text.length, bounds)
         canvas.drawText(
             text,
@@ -275,13 +275,13 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
         onProgressChangeListener?.onProgressChange(progress)
     }
     //private var progress = minRange
-    fun setProgress(p: Int) {
+    fun setProgress(p: Float) {
 
         var progress = p
         if (progress < minRange) {
-            progress = minRange
+            progress = minRange.toFloat()
         } else if (progress > maxRange) {
-            maxRange = progress.toFloat().toInt()
+            maxRange = progress
 //            progress = maxRange.toInt()
         }
         this.progress = progress
@@ -304,14 +304,14 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
     fun getProgress() = progress
 
     interface OnProgressChangeListener {
-        fun onProgressChange(progress: Int)
+        fun onProgressChange(progress: Float)
     }
 
     private fun calcProgressX(): Float {
         return labelPadding + (progress - minRange) * (width.toFloat() - 2 * labelPadding) / (maxRange - minRange)
     }
 
-    private fun calcProgress(): Int {
-        return ((progressX - labelPadding) * (maxRange - minRange) / (width.toFloat() - 2 * labelPadding) + minRange).roundToInt()
+    private fun calcProgress(): Float {
+        return ((progressX - labelPadding) * (maxRange - minRange) / (width.toFloat() - 2 * labelPadding) + minRange)
     }
 }

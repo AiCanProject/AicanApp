@@ -29,7 +29,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     private val verticalPaddingLine = 0.15F
     private val labelVerticalPaddingFactor = 0.1F
     private var labelVerticalPadding = 0.0F
-    private val labelTextSize = 18F.toPx()
+    private val labelTextSize = 13F.toPx()
 
     private var maxRange = 300F
     private var minRange = 0F
@@ -58,7 +58,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         isAntiAlias = true
         color = context.getColorCompat(R.color.grey)
         textSize = labelTextSize
-        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
     }
 
     init {
@@ -185,8 +185,8 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
 
     
     //Current Label-----------------------------------------------------------------
-    private val currentLabelPadding = 12F.toPx()
-    private val currentLabelTextSize = 22F.toPx()
+    private val currentLabelPadding = 19F.toPx()
+    private val currentLabelTextSize = 19F.toPx()
     private val currentLabelTextPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         isAntiAlias = true
@@ -345,10 +345,9 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
 //    }
 
     private fun drawCurrentLabel(canvas: Canvas) {
-
         canvas.drawPath(currentLabelBoxPath, whiteFillPaint)
         canvas.drawPath(currentLabelBoxPath, currentLabelBoxPaint)
-        val currentLabel = progress.toString()
+        val currentLabel = String.format("%.1f",progress)
         val textBounds = Rect()
         currentLabelTextPaint.getTextBounds(currentLabel, 0, currentLabel.length, textBounds)
         val textStart = if (!invert) {
@@ -385,8 +384,13 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
 //        )
 //    }
 
-    private fun getCurrentLabel(): Int =
-        (maxRange - (progressY - scalePaddingVertical) * (maxRange - minRange) / (height - 2 * scalePaddingVertical)).roundToInt()
+
+
+   // var prog = (maxRange - (progressY - scalePaddingVertical) * (maxRange - minRange) / (height - 2 * scalePaddingVertical))
+
+    //format upto 2 decimal places
+    private fun getCurrentLabel(): Float =
+        ((maxRange - (progressY - scalePaddingVertical) * (maxRange - minRange) / (height - 2 * scalePaddingVertical)))
 
 
     private var isCircleSelected = false
@@ -427,29 +431,29 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         progressY = y
         var currentLabel = getCurrentLabel()
         if (currentLabel < minRange) {
-            currentLabel = minRange.toInt()
+            currentLabel = minRange
             progressY = height - scalePaddingVertical
         }
         if (currentLabel > maxRange) {
-            currentLabel = (++maxRange).toInt()
+            currentLabel = ((++maxRange))
             progressY = scalePaddingVertical
         }
 
         calcCurrentLabelPath()
         invalidate()
 
-        if (currentLabel == progress) {
+        if (currentLabel.equals(progress)) {
             return
         }
-        progress = currentLabel
-        onProgressChangeListener?.onProgressChange(currentLabel)
+        progress = currentLabel.toFloat()
+        onProgressChangeListener?.onProgressChange(currentLabel.toFloat())
     }
 
-    private var progress = minRange.toInt()
-    fun setProgress(p: Int) {
+    private var progress = minRange
+    fun setProgress(p: Float) {
         var progress = p
         if (progress < minRange) {
-            progress = minRange.toInt()
+            progress = minRange
         } else if (progress > maxRange) {
             maxRange = progress.toFloat()
 //            progress = maxRange.toInt()
@@ -479,7 +483,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     interface OnProgressChangeListener {
-        fun onProgressChange(progress: Int)
+        fun onProgressChange(progress: Float)
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
@@ -492,7 +496,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
     public override fun onRestoreInstanceState(state: Parcelable) {
         val savedState = state as SavedState
         super.onRestoreInstanceState(savedState.superState)
-        setProgress(savedState.progress.roundToInt())
+        setProgress(savedState.progress)
     }
 
     internal class SavedState : BaseSavedState {
