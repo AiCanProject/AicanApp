@@ -159,6 +159,7 @@ public class SetTempFragment extends Fragment implements AdapterView.OnItemSelec
                 Toast.makeText(getContext(), "Temperature is updated", Toast.LENGTH_SHORT).show();
             }
         });
+
         modeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

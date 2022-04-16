@@ -3,7 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/drawable/arrow_for.xml" value="0.2075" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/drawable/graph_btn_background.xml" value="0.2075" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/drawable/notification.xml" value="0.2075" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/drawable/spinner_border.xml" value="0.2075" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/activity_ec_tds_calibrate.xml" value="0.33" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/activity_pump.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/activity_pump_calibrate.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/color_spinner_layout.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/dialog_edit_ph_buffer.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/fragment_dose.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/fragment_pump.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/fragment_temp_main.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/fragment_temp_set.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/pump_item.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/Downloads/Lab_app_final-20220414T094147Z-001/Lab_app_final/app/src/main/res/layout/spinner_dropdown_layout.xml" value="0.2" />
       </map>
     </option>
   </component>

@@ -16,6 +16,9 @@ import com.aican.aicanapp.fragments.pump.DoseFragment;
 import com.aican.aicanapp.fragments.pump.PumpFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,7 @@ public class PumpActivity extends AppCompatActivity {
     public static final int STATUS_CAL_START = 30;
     public static final int STATUS_CAL_FINISH = 31;
 
+    DatabaseReference deviceRef = null;
     ViewPager2 viewPager;
     TabLayout tabLayout;
 
@@ -50,6 +54,9 @@ public class PumpActivity extends AppCompatActivity {
             throw new RuntimeException();
         }
 
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
+                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
+
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
 
@@ -59,11 +66,26 @@ public class PumpActivity extends AppCompatActivity {
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
         viewPager.setAdapter(adapter);
 
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (position == 0) {
+                    deviceRef.child("UI").child("Mode").setValue(0);
+                }else {
+                    deviceRef.child("UI").child("Mode").setValue(1);
+                }
+
+            }
+        });
+
         new TabLayoutMediator(tabLayout, viewPager, (tab, position)->{
             if(position==0){
                 tab.setText("Dose");
+//                deviceRef.child("UI").child("Mode").setValue(0);
             }else{
                 tab.setText("Pump");
+  //              deviceRef.child("UI").child("Mode").setValue(1);
             }
         }).attach();
 

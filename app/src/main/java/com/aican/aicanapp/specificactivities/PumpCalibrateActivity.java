@@ -10,7 +10,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
@@ -24,10 +26,14 @@ import com.aican.aicanapp.dataClasses.Step;
 import com.aican.aicanapp.pumpController.HorizontalSlider;
 import com.aican.aicanapp.utils.ItemDecoratorBars;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class PumpCalibrateActivity extends AppCompatActivity {
 
@@ -38,6 +44,7 @@ public class PumpCalibrateActivity extends AppCompatActivity {
     RecyclerView rvSteps;
     SwitchCompat switchDir;
 
+    TextView tvTimer;
     ArrayList<Step> steps;
     StepsAdapter stepsAdapter;
 
@@ -64,6 +71,9 @@ public class PumpCalibrateActivity extends AppCompatActivity {
         rvSteps = findViewById(R.id.rvSteps);
         switchDir = findViewById(R.id.switchClockwise);
 
+        tvTimer = findViewById(R.id.tvTimer);
+
+
         steps = new ArrayList<>();
         stepsAdapter = new StepsAdapter(steps);
         rvSteps.setAdapter(stepsAdapter);
@@ -77,17 +87,47 @@ public class PumpCalibrateActivity extends AppCompatActivity {
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference()
                 .child("P_PUMP").child(deviceId);
 
+        deviceRef.child("UI").child("Direction").get().addOnSuccessListener(snapshot -> {
+            Integer dir = snapshot.getValue(Integer.class);
+            if (dir == null) return;
+
+            switchDir.setChecked(dir == 0);
+        });
+
+        deviceRef.child("UI").child("Cal").get().addOnSuccessListener(snapshot -> {
+            Integer speed = snapshot.getValue(Integer.class);
+            if (speed == null) return;
+            slider.setProgress(speed);
+        });
+
+
+        switchDir.setOnCheckedChangeListener((v, isChecked) -> {
+            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
+        });
+
         ivStartBtn.setOnClickListener(v -> {
             showSaveLayout();
             calibrate();
-            deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_CAL_START);
-            deviceRef.child("UI").child("CAL").child("CAL").setValue(1);
+            deviceRef.child("UI").child("Start").setValue(1);
+            //deviceRef.child("UI").child("Cal").setValue(1);
         });
 
         btnSave.setOnClickListener(v -> {
             int calVal = slider.getProgress();
-            deviceRef.child("UI").child("CAL").child("CAL_VAL").setValue(calVal);
+            deviceRef.child("UI").child("Cal").setValue(calVal);
             onBackPressed();
+        });
+
+        deviceRef.child("UI").child("Cal").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //float calV = snapshot.getValue(Integer.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
 
         loadSteps();
@@ -129,10 +169,14 @@ public class PumpCalibrateActivity extends AppCompatActivity {
 
     private void calibrate() {
         slider.setDisabled(true);
-        CountDownTimer timer = new CountDownTimer(5000, 1000) {
+        CountDownTimer timer = new CountDownTimer(45000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
+                millisUntilFinished /= 1000;
+                int min = (int) millisUntilFinished / 60;
+                int sec = (int) millisUntilFinished % 60;
+                String time = String.format(Locale.UK, "%02d:%02d", min, sec);
+                tvTimer.setText(time);
             }
 
             @Override
@@ -142,8 +186,7 @@ public class PumpCalibrateActivity extends AppCompatActivity {
                     btnSave.setBackgroundColor(ContextCompat.getColor(PumpCalibrateActivity.this, R.color.colorPrimary));
                     btnSave.setText("Save");
                 });
-                deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_CAL_FINISH);
-                deviceRef.child("UI").child("CAL").child("CAL").setValue(0);
+                deviceRef.child("UI").child("Start").setValue(0);
             }
         };
         timer.start();

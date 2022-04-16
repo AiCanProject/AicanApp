@@ -60,6 +60,7 @@ public class PumpFragment extends Fragment {
         speedController.setProgress(0);
 
         calibrateBtn.setOnClickListener(v -> {
+            deviceRef.child("UI").child("Mode").setValue(2);
             Intent intent = new Intent(requireContext(), PumpCalibrateActivity.class);
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PumpActivity.DEVICE_ID);
             startActivity(intent);
@@ -69,21 +70,21 @@ public class PumpFragment extends Fragment {
             isStarted = !isStarted;
             refreshStartBtnUI();
             if (isStarted) {
-                deviceRef.child("UI").child("START").setValue(PumpActivity.STATUS_PUMP);
+                deviceRef.child("UI").child("Start").setValue(1);
             } else {
-                deviceRef.child("UI").child("START").setValue(PumpActivity.STATUS_OFF);
+                deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_OFF);
             }
         });
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
-
+        deviceRef.child("UI").child("Mode").setValue(1);
         checkModeAndSetListeners();
 
 
     }
 
     private void checkModeAndSetListeners() {
-        deviceRef.child("UI").child("MODE").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("Mode").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Integer mode = snapshot.getValue(Integer.class);
@@ -94,7 +95,7 @@ public class PumpFragment extends Fragment {
                     setupListeners();
                 } else {
                     isStarted = false;
-                    refreshStartBtnUI();
+                    //refreshStartBtnUI();
                     speedController.setProgress(0);
                     switchDir.setChecked(false);
                 }
@@ -144,10 +145,10 @@ public class PumpFragment extends Fragment {
 
     private void refreshStartBtnUI() {
         if (isStarted) {
-            tvStart.setText("STOP");
+            tvStart.setText("Stop");
             startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red));
         } else {
-            tvStart.setText("START");
+            tvStart.setText("Start");
             startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
         }
     }

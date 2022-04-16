@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -26,9 +27,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="Speed(mL/Min)"
                 android:textColor="@color/black"
-                android:layout_gravity="center_horizontal"
                 android:textSize="14sp" />
 
             <com.aican.aicanapp.pumpController.VerticalSlider
@@ -42,9 +43,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.4"
+            android:gravity="bottom"
             android:orientation="vertical"
-            android:paddingVertical="12dp"
-            android:gravity="bottom" />
+            android:paddingVertical="12dp" />
 
 
         <LinearLayout
@@ -126,6 +127,18 @@
             android:textColor="@color/white" />
 
     </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/appMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="App Mode is - OFF"
+        android:textColor="@color/red"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <RelativeLayout
         android:id="@+id/stopLayout"

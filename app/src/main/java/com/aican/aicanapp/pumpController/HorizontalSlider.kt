@@ -274,6 +274,32 @@ class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, at
         }
         onProgressChangeListener?.onProgressChange(progress)
     }
+    //private var progress = minRange
+    fun setProgress(p: Int) {
+
+        var progress = p
+        if (progress < minRange) {
+            progress = minRange
+        } else if (progress > maxRange) {
+            maxRange = progress.toFloat().toInt()
+//            progress = maxRange.toInt()
+        }
+        this.progress = progress
+//        this.prevProgress = progress
+        if (height != 0) {
+            setProgressDelayed()
+        }
+    }
+    private fun setProgressDelayed() {
+        progressY =
+            (maxRange - progress) * (height - 2 * labelPadding) / (maxRange - minRange) + labelPadding
+//        prevProgressY = progressY
+        calcBoxPath()
+//        calcPrevLabelPath()
+        invalidate()
+    }
+
+
 
     fun getProgress() = progress
 

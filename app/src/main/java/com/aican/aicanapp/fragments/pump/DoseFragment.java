@@ -1,6 +1,7 @@
 package com.aican.aicanapp.fragments.pump;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ public class DoseFragment extends Fragment {
     LineChart lineChart;
     Button calibrateBtn;
     ShapeableImageView startBtn;
-    TextView tvStart;
+    TextView tvStart, appMode;
     SwitchCompat switchDir;
     boolean isStarted = false;
 
@@ -77,33 +78,39 @@ public class DoseFragment extends Fragment {
         startLayout = view.findViewById(R.id.startLayout);
         stopLayout = view.findViewById(R.id.stopLayout);
         btnStop = view.findViewById(R.id.btnStop);
+        appMode = view.findViewById(R.id.appMode);
 
-        volController.setProgress(0);
-        speedController.setProgress(0);
+        volController.setProgress((int) 0.0);
+        speedController.setProgress((int) 0.0);
 
-        speedController.setMaxRange(150);
+        speedController.setMaxRange((int) 150.0);
 
         calibrateBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), PumpCalibrateActivity.class);
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PumpActivity.DEVICE_ID);
             startActivity(intent);
+
+            deviceRef.child("UI").child("Mode").setValue(2);
         });
 
         startBtn.setOnClickListener(v -> {
             isStarted = true;
             showProgressBarLayout();
             startProgressBar();
-            deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE);
+            deviceRef.child("UI").child("Start").setValue(1);
         });
 
         btnStop.setOnClickListener(v -> {
             isStarted = false;
             hideProgressBarLayout();
             stopProgressBar();
+            deviceRef.child("UI").child("Start").setValue(0);
         });
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
+
+        deviceRef.child("UI").child("Mode").setValue(0);
 
         checkModeAndSetListeners();
     }
@@ -185,7 +192,7 @@ public class DoseFragment extends Fragment {
             @Override
             public void onFinish() {
                 progressBar.setProgress(100);
-                deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE_COMPLETED);
+                deviceRef.child("UI").child("Start").setValue(0);
             }
         };
         timer.start();
@@ -201,6 +208,7 @@ public class DoseFragment extends Fragment {
     }
 
     private void checkModeAndSetListeners() {
+
         deviceRef.child("UI").child("Mode").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -228,6 +236,26 @@ public class DoseFragment extends Fragment {
 
     private void setupListeners() {
 
+
+        deviceRef.child("UI").child("App").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int app = snapshot.getValue(Integer.class);
+                if (app == 0) {
+                    appMode.setText("App Mode is - OFF");
+                    appMode.setTextColor(Color.RED);
+                }else if (app == 1) {
+                    appMode.setText("App Mode is - ON");
+                    appMode.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         deviceRef.child("UI").child("Direction").get().addOnSuccessListener(snapshot -> {
             Integer dir = snapshot.getValue(Integer.class);
             if (dir == null) return;
@@ -238,7 +266,6 @@ public class DoseFragment extends Fragment {
         deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
             Integer speed = snapshot.getValue(Integer.class);
             if (speed == null) return;
-
             speedController.setProgress(speed);
         });
 

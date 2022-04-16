@@ -16,6 +16,19 @@
         android:orientation="horizontal"
         tools:listitem="@layout/step_item_view"/>
 
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:textSize="21sp"
+        android:textColor="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/ivStartBtn"
+        android:text="00:45" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -30,20 +43,22 @@
                 android:id="@+id/switchClockwise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clockwise"
+                android:layout_above="@id/ivStartBtn"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/blueDarkAlpha"
-                android:theme="@style/Switch"
                 android:layout_marginBottom="4dp"
-                android:layout_above="@id/ivStartBtn"/>
+                android:text="Clockwise"
+                android:textColor="@color/blueDarkAlpha"
+                android:theme="@style/Switch" />
+
+
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivStartBtn"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:layout_centerInParent="true"
-                app:srcCompat="@color/colorPrimary"
                 android:theme="@style/CircularImageView"
-                android:id="@+id/ivStartBtn"/>
+                app:srcCompat="@color/colorPrimary" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
