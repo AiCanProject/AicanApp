@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,18 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
-import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aican.aicanapp.BuildConfig;
-import com.aican.aicanapp.FileOpen;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.specificactivities.Export;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
@@ -57,12 +49,22 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+                File file = new File(path);
 
-                String selectedFilePath = "/sdcard/Download/" + holder.textView.getText().toString();
-                File file = new File(selectedFilePath);
                 try {
-                    FileOpen.openFile(v.getContext(), file);
-                } catch (IOException e) {
+                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
+
+                    mIntent.setDataAndType(Uri.fromFile(file), "text/plain");
+                    mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+
+                    Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
+                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.getApplicationContext().startActivity(cIntent);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -88,22 +90,26 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String file = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+                            File file = new File(path);
 
-                            Uri csvUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(file));
+                            try {
+                                Intent mIntent = new Intent(Intent.ACTION_VIEW);
 
-                            Intent intentShare = new Intent();
+                                mIntent.setData(Uri.fromFile(file));
+                                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                mIntent.setClassName("csv.to.excel", "csv.to.excel.HomeActivity");
 
-                            intentShare.setAction(Intent.ACTION_SEND);
-                            intentShare.setType("text/plain");
-                            intentShare.putExtra(Intent.EXTRA_STREAM, csvUri);
-                            intentShare.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            intentShare.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                Intent chooserIntent = Intent.createChooser(mIntent, "Convert PDF");
+                                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(chooserIntent);
 
-                            Intent chooserIntent = Intent.createChooser(intentShare, "Sharing CSV");
-                            chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.getApplicationContext().startActivity(chooserIntent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         }
 
                         return true;

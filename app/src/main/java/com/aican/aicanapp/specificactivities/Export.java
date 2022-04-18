@@ -84,6 +84,7 @@ public class Export extends AppCompatActivity {
 
                 exportDatabaseCsv();
 
+
                 String pdfPattern = ".csv";
                 String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
                 File root = new File(path);
