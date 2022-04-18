@@ -510,30 +510,41 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         break;
                     }
                     case "P_PUMP": {
-                        int mode = ui.child("MODE").child("MODE_VAL").getValue(Integer.class);
-                        int status = ui.child("STATUS").getValue(Integer.class);
-                        if (mode == 0) {
-                            pumpDevices.add(new PumpDevice(
-                                    id,
-                                    name,
-                                    mode,
-                                    ui.child("MODE").child("DOSE").child("SPEED").getValue(Integer.class),
-                                    ui.child("MODE").child("DOSE").child("DIR").getValue(Integer.class),
-                                    ui.child("MODE").child("DOSE").child("VOL").getValue(Integer.class),
-                                    status
+                        Integer mode = ui.child("Mode").getValue(Integer.class);
+                        Integer status = ui.child("Start").getValue(Integer.class);
+//                        if (mode == 0) {
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name,
+//                                    mode,
+//                                    ui.child("Speed").getValue(Integer.class),
+//                                    ui.child("Direction").getValue(Integer.class),
+//                                    ui.child("Volume").getValue(Integer.class),
+//                                    status
+//
+//                            ));
+//                        } else {
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name,
+//                                    mode,
+//                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
+//                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
+//                                    null,
+//                                    status
+//                            ));
+//                        }
 
-                            ));
-                        } else {
-                            pumpDevices.add(new PumpDevice(
-                                    id,
-                                    name,
-                                    mode,
-                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
-                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
-                                    null,
-                                    status
-                            ));
-                        }
+                        pumpDevices.add(new PumpDevice(
+                                id,
+                                name,
+                                mode,
+                                ui.child("Speed").getValue(Integer.class),
+                                ui.child("Direction").getValue(Integer.class),
+                                ui.child("Volume").getValue(Integer.class),
+                                status
+
+                        ));
 
                         break;
                     }
