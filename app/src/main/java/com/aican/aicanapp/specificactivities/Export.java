@@ -38,7 +38,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -79,7 +78,6 @@ public class Export extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
         setFirebaseListeners();
-
         exportCSV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,7 +211,7 @@ public class Export extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(time) BETWEEN '"+ startDateString +"' AND '"+ endDateString +"'", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(time) BETWEEN '" + startDateString + "' AND '" + endDateString + "'", null);
 
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);

@@ -145,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity {
         if (dialog != null) {
             dialog.dismiss();
         }
-        startActivity(new Intent(this, Dashboard.class));
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
     private void saveUid(String uid) {

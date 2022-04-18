@@ -86,6 +86,14 @@ public class AdminLoginActivity extends AppCompatActivity {
     private void logout(){
         FirebaseAuth.getInstance(PrimaryAccount.getInstance(getApplicationContext())).signOut();
         finish();
+
+        //Clear Shared Preference Login Emailvedant
+        SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.clear();
+        myEdit.apply();
+        finish();
+
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }

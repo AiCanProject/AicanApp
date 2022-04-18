@@ -90,14 +90,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
                             String file = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
 
-                             Uri csvUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(file));
-
-                            Log.d("urifile", file);
+                            Uri csvUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(file));
 
                             Intent intentShare = new Intent();
 
                             intentShare.setAction(Intent.ACTION_SEND);
-                            intentShare.setType("plain/text");
+                            intentShare.setType("text/plain");
                             intentShare.putExtra(Intent.EXTRA_STREAM, csvUri);
                             intentShare.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -106,17 +104,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                             Intent chooserIntent = Intent.createChooser(intentShare, "Sharing CSV");
                             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.getApplicationContext().startActivity(chooserIntent);
-
-
-
-
-//                            intentShare.setAction(Intent.ACTION_SEND);
-//                            intentShare.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                            intentShare.putExtra(Intent.EXTRA_STREAM, Uri.parse(file));
-//                            intentShare.setType("text/csv");
-//
-
                         }
 
                         return true;
@@ -145,3 +132,4 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         }
     }
 }
+

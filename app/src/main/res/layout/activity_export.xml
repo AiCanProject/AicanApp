@@ -12,8 +12,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
         android:hint="@string/enter_company_name"
         app:boxStrokeColor="@color/colorPrimary"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -29,18 +29,18 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/DeviceId"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="23dp"
-            android:layout_margin="20dp"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:gravity="center"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"/>
+    <TextView
+        android:id="@+id/DeviceId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:textSize="23dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
 
     <Button
@@ -60,9 +60,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:fontFamily="@font/sofia_medium"
         android:hint="22/02/2022"
         android:textColor="@color/black"
-        android:fontFamily="@font/sofia_medium"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/dateEnd"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,9 +73,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:fontFamily="@font/sofia_medium"
         android:hint="22/02/2022"
         android:textColor="@color/black"
-        android:fontFamily="@font/sofia_medium"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toEndOf="@+id/dateStart"
@@ -85,18 +85,21 @@
         android:id="@+id/exportCSV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/export"
         android:layout_margin="30dp"
+        android:text="Export CSV"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateStart" />
+
+
 
     <Button
         android:id="@+id/exportUserData"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Export User Activity"
         android:layout_margin="30dp"
+        android:text="Export User Activity"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/exportCSV" />
@@ -107,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"/>
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/nofiles_textview"
@@ -124,8 +127,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCSV"
         android:layout_width="0dp"
-        android:layout_margin="20dp"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
