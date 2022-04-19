@@ -351,69 +351,69 @@
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <LinearLayout
-                        android:id="@+id/log1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="2dp">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/log1"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_margin="2dp">-->
 
-                        <TextView
-                            android:id="@+id/ph1"
-                            android:layout_width="10dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
-                            android:layout_marginBottom="1dp"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:textSize="16sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/ph1"-->
+<!--                            android:layout_width="10dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="22dp"-->
+<!--                            android:layout_marginBottom="1dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text=""-->
+<!--                            android:textSize="16sp" />-->
 
-                        <TextView
-                            android:id="@+id/phEdit1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="6dp"
-                            android:drawablePadding="2dp"
-                            android:padding="2dp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/blueDark"
-                            android:textSize="14sp"
-                            app:drawableStartCompat="@drawable/ic_edit"
-                            app:drawableTint="@color/blueDark" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/phEdit1"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="4dp"-->
+<!--                            android:layout_marginEnd="8dp"-->
+<!--                            android:layout_marginBottom="6dp"-->
+<!--                            android:drawablePadding="2dp"-->
+<!--                            android:padding="2dp"-->
+<!--                            android:textAllCaps="true"-->
+<!--                            android:textColor="@color/blueDark"-->
+<!--                            android:textSize="14sp"-->
+<!--                            app:drawableStartCompat="@drawable/ic_edit"-->
+<!--                            app:drawableTint="@color/blueDark" />-->
 
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:background="#DFE6ED" />
+<!--                        <View-->
+<!--                            android:layout_width="2dp"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:background="#DFE6ED" />-->
 
-                        <TextView
-                            android:id="@+id/mv1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
-                            android:layout_marginBottom="1dp"
-                            android:layout_weight="1"
-                            android:textSize="16sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/mv1"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="22dp"-->
+<!--                            android:layout_marginBottom="1dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:textSize="16sp" />-->
 
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:background="#DFE6ED" />
+<!--                        <View-->
+<!--                            android:layout_width="2dp"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:background="#DFE6ED" />-->
 
-                        <TextView
-                            android:id="@+id/dt1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginBottom="1dp"
-                            android:layout_weight="1"
-                            android:textSize="16sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/dt1"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:layout_marginBottom="1dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:textSize="16sp" />-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
                     <LinearLayout
                         android:id="@+id/log2"
@@ -616,69 +616,69 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/log5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/log5"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_margin="5dp">-->
 
-                        <TextView
-                            android:id="@+id/ph5"
-                            android:layout_width="10dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
-                            android:layout_marginBottom="1dp"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:textSize="16sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/ph5"-->
+<!--                            android:layout_width="10dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="22dp"-->
+<!--                            android:layout_marginBottom="1dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:text=""-->
+<!--                            android:textSize="16sp" />-->
 
-                        <TextView
-                            android:id="@+id/phEdit5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="6dp"
-                            android:drawablePadding="2dp"
-                            android:padding="2dp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/blueDark"
-                            android:textSize="14sp"
-                            app:drawableStartCompat="@drawable/ic_edit"
-                            app:drawableTint="@color/blueDark" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/phEdit5"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="4dp"-->
+<!--                            android:layout_marginEnd="8dp"-->
+<!--                            android:layout_marginBottom="6dp"-->
+<!--                            android:drawablePadding="2dp"-->
+<!--                            android:padding="2dp"-->
+<!--                            android:textAllCaps="true"-->
+<!--                            android:textColor="@color/blueDark"-->
+<!--                            android:textSize="14sp"-->
+<!--                            app:drawableStartCompat="@drawable/ic_edit"-->
+<!--                            app:drawableTint="@color/blueDark" />-->
 
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:background="#DFE6ED" />
+<!--                        <View-->
+<!--                            android:layout_width="2dp"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:background="#DFE6ED" />-->
 
-                        <TextView
-                            android:id="@+id/mv5"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="22dp"
-                            android:layout_marginBottom="1dp"
-                            android:layout_weight="1"
-                            android:textSize="16sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/mv5"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="22dp"-->
+<!--                            android:layout_marginBottom="1dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:textSize="16sp" />-->
 
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:background="#DFE6ED" />
+<!--                        <View-->
+<!--                            android:layout_width="2dp"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:background="#DFE6ED" />-->
 
-                        <TextView
-                            android:id="@+id/dt5"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginBottom="1dp"
-                            android:layout_weight="1"
-                            android:textSize="16sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/dt5"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:layout_marginBottom="1dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:textSize="16sp" />-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
                 </LinearLayout>
 
             </LinearLayout>

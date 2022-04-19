@@ -76,9 +76,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     Button calibrateBtn, btnNext;
     Spinner spin;
     String[] mode = {"5"};
-    String test1,test2,test3;
-    String mV1,mV2,mV3,mV4,mV5;
-    String tm1,tm2,tm3,tm4,tm5;
+    String test1, test2, test3;
+    String mV1, mV2, mV3, mV4, mV5;
+    String tm1, tm2, tm3, tm4, tm5;
 
     PhView phView;
     TextView title;
@@ -88,10 +88,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String[] lines, liness;
     LinearLayout ll1;
 
-    float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
-    String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
-    String[] coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
-    int[] calValues = new int[]{10, 20, 30, 40, 50};
+    //    float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
+    float[] buffers = new float[]{4.0F, 7.0F, 9.2F};
+    String[] bufferLabels = new String[]{"B_2", "B_3", "B_4"};
+    String[] coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
+    int[] calValues = new int[]{20, 30, 40};
     int currentBuf = 0;
 
     DatabaseReference coeffRef = null;
@@ -109,11 +110,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
-            ph1.setText(String.valueOf(buffers[0]));
-            ph2.setText(String.valueOf(buffers[1]));
-            ph3.setText(String.valueOf(buffers[2]));
-            ph4.setText(String.valueOf(buffers[3]));
-            ph5.setText(String.valueOf(buffers[4]));
+//            ph1.setText(String.valueOf(buffers[0]));
+            ph2.setText(String.valueOf(buffers[0]));
+            ph3.setText(String.valueOf(buffers[1]));
+            ph4.setText(String.valueOf(buffers[2]));
+//            ph5.setText(String.valueOf(buffers[4]));
 
         });
     }
@@ -121,7 +122,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.ph1 && v.getId() == R.id.mv1) {
+            if (v.getId() == R.id.ph2 && v.getId() == R.id.mv2) {
                 ph1.setBackgroundColor(Color.GRAY);
                 mv1.setBackgroundColor(Color.GRAY);
             }
@@ -191,26 +192,26 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.2f", ec);
-                mv1.setText(ecForm);
-                mV1 = mv1.getText().toString();
-                Log.d("test1", mV1);
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("MV1", mV1);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+//        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                Float ec = snapshot.getValue(Float.class);
+//                String ecForm = String.format(Locale.UK, "%.2f", ec);
+//                mv1.setText(ecForm);
+//                mV1 = mv1.getText().toString();
+//                Log.d("test1", mV1);
+//
+//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//
+//                myEdit.putString("MV1", mV1);
+//                myEdit.commit();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
 
         deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
             @Override
@@ -273,81 +274,86 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_5").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.2f", ec);
-                mv5.setText(ecForm);
-                mV5 = mv5.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("MV5", mV5);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+//        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_5").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                Float ec = snapshot.getValue(Float.class);
+//                String ecForm = String.format(Locale.UK, "%.2f", ec);
+//                mv5.setText(ecForm);
+//                mV5 = mv5.getText().toString();
+//
+//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//
+//                myEdit.putString("MV5", mV5);
+//                myEdit.commit();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
 
         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 ec = snapshot.getValue(Integer.class);
 
-                if (ec == 10 || ec == 0) {
-                    l1.setBackgroundColor(Color.GRAY);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
-                } else if (ec == 20 || ec == 11) {
-                    l1.setBackgroundColor(Color.WHITE);
+//                if (ec == 10 || ec == 0) {
+//                    l1.setBackgroundColor(Color.GRAY);
+//                    l2.setBackgroundColor(Color.WHITE);
+//                    l3.setBackgroundColor(Color.WHITE);
+//                    l4.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.WHITE);
+//                } else
+
+                    if (ec == 20 || ec == 11) {
+//                    l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.GRAY);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.WHITE);
 
                 } else if (ec == 30 || ec == 21) {
-                    l1.setBackgroundColor(Color.WHITE);
+//                    l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.GRAY);
                     l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.WHITE);
 
                 } else if (ec == 40 || ec == 31) {
-                    l1.setBackgroundColor(Color.WHITE);
+//                    l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.GRAY);
-                    l5.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.WHITE);
 
-                } else if (ec == 50 || ec == 41) {
-                    l1.setBackgroundColor(Color.WHITE);
+                }
+//                    else if (ec == 50 || ec == 41) {
+//                    l1.setBackgroundColor(Color.WHITE);
+//                    l2.setBackgroundColor(Color.WHITE);
+//                    l3.setBackgroundColor(Color.WHITE);
+//                    l4.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.GRAY);
+//                }
+                    else {
+//                    l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.GRAY);
-                } else {
-                    l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.WHITE);
                 }
 
-                if (ec == 11) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
-
-
-                } else if (ec == 21) {
+//                if (ec == 11) {
+//                    Date date = new Date();
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+//                    strDate = simpleDateFormat.format(date);
+//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+//                    calibrateBtn.setEnabled(true);
+//
+//
+//                }
+                if (ec == 21) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
@@ -368,13 +374,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                     strDate = simpleDateFormat.format(date);
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
-
-
-                } else if (ec == 51) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(new Date());
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                     calibrateBtn.setText("DONE");
                     currentBuf = -1;
 
@@ -388,7 +387,26 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }, 10000);   //5 seconds
 
-                } else if (ec ==0){
+                }
+//                else if (ec == 51) {
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+//                    strDate = simpleDateFormat.format(new Date());
+//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+//                    calibrateBtn.setText("DONE");
+//                    currentBuf = -1;
+//
+//
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
+//                            calibrateBtn.setText("START");
+//                            calibrateBtn.setEnabled(true);
+//                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+//                        }
+//                    }, 10000);   //5 seconds
+//
+//                }
+                else if (ec == 0) {
                     calibrateBtn.setText("START");
                     calibrateBtn.setEnabled(true);
                 }
@@ -399,24 +417,24 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String time = snapshot.getValue(String.class);
-                dt1.setText(time);
-                tm1 = dt1.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("DT1", tm1);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+//        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                String time = snapshot.getValue(String.class);
+//                dt1.setText(time);
+//                tm1 = dt1.getText().toString();
+//
+//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//
+//                myEdit.putString("DT1", tm1);
+//                myEdit.commit();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
 
         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
             @Override
@@ -475,28 +493,29 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String time = snapshot.getValue(String.class);
-                dt5.setText(time);
-                tm5 = dt5.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("DT5", tm5);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+//        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                String time = snapshot.getValue(String.class);
+//                dt5.setText(time);
+//                tm5 = dt5.getText().toString();
+//
+//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//
+//                myEdit.putString("DT5", tm5);
+//                myEdit.commit();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
     }
 
     /**
      * Inflate the layout for this fragment
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -516,37 +535,38 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         btnNext = view.findViewById(R.id.nextBtn);
         phView = view.findViewById(R.id.phView);
         lastCalib = view.findViewById(R.id.lastCalibration);
-        ph1 = view.findViewById(R.id.ph1);
-        mv1 = view.findViewById(R.id.mv1);
+//        ph1 = view.findViewById(R.id.ph1);
+//        mv1 = view.findViewById(R.id.mv1);
         ph2 = view.findViewById(R.id.ph2);
         mv2 = view.findViewById(R.id.mv2);
         ph3 = view.findViewById(R.id.ph3);
         mv3 = view.findViewById(R.id.mv3);
         ph4 = view.findViewById(R.id.ph4);
         mv4 = view.findViewById(R.id.mv4);
-        ph5 = view.findViewById(R.id.ph5);
-        mv5 = view.findViewById(R.id.mv5);
+//        ph5 = view.findViewById(R.id.ph5);
+//        mv5 = view.findViewById(R.id.mv5);
 
+//        phEdit1 = view.findViewById(R.id.phEdit1);
         phEdit2 = view.findViewById(R.id.phEdit2);
         phEdit3 = view.findViewById(R.id.phEdit3);
         phEdit4 = view.findViewById(R.id.phEdit4);
-        phEdit5 = view.findViewById(R.id.phEdit5);
+//        phEdit5 = view.findViewById(R.id.phEdit5);
 
-        dt1 = view.findViewById(R.id.dt1);
+//        dt1 = view.findViewById(R.id.dt1);
         dt2 = view.findViewById(R.id.dt2);
         dt3 = view.findViewById(R.id.dt3);
         dt4 = view.findViewById(R.id.dt4);
-        dt5 = view.findViewById(R.id.dt5);
+//        dt5 = view.findViewById(R.id.dt5);
 
         title = view.findViewById(R.id.tvTitle);
-        l1 = view.findViewById(R.id.log1);
+//        l1 = view.findViewById(R.id.log1);
         l2 = view.findViewById(R.id.log2);
         l3 = view.findViewById(R.id.log3);
         l4 = view.findViewById(R.id.log4);
-        l5 = view.findViewById(R.id.log5);
+//        l5 = view.findViewById(R.id.log5);
 
         ll1 = view.findViewById(R.id.ll1);
-        phEdit1 = view.findViewById(R.id.phEdit1);
+
         tvTimer = view.findViewById(R.id.tvTimer);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
@@ -560,7 +580,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             Source.userName = res.getString(0);
         }
 
@@ -589,7 +609,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         }
 
         title.setText("Do not exit/change fragments \nwhile calibrating");
-        if(liness != null){
+        if (liness != null) {
             lastCalib.setText("Last Calibrated By \n" + liness[0]);
         }
         ArrayAdapter aa = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, mode);
@@ -597,15 +617,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
 
-        phEdit1.setOnClickListener(this::onClick);
+//        phEdit1.setOnClickListener(this::onClick);
         phEdit2.setOnClickListener(this::onClick);
         phEdit3.setOnClickListener(this::onClick);
         phEdit4.setOnClickListener(this::onClick);
-        phEdit5.setOnClickListener(this::onClick);
+//        phEdit5.setOnClickListener(this::onClick);
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack= "PhCalibFragment logged in by ";
+        Source.userTrack = "PhCalibFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
@@ -655,7 +675,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 calibrate();
             }
         });
-       // lastCalib.setText("Last Calibration by " + Source.userName);
+        // lastCalib.setText("Last Calibration by " + Source.userName);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupListeners();
@@ -668,13 +688,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private void onClick(View v) {
         switch (v.getId()) {
-            case R.id.phEdit1:
-                EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
-                    updateBufferValue(ph);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
-                });
-                dialog.show(getParentFragmentManager(), null);
-                break;
+//            case R.id.phEdit1:
+//                EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
+//                    updateBufferValue(ph);
+//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
+//                });
+//                dialog.show(getParentFragmentManager(), null);
+//                break;
 
             case R.id.phEdit2:
 
@@ -699,13 +719,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 dialog3.show(getParentFragmentManager(), null);
                 break;
 
-            case R.id.phEdit5:
-                EditPhBufferDialog dialog5 = new EditPhBufferDialog(ph -> {
-                    updateBufferValue(ph);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
-                });
-                dialog5.show(getParentFragmentManager(), null);
-                break;
+//            case R.id.phEdit5:
+//                EditPhBufferDialog dialog5 = new EditPhBufferDialog(ph -> {
+//                    updateBufferValue(ph);
+//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
+//                });
+//                dialog5.show(getParentFragmentManager(), null);
+//                break;
             default:
                 break;
         }
@@ -748,7 +768,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                             Float coeff = dataSnapshot.getValue(Float.class);
                             if (coeff == null) return;
-                                currentBuf += 1;
+                            currentBuf += 1;
                         });
                     }
                 };
