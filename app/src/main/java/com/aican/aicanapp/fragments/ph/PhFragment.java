@@ -74,7 +74,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         Spinner probesVal = view.findViewById(R.id.probesVal);
 
         offsetCurr = view.findViewById(R.id.offsetVal);
-        batteryCurr = view.findViewById(R.id.batteryVal);
+        batteryCurr = view.findViewById(R.id.batteryPercent);
         slopeCurr = view.findViewById(R.id.slopeVal);
 
         phView = view.findViewById(R.id.phView);

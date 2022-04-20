@@ -187,9 +187,26 @@
                     android:textSize="37sp"
                     android:textStyle="bold" />
 
-
             </androidx.cardview.widget.CardView>
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="200dp"
+                android:layout_height="90dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="@color/red"
+                app:strokeWidth="2dp">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="10dp"
+                    android:text="Do not Exit/Change \n while calibrating."
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
@@ -197,17 +214,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="-25dp"
+            android:layout_marginTop="-20dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="Do not Exit/Change \n while calibrating."
-                android:textColor="@color/black"
-                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvTimer"
@@ -276,16 +285,15 @@
                 android:text="Last Calibrated at: \n 12/03/2022 20:05"
                 android:textSize="16sp" />
 
-
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="172dp"
-            android:layout_marginTop="-5dp"
-            android:layout_marginEnd="172dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="-8dp"
+            android:layout_marginEnd="40dp"
             android:backgroundTint="@color/white"
             android:elevation="12dp"
             app:cardCornerRadius="14dp">

@@ -372,7 +372,7 @@
                     tools:ignore="UseCompoundDrawables">
 
                     <TextView
-                        android:id="@+id/batteryVal"
+                        android:id="@+id/batteryPercent"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"

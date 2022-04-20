@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.5" />
+        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.33" />
+        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/arrow_for.xml" value="0.1695" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/graph_btn_background.xml" value="0.1695" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/spinner_border.xml" value="0.1695" />
