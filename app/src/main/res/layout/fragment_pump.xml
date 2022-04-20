@@ -55,7 +55,7 @@
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     android:layout_centerInParent="true"
-                    android:background="@color/colorPrimary"
+                    android:background="#9037C7"
                     android:theme="@style/CircularImageView"
                     android:id="@+id/ivStartBtn"/>
                 <TextView
@@ -84,12 +84,12 @@
                 android:id="@+id/calibrateBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/switchDir"
+                android:layout_centerHorizontal="true"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginTop="12dp"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="#9037C7"
                 android:text="Calibrate"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/switchDir"
                 android:textColor="@color/white" />
 
         </RelativeLayout>

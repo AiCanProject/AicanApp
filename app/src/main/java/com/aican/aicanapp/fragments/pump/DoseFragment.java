@@ -38,10 +38,10 @@ public class DoseFragment extends Fragment {
 
     VerticalSlider volController, speedController;
     LineChart lineChart;
-    Button calibrateBtn;
-    ShapeableImageView startBtn;
-    TextView tvStart;
-    SwitchCompat switchDir;
+    Button calibrateBtn, speedSet, volumeSet, startBtn;
+    //ShapeableImageView startBtn;
+    TextView tvStart, date, time;
+    SwitchCompat switchClock, switchAntiClock;
     boolean isStarted = false;
 
     ProgressBar progressBar;
@@ -66,42 +66,50 @@ public class DoseFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        volController = view.findViewById(R.id.volController);
+        speedSet = view.findViewById(R.id.speedSet);
+        volumeSet =  view.findViewById(R.id.volumeSet);
+        date = view.findViewById(R.id.date);
+        time = view.findViewById(R.id.time);
+        switchClock = view.findViewById(R.id.switch1);
+        switchAntiClock = view.findViewById(R.id.switch2);
+        startBtn = view.findViewById(R.id.startBtn);
+        volController = view.findViewById(R.id.volumeController);
         speedController = view.findViewById(R.id.speedController);
-        lineChart = view.findViewById(R.id.line_chart);
-        calibrateBtn = view.findViewById(R.id.calibrateBtn);
-        startBtn = view.findViewById(R.id.ivStartBtn);
-        tvStart = view.findViewById(R.id.tvStart);
-        switchDir = view.findViewById(R.id.switchDir);
-        progressBar = view.findViewById(R.id.progressBar);
-        startLayout = view.findViewById(R.id.startLayout);
-        stopLayout = view.findViewById(R.id.stopLayout);
-        btnStop = view.findViewById(R.id.btnStop);
+
+        //lineChart = view.findViewById(R.id.line_chart);
+        //calibrateBtn = view.findViewById(R.id.calibrateBtn);
+        //tvStart = view.findViewById(R.id.tvStart);
+        //switchDir = view.findViewById(R.id.switchDir);
+        //progressBar = view.findViewById(R.id.progressBar);
+        //startLayout = view.findViewById(R.id.startLayout);
+        //stopLayout = view.findViewById(R.id.stopLayout);
+        //btnStop = view.findViewById(R.id.btnStop);
 
         volController.setProgress(0);
         speedController.setProgress(0);
 
         speedController.setMaxRange(150);
 
-        calibrateBtn.setOnClickListener(v -> {
+        /*calibrateBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), PumpCalibrateActivity.class);
             intent.putExtra(Dashboard.KEY_DEVICE_ID, PumpActivity.DEVICE_ID);
             startActivity(intent);
         });
+*/
 
         startBtn.setOnClickListener(v -> {
             isStarted = true;
-            showProgressBarLayout();
-            startProgressBar();
+            //showProgressBarLayout();
+            //startProgressBar();
             deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE);
         });
 
-        btnStop.setOnClickListener(v -> {
+       /* btnStop.setOnClickListener(v -> {
             isStarted = false;
             hideProgressBarLayout();
             stopProgressBar();
         });
-
+        */
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
 
@@ -129,10 +137,10 @@ public class DoseFragment extends Fragment {
             }
         });
 
-        startLayout.startAnimation(slideOutLeft);
-        stopLayout.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-        stopLayout.startAnimation(slideInRight);
+        //startLayout.startAnimation(slideOutLeft);
+        //stopLayout.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
+        //stopLayout.startAnimation(slideInRight);
 
     }
 
@@ -215,7 +223,7 @@ public class DoseFragment extends Fragment {
 //                    refreshStartBtnUI();
                     volController.setProgress(0);
                     speedController.setProgress(0);
-                    switchDir.setChecked(false);
+                    //switchDir.setChecked(false);
                 }
             }
 
@@ -232,7 +240,7 @@ public class DoseFragment extends Fragment {
             Integer dir = snapshot.getValue(Integer.class);
             if (dir == null) return;
 
-            switchDir.setChecked(dir == 0);
+            //switchDir.setChecked(dir == 0);
         });
 
         deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
@@ -255,8 +263,8 @@ public class DoseFragment extends Fragment {
 
             if (status == PumpActivity.STATUS_DOSE) {
                 isStarted = true;
-                showProgressBarLayout();
-                progressBar.setVisibility(View.INVISIBLE);
+              //  showProgressBarLayout();
+                //progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -268,9 +276,9 @@ public class DoseFragment extends Fragment {
             deviceRef.child("UI").child("Volume").setValue(progress);
         });
 
-        switchDir.setOnCheckedChangeListener((v, isChecked) -> {
-            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
-        });
+//        switchDir.setOnCheckedChangeListener((v, isChecked) -> {
+//            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
+//        });
     }
 
 //    private void refreshStartBtnUI() {
