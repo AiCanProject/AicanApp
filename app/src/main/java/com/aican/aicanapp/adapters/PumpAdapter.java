@@ -92,12 +92,12 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 mode = "Mode: Pump";
                 tvVol.setVisibility(View.GONE);
             }
-            String speed = String.format(Locale.UK, "Speed: %d mL/min", device.getSpeed());
+            String speed = String.format(Locale.UK, "%d mL/min", device.getSpeed());
             String dir;
             if (device.getDir() == 0) {
-                dir = "Direction: Clockwise";
+                dir = "Clockwise";
             } else {
-                dir = "Direction: AntiClockwise";
+                dir = "AntiClockwise";
             }
             if (device.getStatus() == PumpActivity.STATUS_PUMP || device.getStatus() == PumpActivity.STATUS_DOSE) {
                 onOffSwitch.setChecked(true);

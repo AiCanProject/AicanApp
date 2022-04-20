@@ -92,12 +92,12 @@ app:cardElevation="10dp">
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/tvSpeed"
         android:layout_toLeftOf="@id/image_ll"
+        android:fontFamily="sans-serif-medium"
         android:paddingHorizontal="30dp"
         android:paddingTop="8dp"
         android:text="ClockWise"
         android:textColor="@color/grey_dark"
-        android:textSize="13dp"
-        android:fontFamily="sans-serif-medium"/>
+        android:textSize="13dp" />
 
     <TextView
         android:id="@+id/mode"
