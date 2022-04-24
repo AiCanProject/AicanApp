@@ -371,50 +371,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="6dp">
 
-                <TextView
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Clockwise      "/>
+                    android:layout_below="@id/rlStart"
+                    android:layout_centerHorizontal="true"
+                    android:text="Clockwise         "
+                    android:textColor="@color/blueDarkAlpha"
+                    android:theme="@style/Switch" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:enabled="false"
-                android:layout_marginStart="5dp"
-                android:textColor="@color/black_force"
-                android:textStyle="bold"
-                android:thumb="@drawable/sw_thumb"
-                app:track="@drawable/sw_track" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="6dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="AntiClockwise"/>
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switch2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:enabled="false"
-                    android:layout_marginStart="5dp"
-                    android:textColor="@color/black_force"
-                    android:textStyle="bold"
-                    android:thumb="@drawable/sw_thumb"
-                    app:track="@drawable/sw_track" />
+                    android:layout_centerHorizontal="true"
+                    android:text="Anti Clockwise"
+                    android:textColor="@color/blueDarkAlpha"
+                    android:theme="@style/Switch" />
+
             </LinearLayout>
 
 
@@ -424,7 +410,7 @@
                 android:layout_height="wrap_content"
                 android:text="Start"
                 android:backgroundTint="#9037C7"
-                android:layout_marginTop="5sp"
+                android:layout_marginTop="3sp"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
 

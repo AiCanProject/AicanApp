@@ -74,11 +74,11 @@
                 android:id="@+id/switchDir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clockwise"
+                android:layout_below="@id/rlStart"
                 android:layout_centerHorizontal="true"
+                android:text="Clockwise"
                 android:textColor="@color/blueDarkAlpha"
-                android:theme="@style/Switch"
-                android:layout_below="@id/rlStart"/>
+                android:theme="@style/Switch" />
 
             <Button
                 android:id="@+id/calibrateBtn"

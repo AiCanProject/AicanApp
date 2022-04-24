@@ -1,14 +1,20 @@
 package com.aican.aicanapp.fragments.pump;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,12 +49,15 @@ public class DoseFragment extends Fragment {
     TextView tvStart, date, time;
     SwitchCompat switchClock, switchAntiClock;
     boolean isStarted = false;
+    Integer speed;
+    Integer vol;
+    TextView appMode;
+
 
     ProgressBar progressBar;
     DatabaseReference deviceRef = null;
     RelativeLayout startLayout, stopLayout;
     Button btnStop;
-
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -75,6 +84,10 @@ public class DoseFragment extends Fragment {
         startBtn = view.findViewById(R.id.startBtn);
         volController = view.findViewById(R.id.volumeController);
         speedController = view.findViewById(R.id.speedController);
+        switchClock = view.findViewById(R.id.switch1);
+        switchAntiClock = view.findViewById(R.id.switch2);
+        appMode = view.findViewById(R.id.appMode);
+        startBtn = view.findViewById(R.id.startBtn);
 
         //lineChart = view.findViewById(R.id.line_chart);
         //calibrateBtn = view.findViewById(R.id.calibrateBtn);
@@ -87,8 +100,8 @@ public class DoseFragment extends Fragment {
 
         volController.setProgress(0);
         speedController.setProgress(0);
-
         speedController.setMaxRange(150);
+
 
         /*calibrateBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), PumpCalibrateActivity.class);
@@ -101,15 +114,32 @@ public class DoseFragment extends Fragment {
             isStarted = true;
             //showProgressBarLayout();
             //startProgressBar();
-            deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE);
+            deviceRef.child("UI").child("Start").setValue(1);
         });
 
+
+        speedSet.setOnClickListener( v ->{
+            int spee= speedController.getProgress();
+            deviceRef.child("UI").child("Speed").setValue(spee);
+
+        });
+
+        volumeSet.setOnClickListener(v ->{
+            volController.setProgress(vol);
+        });
        /* btnStop.setOnClickListener(v -> {
             isStarted = false;
             hideProgressBarLayout();
             stopProgressBar();
         });
         */
+
+        SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
+        String shTime = sh.getString("CalibTime", "N/A");
+        String shDate = sh.getString("CalibDate", "N/A");
+        time.setText(shDate);
+        date.setText(shTime);
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
 
@@ -223,7 +253,7 @@ public class DoseFragment extends Fragment {
 //                    refreshStartBtnUI();
                     volController.setProgress(0);
                     speedController.setProgress(0);
-                    //switchDir.setChecked(false);
+                    switchClock.setChecked(false);
                 }
             }
 
@@ -239,21 +269,40 @@ public class DoseFragment extends Fragment {
         deviceRef.child("UI").child("Direction").get().addOnSuccessListener(snapshot -> {
             Integer dir = snapshot.getValue(Integer.class);
             if (dir == null) return;
+            switchClock.setChecked(dir == 0);
+            switchAntiClock.setChecked(dir == 1);
 
             //switchDir.setChecked(dir == 0);
         });
 
-        deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
-            Integer speed = snapshot.getValue(Integer.class);
-            if (speed == null) return;
+        deviceRef.child("UI").child("Direction").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Integer dir = snapshot.getValue(Integer.class);
+                if (dir == null) return;
+                if (dir == 0){
+                    switchClock.setChecked(true);
+                }else {
+                    switchAntiClock.setChecked(true);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
+            speed = snapshot.getValue(Integer.class);
+            if (speed == null) return;
             speedController.setProgress(speed);
         });
 
         deviceRef.child("UI").child("Volume").get().addOnSuccessListener(snapshot -> {
-            Integer vol = snapshot.getValue(Integer.class);
+            vol = snapshot.getValue(Integer.class);
             if (vol == null) return;
-
+            volController.getProgress();
             volController.setProgress(vol);
         });
 
@@ -276,10 +325,43 @@ public class DoseFragment extends Fragment {
             deviceRef.child("UI").child("Volume").setValue(progress);
         });
 
-//        switchDir.setOnCheckedChangeListener((v, isChecked) -> {
-//            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
-//        });
+       switchClock.setOnCheckedChangeListener((v, isChecked) -> {
+           if (isChecked){
+               switchAntiClock.setChecked(false);
+           }
+            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
+        });
+
+        switchAntiClock.setOnCheckedChangeListener((v, isChecked) -> {
+            if (isChecked){
+                switchClock.setChecked(false);
+            }
+            deviceRef.child("UI").child("Direction").setValue(isChecked ? 1 : 0);
+        });
+
+        deviceRef.child("UI").child("App").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int app = snapshot.getValue(Integer.class);
+                if (app == 0 ){
+                    appMode.setText("App Mode - OFF");
+                    appMode.setTextColor(Color.RED);
+                }else if (app == 1 ){
+                    appMode.setText("App Mode - ON");
+                    appMode.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
+
+
 
 //    private void refreshStartBtnUI() {
 //        if (isStarted) {

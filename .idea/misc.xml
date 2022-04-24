@@ -3,12 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.5" />
-        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.33" />
-        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.20416666666666666" />
-        <entry key="..\:/Users/12mad/StudioProjects/AICAN Automate LLt (Internship Work)/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/arrow_for.xml" value="0.1695" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/graph_btn_background.xml" value="0.1695" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/ic_slider.xml" value="0.1165" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/spinner_border.xml" value="0.1695" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/drawable/sw_thumb.xml" value="0.2075" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/activity_add_device_option.xml" value="0.1" />
@@ -32,6 +29,7 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_calib.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_dose.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_job.xml" value="0.12" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_p_calib.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.14" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.1" />

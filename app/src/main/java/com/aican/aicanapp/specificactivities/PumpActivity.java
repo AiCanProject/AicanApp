@@ -18,6 +18,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.ViewPagerAdapter;
 import com.aican.aicanapp.fragments.pump.DoseFragment;
 import com.aican.aicanapp.fragments.pump.JobFragment;
+import com.aican.aicanapp.fragments.pump.PCalibFragment;
 import com.aican.aicanapp.fragments.pump.PumpCalibFragment;
 import com.aican.aicanapp.fragments.pump.PumpFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -45,6 +46,7 @@ public class PumpActivity extends AppCompatActivity implements View.OnClickListe
     PumpFragment pumpFragment = new PumpFragment();
     DoseFragment doseFragment = new DoseFragment();
     PumpCalibFragment calibFragment = new PumpCalibFragment();
+    PCalibFragment pCalibFragment = new PCalibFragment();
     JobFragment jobFragment = new JobFragment();
 
     ViewPager2 viewPager;
@@ -105,6 +107,7 @@ public class PumpActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.item1) {
+            deviceRef.child("UI").child("Mode").setValue(0);
             tabItemTemp.animate().x(0).setDuration(100);
             loadFragments(doseFragment);
             pump.setTextColor(Color.WHITE);
@@ -112,8 +115,10 @@ public class PumpActivity extends AppCompatActivity implements View.OnClickListe
             job.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
         } else if (view.getId() == R.id.item2) {
+            deviceRef.child("UI").child("Mode").setValue(1);
 
-            loadFragments(pumpFragment);
+            // calib fragment is pump fragment here
+            loadFragments(calibFragment);
             calibration.setTextColor(Color.WHITE);
             pump.setTextColor(Color.parseColor("#FF24003A"));
             job.setTextColor(Color.parseColor("#FF24003A"));
@@ -122,7 +127,8 @@ public class PumpActivity extends AppCompatActivity implements View.OnClickListe
             tabItemTemp.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item3) {
-            loadFragments(calibFragment);
+            deviceRef.child("UI").child("Mode").setValue(2);
+            loadFragments(pCalibFragment);
             job.setTextColor(Color.WHITE);
             pump.setTextColor(Color.parseColor("#FF24003A"));
             calibration.setTextColor(Color.parseColor("#FF24003A"));

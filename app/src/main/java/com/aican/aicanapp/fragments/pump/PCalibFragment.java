@@ -12,17 +12,23 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
+import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.pumpController.HorizontalSlider;
 import com.aican.aicanapp.pumpController.VerticalSlider;
 import com.aican.aicanapp.specificactivities.PumpActivity;
+import com.aican.aicanapp.specificactivities.PumpCalibrateActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,17 +36,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class PumpCalibFragment extends Fragment {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-    SwitchCompat switchClock;
-    SwitchCompat switchAntiClock;
+public class PCalibFragment extends Fragment {
+
+    LinearLayout calibLayout;
+    Button speedSet, calibBtn, saveBtn;
+    SwitchCompat switchClock, switchAntiClock;
+    HorizontalSlider slider;
+    RelativeLayout saveLayout;
     VerticalSlider speedController;
-    Button speedSet, startBtn;
-    TextView appMode, date, time;
+    TextView tvTimer;
     DatabaseReference deviceRef;
-    boolean isStarted = false;
+    String time, date;
 
-    public PumpCalibFragment() {
+    public PCalibFragment() {
         // Required empty public constructor
     }
 
@@ -52,50 +64,87 @@ public class PumpCalibFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pump_calib, container, false);
+        return inflater.inflate(R.layout.fragment_p_calib, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        saveLayout = view.findViewById(R.id.saveLayout);
+        calibLayout = view.findViewById(R.id.calibLayout);
+        calibBtn = view.findViewById(R.id.calibBtn);
+        saveBtn = view.findViewById(R.id.savBtn);
+        slider = view.findViewById(R.id.slider);
         speedSet = view.findViewById(R.id.speedSet);
-        speedController = view.findViewById(R.id.speedController);
         switchClock = view.findViewById(R.id.switch1);
         switchAntiClock = view.findViewById(R.id.switch2);
-        appMode = view.findViewById(R.id.appMode);
-        startBtn = view.findViewById(R.id.startCalib);
-        date = view.findViewById(R.id.date);
-        time = view.findViewById(R.id.time);
+        speedController = view.findViewById(R.id.speedController);
+        tvTimer = view.findViewById(R.id.tvTimer);
 
-        startBtn.setOnClickListener(v->{
-            isStarted = !isStarted;
-            refreshStartBtnUI();
-            if (isStarted) {
-                deviceRef.child("UI").child("Start").setValue(1);
-            } else {
-                deviceRef.child("UI").child("Start").setValue(0);
-            }
-
+        calibBtn.setOnClickListener(v->{
+            calibLayout.setVisibility(View.GONE);
+            saveLayout.setVisibility(View.VISIBLE);
+            calibrate();
+            deviceRef.child("UI").child("Start").setValue(1);
         });
 
-
-        speedSet.setOnClickListener(v->{
-            int speed = speedController.getProgress();
-            deviceRef.child("UI").child("Speed").setValue(speed);
+        saveBtn.setOnClickListener(v -> {
+            int calVal = slider.getProgress();
+            deviceRef.child("UI").child("Cal").setValue(calVal);
+            //onBackPressed();
         });
 
         SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
-        String shTime = sh.getString("CalibTime", "N/A");
-        String shDate = sh.getString("CalibDate", "N/A");
-        date.setText(shTime);
-        time.setText(shDate);
+        SharedPreferences.Editor getTime = sh.edit();
+        //String roleSuper = Source.userName;
+        getTime.putString("CalibTime", time);
+        getTime.putString("CalibDate", date);
 
+        getTime.commit();
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
 
         SetUpListener();
     }
+
+    private void calibrate() {
+
+        time = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(new Date());
+        date = new SimpleDateFormat("hh:mm aa", Locale.getDefault()).format(new Date());
+
+        slider.setDisabled(true);
+        CountDownTimer timer = new CountDownTimer(45000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                millisUntilFinished /= 1000;
+                int min = (int) millisUntilFinished / 60;
+                int sec = (int) millisUntilFinished % 60;
+                String time = String.format(Locale.UK, "%02d:%02d", min, sec);
+                tvTimer.setText(time);
+            }
+
+            final Handler handler = new Handler();
+            Runnable runnable;
+
+            @Override
+            public void onFinish() {
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        slider.setDisabled(false);
+                        //saveBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                        saveBtn.setText("Save");
+                    }
+                };
+                runnable.run();
+            }
+        };
+        //deviceRef.child("UI").child("CAL").child("CAL").setValue(0);
+        timer.start();
+    }
+
+
 
     private void SetUpListener() {
 
@@ -149,33 +198,5 @@ public class PumpCalibFragment extends Fragment {
             deviceRef.child("UI").child("Direction").setValue(isChecked ? 1 : 0);
         });
 
-        deviceRef.child("UI").child("App").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int app = snapshot.getValue(Integer.class);
-                if (app == 0 ){
-                    appMode.setText("App Mode - OFF");
-                    appMode.setTextColor(Color.RED);
-                }else if (app == 1 ){
-                    appMode.setText("App Mode - ON");
-                    appMode.setTextColor(Color.GREEN);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-    private void refreshStartBtnUI() {
-        if (isStarted) {
-            startBtn.setText("STOP");
-            startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red));
-        } else {
-            startBtn.setText("START");
-            startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
-        }
     }
 }
