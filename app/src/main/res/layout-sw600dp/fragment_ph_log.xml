@@ -143,6 +143,7 @@
                     android:layout_marginEnd="20dp"
                     android:backgroundTint="#3CEA43"
                     android:text="@string/log"
+                    android:visibility="visible"
                     android:textAllCaps="false"
                     android:textSize="15sp" />
 
@@ -162,6 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+
                     android:text="Print"
                     android:textAllCaps="false"
                     android:textSize="15sp"

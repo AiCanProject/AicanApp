@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.os.Handler;
 
 import android.util.Log;
@@ -33,6 +34,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aican.aicanapp.Source;
+import com.aican.aicanapp.adapters.FileAdapter;
+import com.aican.aicanapp.adapters.PrintLogAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
@@ -57,6 +60,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,13 +76,16 @@ public class phLogFragment extends Fragment {
     String ph, temp, mv, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     LineChart lineChart;
+    String mode;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
     LogAdapter adapter;
+    String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn;
+    Button logBtn, exportBtn, printBtn;
     ImageButton enterBtn;
+    PrintLogAdapter plAdapter;
     EditText compound_name_txt;
     String TABLE_NAME = "LogUserdetails";
 
@@ -112,11 +121,16 @@ public class phLogFragment extends Fragment {
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
         enterBtn = view.findViewById(R.id.enter_text);
+        printBtn = view.findViewById(R.id.print);
         compound_name_txt = view.findViewById(R.id.compound_name);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        RecyclerView csvRecyclerView = view.findViewById(R.id.recyclerViewCSVLog);
+        csvRecyclerView.setHasFixedSize(true);
+        csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         databaseHelper = new DatabaseHelper(getContext());
         adapter = new LogAdapter(getContext(), getSQLList());
@@ -127,7 +141,7 @@ public class phLogFragment extends Fragment {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-
+        nullEntry = " ";
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         fetch_logs();
 
@@ -206,6 +220,12 @@ public class phLogFragment extends Fragment {
 
                 deleteAll();
 
+
+
+                SharedPreferences modePrefs3 = getContext().getSharedPreferences("modePrefs3", MODE_PRIVATE);
+                mode = modePrefs3.getString("3", "");
+
+
                 databaseHelper.insertCalibData(ph1, mv1, dt1);
                 databaseHelper.insertCalibData(ph2, mv2, dt2);
                 databaseHelper.insertCalibData(ph3, mv3, dt3);
@@ -233,14 +253,117 @@ public class phLogFragment extends Fragment {
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
         });
+
+        printBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exportSensorCsv();
+
+                String pdfPattern = ".csv";
+                String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+                File root = new File(path);
+                File[] filesAndFolders = root.listFiles();
+
+
+                    for (int i = 0; i < filesAndFolders.length; i++) {
+                        filesAndFolders[i].getName().endsWith(pdfPattern);
+                    }
+
+                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
+                csvRecyclerView.setAdapter(plAdapter);
+                plAdapter.notifyDataSetChanged();
+                csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+            }
+        });
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        String startsWith = "SensorLogData";
+        String endsWith = ".csv";
+        String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+        File root = new File(path);
+        File[] filesAndFolders = root.listFiles();
+
+
+        for (int i = 0; i < filesAndFolders.length; i++) {
+            filesAndFolders[i].getName().startsWith(startsWith);
+        }
+
+        plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
+        csvRecyclerView.setAdapter(plAdapter);
+        plAdapter.notifyDataSetChanged();
+        csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+
+        if (checkPermission()) {
+            Toast.makeText(getContext().getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
     }
 
     /**
      * Passing on the data to LogAdapter
+     *
      * @return
      */
+
+    public void exportSensorCsv() {
+        //We use the Download directory for saving our .csv file.
+        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        File file;
+        PrintWriter printWriter = null;
+
+        try {
+
+            file = new File(exportDir, "SensorLogData.csv");
+            file.createNewFile();
+            printWriter = new PrintWriter(new FileWriter(file), true);
+
+            SharedPreferences shp = getActivity().getSharedPreferences("Extras", MODE_PRIVATE);
+            offset = "Offset: " + shp.getString("offset", "");
+            battery = "Battery: " + shp.getString("battery", "");
+            slope = "Slope: " + shp.getString("slope", "");
+            temperature = "Temperature: " + shp.getString("temp", "");
+
+            SharedPreferences shp2 = getActivity().getSharedPreferences("RolePref", MODE_PRIVATE);
+            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+
+
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+
+            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("TIME,pH,TEMP,NAME");
+
+            while (curCSV.moveToNext()) {
+
+                String time = curCSV.getString(curCSV.getColumnIndex("time"));
+                String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
+                String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+                String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
+
+                String record = time + "," + pH + "," + temp + "," + comp;
+
+                printWriter.println(record);
+            }
+            curCSV.close();
+            db.close();
+
+        } catch (Exception e) {
+            Log.d("csvexception", String.valueOf(e));
+        }
+    }
+
     private List<phData> getList() {
         phDataModelList.add(0, new phData(ph, temp, time, compound_name));
         return phDataModelList;
@@ -349,6 +472,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * Fetching log entries from SQL Database
+     *
      * @return
      */
     private ArrayList<phData> getSQLList() {
@@ -371,6 +495,7 @@ public class phLogFragment extends Fragment {
 
     /**
      * checking of permissions.
+     *
      * @return
      */
     private boolean checkPermission() {

@@ -49,4 +49,11 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="mode">Mode</string>
     <string name="temperature_1">Temperature 1</string>
     <string name="temperature_2">Temperature 2</string>
+
+<!--    <string-array name="mode">-->
+<!--        <item>"Select One"</item>-->
+<!--        <item>5</item>-->
+<!--        <item>3</item>-->
+<!--    </string-array>-->
+
 </resources>

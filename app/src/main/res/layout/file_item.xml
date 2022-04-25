@@ -14,13 +14,13 @@
         tools:src="@drawable/ic_baseline_insert_drive_file_24" />
 
     <TextView
+        android:id="@+id/file_name_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/file_name_text_view"
         android:layout_toEndOf="@id/icon_view"
         android:padding="10dp"
         android:textColor="@color/black"
-        tools:text="Documents"/>
+        tools:text="Documents" />
 
     <LinearLayout
         android:layout_width="match_parent"
