@@ -226,6 +226,16 @@
                 android:elevation="12dp"
                 app:cardCornerRadius="16dp">
 
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchAtc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Off  "
+                    android:layout_marginTop="48dp"
+                    android:layout_gravity="center"
+                    android:textColor="@color/blueDarkAlpha"
+                    android:theme="@style/Switch" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

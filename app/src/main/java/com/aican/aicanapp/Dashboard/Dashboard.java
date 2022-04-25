@@ -142,7 +142,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
 
-        showNetworkDialog();
+        //showNetworkDialog();
 
         phRecyclerView.setVisibility(View.VISIBLE);
         phDev.setCardBackgroundColor(Color.GRAY);
@@ -153,7 +153,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNetworkDialog();
+          //      showNetworkDialog();
                 Intent intent = new Intent(Dashboard.this, InstructionActivity.class);
                 startActivity(intent);
             }
@@ -161,7 +161,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNetworkDialog();
+            //    showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -181,7 +181,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNetworkDialog();
+                //showNetworkDialog();
 
 
                 if (tempDevices.size() != 0) {
@@ -206,7 +206,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         peristalticDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNetworkDialog();
+                //showNetworkDialog();
                 if (pumpDevices.size() != 0) {
                     pumpRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -228,7 +228,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         IndusDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNetworkDialog();
+                //showNetworkDialog();
                 if (coolingDevices.size() != 0) {
                     coolingRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -254,7 +254,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showNetworkDialog();
+                //showNetworkDialog();
                 Intent toAddDevice = new Intent(Dashboard.this, AddDeviceOption.class);
                 startActivity(toAddDevice);
             }

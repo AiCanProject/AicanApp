@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +73,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     private static final String FILE_NAMEE = "user_calibrate.txt";
 
     int ec;
+    Integer fault;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     DatabaseReference deviceRef;
@@ -528,7 +531,62 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        deviceRef.child("Data").child("FAULT").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                fault = snapshot.getValue(Integer.class);
+                if (fault == null) return;
+                if (fault == 1) {
+                    showAlertDialogButtonClicked();
+                }else {
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
     }
+
+    public void showAlertDialogButtonClicked()
+    {
+
+        // Create an alert builder
+        AlertDialog.Builder builder
+                = new AlertDialog.Builder(requireContext());
+        // set the custom layout
+        final View customLayout
+                = getLayoutInflater()
+                .inflate(
+                        R.layout.fault_dialog,
+                        null);
+        builder.setView(customLayout);
+
+        // add a button
+        builder.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which)
+                            {
+
+                            }
+                        });
+
+        // create and show
+        // the alert dialog
+        AlertDialog dialog
+                = builder.create();
+        dialog.show();
+    }
+
 
 
     private void setupListenersForThree() {
