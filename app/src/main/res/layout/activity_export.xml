@@ -86,7 +86,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
-        android:text="Export CSV"
+        android:text="Export Sensor Data"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -112,26 +112,64 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
+<!--    <TextView-->
+<!--        android:id="@+id/nofiles_textview"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:text="NO FILES FOUND"-->
+<!--        android:visibility="invisible"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guideline4"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+<!--    -->
     <TextView
-        android:id="@+id/nofiles_textview"
+        android:id="@+id/tvCSV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="NO FILES FOUND"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Sensor Data Files"
+        android:textSize="20dp"
+        android:fontFamily="@font/sofia_medium"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewCSV"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCSV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tvCSV"
+        app:layout_constraintBottom_toTopOf="@+id/tvUserLog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+         />
+
+    <TextView
+        android:id="@+id/tvUserLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Activity Files"
+        android:fontFamily="@font/sofia_medium"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewCSV"
+        app:layout_constraintStart_toStartOf="@id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewUserData"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewUserData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserLog"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="parent" />
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

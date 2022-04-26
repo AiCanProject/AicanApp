@@ -20,26 +20,26 @@ import com.aican.aicanapp.R;
 
 import java.io.File;
 
-public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
+public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHolder> {
 
     Context context;
     File[] files;
     //ImageView imageView;
 
-    public FileAdapter(Context context, File[] files) {
+    public UserDataAdapter(Context context, File[] files) {
         this.context = context;
         this.files = files;
     }
 
     @NonNull
     @Override
-    public FileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public UserDataAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.file_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FileAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserDataAdapter.ViewHolder holder, int position) {
 
         File selectedFile = files[position];
         holder.textView.setText(selectedFile.getName());
@@ -49,22 +49,23 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
-                File file = new File(path);
+
+                String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataUserActivity.csv";
+
+                File file2 = new File(path2);
 
                 try {
-                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
 
-                    mIntent.setDataAndType(Uri.fromFile(file), "text/plain");
-                    mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
+                    Intent dIntent = new Intent(Intent.ACTION_VIEW);
+                    dIntent.setDataAndType(Uri.fromFile(file2), "text/plain");
+                    dIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    dIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    dIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    dIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
 
-                    Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
-                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.getApplicationContext().startActivity(cIntent);
-
+                    Intent vIntent = Intent.createChooser(dIntent, "Open User Data");
+                    vIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.getApplicationContext().startActivity(vIntent);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -92,7 +93,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataUserActivity.csv";
                             File file = new File(path);
 
                             try {
@@ -140,4 +141,3 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         }
     }
 }
-

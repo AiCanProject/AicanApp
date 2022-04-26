@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.FileAdapter;
+import com.aican.aicanapp.adapters.UserDataAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
@@ -57,6 +58,7 @@ public class Export extends AppCompatActivity {
     String companyName;
     String nullEntry;
     FileAdapter fAdapter;
+    UserDataAdapter uAdapter;
     EditText companyNameEditText;
     DatabaseHelper databaseHelper;
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -67,7 +69,8 @@ public class Export extends AppCompatActivity {
         setContentView(R.layout.activity_export);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewCSV);
-        TextView noFilesText = findViewById(R.id.nofiles_textview);
+        RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
+//        TextView noFilesText = findViewById(R.id.nofiles_textview);
         deviceId = findViewById(R.id.DeviceId);
         tvStartDate = findViewById(R.id.dateStart);
         tvEndDate = findViewById(R.id.dateEnd);
@@ -84,14 +87,12 @@ public class Export extends AppCompatActivity {
 
                 exportDatabaseCsv();
 
-
-                String startsWith = "DataSensorLog.csv";
                 String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
-                    noFilesText.setVisibility(View.VISIBLE);
+//                    noFilesText.setVisibility(View.VISIBLE);
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
@@ -99,7 +100,7 @@ public class Export extends AppCompatActivity {
                     }
                 }
 
-                noFilesText.setVisibility(View.INVISIBLE);
+//                noFilesText.setVisibility(View.INVISIBLE);
                 fAdapter = new FileAdapter(getApplicationContext(), filesAndFolders);
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
@@ -112,13 +113,13 @@ public class Export extends AppCompatActivity {
             public void onClick(View v) {
                 exportUserData();
 
-                String startsWith = "DataUserActivity";
+
                 String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
-                    noFilesText.setVisibility(View.VISIBLE);
+//                    noFilesText.setVisibility(View.VISIBLE);
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
@@ -126,16 +127,15 @@ public class Export extends AppCompatActivity {
                     }
                 }
 
-                noFilesText.setVisibility(View.INVISIBLE);
-                fAdapter = new FileAdapter(Export.this, filesAndFolders);
-                recyclerView.setAdapter(fAdapter);
-                fAdapter.notifyDataSetChanged();
-                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//                noFilesText.setVisibility(View.INVISIBLE);
+                uAdapter = new UserDataAdapter(Export.this, filesAndFolders);
+                userRecyclerView.setAdapter(uAdapter);
+                uAdapter.notifyDataSetChanged();
+                userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
             }
         });
 
-        String startWith = "Data";
         String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
@@ -145,15 +145,19 @@ public class Export extends AppCompatActivity {
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().startsWith("Data");
+                filesAndFolders[i].getName().startsWith("DataSensorLog");
+                filesAndFolders[i].getName().startsWith("DataUserActivity");
             }
         }
 
-        noFilesText.setVisibility(View.INVISIBLE);
+//        noFilesText.setVisibility(View.INVISIBLE);
         fAdapter = new FileAdapter(this, filesAndFolders);
+        uAdapter = new UserDataAdapter(this, filesAndFolders);
         recyclerView.setAdapter(fAdapter);
+        userRecyclerView.setAdapter(uAdapter);
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mDateBtn.setOnClickListener(v -> {
             MaterialDatePicker datePicker =
@@ -278,9 +282,9 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-            String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
+//            String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
 
-            file = new File(exportDir, "DataUserActivity" + fileName + ".csv");
+            file = new File(exportDir, "DataUserActivity.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 

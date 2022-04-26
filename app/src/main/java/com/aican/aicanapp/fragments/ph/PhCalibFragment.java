@@ -144,15 +144,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         });
     }
 
-//    private View.OnClickListener onClickListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            if (v.getId() == R.id.ph2 && v.getId() == R.id.mv2) {
-//                ph1.setBackgroundColor(Color.GRAY);
-//                mv1.setBackgroundColor(Color.GRAY);
-//            }
-//        }
-//    };
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.ph2 && v.getId() == R.id.mv2) {
+                ph1.setBackgroundColor(Color.LTGRAY);
+                mv1.setBackgroundColor(Color.LTGRAY);
+            }
+        }
+    };
 
     private void setupCoeffListener() {
         if (coeffRef != null) {
@@ -337,14 +337,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 ec = snapshot.getValue(Integer.class);
 
                 if (ec == 10 || ec == 0) {
-                    l1.setBackgroundColor(Color.GRAY);
+                    l1.setBackgroundColor(Color.LTGRAY);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
                 } else if (ec == 20 || ec == 11) {
                     l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.GRAY);
+                    l2.setBackgroundColor(Color.LTGRAY);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
@@ -352,7 +352,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 } else if (ec == 30 || ec == 21) {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.GRAY);
+                    l3.setBackgroundColor(Color.LTGRAY);
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
 
@@ -360,7 +360,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.GRAY);
+                    l4.setBackgroundColor(Color.LTGRAY);
                     l5.setBackgroundColor(Color.WHITE);
 
                 } else if (ec == 50 || ec == 41) {
@@ -368,7 +368,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.GRAY);
+                    l5.setBackgroundColor(Color.LTGRAY);
                 } else {
                     l1.setBackgroundColor(Color.WHITE);
                     l2.setBackgroundColor(Color.WHITE);
@@ -769,19 +769,19 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //                } else
 
                 if (ec == 20 || ec == 11) {
-                    l2.setBackgroundColor(Color.GRAY);
+                    l2.setBackgroundColor(Color.LTGRAY);
                     l3.setBackgroundColor(Color.WHITE);
                     l4.setBackgroundColor(Color.WHITE);
 
                 } else if (ec == 30 || ec == 21) {
                     l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.GRAY);
+                    l3.setBackgroundColor(Color.LTGRAY);
                     l4.setBackgroundColor(Color.WHITE);
 
                 } else if (ec == 40 || ec == 31) {
                     l2.setBackgroundColor(Color.WHITE);
                     l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.GRAY);
+                    l4.setBackgroundColor(Color.LTGRAY);
 
                 }
 //                    else if (ec == 50 || ec == 41) {
@@ -1082,8 +1082,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 switch (position) {
                     case 0:
 
-                        Toast.makeText(requireContext(), "Select a callibration mode", Toast.LENGTH_SHORT).show();
+                        mode = "5";
 
+                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+                        setupListeners();
+
+                        loadBuffers();
+                        setupCoeffListener();
+
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
                         break;
 
                     case 1:
