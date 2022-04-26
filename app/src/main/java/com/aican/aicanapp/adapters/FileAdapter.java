@@ -49,7 +49,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
                 File file = new File(path);
 
                 try {
@@ -59,7 +59,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
+                    mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
 
                     Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
                     cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -90,7 +90,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
                             File file = new File(path);
 
                             try {

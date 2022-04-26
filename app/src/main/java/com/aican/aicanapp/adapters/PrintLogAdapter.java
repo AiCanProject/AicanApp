@@ -50,7 +50,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorLogData.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/CurrentData.csv";
                 File file = new File(path);
 
                 try {
@@ -60,7 +60,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
+                    mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
 
                     Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
                     cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -91,7 +91,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/SensorData.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/CurrentData.csv";
                             File file = new File(path);
 
                             try {

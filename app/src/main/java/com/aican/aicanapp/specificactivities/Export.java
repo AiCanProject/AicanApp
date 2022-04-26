@@ -85,7 +85,7 @@ public class Export extends AppCompatActivity {
                 exportDatabaseCsv();
 
 
-                String pdfPattern = ".csv";
+                String startsWith = "DataSensorLog.csv";
                 String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
@@ -95,7 +95,7 @@ public class Export extends AppCompatActivity {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(pdfPattern);
+                        filesAndFolders[i].getName().startsWith("DataSensorLog");
                     }
                 }
 
@@ -112,7 +112,7 @@ public class Export extends AppCompatActivity {
             public void onClick(View v) {
                 exportUserData();
 
-                String pdfPattern = ".csv";
+                String startsWith = "DataUserActivity";
                 String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
@@ -122,7 +122,7 @@ public class Export extends AppCompatActivity {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(pdfPattern);
+                        filesAndFolders[i].getName().startsWith("DataUserActivity");
                     }
                 }
 
@@ -135,9 +135,19 @@ public class Export extends AppCompatActivity {
             }
         });
 
+        String startWith = "Data";
         String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
+
+        if (filesAndFolders == null || filesAndFolders.length == 0) {
+            Toast.makeText(this, "No Files Found", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            for (int i = 0; i < filesAndFolders.length; i++) {
+                filesAndFolders[i].getName().startsWith("Data");
+            }
+        }
 
         noFilesText.setVisibility(View.INVISIBLE);
         fAdapter = new FileAdapter(this, filesAndFolders);
@@ -191,7 +201,7 @@ public class Export extends AppCompatActivity {
         try {
 //            String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-            file = new File(exportDir, "SensorData.csv");
+            file = new File(exportDir, "DataSensorLog.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
@@ -270,7 +280,7 @@ public class Export extends AppCompatActivity {
         try {
             String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
 
-            file = new File(exportDir, "UserActivity" + fileName + ".csv");
+            file = new File(exportDir, "DataUserActivity" + fileName + ".csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 

@@ -220,12 +220,6 @@ public class phLogFragment extends Fragment {
 
                 deleteAll();
 
-
-
-                SharedPreferences modePrefs3 = getContext().getSharedPreferences("modePrefs3", MODE_PRIVATE);
-                mode = modePrefs3.getString("3", "");
-
-
                 databaseHelper.insertCalibData(ph1, mv1, dt1);
                 databaseHelper.insertCalibData(ph2, mv2, dt2);
                 databaseHelper.insertCalibData(ph3, mv3, dt3);
@@ -247,6 +241,7 @@ public class phLogFragment extends Fragment {
             if (ph == null || temp == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
+                databaseHelper.print_insert_log_data(time, ph, temp, compound_name);
                 databaseHelper.insert_log_data(time, ph, temp, compound_name);
                 databaseHelper.insert_action_data(time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
             }
@@ -259,35 +254,51 @@ public class phLogFragment extends Fragment {
             public void onClick(View v) {
                 exportSensorCsv();
 
-                String pdfPattern = ".csv";
+                String startsWith = "CurrentData";
                 String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
 
+                if (filesAndFolders == null || filesAndFolders.length == 0) {
+                    Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(pdfPattern);
+                        filesAndFolders[i].getName().startsWith(startsWith);
                     }
+                }
 
                 plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
                 csvRecyclerView.setAdapter(plAdapter);
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
+                if (curCSV != null && curCSV.getCount() > 0){
+                    deleteAllLogs();
+                } else {
+                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        String startsWith = "SensorLogData";
-        String endsWith = ".csv";
+//        String startsWith = "CurrentData";
         String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
-
-        for (int i = 0; i < filesAndFolders.length; i++) {
-            filesAndFolders[i].getName().startsWith(startsWith);
+        if (filesAndFolders == null || filesAndFolders.length == 0) {
+            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            for (int i = 0; i < filesAndFolders.length; i++) {
+                filesAndFolders[i].getName().startsWith("CurrentData");
+            }
         }
 
         plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
@@ -320,7 +331,7 @@ public class phLogFragment extends Fragment {
 
         try {
 
-            file = new File(exportDir, "SensorLogData.csv");
+            file = new File(exportDir, "CurrentData.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
@@ -336,7 +347,7 @@ public class phLogFragment extends Fragment {
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
 
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -372,6 +383,12 @@ public class phLogFragment extends Fragment {
     public void deleteAll() {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.execSQL("DELETE FROM Calibdetails");
+        db.close();
+    }
+
+    public void deleteAllLogs() {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM PrintLogUserdetails");
         db.close();
     }
 

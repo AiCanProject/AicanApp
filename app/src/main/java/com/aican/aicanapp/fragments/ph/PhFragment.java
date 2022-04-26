@@ -257,12 +257,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
 
-            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1  : 0);
-            if (isChecked){
-                switchAtc.setText("On  ");
-            }else {
-                switchAtc.setText("Off  ");
-            }
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("ATC").setValue(isChecked ? 1  : 0);
+//            if (isChecked){
+//                switchAtc.setText("On  ");
+//            }else {
+//                switchAtc.setText("Off  ");
+//            }
         });
 
 

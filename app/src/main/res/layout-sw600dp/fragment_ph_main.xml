@@ -236,10 +236,12 @@
                     android:id="@+id/switchAtc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Off  "
-                    android:layout_gravity="center"
+                    android:text="ATC  "
+                    android:textSize="25sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="40dp"
                     android:layout_marginTop="48dp"
-                    android:textColor="@color/blueDarkAlpha"
+                    android:textColor="@color/blue_dark"
                     android:theme="@style/Switch" />
                 <TextView
                     android:layout_width="wrap_content"
