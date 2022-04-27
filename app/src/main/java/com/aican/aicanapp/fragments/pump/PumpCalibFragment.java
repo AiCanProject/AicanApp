@@ -29,12 +29,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.triggertrap.seekarc.SeekArc;
 
 public class PumpCalibFragment extends Fragment {
 
     SwitchCompat switchClock;
     SwitchCompat switchAntiClock;
-    VerticalSlider speedController;
+    //VerticalSlider speedController;
+    SeekArc seekArc;
+    TextView seekArcText;
     Button speedSet, startBtn;
     TextView appMode, date, time;
     DatabaseReference deviceRef;
@@ -59,13 +62,15 @@ public class PumpCalibFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         speedSet = view.findViewById(R.id.speedSet);
-        speedController = view.findViewById(R.id.speedController);
+      //  speedController = view.findViewById(R.id.speedController);
         switchClock = view.findViewById(R.id.switch1);
         switchAntiClock = view.findViewById(R.id.switch2);
         appMode = view.findViewById(R.id.appMode);
         startBtn = view.findViewById(R.id.startCalib);
         date = view.findViewById(R.id.date);
         time = view.findViewById(R.id.time);
+        seekArc = view.findViewById(R.id.seekArc);
+        //seekArcText = view.findViewById(R.id.seekArcText);
 
         startBtn.setOnClickListener(v->{
             isStarted = !isStarted;
@@ -80,7 +85,7 @@ public class PumpCalibFragment extends Fragment {
 
 
         speedSet.setOnClickListener(v->{
-            int speed = speedController.getProgress();
+            int speed = seekArc.getProgress();
             deviceRef.child("UI").child("Speed").setValue(speed);
         });
 
@@ -103,7 +108,8 @@ public class PumpCalibFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int spd = snapshot.getValue(Integer.class);
-                speedController.setProgress(spd);
+                seekArc.setProgress(spd);
+                // speedController.setProgress(spd);
             }
 
             @Override

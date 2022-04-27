@@ -31,7 +31,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AicanApp"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="m"
+        tools:replace="android:icon">
 
         <activity
             android:name=".CheckConnectionReciever"

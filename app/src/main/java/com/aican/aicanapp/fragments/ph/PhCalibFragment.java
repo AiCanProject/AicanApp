@@ -77,6 +77,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static final String CALIBRATION_TYPE = "calibration_type";
 
     LinearLayout log3, log5;
+
     int ec;
     Integer fault;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
@@ -174,13 +175,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         coeffRef.addValueEventListener(coeffListener);
     }
 
-    private void setupCoeffListenerThree() {
-        if (coeffRefThree != null) {
-            coeffRefThree.removeEventListener(coeffListenerThree);
-        }
-        coeffRefThree = deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]);
-        coeffRefThree.addValueEventListener(coeffListenerThree);
-    }
+//    private void setupCoeffListenerThree() {
+//        if (coeffRefThree != null) {
+//            coeffRefThree.removeEventListener(coeffListenerThree);
+//        }
+//        coeffRefThree = deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]);
+//        coeffRefThree.addValueEventListener(coeffListenerThree);
+//    }
 
     private void setupListeners() {
 
@@ -344,230 +345,193 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-    if (mode.equals(5)) {
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                ec = snapshot.getValue(Integer.class);
 
-                if (ec == 10 || ec == 0) {
-                    l1.setBackgroundColor(Color.LTGRAY);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
-                } else if (ec == 20 || ec == 11) {
-                    l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.LTGRAY);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
+        if(spin.getSelectedItemPosition() == 0 ) {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    ec = snapshot.getValue(Integer.class);
 
-                } else if (ec == 30 || ec == 21) {
-                    l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.LTGRAY);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
+                    if (ec == 10 || ec == 0) {
+                        l1.setBackgroundColor(Color.LTGRAY);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.WHITE);
+                        l4.setBackgroundColor(Color.WHITE);
+                        l5.setBackgroundColor(Color.WHITE);
+                    } else if (ec == 20 || ec == 11) {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.LTGRAY);
+                        l3.setBackgroundColor(Color.WHITE);
+                        l4.setBackgroundColor(Color.WHITE);
+                        l5.setBackgroundColor(Color.WHITE);
 
-                } else if (ec == 40 || ec == 31) {
-                    l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.LTGRAY);
-                    l5.setBackgroundColor(Color.WHITE);
+                    } else if (ec == 30 || ec == 21) {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.LTGRAY);
+                        l4.setBackgroundColor(Color.WHITE);
+                        l5.setBackgroundColor(Color.WHITE);
 
-                } else if (ec == 50 || ec == 41) {
-                    l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.LTGRAY);
-                } else {
-                    l1.setBackgroundColor(Color.WHITE);
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                    l5.setBackgroundColor(Color.WHITE);
-                }
-                if (ec == 11) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
+                    } else if (ec == 40 || ec == 31) {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.WHITE);
+                        l4.setBackgroundColor(Color.LTGRAY);
+                        l5.setBackgroundColor(Color.WHITE);
 
-
-                } else if (ec == 21) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
+                    } else if (ec == 50 || ec == 41) {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.WHITE);
+                        l4.setBackgroundColor(Color.WHITE);
+                        l5.setBackgroundColor(Color.LTGRAY);
+                    } else {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.WHITE);
+                        l4.setBackgroundColor(Color.WHITE);
+                        l5.setBackgroundColor(Color.WHITE);
+                    }
+                    if (ec == 11) {
+                        Date date = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(date);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+                        calibrateBtn.setEnabled(true);
 
 
-                } else if (ec == 31) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
+                    } else if (ec == 21) {
+                        Date date = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(date);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                        calibrateBtn.setEnabled(true);
 
 
-                } else if (ec == 41) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
+                    } else if (ec == 31) {
+                        Date date = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(date);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+                        calibrateBtn.setEnabled(true);
 
 
-                } else if (ec == 51) {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(new Date());
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
-                    calibrateBtn.setText("DONE");
-                    currentBuf = -1;
+                    } else if (ec == 41) {
+                        Date date = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(date);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+                        calibrateBtn.setEnabled(true);
 
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            calibrateBtn.setText("START");
-                            calibrateBtn.setEnabled(true);
-                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                        }
-                    }, 10000);   //5 seconds
+                    } else if (ec == 51) {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(new Date());
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+                        calibrateBtn.setText("DONE");
+                        currentBuf = -1;
 
-                } else if (ec == 0) {
-                    calibrateBtn.setText("START");
-                    calibrateBtn.setEnabled(true);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-    }else if (mode.equals(3)) {
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                ec = snapshot.getValue(Integer.class);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                calibrateBtn.setText("START");
+                                calibrateBtn.setEnabled(true);
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                            }
+                        }, 10000);   //5 seconds
 
-//                if (ec == 10 || ec == 0) {
-//                    l1.setBackgroundColor(Color.GRAY);
-//                    l2.setBackgroundColor(Color.WHITE);
-//                    l3.setBackgroundColor(Color.WHITE);
-//                    l4.setBackgroundColor(Color.WHITE);
-//                    l5.setBackgroundColor(Color.WHITE);
-//                } else
-
-                if (ec == 20 || ec == 11) {
-                    l2.setBackgroundColor(Color.LTGRAY);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-
-                } else if (ec == 30 || ec == 21) {
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.LTGRAY);
-                    l4.setBackgroundColor(Color.WHITE);
-
-                } else if (ec == 40 || ec == 31) {
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.LTGRAY);
-
-                }
-//                    else if (ec == 50 || ec == 41) {
-//                    l1.setBackgroundColor(Color.WHITE);
-//                    l2.setBackgroundColor(Color.WHITE);
-//                    l3.setBackgroundColor(Color.WHITE);
-//                    l4.setBackgroundColor(Color.WHITE);
-//                    l5.setBackgroundColor(Color.GRAY);
-//                }
-                else {
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
+                    } else if (ec == 0) {
+                        calibrateBtn.setText("START");
+                        calibrateBtn.setEnabled(true);
+                    }
                 }
 
-//                if (ec == 11) {
-//                    Date date = new Date();
-//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-//                    strDate = simpleDateFormat.format(date);
-//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
-//                    calibrateBtn.setEnabled(true);
-//
-//
-//                }
-                if (ec == 21) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
-
-
-                } else if (ec == 31) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
-
-
-                } else if (ec == 41) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
-                    calibrateBtn.setText("DONE");
-                    currentBufThree = -1;
-
-
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            calibrateBtn.setText("START");
-                            calibrateBtn.setEnabled(true);
-                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                        }
-                    }, 10000);   //5 seconds
-
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 }
-//                else if (ec == 51) {
-//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-//                    strDate = simpleDateFormat.format(new Date());
-//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
-//                    calibrateBtn.setText("DONE");
-//                    currentBuf = -1;
-//
-//
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        public void run() {
-//                            calibrateBtn.setText("START");
-//                            calibrateBtn.setEnabled(true);
-//                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-//                        }
-//                    }, 10000);   //5 seconds
-//
-//                }
-                else if (ec == 0) {
-                    calibrateBtn.setText("START");
-                    calibrateBtn.setEnabled(true);
+            });
+        }else if (spin.getSelectedItemPosition() == 1) {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    ec = snapshot.getValue(Integer.class);
+
+                    if (ec == 20 || ec == 0) {
+                        l1.setBackgroundColor(Color.LTGRAY);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.WHITE);
+                        //l4.setBackgroundColor(Color.WHITE);
+                        //l5.setBackgroundColor(Color.WHITE);
+                    } else if (ec == 30 || ec == 21) {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.LTGRAY);
+                        l3.setBackgroundColor(Color.WHITE);
+                        //l4.setBackgroundColor(Color.WHITE);
+                        //l5.setBackgroundColor(Color.WHITE);
+
+                    } else if (ec == 40 || ec == 31) {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.LTGRAY);
+                        //l4.setBackgroundColor(Color.WHITE);
+                       // l5.setBackgroundColor(Color.WHITE);
+
+                    } else {
+                        l1.setBackgroundColor(Color.WHITE);
+                        l2.setBackgroundColor(Color.WHITE);
+                        l3.setBackgroundColor(Color.WHITE);
+                        l4.setBackgroundColor(Color.WHITE);
+                        l5.setBackgroundColor(Color.WHITE);
+                    }
+
+                    if (ec == 21) {
+                        Date date = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(date);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+                        calibrateBtn.setEnabled(true);
+
+
+                    } else if (ec == 31) {
+                        Date date = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(date);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                        calibrateBtn.setEnabled(true);
+
+
+                    }  else if (ec == 41) {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                        strDate = simpleDateFormat.format(new Date());
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+                        calibrateBtn.setText("DONE");
+                        currentBuf = -1;
+
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                calibrateBtn.setText("START");
+                                calibrateBtn.setEnabled(true);
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                            }
+                        }, 10000);   //5 seconds
+
+                    } else if (ec == 0) {
+                        calibrateBtn.setText("START");
+                        calibrateBtn.setEnabled(true);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
 
 
-    }
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
+    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String time = snapshot.getValue(String.class);
@@ -1443,7 +1407,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
         isCalibrating = true;
-        setupCoeffListenerThree();
+        //setupCoeffListenerThree();
         CountDownTimer timer = new CountDownTimer(45000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {

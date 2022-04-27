@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:backgroundTint="@color/white"
-xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
 <androidx.cardview.widget.CardView
@@ -34,13 +35,25 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.aican.aicanapp.pumpController.VerticalSlider
+            <!--<com.aican.aicanapp.pumpController.VerticalSlider
                 android:id="@+id/speedController"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_marginStart="80dp"
                 android:layout_marginTop="10dp"
-                app:invert="false" />
+                app:invert="false" /> -->
+
+            <com.triggertrap.seekarc.SeekArc
+                android:id="@+id/seekArc"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="10dp"
+                android:padding="30dp"
+                seekarc:rotation="180"
+                seekarc:startAngle="30"
+                seekarc:sweepAngle="300"
+                seekarc:touchInside="true" />
 
             <TextView
                 android:layout_width="wrap_content"
