@@ -49,7 +49,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Sensordata/DataSensorLog.csv";
                 File file = new File(path);
 
                 try {
@@ -92,7 +92,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Sensordata/DataSensorLog.csv";
                             File file = new File(path);
 
                             try {

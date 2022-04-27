@@ -255,7 +255,7 @@ public class phLogFragment extends Fragment {
                 exportSensorCsv();
 
                 String startsWith = "CurrentData";
-                String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
@@ -288,7 +288,7 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
 //        String startsWith = "CurrentData";
-        String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -321,7 +321,7 @@ public class phLogFragment extends Fragment {
 
     public void exportSensorCsv() {
         //We use the Download directory for saving our .csv file.
-        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }

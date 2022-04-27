@@ -50,7 +50,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             public void onClick(View v) {
 
 
-                String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataUserActivity.csv";
+                String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/DataUserActivity.csv";
 
                 File file2 = new File(path2);
 
@@ -93,7 +93,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataUserActivity.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/DataUserActivity.csv";
                             File file = new File(path);
 
                             try {

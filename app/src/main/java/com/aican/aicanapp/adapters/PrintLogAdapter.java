@@ -50,7 +50,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/CurrentData.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Currentlog/CurrentData.csv";
                 File file = new File(path);
 
                 try {
@@ -91,7 +91,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/CurrentData.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CurrentData.csv";
                             File file = new File(path);
 
                             try {

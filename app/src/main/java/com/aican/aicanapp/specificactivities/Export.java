@@ -87,20 +87,20 @@ public class Export extends AppCompatActivity {
 
                 exportDatabaseCsv();
 
-                String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
-//                    noFilesText.setVisibility(View.VISIBLE);
+
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().startsWith("DataSensorLog");
+                        filesAndFolders[i].getName().endsWith(".csv");
                     }
                 }
 
-//                noFilesText.setVisibility(View.INVISIBLE);
+
                 fAdapter = new FileAdapter(getApplicationContext(), filesAndFolders);
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
@@ -114,20 +114,19 @@ public class Export extends AppCompatActivity {
                 exportUserData();
 
 
-                String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
-//                    noFilesText.setVisibility(View.VISIBLE);
+
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().startsWith("DataUserActivity");
+                        filesAndFolders[i].getName().endsWith(".csv");
                     }
                 }
 
-//                noFilesText.setVisibility(View.INVISIBLE);
                 uAdapter = new UserDataAdapter(Export.this, filesAndFolders);
                 userRecyclerView.setAdapter(uAdapter);
                 uAdapter.notifyDataSetChanged();
@@ -136,26 +135,37 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        String path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).toString();
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+        String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
         File root = new File(path);
+        File root2 = new File(path2);
         File[] filesAndFolders = root.listFiles();
+        File[] filesAndFolders2 = root2.listFiles();
 
         if (filesAndFolders == null || filesAndFolders.length == 0) {
             Toast.makeText(this, "No Files Found", Toast.LENGTH_SHORT).show();
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().startsWith("DataSensorLog");
-                filesAndFolders[i].getName().startsWith("DataUserActivity");
+                filesAndFolders[i].getName().endsWith(".csv");
             }
         }
 
-//        noFilesText.setVisibility(View.INVISIBLE);
+        if (filesAndFolders2 == null || filesAndFolders2.length == 0) {
+            Toast.makeText(this, "No Files Found", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            for (int j = 0; j < filesAndFolders2.length; j++) {
+                filesAndFolders2[j].getName().endsWith(".csv");
+            }
+        }
+
         fAdapter = new FileAdapter(this, filesAndFolders);
-        uAdapter = new UserDataAdapter(this, filesAndFolders);
+        uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
         userRecyclerView.setAdapter(uAdapter);
         fAdapter.notifyDataSetChanged();
+        uAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -194,7 +204,7 @@ public class Export extends AppCompatActivity {
         companyName = "Company: " + companyNameEditText.getText().toString();
 
         //We use the Download directory for saving our .csv file.
-        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -203,7 +213,6 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-//            String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
             file = new File(exportDir, "DataSensorLog.csv");
             file.createNewFile();
@@ -215,8 +224,6 @@ public class Export extends AppCompatActivity {
             slope = "Slope: " + shp.getString("slope", "");
             temp = "Temperature: " + shp.getString("temp", "");
 
-//            SharedPreferences shp1 = getSharedPreferences("MySharedPrefs", MODE_PRIVATE);
-//            user = "User: " + shp1.getString("userid", "");
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
             roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
@@ -272,8 +279,7 @@ public class Export extends AppCompatActivity {
     }
 
     public void exportUserData() {
-        //We use the Download directory for saving our .csv file.
-        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -282,7 +288,6 @@ public class Export extends AppCompatActivity {
         PrintWriter printWriter = null;
 
         try {
-//            String fileName = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(new Date());
 
             file = new File(exportDir, "DataUserActivity.csv");
             file.createNewFile();
