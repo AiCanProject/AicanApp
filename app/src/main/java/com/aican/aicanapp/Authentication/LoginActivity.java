@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
                     etEmail.getText().toString(),
                     etPassword.getText().toString()
             ).addOnSuccessListener(authResult -> {
-//              getUserFirebaseAccount(authResult.getUser().getUid());
                 startMainActivity();
 
                 SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);

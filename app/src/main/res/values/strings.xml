@@ -49,4 +49,13 @@ Use precaution for set-points outside of 30%-80%]]></string>
     <string name="mode">Mode</string>
     <string name="temperature_1">Temperature 1</string>
     <string name="temperature_2">Temperature 2</string>
+    <string name="add_reminder">Add Reminder</string>
+    <string name="enter_x_value">Enter x value:</string>
+    <string name="enter_y_value">Enter y value:</string>
+    <string name="start_alarm">Start Alarm</string>
+    <string name="add_email_id">Add Email ID</string>
+    <string name="add_mobile_number">Add Mobile Number</string>
+    <string name="calliberate">Calliberate</string>
+    <string name="alarm">Alarm</string>
+    <string name="log">Log</string>
 </resources>

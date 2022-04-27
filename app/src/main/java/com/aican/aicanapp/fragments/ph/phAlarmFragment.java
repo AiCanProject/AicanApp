@@ -37,7 +37,7 @@ public class phAlarmFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         radioGroup = view.findViewById(R.id.groupradio);
-        inputPh = view.findViewById(R.id.reqType);
+       // inputPh = view.findViewById(R.id.reqType);
         alarm = view.findViewById(R.id.startAlarm);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.aican.aicanapp.Authentication.LoginActivity;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,7 +47,6 @@ public class AdminLoginActivity extends AppCompatActivity {
             primaryEmail = sh.getString("email", "").trim();
 
             if (email.equals(primaryEmail)) {
-
                 auth.signInWithEmailAndPassword(
                         email, password
                 ).addOnSuccessListener(authResult -> {
