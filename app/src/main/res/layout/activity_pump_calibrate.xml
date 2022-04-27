@@ -30,12 +30,12 @@
                 android:id="@+id/switchClockwise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Clockwise"
+                android:layout_above="@id/ivStartBtn"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/blueDarkAlpha"
-                android:theme="@style/Switch"
                 android:layout_marginBottom="4dp"
-                android:layout_above="@id/ivStartBtn"/>
+                android:text="Clockwise"
+                android:textColor="@color/blueDarkAlpha"
+                android:theme="@style/Switch" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_width="130dp"

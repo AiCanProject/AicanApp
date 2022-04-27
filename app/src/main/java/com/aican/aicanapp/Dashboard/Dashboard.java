@@ -1,9 +1,15 @@
 package com.aican.aicanapp.Dashboard;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +18,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -22,7 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.AddDevice.AddDeviceOption;
-import com.aican.aicanapp.AddDevice.ScanQrActivity;
+import com.aican.aicanapp.Authentication.LoginActivity;
 import com.aican.aicanapp.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
@@ -39,32 +45,25 @@ import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
+import com.aican.aicanapp.specificactivities.Export;
+import com.aican.aicanapp.specificactivities.InstructionActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.api.LogDescriptor;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
 
-    public static String TAG = "Dashboard";
     public static final String KEY_DEVICE_ID = "device_id";
     public static final int GRAPH_PLOT_DELAY = 15000;
     public static final String DEVICE_TYPE_PH = "PHMETER";
@@ -74,9 +73,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     CardView phDev, tempDev, IndusDev, peristalticDev;
 
+
     DatabaseReference primaryDatabase;
     String mUid;
-    Button setting;
+    Button setting, export;
 
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
@@ -102,7 +102,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView;
     private FloatingActionButton addNewDevice;
-    private TextView tvName, tvConnectDevice;
+    private TextView tvTemp, tvCooling, tvPump, tvPh, tvName, tvConnectDevice, tvInstruction;
     private ImageView ivLogout;
 
     @Override
@@ -120,6 +120,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         IndusDev = findViewById(R.id.indusPh_dev);
         peristalticDev = findViewById(R.id.peristaltic_dev);
         tempDev = findViewById(R.id.temp_dev);
+        tvInstruction = findViewById(R.id.tvInstruction);
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
@@ -141,13 +142,29 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
 
+        //showNetworkDialog();
 
+        phRecyclerView.setVisibility(View.VISIBLE);
+        phDev.setCardBackgroundColor(Color.GRAY);
+        tempRecyclerView.setVisibility(View.GONE);
+        coolingRecyclerView.setVisibility(View.GONE);
+        pumpRecyclerView.setVisibility(View.GONE);
+
+        tvInstruction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+          //      showNetworkDialog();
+                Intent intent = new Intent(Dashboard.this, InstructionActivity.class);
+                startActivity(intent);
+            }
+        });
         phDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            //    showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
-                } else {
+                }else {
                     phRecyclerView.setVisibility(View.GONE);
                 }
                 tempRecyclerView.setVisibility(View.GONE);
@@ -164,63 +181,80 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //showNetworkDialog();
+
+
                 if (tempDevices.size() != 0) {
                     tempRecyclerView.setVisibility(View.VISIBLE);
-                } else {
+                }else {
                     tempRecyclerView.setVisibility(View.GONE);
                 }
                 phRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
 
+
                 tempDev.setCardBackgroundColor(Color.GRAY);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
+
+
             }
         });
 
         peristalticDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //showNetworkDialog();
                 if (pumpDevices.size() != 0) {
                     pumpRecyclerView.setVisibility(View.VISIBLE);
-                } else {
+                }else {
                     pumpRecyclerView.setVisibility(View.GONE);
                 }
                 tempRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 phRecyclerView.setVisibility(View.GONE);
 
+
                 peristalticDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
+
             }
         });
 
         IndusDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //showNetworkDialog();
                 if (coolingDevices.size() != 0) {
                     coolingRecyclerView.setVisibility(View.VISIBLE);
-                } else {
+                }else {
                     coolingRecyclerView.setVisibility(View.GONE);
                 }
+
                 phRecyclerView.setVisibility(View.GONE);
                 tempRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+
+
 
                 IndusDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
+
             }
         });
 
+
+        //tvName.setText();
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //showNetworkDialog();
                 Intent toAddDevice = new Intent(Dashboard.this, AddDeviceOption.class);
                 startActivity(toAddDevice);
             }
@@ -230,15 +264,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-                intent.putExtra("checkBtn", "addUser");
+                intent.putExtra("checkBtn","addUser");
                 startActivity(intent);
 
             }
         });
 
         ivLogout.setOnClickListener(v -> {
+//            FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
+//            finish();
             Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-            intent.putExtra("checkBtn", "logout");
+            intent.putExtra("checkBtn","logout");
             startActivity(intent);
         });
 
@@ -252,6 +288,27 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpCooling();
         setUpPh();
         setUpPump();
+    }
+
+    private void showNetworkDialog(){
+        if(!isNetworkAvailable()==true)
+        {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Internet Connection Alert")
+                    .setMessage("Please Check Your Internet Connection")
+                    .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).show();
+        }
+        else if(isNetworkAvailable()==true)
+        {
+            Toast.makeText(Dashboard.this,
+                    "Welcome", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void getList() {
@@ -293,6 +350,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     @Override
     protected void onStart() {
+
+        if (phDevices.size() != 0) {
+            phRecyclerView.setVisibility(View.VISIBLE);
+            phDev.setCardBackgroundColor(Color.GRAY);
+        }else {
+            phRecyclerView.setVisibility(View.GONE);
+        }
+        tempRecyclerView.setVisibility(View.GONE);
+        coolingRecyclerView.setVisibility(View.GONE);
+        pumpRecyclerView.setVisibility(View.GONE);
+
         getList();
         super.onStart();
     }
@@ -396,6 +464,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 }
             });
         }
+
     }
 
     private void initialiseFirebaseForDevice(String deviceId, DeviceAccount deviceAccount) {
@@ -437,33 +506,46 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 data.child("TDS_VAL").getValue(Long.class)
                         );
                         phDevices.add(device);
+//                        setPhDeviceListeners(device, phDevices.size()-1);
                         break;
                     }
                     case "P_PUMP": {
-                        int mode = ui.child("MODE").child("MODE_VAL").getValue(Integer.class);
-                        int status = ui.child("STATUS").getValue(Integer.class);
-                        if (mode == 0) {
-                            pumpDevices.add(new PumpDevice(
-                                    id,
-                                    name,
-                                    mode,
-                                    ui.child("MODE").child("DOSE").child("SPEED").getValue(Integer.class),
-                                    ui.child("MODE").child("DOSE").child("DIR").getValue(Integer.class),
-                                    ui.child("MODE").child("DOSE").child("VOL").getValue(Integer.class),
-                                    status
+                        Integer mode = ui.child("Mode").getValue(Integer.class);
+                        Integer status = ui.child("Start").getValue(Integer.class);
+//                        if (mode == 0) {
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name,
+//                                    mode,
+//                                    ui.child("Speed").getValue(Integer.class),
+//                                    ui.child("Direction").getValue(Integer.class),
+//                                    ui.child("Volume").getValue(Integer.class),
+//                                    status
+//
+//                            ));
+//                        } else {
+//                            pumpDevices.add(new PumpDevice(
+//                                    id,
+//                                    name,
+//                                    mode,
+//                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
+//                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
+//                                    null,
+//                                    status
+//                            ));
+//                        }
 
-                            ));
-                        } else {
-                            pumpDevices.add(new PumpDevice(
-                                    id,
-                                    name,
-                                    mode,
-                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
-                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
-                                    null,
-                                    status
-                            ));
-                        }
+                        pumpDevices.add(new PumpDevice(
+                                id,
+                                name,
+                                mode,
+                                ui.child("Speed").getValue(Integer.class),
+                                ui.child("Direction").getValue(Integer.class),
+                                ui.child("Volume").getValue(Integer.class),
+                                status
+
+                        ));
+
                         break;
                     }
                     case "TEMP_CONTROLLER": {
@@ -490,23 +572,31 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     pumpAdapter.notifyDataSetChanged();
                     if (tempDevices.size() == 0) {
                         tempRecyclerView.setVisibility(View.GONE);
+//                        tvTemp.setVisibility(View.GONE);
                     } else {
                         tempRecyclerView.setVisibility(View.VISIBLE);
+  //                      tvTemp.setVisibility(View.VISIBLE);
                     }
                     if (coolingDevices.size() == 0) {
                         coolingRecyclerView.setVisibility(View.GONE);
+    //                    tvCooling.setVisibility(View.GONE);
                     } else {
                         coolingRecyclerView.setVisibility(View.VISIBLE);
+      //                  tvCooling.setVisibility(View.VISIBLE);
                     }
                     if (phDevices.size() == 0) {
                         phRecyclerView.setVisibility(View.GONE);
+        //                tvPh.setVisibility(View.GONE);
                     } else {
                         phRecyclerView.setVisibility(View.VISIBLE);
+          //              tvPh.setVisibility(View.VISIBLE);
                     }
                     if (pumpDevices.size() == 0) {
                         pumpRecyclerView.setVisibility(View.GONE);
+            //            tvPump.setVisibility(View.GONE);
                     } else {
                         pumpRecyclerView.setVisibility(View.VISIBLE);
+              //          tvPump.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -518,6 +608,35 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         finishAffinity();
     }
 
+    public boolean isNetworkAvailable() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+
+                        return true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+
+                        return true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+
     @Override
     public void onOptionsIconClicked(View view, String deviceId) {
         PopupMenu menu = new PopupMenu(this, view);
@@ -527,23 +646,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             if (item.getItemId() == R.id.menuRemoveDevice) {
                 String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
                 if (uid != null && deviceIdIds.containsKey(deviceId)) {
-
                     FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
                             .child("USERS").child(uid).child("DEVICES").child(deviceIdIds.get(deviceId)).removeValue()
                             .addOnSuccessListener(d -> {
-                                DocumentReference documentReference = FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this)).collection("Devices Registered").document(deviceId);
-                                documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        refresh();
-                                    }
-                                })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Error deleting document", e);
-                                            }
-                                        });
+                                refresh();
                             });
                 }
                 return true;

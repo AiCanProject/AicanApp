@@ -4,14 +4,21 @@
     package="com.aican.aicanapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE">
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">
+    </uses-permission>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -25,10 +32,19 @@
         android:theme="@style/Theme.AicanApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
+        <activity
+            android:name=".CheckConnectionReciever"
+            android:exported="false" />
+
+        <activity
+            android:name=".specificactivities.InstructionActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Dashboard.AdminLoginActivity"
             android:exported="false"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".userdatabase.UserDatabase"
             android:exported="true"
@@ -44,7 +60,9 @@
             android:name=".Dashboard.SettingActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
+
         <activity android:name=".specificactivities.ConnectDeviceActivity" />
+
         <activity android:name=".Authentication.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,6 +78,7 @@
             android:name=".specificactivities.PhActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".AddDevice.AddDeviceOption" />
+
         <activity android:name=".specificactivities.TemperatureActivity" />
         <activity
             android:name=".Dashboard.Dashboard"
@@ -68,10 +87,25 @@
         <activity android:name=".Authentication.LoginActivity" />
         <activity android:name=".Authentication.SignUpActivity" />
         <activity android:name=".specificactivities.PumpCalibrateActivity" />
-        <activity android:name=".specificactivities.PumpActivity" />
+
+        <activity android:name=".specificactivities.PumpActivity"
+            android:screenOrientation="landscape"/>
+
         <activity android:name=".AddDevice.ScanQrActivity" />
 
         <service android:name=".graph.ForegroundService" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+            //provider_paths.xml file path in this example
+        </provider>
+
     </application>
 
 </manifest>

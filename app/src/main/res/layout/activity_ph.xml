@@ -82,7 +82,11 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center"
+<<<<<<< HEAD
                 android:text="@string/calliberate"
+=======
+                android:text="Calibrate"
+>>>>>>> dfd2de53818511c87cd8859042c173f9c0d2be1f
                 android:textColor="@color/btnColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />

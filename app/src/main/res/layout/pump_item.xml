@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="240dp"
-android:layout_height="310dp"
+android:layout_width="220dp"
+android:layout_height="250dp"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 app:cardCornerRadius="24dp"
 android:layout_margin="10dp"
@@ -59,16 +59,45 @@ app:cardElevation="10dp">
             app:track="@drawable/sw_track" />
 
     </LinearLayout>
+
     <TextView
         android:id="@+id/custom_device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Custom Device Name"
-        android:textSize="20sp"
-        android:textColor="@color/grey_dark"
         android:paddingHorizontal="30dp"
-        android:paddingTop="10dp"/>
+        android:paddingTop="10dp"
+        android:text="Custom Device"
+        android:textColor="@color/grey_dark"
+        android:textSize="16sp" />
 
+    <View
+        android:id="@+id/view1"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_above="@+id/tvSpeed"
+        android:layout_below="@+id/custom_device_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="39dp"
+        android:background="@drawable/shape_ph" />
+
+
+    <TextView
+        android:id="@+id/tvDir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/image_ll"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/tvSpeed"
+        android:layout_toLeftOf="@id/image_ll"
+        android:fontFamily="sans-serif-medium"
+        android:paddingHorizontal="30dp"
+        android:paddingTop="8dp"
+        android:text="ClockWise"
+        android:textColor="@color/grey_dark"
+        android:textSize="13dp" />
 
     <TextView
         android:id="@+id/mode"
@@ -77,6 +106,7 @@ app:cardElevation="10dp">
         android:layout_below="@+id/custom_device_name"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:visibility="gone"
         android:layout_toLeftOf="@id/image_ll"
         android:paddingHorizontal="30dp"
         android:paddingTop="8dp"
@@ -90,15 +120,18 @@ app:cardElevation="10dp">
         android:id="@+id/tvVol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mode"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/custom_device_name"
+        android:layout_alignStart="@+id/view1"
+        android:layout_alignEnd="@+id/view1"
+        android:layout_alignBottom="@+id/view1"
         android:layout_toLeftOf="@id/image_ll"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
         android:paddingHorizontal="30dp"
         android:paddingTop="8dp"
-        android:text="Vol: 50mL"
+        android:text="50mL"
         android:textColor="@color/grey_dark"
-        android:textSize="16dp"
+        android:textSize="19dp"
         android:textStyle="bold"
         android:visibility="visible" />
 
@@ -106,31 +139,14 @@ app:cardElevation="10dp">
         android:id="@+id/tvSpeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvVol"
-        android:layout_alignParentStart="true"
+        android:layout_above="@+id/image_ll"
         android:layout_alignParentEnd="true"
         android:layout_toLeftOf="@id/image_ll"
-        android:paddingHorizontal="30dp"
         android:paddingTop="8dp"
-        android:text="Speed: 10mL/Min"
+        android:text="10mL/Min"
         android:textColor="@color/grey_dark"
-        android:textSize="16dp"
-        android:textStyle="bold" />
+        android:textSize="14dp" />
 
-    <TextView
-        android:id="@+id/tvDir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvSpeed"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toLeftOf="@id/image_ll"
-        android:paddingHorizontal="30dp"
-        android:paddingTop="8dp"
-        android:text="Direction: ClockWise"
-        android:textColor="@color/grey_dark"
-        android:textSize="16dp"
-        android:textStyle="bold" />
 
 
 

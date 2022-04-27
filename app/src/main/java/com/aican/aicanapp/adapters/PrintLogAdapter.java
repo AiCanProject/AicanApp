@@ -20,26 +20,27 @@ import com.aican.aicanapp.R;
 
 import java.io.File;
 
-public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
+public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHolder> {
 
     Context context;
     File[] files;
-    //ImageView imageView;
 
-    public FileAdapter(Context context, File[] files) {
+    public PrintLogAdapter(Context context, File[] files) {
         this.context = context;
         this.files = files;
     }
 
     @NonNull
     @Override
-    public FileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PrintLogAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.file_item, parent, false);
         return new ViewHolder(view);
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull FileAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PrintLogAdapter.ViewHolder holder, int position) {
 
         File selectedFile = files[position];
         holder.textView.setText(selectedFile.getName());
@@ -49,7 +50,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/CurrentData.csv";
                 File file = new File(path);
 
                 try {
@@ -64,8 +65,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                     Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
                     cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.getApplicationContext().startActivity(cIntent);
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -92,7 +91,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/DataSensorLog.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/CurrentData.csv";
                             File file = new File(path);
 
                             try {
@@ -140,4 +139,3 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         }
     }
 }
-

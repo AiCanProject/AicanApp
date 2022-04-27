@@ -69,9 +69,9 @@ public class PumpFragment extends Fragment {
             isStarted = !isStarted;
             refreshStartBtnUI();
             if (isStarted) {
-                deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_PUMP);
+                deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_PUMP);
             } else {
-                deviceRef.child("UI").child("STATUS").setValue(PumpActivity.STATUS_OFF);
+                deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_OFF);
             }
         });
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
@@ -83,7 +83,7 @@ public class PumpFragment extends Fragment {
     }
 
     private void checkModeAndSetListeners() {
-        deviceRef.child("UI").child("MODE").child("MODE_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("Mode").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Integer mode = snapshot.getValue(Integer.class);
@@ -109,21 +109,21 @@ public class PumpFragment extends Fragment {
 
     private void setupListeners() {
 
-        deviceRef.child("UI").child("MODE").child("PUMP").child("DIR").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Direction").get().addOnSuccessListener(snapshot -> {
             Integer dir = snapshot.getValue(Integer.class);
             if (dir == null) return;
 
             switchDir.setChecked(dir == 0);
         });
 
-        deviceRef.child("UI").child("MODE").child("PUMP").child("SPEED").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
             Integer speed = snapshot.getValue(Integer.class);
             if (speed == null) return;
 
             speedController.setProgress(speed);
         });
 
-        deviceRef.child("UI").child("STATUS").get().addOnSuccessListener(snapshot -> {
+        deviceRef.child("UI").child("Start").get().addOnSuccessListener(snapshot -> {
             Integer status = snapshot.getValue(Integer.class);
             if (status == null) return;
 
@@ -134,11 +134,11 @@ public class PumpFragment extends Fragment {
         });
 
         speedController.setOnProgressChangeListener(progress -> {
-            deviceRef.child("UI").child("MODE").child("PUMP").child("SPEED").setValue(progress);
+            deviceRef.child("UI").child("Speed").setValue(progress);
         });
 
         switchDir.setOnCheckedChangeListener((v, isChecked) -> {
-            deviceRef.child("UI").child("MODE").child("PUMP").child("DIR").setValue(isChecked ? 0 : 1);
+            deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
         });
     }
 

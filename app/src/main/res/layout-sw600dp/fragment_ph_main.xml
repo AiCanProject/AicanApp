@@ -8,8 +8,7 @@
     android:background="@color/white"
     android:clipChildren="false"
     android:elevation="48dp"
-    app:cardCornerRadius="43dp"
-    tools:context=".specificactivities.PhActivity">
+    app:cardCornerRadius="43dp">
 
 
     <!-- <FrameLayout
@@ -124,20 +123,23 @@
         tools:ignore="UselessParent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="450dp"
+            android:layout_height="360dp"
             android:layout_gravity="center"
-            android:layout_margin="22dp"
+            android:layout_margin="20dp"
             android:orientation="vertical"
-            android:padding="22dp">
+            android:padding="15dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/phLevelCard"
-                android:layout_width="420dp"
-                android:layout_height="130dp"
+                android:layout_width="410dp"
+                android:layout_height="150dp"
                 android:backgroundTint="@color/white"
+                android:outlineSpotShadowColor="@color/black"
+                android:outlineAmbientShadowColor="@color/black"
                 android:elevation="12dp"
-                app:cardCornerRadius="16dp">
+                app:cardCornerRadius="16dp"
+                android:layout_margin="8dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -147,13 +149,14 @@
                         android:id="@+id/phView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="15dp"
-                        android:layout_gravity="center_vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="15dp"
                         app:vertical="true" />
 
                     <androidx.constraintlayout.widget.Guideline
@@ -171,7 +174,7 @@
                         android:layout_marginTop="20dp"
                         android:text="pH"
                         android:textColor="@color/black"
-                        android:textSize="22sp"
+                        android:textSize="28sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/phView"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -186,7 +189,7 @@
                         android:fontFamily="@font/montserrat_medium"
                         android:text="7.4"
                         android:textColor="@color/black"
-                        android:textSize="34sp"
+                        android:textSize="30sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/textView4"
@@ -217,24 +220,38 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/tempCard"
-                android:layout_width="420dp"
-                android:layout_height="140dp"
+                android:layout_width="410dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="25dp"
                 android:background="@color/white"
                 android:backgroundTint="@color/white"
                 android:elevation="12dp"
-                app:cardCornerRadius="16dp">
+                android:layout_marginHorizontal="7dp"
+                app:cardCornerRadius="16dp"
+                android:layout_marginVertical="10dp">
 
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchAtc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ATC  "
+                    android:textSize="25sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="48dp"
+                    android:textColor="@color/blue_dark"
+                    android:theme="@style/Switch" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="43dp"
+                    android:layout_marginStart="30dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="12dp"
                     android:text="Temperature"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="25sp" />
 
                 <TextView
                     android:id="@+id/tvTempCurr"
@@ -247,7 +264,7 @@
                     android:layout_toEndOf="@+id/IV"
                     android:text="20 C"
                     android:textColor="@color/black"
-                    android:textSize="40sp" />
+                    android:textSize="30sp" />
 
                 <TextView
                     android:id="@+id/tvTempNext"
@@ -269,11 +286,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="10dp"
-                    android:layout_marginEnd="82dp"
+                    android:layout_marginEnd="95dp"
                     android:layout_marginBottom="12dp"
                     android:text="mV"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="25sp" />
 
                 <TextView
                     android:id="@+id/tvEcCurr"
@@ -281,12 +298,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginTop="10dp"
-                    android:layout_marginEnd="62dp"
+                    android:layout_marginEnd="85dp"
                     android:text="123"
                     android:textColor="@color/blueDark"
-                    android:textSize="40sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
-
 
             </androidx.cardview.widget.CardView>
 
@@ -343,177 +359,228 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
-            android:layout_width="282dp"
-            android:layout_height="wrap_content"
+            android:layout_width="450dp"
+            android:layout_height="360dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/white"
             android:elevation="12dp"
             app:cardCornerRadius="16dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_marginTop="22dp"
                 android:orientation="vertical">
 
-
                 <TextView
+                    android:id="@+id/tvBatteryVal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="62dp"
                     android:fontFamily="@font/montserrat_medium"
                     android:text="Battery"
-                    android:textSize="15sp" />
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layoutBatteryVal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:paddingVertical="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvBatteryVal"
                     tools:ignore="UseCompoundDrawables">
 
                     <TextView
-                        android:id="@+id/batteryVal"
-                        android:layout_width="130dp"
+                        android:id="@+id/batteryPercent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="62dp"
                         android:text="57%"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="65dp"
+                        android:layout_marginEnd="55dp"
                         android:background="@drawable/image_bg"
-                        android:elevation="33dp"
-                        android:src="@drawable/ic_bi_battery_half" />
+                        android:elevation="11dp"
+                        android:src="@drawable/ic_bi_battery_half"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:id="@+id/viewTop"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_margin="14dp"
-                    android:background="#DFE6ED" />
+                    android:background="#DFE6ED"
+                    app:layout_constraintTop_toBottomOf="@id/layoutBatteryVal" />
 
 
                 <TextView
+                    android:id="@+id/tvSlope"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="62dp"
                     android:fontFamily="@font/montserrat_medium"
                     android:text="Slope"
-                    android:textSize="15sp" />
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/viewTop" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cLSlopeVal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    tools:ignore="UseCompoundDrawables">
+                    app:layout_constraintTop_toBottomOf="@id/tvSlope"
+                    tools:ignore="UseCompoundDrawables"
+                    android:paddingVertical="5dp">
 
                     <TextView
                         android:id="@+id/slopeVal"
-                        android:layout_width="130dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="62dp"
                         android:text="108%"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="65dp"
+                        android:layout_marginEnd="55dp"
                         android:background="@drawable/image_bg"
-                        android:elevation="33dp"
-                        android:src="@drawable/ic_mdi_slope_downhill" />
+                        android:elevation="11dp"
+                        android:src="@drawable/ic_mdi_slope_downhill"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
+                    android:id="@+id/vBelowSlope"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_margin="14dp"
-                    android:background="#DFE6ED" />
-
+                    android:background="#DFE6ED"
+                    app:layout_constraintTop_toBottomOf="@id/cLSlopeVal" />
 
                 <TextView
+                    android:id="@+id/tvOffset"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="62dp"
                     android:fontFamily="@font/montserrat_medium"
                     android:text="Offset"
-                    android:textSize="15sp" />
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vBelowSlope" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cLOffset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    tools:ignore="UseCompoundDrawables">
+                    app:layout_constraintTop_toBottomOf="@id/tvOffset"
+                    tools:ignore="UseCompoundDrawables"
+                    android:paddingVertical="5dp">
 
                     <TextView
                         android:id="@+id/offsetVal"
-                        android:layout_width="130dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="62dp"
                         android:text="0.008"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="65dp"
+                        android:layout_marginEnd="55dp"
                         android:background="@drawable/image_bg"
-                        android:elevation="33dp"
-                        android:src="@drawable/ic_gis_offset" />
+                        android:elevation="11dp"
+                        android:src="@drawable/ic_gis_offset"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
+                    android:id="@+id/vBelowOffset"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_margin="14dp"
-                    android:background="#DFE6ED" />
+                    android:background="#DFE6ED"
+                    app:layout_constraintTop_toBottomOf="@id/cLOffset" />
 
 
                 <TextView
+                    android:id="@+id/tvProbes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="62dp"
                     android:fontFamily="@font/montserrat_medium"
                     android:text="Probes"
-                    android:textSize="14sp" />
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/vBelowOffset" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cLProbes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:orientation="horizontal"
-                    tools:ignore="UseCompoundDrawables">
+                    app:layout_constraintTop_toBottomOf="@id/tvProbes"
+                    tools:ignore="UseCompoundDrawables"
+                    android:paddingVertical="5dp">
 
                     <Spinner
                         android:id="@+id/probesVal"
-                        android:layout_width="130dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_width="150dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="62dp"
                         android:text="Glass"
-                        android:textSize="25sp" />
+                        android:textSize="34sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="65dp"
+                        android:layout_marginEnd="55dp"
                         android:background="@drawable/image_bg"
-                        android:elevation="33dp"
-                        android:src="@drawable/ic_iconoir_electronics_transister" />
+                        android:elevation="11dp"
+                        android:src="@drawable/ic_iconoir_electronics_transister"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </androidx.cardview.widget.CardView>

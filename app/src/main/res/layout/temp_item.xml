@@ -3,8 +3,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/phone_Cardview"
-    android:layout_width="240dp"
-    android:layout_height="310dp"
+    android:layout_width="220dp"
+    android:layout_height="250dp"
     android:layout_margin="10dp"
     app:cardCornerRadius="24dp"
     app:cardElevation="10dp">
@@ -45,7 +45,7 @@
             android:paddingTop="10dp"
             android:text="Custom Device Name"
             android:textColor="@color/grey_dark"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
        <!-- <TextView
             android:id="@+id/current_temp_text"
@@ -70,7 +70,7 @@
             android:gravity="center_horizontal|center_vertical"
             android:layout_alignParentBottom="true"
             android:paddingHorizontal="30dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="50dp"
             android:text="89℃"
             android:textColor="@color/grey_dark"
             android:textSize="40dp"
@@ -79,11 +79,11 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="65dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="60dp"
-            android:background="@drawable/shape_ph"/>
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/shape_ph" />
 
     </RelativeLayout>
 

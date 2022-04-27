@@ -4,7 +4,7 @@
     <item android:state_checked="true">
         <shape android:shape="rectangle">
             <solid android:color="#FFF"/>
-            <size android:width="30dp" android:height="30dp"/>
+            <size android:width="15dp" android:height="15dp"/>
             <corners android:radius="40dp"/>
             <stroke android:width="2dp" android:color="@color/white">
             </stroke>
@@ -14,7 +14,7 @@
     <item android:state_checked="false">
         <shape android:shape="rectangle">
             <solid android:color="#FFF"/>
-            <size android:width="30dp" android:height="30dp"/>
+            <size android:width="15dp" android:height="15dp"/>
             <corners android:radius="40dp"/>
             <stroke android:width="2dp" android:color="#cdcdcd">
             </stroke>

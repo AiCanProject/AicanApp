@@ -11,7 +11,7 @@ import com.aican.aicanapp.utils.getColorCompat
 import com.aican.aicanapp.utils.toPx
 import kotlin.math.roundToInt
 
-class HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class   HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     var onProgressChangeListener: OnProgressChangeListener? = null
 

@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
     }
@@ -27,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Userdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
         onCreate(sqLiteDatabase);
@@ -69,6 +71,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("temperature", temperature);
         contentValues.put("compound", compound);
         long result = db.insert("LogUserdetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public Boolean print_insert_log_data(String time, String ph, String temperature, String compound){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("time", time);
+        contentValues.put("ph", ph);
+        contentValues.put("temperature", temperature);
+        contentValues.put("compound", compound);
+        long result = db.insert("PrintLogUserdetails", null, contentValues);
         if(result == -1){
             return false;
         }else{

@@ -92,12 +92,12 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 mode = "Mode: Pump";
                 tvVol.setVisibility(View.GONE);
             }
-            String speed = String.format(Locale.UK, "Speed: %d mL/min", device.getSpeed());
+            String speed = String.format(Locale.UK, "%d mL/min", device.getSpeed());
             String dir;
             if (device.getDir() == 0) {
-                dir = "Direction: Clockwise";
+                dir = "Clockwise";
             } else {
-                dir = "Direction: AntiClockwise";
+                dir = "AntiClockwise";
             }
             if (device.getStatus() == PumpActivity.STATUS_PUMP || device.getStatus() == PumpActivity.STATUS_DOSE) {
                 onOffSwitch.setChecked(true);
@@ -126,13 +126,13 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             DatabaseReference uiRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_PUMP).child(device.getId())
                     .child("UI");
 
-            uiRef.child("MODE").addValueEventListener(new ValueEventListener() {
+            uiRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    device.setMode(snapshot.child("MODE_VAL").getValue(Integer.class));
-                    device.setDir(snapshot.child("DOSE").child("DIR").getValue(Integer.class));
-                    device.setSpeed(snapshot.child("DOSE").child("SPEED").getValue(Integer.class));
-                    device.setVol(snapshot.child("DOSE").child("VOL").getValue(Integer.class));
+                    device.setMode(snapshot.child("Mode").getValue(Integer.class));
+                    device.setDir(snapshot.child("Direction").getValue(Integer.class));
+                    device.setSpeed(snapshot.child("Speed").getValue(Integer.class));
+                    device.setVol(snapshot.child("Volume").getValue(Integer.class));
                     notifyItemChanged(getAdapterPosition());
                 }
 
@@ -141,7 +141,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
 
                 }
             });
-            uiRef.child("STATUS").addValueEventListener(new ValueEventListener() {
+            uiRef.child("Start").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     device.setStatus(snapshot.getValue(Integer.class));

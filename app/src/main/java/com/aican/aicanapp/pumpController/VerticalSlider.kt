@@ -489,11 +489,11 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         return ss
     }
 
-    public override fun onRestoreInstanceState(state: Parcelable) {
-        val savedState = state as SavedState
-        super.onRestoreInstanceState(savedState.superState)
-        setProgress(savedState.progress.roundToInt())
-    }
+//    public override fun onRestoreInstanceState(state: Parcelable) {
+//        val savedState = state as SavedState
+//        super.onRestoreInstanceState(savedState.superState)
+//        setProgress(savedState.progress.roundToInt())
+//    }
 
     internal class SavedState : BaseSavedState {
         var progress: Float = 0.0F

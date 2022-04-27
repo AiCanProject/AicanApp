@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.BatteryDialog;
@@ -45,6 +46,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
+    SwitchCompat switchAtc;
 
     BatteryDialog batteryDialog;
 
@@ -71,10 +73,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tvTempCurr = view.findViewById(R.id.tvTempCurr);
         tvTempNext = view.findViewById(R.id.tvTempNext);
 
+       switchAtc = view.findViewById(R.id.switchAtc);
         Spinner probesVal = view.findViewById(R.id.probesVal);
 
         offsetCurr = view.findViewById(R.id.offsetVal);
-        batteryCurr = view.findViewById(R.id.batteryVal);
+        batteryCurr = view.findViewById(R.id.batteryPercent);
         slopeCurr = view.findViewById(R.id.slopeVal);
 
         phView = view.findViewById(R.id.phView);
@@ -251,6 +254,34 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("ATC").setValue(isChecked ? 1  : 0);
+//            if (isChecked){
+//                switchAtc.setText("On  ");
+//            }else {
+//                switchAtc.setText("Off  ");
+//            }
+        });
+
+
+//        deviceRef.child("Data").child("ATC").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                Integer atc = snapshot.getValue(Integer.class);
+//                if (atc == null) return;
+//
+//                if (switchAtc.setChecked(true))
+//                switchAtc.setChecked(atc == 1);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
+
+
     }
 
     @Override
