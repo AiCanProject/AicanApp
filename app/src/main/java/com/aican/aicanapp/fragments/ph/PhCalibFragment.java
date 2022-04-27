@@ -72,6 +72,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     private static final String FILE_NAME = "user_info.txt";
     private static final String FILE_NAMEE = "user_calibrate.txt";
 
+    public static final String THREE_POINT_CALIBRATION = "three";
+    public static final String FIVE_POINT_CALIBRATION = "five";
+    public static final String CALIBRATION_TYPE = "calibration_type";
+
+    LinearLayout log3, log5;
     int ec;
     Integer fault;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
@@ -121,12 +126,19 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
-            ph1.setText(String.valueOf(buffers[0]));
-            ph2.setText(String.valueOf(buffers[1]));
-            ph3.setText(String.valueOf(buffers[2]));
-            ph4.setText(String.valueOf(buffers[3]));
-            ph5.setText(String.valueOf(buffers[4]));
+            if (spin.getSelectedItemPosition() == 0 ){
 
+                ph1.setText(String.valueOf(buffers[0]));
+                ph2.setText(String.valueOf(buffers[1]));
+                ph3.setText(String.valueOf(buffers[2]));
+                ph4.setText(String.valueOf(buffers[3]));
+                ph5.setText(String.valueOf(buffers[4]));
+
+            } else if (spin.getSelectedItemPosition() == 1) {
+                ph1.setText(String.valueOf(buffers[0]));
+                ph2.setText(String.valueOf(buffers[1]));
+                ph3.setText(String.valueOf(buffers[2]));
+            }
         });
     }
 
@@ -228,6 +240,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
 
         deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
             @Override
@@ -331,6 +344,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
+    if (mode.equals(5)) {
         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -376,7 +390,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     l4.setBackgroundColor(Color.WHITE);
                     l5.setBackgroundColor(Color.WHITE);
                 }
-
                 if (ec == 11) {
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
@@ -436,7 +449,124 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+    }else if (mode.equals(3)) {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                ec = snapshot.getValue(Integer.class);
 
+//                if (ec == 10 || ec == 0) {
+//                    l1.setBackgroundColor(Color.GRAY);
+//                    l2.setBackgroundColor(Color.WHITE);
+//                    l3.setBackgroundColor(Color.WHITE);
+//                    l4.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.WHITE);
+//                } else
+
+                if (ec == 20 || ec == 11) {
+                    l2.setBackgroundColor(Color.LTGRAY);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.WHITE);
+
+                } else if (ec == 30 || ec == 21) {
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.LTGRAY);
+                    l4.setBackgroundColor(Color.WHITE);
+
+                } else if (ec == 40 || ec == 31) {
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.LTGRAY);
+
+                }
+//                    else if (ec == 50 || ec == 41) {
+//                    l1.setBackgroundColor(Color.WHITE);
+//                    l2.setBackgroundColor(Color.WHITE);
+//                    l3.setBackgroundColor(Color.WHITE);
+//                    l4.setBackgroundColor(Color.WHITE);
+//                    l5.setBackgroundColor(Color.GRAY);
+//                }
+                else {
+                    l2.setBackgroundColor(Color.WHITE);
+                    l3.setBackgroundColor(Color.WHITE);
+                    l4.setBackgroundColor(Color.WHITE);
+                }
+
+//                if (ec == 11) {
+//                    Date date = new Date();
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+//                    strDate = simpleDateFormat.format(date);
+//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+//                    calibrateBtn.setEnabled(true);
+//
+//
+//                }
+                if (ec == 21) {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
+
+
+                } else if (ec == 31) {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+                    calibrateBtn.setEnabled(true);
+
+
+                } else if (ec == 41) {
+                    Date date = new Date();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+                    strDate = simpleDateFormat.format(date);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+                    calibrateBtn.setText("DONE");
+                    currentBufThree = -1;
+
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            calibrateBtn.setText("START");
+                            calibrateBtn.setEnabled(true);
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                        }
+                    }, 10000);   //5 seconds
+
+                }
+//                else if (ec == 51) {
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+//                    strDate = simpleDateFormat.format(new Date());
+//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+//                    calibrateBtn.setText("DONE");
+//                    currentBuf = -1;
+//
+//
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
+//                            calibrateBtn.setText("START");
+//                            calibrateBtn.setEnabled(true);
+//                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+//                        }
+//                    }, 10000);   //5 seconds
+//
+//                }
+                else if (ec == 0) {
+                    calibrateBtn.setText("START");
+                    calibrateBtn.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+
+    }
         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -1000,6 +1130,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         ph5 = view.findViewById(R.id.ph5);
         mv5 = view.findViewById(R.id.mv5);
 
+        log3 = view.findViewById(R.id.log3point);
+        log5 = view.findViewById(R.id.log5Point);
+
         phEdit2 = view.findViewById(R.id.phEdit2);
         phEdit3 = view.findViewById(R.id.phEdit3);
         phEdit4 = view.findViewById(R.id.phEdit4);
@@ -1066,7 +1199,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             lastCalib.setText("Last Calibrated By \n" + liness[0]);
         }
 
-        String[] spinselect = {"Select", "3", "5"};
+        String[] spinselect = { "5", "3"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, spinselect);
 
@@ -1082,13 +1215,20 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 switch (position) {
                     case 0:
 
+                        log3.setVisibility(View.VISIBLE);
+                        log5.setVisibility(View.VISIBLE);
                         mode = "5";
 
-                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-                        setupListeners();
+                        buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
+                        bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
+                        coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
+                        calValues = new int[]{10, 20, 30, 40, 50};
 
-                        loadBuffers();
+                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
                         setupCoeffListener();
+                        setupListeners();
+                        loadBuffers();
+
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
                         break;
@@ -1096,26 +1236,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     case 1:
                         mode = "3";
 
-                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-                        setupListenersForThree();
+                        log3.setVisibility(View.VISIBLE);
+                        log5.setVisibility(View.GONE);
 
-                        loadBuffersForThree();
-//                        setupCoeffListenerThree();
+                        buffers = new float[]{4.0F, 7.0F, 9.0F};
+                        bufferLabels = new String[]{"B_2", "B_3", "B_4"};
+                        coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
+                        calValues = new int[]{20, 30, 40};
+
+                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+                        setupCoeffListener();
+                        setupListeners();
+                        loadBuffers();
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
-
                         break;
-                    case 2:
-                        mode = "5";
 
-                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-                        setupListeners();
-
-                        loadBuffers();
-                        setupCoeffListener();
-
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
-                        break;
                 }
             }
 
@@ -1181,10 +1317,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }
                 }
-
-                if (mode.equals("3")) {
-                    calibrateThree();
-                } else if(mode.equals("5")) {
+                if (mode.equals(3)){
+                    calibrate();
+                }else {
                     calibrate();
                 }
             }
@@ -1192,11 +1327,19 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         // lastCalib.setText("Last Calibration by " + Source.userName);
 
         test3 = mv2.getText().toString();
+
+//        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+//
+//        setupCoeffListener();
+//        setupListeners();
+//        loadBuffers();
+
+
     }
 
 
     private void onClick(View v) {
-        if (mode.equals("3")) {
+
             switch (v.getId()) {
                 case R.id.phEdit1:
                     EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
@@ -1239,51 +1382,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 default:
                     break;
             }
-        } else if(mode.equals("5")){
-            switch (v.getId()) {
-//                case R.id.phEdit1:
-//                    EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
-//                        updateBufferValue(ph);
-//                        deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
-//                    });
-//                    dialog.show(getParentFragmentManager(), null);
-//                    break;
-
-                case R.id.phEdit2:
-
-                    EditPhBufferDialog dialog1 = new EditPhBufferDialog(ph -> {
-                        updateBufferValue(ph);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
-                    });
-                    dialog1.show(getParentFragmentManager(), null);
-                    break;
-                case R.id.phEdit3:
-                    EditPhBufferDialog dialog2 = new EditPhBufferDialog(ph -> {
-                        updateBufferValue(ph);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
-                    });
-                    dialog2.show(getParentFragmentManager(), null);
-                    break;
-                case R.id.phEdit4:
-                    EditPhBufferDialog dialog3 = new EditPhBufferDialog(ph -> {
-                        updateBufferValue(ph);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
-                    });
-                    dialog3.show(getParentFragmentManager(), null);
-                    break;
-
-//                case R.id.phEdit5:
-//                    EditPhBufferDialog dialog5 = new EditPhBufferDialog(ph -> {
-//                        updateBufferValue(ph);
-//                        deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
-//                    });
-//                    dialog5.show(getParentFragmentManager(), null);
-//                    break;
-                default:
-                    break;
-            }
         }
-    }
+
 
 
     private void updateBufferValue(Float value) {
