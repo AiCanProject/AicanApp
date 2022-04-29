@@ -18,6 +18,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,7 +50,10 @@ import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.api.LogDescriptor;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +68,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
 
+    public static final String TAG = "Dashboard";
     public static final String KEY_DEVICE_ID = "device_id";
     public static final int GRAPH_PLOT_DELAY = 15000;
     public static final String DEVICE_TYPE_PH = "PHMETER";
@@ -72,7 +77,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
 
     CardView phDev, tempDev, IndusDev, peristalticDev;
-
 
     DatabaseReference primaryDatabase;
     String mUid;
@@ -249,12 +253,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
         });
 
-
-        //tvName.setText();
         addNewDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //showNetworkDialog();
                 Intent toAddDevice = new Intent(Dashboard.this, AddDeviceOption.class);
                 startActivity(toAddDevice);
             }
@@ -271,8 +272,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         });
 
         ivLogout.setOnClickListener(v -> {
-//            FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).signOut();
-//            finish();
             Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
             intent.putExtra("checkBtn","logout");
             startActivity(intent);
@@ -614,7 +613,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         if (connectivityManager != null) {
 
-
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
                 if (capabilities != null) {
@@ -633,9 +631,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         }
 
         return false;
-
     }
-
 
     @Override
     public void onOptionsIconClicked(View view, String deviceId) {
@@ -649,7 +645,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference()
                             .child("USERS").child(uid).child("DEVICES").child(deviceIdIds.get(deviceId)).removeValue()
                             .addOnSuccessListener(d -> {
-                                refresh();
+                                FirebaseFirestore.getInstance().collection("Devices Registered").document(deviceId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        refresh();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error deleting document", e);
+                                    }
+                                });
                             });
                 }
                 return true;

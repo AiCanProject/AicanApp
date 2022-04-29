@@ -23,7 +23,6 @@ public class TemperatureActivity extends AppCompatActivity {
     public static String DEVICE_ID = null;
     public static String deviceType = null;
 
-
     TabLayout tabLayout;
     ViewPager2 viewPager;
     ViewPagerAdapter viewPagerAdapter;
@@ -59,7 +58,5 @@ public class TemperatureActivity extends AppCompatActivity {
                 tab.setText("temp");
             }
         }).attach();
-
     }
-
 }

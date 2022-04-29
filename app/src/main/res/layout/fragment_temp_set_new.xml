@@ -19,6 +19,7 @@
         app:layout_constraintVertical_bias="0.123" />
 
     <Spinner
+        android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/spinner_layout"
@@ -57,6 +58,7 @@
                 app:cardElevation="10dp">
 
                 <TextView
+                    android:id="@+id/temperatureLabelTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -77,6 +79,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/tempLabelTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -113,7 +116,7 @@
                     android:layout_marginStart="80dp"
                     android:layout_marginTop="80dp"
                     android:fontFamily="@font/sofia_bold"
-                    android:text="23C"
+                    android:text="114C"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -134,11 +137,12 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="75dp"
+                    android:layout_marginStart="78dp"
                     android:layout_marginTop="45dp"
                     android:src="@mipmap/celcius" />
 
                 <Button
+                    android:id="@+id/themButton"
                     android:layout_width="100dp"
                     android:layout_height="35dp"
                     android:layout_gravity="end|center"
@@ -180,6 +184,7 @@
                 android:background="@drawable/set_btn_layout"/>
 
             <Button
+                android:id="@+id/modeButton"
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_gravity="end|center"
