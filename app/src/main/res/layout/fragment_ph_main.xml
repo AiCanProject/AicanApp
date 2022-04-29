@@ -495,7 +495,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:fontFamily="@font/montserrat_medium"
-                    android:text="Probes"
+                    android:text="Tab Battery"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -505,12 +505,16 @@
                     android:orientation="horizontal"
                     tools:ignore="UseCompoundDrawables">
 
-                    <Spinner
-                        android:id="@+id/probesVal"
-                        android:layout_width="130dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:textSize="25sp" />
+                    <TextView
+                        android:id="@+id/tabBattery"
+                        android:layout_width="150dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="62dp"
+                        android:text="20%"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:layout_width="wrap_content"

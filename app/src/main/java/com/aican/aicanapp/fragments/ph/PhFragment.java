@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +44,7 @@ import java.util.Locale;
 public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "PhFragment";
     PhView phView;
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, tabBattery;
 
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
@@ -74,7 +76,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tvTempNext = view.findViewById(R.id.tvTempNext);
 
        switchAtc = view.findViewById(R.id.switchAtc);
-        Spinner probesVal = view.findViewById(R.id.probesVal);
+//        Spinner probesVal = view.findViewById(R.id.probesVal);
 
         offsetCurr = view.findViewById(R.id.offsetVal);
         batteryCurr = view.findViewById(R.id.batteryPercent);
@@ -83,12 +85,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         phView = view.findViewById(R.id.phView);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
-
+        tabBattery = view.findViewById(R.id.tabBattery);
         entriesOriginal = new ArrayList<>();
 
-        ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
-        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        probesVal.setAdapter(ad);
+//        ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
+//        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        probesVal.setAdapter(ad);
 
         databaseHelper = new DatabaseHelper(requireContext());
 
@@ -99,6 +101,13 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Source.userId = res.getString(2);
             Source.userPasscode = res.getString(3);
         }
+
+        BatteryManager bm = (BatteryManager) getContext().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            tabBattery.setText(tabBatteryPer + "%");
+        }
+
 
         batteryDialog = new BatteryDialog();
         DialogMain dialogMain = new DialogMain();

@@ -335,23 +335,26 @@ public class phLogFragment extends Fragment {
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
-            SharedPreferences shp = getActivity().getSharedPreferences("Extras", MODE_PRIVATE);
-            offset = "Offset: " + shp.getString("offset", "");
-            battery = "Battery: " + shp.getString("battery", "");
-            slope = "Slope: " + shp.getString("slope", "");
-            temperature = "Temperature: " + shp.getString("temp", "");
-
-            SharedPreferences shp2 = getActivity().getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
-
-
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
+            Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
 
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("pH,mV,DATE");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
+
+
+            while (calibCSV.moveToNext()) {
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("pH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("mV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("date"));
+
+                String record1 = ph + "," + mv + "," + date;
+
+                printWriter.println(record1);
+            }
+            calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("TIME,pH,TEMP,NAME");

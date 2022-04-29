@@ -134,12 +134,12 @@
                 android:id="@+id/phLevelCard"
                 android:layout_width="410dp"
                 android:layout_height="150dp"
+                android:layout_margin="8dp"
                 android:backgroundTint="@color/white"
-                android:outlineSpotShadowColor="@color/black"
-                android:outlineAmbientShadowColor="@color/black"
                 android:elevation="12dp"
-                app:cardCornerRadius="16dp"
-                android:layout_margin="8dp">
+                android:outlineAmbientShadowColor="@color/black"
+                android:outlineSpotShadowColor="@color/black"
+                app:cardCornerRadius="16dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -150,13 +150,13 @@
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="15dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="15dp"
                         app:vertical="true" />
 
                     <androidx.constraintlayout.widget.Guideline
@@ -223,26 +223,27 @@
                 android:layout_width="410dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="7dp"
+                android:layout_marginVertical="10dp"
                 android:layout_marginTop="25dp"
                 android:background="@color/white"
                 android:backgroundTint="@color/white"
                 android:elevation="12dp"
-                android:layout_marginHorizontal="7dp"
-                app:cardCornerRadius="16dp"
-                android:layout_marginVertical="10dp">
+                app:cardCornerRadius="16dp">
 
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchAtc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ATC  "
-                    android:textSize="25sp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="40dp"
                     android:layout_marginTop="48dp"
+                    android:text="ATC  "
                     android:textColor="@color/blue_dark"
+                    android:textSize="25sp"
                     android:theme="@style/Switch" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -442,9 +443,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:paddingVertical="5dp"
                     app:layout_constraintTop_toBottomOf="@id/tvSlope"
-                    tools:ignore="UseCompoundDrawables"
-                    android:paddingVertical="5dp">
+                    tools:ignore="UseCompoundDrawables">
 
                     <TextView
                         android:id="@+id/slopeVal"
@@ -495,9 +496,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:paddingVertical="5dp"
                     app:layout_constraintTop_toBottomOf="@id/tvOffset"
-                    tools:ignore="UseCompoundDrawables"
-                    android:paddingVertical="5dp">
+                    tools:ignore="UseCompoundDrawables">
 
                     <TextView
                         android:id="@+id/offsetVal"
@@ -539,7 +540,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="62dp"
                     android:fontFamily="@font/montserrat_medium"
-                    android:text="Probes"
+                    android:text="Tab Battery"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/vBelowOffset" />
@@ -550,17 +551,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:orientation="horizontal"
+                    android:paddingVertical="5dp"
                     app:layout_constraintTop_toBottomOf="@id/tvProbes"
-                    tools:ignore="UseCompoundDrawables"
-                    android:paddingVertical="5dp">
+                    tools:ignore="UseCompoundDrawables">
 
-                    <Spinner
-                        android:id="@+id/probesVal"
+                    <TextView
+                        android:id="@+id/tabBattery"
                         android:layout_width="150dp"
                         android:layout_height="24dp"
                         android:layout_marginStart="62dp"
-                        android:text="Glass"
-                        android:textSize="34sp"
+                        android:text="20%"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
