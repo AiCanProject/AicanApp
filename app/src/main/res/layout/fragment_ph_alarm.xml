@@ -15,7 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/white"
         android:elevation="52dp"
         app:cardCornerRadius="26dp">
@@ -53,9 +56,10 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="45dp"
-                    android:text="@string/temperature"
-                    android:textColor="#9D9D9D"
-                    android:textSize="20sp"
+                    android:text="For pH Value: "
+                    android:fontFamily="@font/sofia_medium"
+                    android:textColor="#232323"
+                    android:textSize="25sp"
                     app:boxStrokeColor="@color/colorPrimary" />
 
                 <RadioGroup
@@ -88,81 +92,94 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="45dp"
-                    android:text="@string/enter_x_value"
-                    android:textColor="#9D9D9D"
-                    android:textSize="20sp" />
-
-                <EditText
-                    android:id="@+id/x_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="45dp"
-                    android:ems="8"
-                    android:textSize="20sp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="45dp"
-                    android:text="@string/enter_y_value"
-                    android:textColor="#9D9D9D"
-                    android:textSize="20sp" />
-
-                <EditText
-                    android:id="@+id/y_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="45dp"
-                    android:ems="8"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp">
+                android:orientation="horizontal">
 
-                <RadioButton
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_email_id"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:theme="@style/MyCheckBox" />
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/sofia_medium"
+                    android:layout_marginEnd="45dp"
+                    android:text="Enter pH Value: "
+                    android:textColor="#232323"
+                    android:textSize="25sp" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/etPh"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/add_mobile_number"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:theme="@style/MyCheckBox" />
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginRight="16dp"
+                    android:hint="Enter pH value"
+                    app:hintTextColor="@color/black">
 
-            </RadioGroup>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:lines="1"
+                        android:fontFamily="@font/sofia_medium"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <!--            <LinearLayout-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:orientation="horizontal">-->
+
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginStart="32dp"-->
+            <!--                    android:layout_marginEnd="45dp"-->
+            <!--                    android:text="@string/enter_y_value"-->
+            <!--                    android:textColor="#9D9D9D"-->
+            <!--                    android:textSize="20sp" />-->
+
+            <!--                <EditText-->
+            <!--                    android:id="@+id/y_value"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_marginStart="10dp"-->
+            <!--                    android:layout_marginEnd="45dp"-->
+            <!--                    android:ems="8"-->
+            <!--                    android:textSize="20sp" />-->
+
+            <!--            </LinearLayout>-->
+
+            <!--            <RadioGroup-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="20dp"-->
+            <!--                android:layout_marginTop="20dp">-->
+
+            <!--                <RadioButton-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="@string/add_email_id"-->
+            <!--                    android:textColor="@color/black"-->
+            <!--                    android:textSize="20sp"-->
+            <!--                    android:theme="@style/MyCheckBox" />-->
+
+            <!--                <RadioButton-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="@string/add_mobile_number"-->
+            <!--                    android:textColor="@color/black"-->
+            <!--                    android:textSize="20sp"-->
+            <!--                    android:theme="@style/MyCheckBox" />-->
+
+            <!--            </RadioGroup>-->
 
             <Button
                 android:id="@+id/startAlarm"
@@ -170,7 +187,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ll1"
                 android:layout_marginStart="30dp"
-                android:backgroundTint="#9037C7"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#FF7676"
                 android:gravity="center"
                 android:text="@string/start_alarm"
                 android:textAllCaps="false" />

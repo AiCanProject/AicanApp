@@ -81,6 +81,28 @@ public class Export extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
         setFirebaseListeners();
+
+        mDateBtn.setOnClickListener(v -> {
+            MaterialDatePicker datePicker =
+                    MaterialDatePicker.Builder.dateRangePicker()
+                            .setSelection(new Pair(MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                                    MaterialDatePicker.todayInUtcMilliseconds()))
+                            .setTitleText("Select dates")
+                            .build();
+            datePicker.show(getSupportFragmentManager(), "date");
+
+            datePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>) selection -> {
+                Long startDate = selection.first;
+                Long endDate = selection.second;
+                startDateString = DateFormat.format("yyyy-MM-dd", new Date(startDate)).toString();
+                endDateString = DateFormat.format("yyyy-MM-dd", new Date(endDate)).toString();
+                String date = "Start: " + startDateString + " End: " + endDateString;
+                Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
+                tvStartDate.setText(startDateString);
+                tvEndDate.setText(endDateString);
+            });
+        });
+
         exportCSV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,26 +191,7 @@ public class Export extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDateBtn.setOnClickListener(v -> {
-            MaterialDatePicker datePicker =
-                    MaterialDatePicker.Builder.dateRangePicker()
-                            .setSelection(new Pair(MaterialDatePicker.thisMonthInUtcMilliseconds(),
-                                    MaterialDatePicker.todayInUtcMilliseconds()))
-                            .setTitleText("Select dates")
-                            .build();
-            datePicker.show(getSupportFragmentManager(), "date");
 
-            datePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>) selection -> {
-                Long startDate = selection.first;
-                Long endDate = selection.second;
-                startDateString = DateFormat.format("yyyy-MM-dd", new Date(startDate)).toString();
-                endDateString = DateFormat.format("yyyy-MM-dd", new Date(endDate)).toString();
-                String date = "Start: " + startDateString + " End: " + endDateString;
-                Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
-                tvStartDate.setText(startDateString);
-                tvEndDate.setText(endDateString);
-            });
-        });
 
         if (checkPermission()) {
             Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();

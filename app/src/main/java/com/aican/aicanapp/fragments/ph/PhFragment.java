@@ -88,10 +88,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tabBattery = view.findViewById(R.id.tabBattery);
         entriesOriginal = new ArrayList<>();
 
-//        ArrayAdapter ad = new ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, probe);
-//        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        probesVal.setAdapter(ad);
-
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
