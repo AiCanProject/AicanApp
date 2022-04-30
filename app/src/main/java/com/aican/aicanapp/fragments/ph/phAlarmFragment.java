@@ -106,9 +106,9 @@ public class phAlarmFragment extends Fragment {
                       }
                   } else if(radioButton.getText().toString().equals("Less than")){
                       if(phV < phFire){
-                          Toast.makeText(requireContext(),"Lesser2", Toast.LENGTH_SHORT).show();
+                          Toast.makeText(requireContext(),"Less", Toast.LENGTH_SHORT).show();
                       } else {
-                          Toast.makeText(requireContext(),"Greater2", Toast.LENGTH_SHORT).show();
+                          Toast.makeText(requireContext(),"Great", Toast.LENGTH_SHORT).show();
                       }
                   }
 
