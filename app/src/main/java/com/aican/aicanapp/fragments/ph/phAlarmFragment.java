@@ -1,5 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -35,7 +37,8 @@ public class phAlarmFragment extends Fragment {
 
     RadioGroup radioGroup;
     DatabaseReference deviceRef;
-    Button alarm;
+    Button alarm, stopAlarm;
+    Ringtone ringtone;
     String phForm;
     EditText phValue;
     RadioButton radioButton;
@@ -54,6 +57,7 @@ public class phAlarmFragment extends Fragment {
 
         radioGroup = view.findViewById(R.id.groupradio);
         alarm = view.findViewById(R.id.startAlarm);
+        stopAlarm = view.findViewById(R.id.stopAlarm);
 
         phValue = view.findViewById(R.id.etPhValue);
 
@@ -81,6 +85,8 @@ public class phAlarmFragment extends Fragment {
 //                    }
 //                });
 
+        ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+
         alarm.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -100,6 +106,7 @@ public class phAlarmFragment extends Fragment {
 
                   if(radioButton.getText().toString().equals("Greater than")){
                       if(phV > phFire){
+                          ringtone.play();
                           Toast.makeText(requireContext(),"Greater1", Toast.LENGTH_SHORT).show();
                       } else {
                           Toast.makeText(requireContext(),"Lesser1", Toast.LENGTH_SHORT).show();
@@ -115,6 +122,19 @@ public class phAlarmFragment extends Fragment {
                 }
             }
         });
+
+        if(ringtone.isPlaying()){
+            stopAlarm.setVisibility(View.VISIBLE);
+            stopAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ringtone.stop();
+                }
+            });
+        } else {
+            stopAlarm.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     private void setupListeners() {

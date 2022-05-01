@@ -180,7 +180,11 @@
             <!--                    android:theme="@style/MyCheckBox" />-->
 
             <!--            </RadioGroup>-->
-
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
             <Button
                 android:id="@+id/startAlarm"
                 android:layout_width="235dp"
@@ -192,6 +196,19 @@
                 android:gravity="center"
                 android:text="@string/start_alarm"
                 android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/stopAlarm"
+                android:layout_width="235dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll1"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#FF7676"
+                android:gravity="center"
+                android:text="Stop Alarm"
+                android:textAllCaps="false" />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
