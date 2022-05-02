@@ -58,7 +58,6 @@ public class phAlarmFragment extends Fragment {
         radioGroup = view.findViewById(R.id.groupradio);
         alarm = view.findViewById(R.id.startAlarm);
         stopAlarm = view.findViewById(R.id.stopAlarm);
-
         phValue = view.findViewById(R.id.etPhValue);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
@@ -86,6 +85,9 @@ public class phAlarmFragment extends Fragment {
 //                });
 
         ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+        if(!ringtone.isPlaying()){
+            stopAlarm.setEnabled(false);
+        }
 
         alarm.setOnClickListener(new View.OnClickListener() {
 
@@ -97,7 +99,6 @@ public class phAlarmFragment extends Fragment {
                 Float phV = Float.parseFloat(phVal);
                 Float phFire = Float.parseFloat(phForm);
 
-
                 if (selectedId == -1) {
                     Toast.makeText(requireContext(), "No answer has been selected", Toast.LENGTH_SHORT).show();
                 }
@@ -107,6 +108,7 @@ public class phAlarmFragment extends Fragment {
                   if(radioButton.getText().toString().equals("Greater than")){
                       if(phV > phFire){
                           ringtone.play();
+                          alarm.setEnabled(false);
                           Toast.makeText(requireContext(),"Greater1", Toast.LENGTH_SHORT).show();
                       } else {
                           Toast.makeText(requireContext(),"Lesser1", Toast.LENGTH_SHORT).show();
@@ -120,24 +122,19 @@ public class phAlarmFragment extends Fragment {
                   }
 
                 }
+
+                if(ringtone.isPlaying()){
+                    stopAlarm.setEnabled(true);
+                    stopAlarm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ringtone.stop();
+                            stopAlarm.setEnabled(false);
+                            alarm.setEnabled(true);
+                        }
+                    });
+                }
             }
         });
-
-        if(ringtone.isPlaying()){
-            stopAlarm.setVisibility(View.VISIBLE);
-            stopAlarm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ringtone.stop();
-                }
-            });
-        } else {
-            stopAlarm.setVisibility(View.INVISIBLE);
-        }
-
     }
-
-    private void setupListeners() {
-
-        }
 }

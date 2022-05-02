@@ -60,6 +60,8 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                    //This line is used to open the csv File via the specific app I want
                     mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
 
                     Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
