@@ -54,8 +54,6 @@ public class AdminLoginActivity extends AppCompatActivity {
                     String checkFlag = intent.getStringExtra("checkBtn");
                     if(checkFlag.equals("addUser")){
                         startSettingActivity();
-                    }else if(checkFlag.equals("logout")){
-                        logout();
                     } else if(checkFlag.equals("checkDatabase")){
                         userDatabase();
                     }

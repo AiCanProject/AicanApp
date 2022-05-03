@@ -1232,10 +1232,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         phEdit4.setOnClickListener(this::onClick);
         phEdit5.setOnClickListener(this::onClick);
 
-        DialogMain dialogMain = new DialogMain();
-        dialogMain.setCancelable(false);
-        Source.userTrack = "PhCalibFragment logged in by ";
-        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+//        DialogMain dialogMain = new DialogMain();
+//        dialogMain.setCancelable(false);
+//        Source.userTrack = "PhCalibFragment logged in by ";
+//        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -69,14 +69,14 @@ public class Export extends AppCompatActivity {
         setContentView(R.layout.activity_export);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewCSV);
-        RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
+//        RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
 //        TextView noFilesText = findViewById(R.id.nofiles_textview);
         deviceId = findViewById(R.id.DeviceId);
         tvStartDate = findViewById(R.id.dateStart);
         tvEndDate = findViewById(R.id.dateEnd);
         exportCSV = findViewById(R.id.exportCSV);
         mDateBtn = findViewById(R.id.materialDateBtn);
-        exportUserData = findViewById(R.id.exportUserData);
+//        exportUserData = findViewById(R.id.exportUserData);
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
@@ -130,32 +130,32 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        exportUserData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                exportUserData();
-
-
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-                File root = new File(path);
-                File[] filesAndFolders = root.listFiles();
-
-                if (filesAndFolders == null || filesAndFolders.length == 0) {
-
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(".csv");
-                    }
-                }
-
-                uAdapter = new UserDataAdapter(Export.this, filesAndFolders);
-                userRecyclerView.setAdapter(uAdapter);
-                uAdapter.notifyDataSetChanged();
-                userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-            }
-        });
+//        exportUserData.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                exportUserData();
+//
+//
+//                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+//                File root = new File(path);
+//                File[] filesAndFolders = root.listFiles();
+//
+//                if (filesAndFolders == null || filesAndFolders.length == 0) {
+//
+//                    return;
+//                } else {
+//                    for (int i = 0; i < filesAndFolders.length; i++) {
+//                        filesAndFolders[i].getName().endsWith(".csv");
+//                    }
+//                }
+//
+//                uAdapter = new UserDataAdapter(Export.this, filesAndFolders);
+//                userRecyclerView.setAdapter(uAdapter);
+//                uAdapter.notifyDataSetChanged();
+//                userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+//
+//            }
+//        });
 
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
         String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
@@ -185,11 +185,11 @@ public class Export extends AppCompatActivity {
         fAdapter = new FileAdapter(this, filesAndFolders);
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
-        userRecyclerView.setAdapter(uAdapter);
+//        userRecyclerView.setAdapter(uAdapter);
         fAdapter.notifyDataSetChanged();
         uAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
 

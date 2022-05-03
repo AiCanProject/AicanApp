@@ -134,7 +134,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
-        setting = findViewById(R.id.settings);
+//        setting = findViewById(R.id.settings);
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("USERS").child(mUid);
         deviceIds = new ArrayList<>();
@@ -261,19 +261,21 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
         });
 
-        setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-                intent.putExtra("checkBtn","addUser");
-                startActivity(intent);
-
-            }
-        });
+//        setting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
+//                intent.putExtra("checkBtn","addUser");
+//                startActivity(intent);
+//
+//            }
+//        });
 
         ivLogout.setOnClickListener(v -> {
-            Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-            intent.putExtra("checkBtn","logout");
+            FirebaseAuth.getInstance(PrimaryAccount.getInstance(getApplicationContext())).signOut();
+            finish();
+
+            Intent intent  = new Intent(Dashboard.this, LoginActivity.class);
             startActivity(intent);
         });
 

@@ -6,6 +6,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -44,6 +45,7 @@ import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.dataClasses.phData;
 
 import com.aican.aicanapp.ph.PhView;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
@@ -171,10 +173,10 @@ public class phLogFragment extends Fragment {
         ph4 = "9.2";
         ph5 = "12.0";
 
-        DialogMain dialogMain = new DialogMain();
-        dialogMain.setCancelable(false);
-        Source.userTrack = "PhLogFragment logged in by ";
-        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+//        DialogMain dialogMain = new DialogMain();
+//        dialogMain.setCancelable(false);
+//        Source.userTrack = "PhLogFragment logged in by ";
+//        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +228,10 @@ public class phLogFragment extends Fragment {
                 databaseHelper.insertCalibData(ph4, mv4, dt4);
                 databaseHelper.insertCalibData(ph5, mv5, dt5);
 
-                dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+                Intent intent = new Intent(getContext(), Export.class);
+                startActivity(intent);
+
+    //                dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
             }
         });
 
