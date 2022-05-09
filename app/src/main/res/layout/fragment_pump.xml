@@ -29,7 +29,7 @@
                 android:textSize="14sp"
                 android:layout_gravity="center_horizontal"/>
 
-            <com.aican.aicanapp.pumpController.VerticalSlider
+            <com.aican.aicanappnoncfr.pumpController.VerticalSlider
                 android:id="@+id/speedController"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.aican.aicanapp.pumpController.VerticalSlider
+                <com.aican.aicanappnoncfr.pumpController.VerticalSlider
                     android:id="@+id/speedController"
                     android:layout_width="160dp"
                     android:layout_height="160dp"
@@ -187,7 +187,7 @@
             android:layout_height="150dp"
             android:visibility="gone"
             android:id="@+id/saveLayout">
-            <com.aican.aicanapp.pumpController.HorizontalSlider
+            <com.aican.aicanappnoncfr.pumpController.HorizontalSlider
                 android:id="@+id/slider"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

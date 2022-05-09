@@ -7,7 +7,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.aican.aicanapp"
+        applicationId "com.aican.aicanappnoncfr"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1

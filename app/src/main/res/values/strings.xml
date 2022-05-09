@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Lab 4.0 CFR</string>
+    <string name="app_name">Lab 4.0 NON-CFR</string>
     <string name="background_transition">background_transition</string>
     <string name="title_transition">title_transition</string>
     <string name="room_transition">room_transition</string>

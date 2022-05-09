@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:id="@+id/saveLayout">
-            <com.aican.aicanapp.pumpController.HorizontalSlider
+            <com.aican.aicanappnoncfr.pumpController.HorizontalSlider
                 android:id="@+id/slider"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
