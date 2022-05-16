@@ -1,6 +1,10 @@
 package com.aican.aicanapp.fragments.temp;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,17 +21,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.DataPickerFragment;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
@@ -52,13 +67,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-public class SetTempFragment extends Fragment {
+public class SetTempFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     DatabaseReference deviceRef = null;
     ProgressLabelView currTemp;
@@ -66,8 +83,15 @@ public class SetTempFragment extends Fragment {
     CurveSeekView curveSeekView;
     LinearLayout llStart, llStop, llClear, llExport;
     CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
+    ImageView minus, plus;
+    EditText temp_set;
+    TextView temp1, temp2, end_time, start_time, on_time, off_time;
     int skipPoints = 0;
+    int togTime = 1;
     int skipCount = 0;
+    String valMin_final = "", valHour_final = "";
+    DatePickerDialog datePickerDialog;
+    TimePickerDialog timePickerDialog;
     ArrayList<Entry> entriesOriginal;
     float temp = 0;
     boolean isTimeOptionsVisible = false;
@@ -75,11 +99,21 @@ public class SetTempFragment extends Fragment {
     long start = 0;
     ForegroundService myService;
     PlotGraphNotifier plotGraphNotifier;
+    int flag=0;
+    TextView start_date, end_date, end_date_display, start_date_display;
     private float progress = 150f;
     private LineChart lineChart;
     private boolean initialValue = true;
     private boolean isLogging = false;
     private boolean light = false;
+    long diffTime, startTime, endTime;
+    Spinner spinner_mode;
+    String mode_array[];
+    Button changeBtn, startBtn;
+    boolean ON_CLICKED = false;
+
+    int bar_progress= 0;
+    ProgressBar progress_bar;
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -93,11 +127,21 @@ public class SetTempFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         lineChart = view.findViewById(R.id.line_chart);
-        curveSeekView = view.findViewById(R.id.curveSeekView);
-        tempTextView = view.findViewById(R.id.humidityTextView);
+        //  curveSeekView = view.findViewById(R.id.curveSeekView);
+        //   tempTextView = view.findViewById(R.id.humidityTextView);
         if (light) setLightStatusBar(curveSeekView);
-        currTemp = view.findViewById(R.id.temperatureTextView);
-        Button changeBtn = view.findViewById(R.id.themButton);
+        //  currTemp = view.findViewById(R.id.temperatureTextView);
+        changeBtn = view.findViewById(R.id.themButton);
+        spinner_mode = view.findViewById(R.id.spinner_mode);
+        startBtn = view.findViewById(R.id.modeButton);
+        temp1 = view.findViewById(R.id.temp1);
+        temp2 = view.findViewById(R.id.temp2);
+        end_time = view.findViewById(R.id.end_time);
+        start_time = view.findViewById(R.id.start_time);
+        on_time = view.findViewById(R.id.on_time);
+        off_time = view.findViewById(R.id.off_time);
+
+        mode_array = getResources().getStringArray(R.array.mode);
 
         llStart = view.findViewById(R.id.llStart);
         llStop = view.findViewById(R.id.llStop);
@@ -107,53 +151,112 @@ public class SetTempFragment extends Fragment {
         cv1Min = view.findViewById(R.id.cv1min);
         cv10Min = view.findViewById(R.id.cv10min);
         cv15Min = view.findViewById(R.id.cv15min);
-        cvClock = view.findViewById(R.id.cvClock);
 
-        currTemp.setProgress(Math.round(progress));
-        tempTextView.setAnimationDuration(0);
-        curveSeekView.setProgress(progress);
-        tempTextView.setProgress((int) progress);
-        tempTextView.setAnimationDuration(800);
+        minus = view.findViewById(R.id.minus);
+        progress_bar = view.findViewById(R.id.progress_bar);
+        plus = view.findViewById(R.id.plus);
+        temp_set = view.findViewById(R.id.temp_set);
 
-        currTemp.setTextColor(getAttr(R.attr.primaryTextColor));
-        tempTextView.setTextColor(getAttr(R.attr.primaryTextColor));
-        curveSeekView.setBackgroundShadowColor(getAttr(R.attr.backgroundColor1));
-        curveSeekView.setSelectedLabelColor(getAttr(R.attr.selectedLabelColor));
-        curveSeekView.setLabelColor(getAttr(R.attr.labelColor));
-        curveSeekView.setScaleColor(getAttr(R.attr.scaleColor));
-        curveSeekView.setSliderColor(getAttr(R.attr.sliderColor));
-        curveSeekView.setSliderIconColor(getAttr(R.attr.sliderIconColor));
-        curveSeekView.setFirstGradientColor(getAttr(R.attr.firstGradientColor));
-        curveSeekView.setSecondGradientColor(getAttr(R.attr.secondGradientColor));
+       // cvClock = view.findViewById(R.id.cvClock);
+
+        start_date = view.findViewById(R.id.start_date);
+        end_date = view.findViewById(R.id.end_date);
+        start_date_display = view.findViewById(R.id.start_date_display);
+        end_date_display = view.findViewById(R.id.end_date_display);
+
+        updateProgressBar();
+
+        ArrayAdapter adapter = new ArrayAdapter(getContext(),R.layout.custom_spinner_mode,mode_array);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_mode.setAdapter(adapter);
+
+        start_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                togTime = 1;
+                initDatePicker();
+                ON_CLICKED = true;
+            }
+        });
+
+        start_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                togTime = 1;
+                initDatePicker();
+                ON_CLICKED = true;
+            }
+        });
+
+        end_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ON_CLICKED) {
+                    Toast.makeText(getContext(), "Please select a On Time", Toast.LENGTH_SHORT).show();
+                } else {
+                    togTime = 2;
+                    initDatePicker();
+                }
+            }
+        });
+
+        end_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ON_CLICKED) {
+                    Toast.makeText(getContext(), "Please select a On Time", Toast.LENGTH_SHORT).show();
+                } else {
+                    togTime = 2;
+                    initDatePicker();
+                }
+            }
+        });
+
+        spinner_mode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mode_array[i].equals("Regular")){
+                    start_time.setEnabled(false);
+                    end_time.setEnabled(false);
+                    start_date.setEnabled(false);
+                    end_date.setEnabled(false);
+                }else if(mode_array[i].equals("Timer")){
+                    start_time.setEnabled(true);
+                    end_time.setEnabled(true);
+                    start_date.setEnabled(true);
+                    end_date.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
         changeBtn.setBackgroundColor(getAttr(R.attr.warningTextColor));
 
         entriesOriginal = new ArrayList<>();
 
-        cvClock.setOnClickListener(v -> {
-            isTimeOptionsVisible = !isTimeOptionsVisible;
-            if (isTimeOptionsVisible) {
-                showTimeOptions();
-            } else {
-                hideTimeOptions();
-            }
-        });
-
-
-        curveSeekView.setOnProgressChangeListener(new Function1<Float, Unit>() {
-            @Override
-            public Unit invoke(Float aFloat) {
-                progress = aFloat;
-                tempTextView.setProgress(Math.round(aFloat));
-                Log.e("progress", Integer.toString(Math.round(aFloat)));
-                return null;
-            }
-        });
-
         changeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int newTemp = Math.round(curveSeekView.getProgress());
-                deviceRef.child("Data").child("TEMP1_VAL").setValue(newTemp);
+                deviceRef.child("Data").child("TEMP1_VAL").setValue(temp_set.getText().toString());
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress -= 1;
+                updateProgressBar();
+            }
+        });
+
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress += 1;
+                updateProgressBar();
             }
         });
 
@@ -161,7 +264,129 @@ public class SetTempFragment extends Fragment {
                 .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
 
         setupListeners();
-        setupGraph();
+    }
+
+    private void updateProgressBar(){
+        progress_bar.setProgress(bar_progress);
+        temp_set.setText(String.valueOf(bar_progress));
+    }
+
+    private void initDatePicker() {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                initTimePicker(day, month, year);
+            }
+        };
+
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DATE);
+
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+
+        datePickerDialog = new DatePickerDialog(getContext(), style, dateSetListener, year, month, day);
+        datePickerDialog.show();
+    }
+
+    private void initTimePicker(int day, int month, int year) {
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int min) {
+                String val = makeDateString(day, month, year, hour, min);
+                if (togTime == 1) {
+                    if (differFromNowTimeCalculate(day, month, year, hour, min)) {
+                        start_date_display.setText(val);
+                        on_time.setText(valHour_final + ":" + valMin_final);
+                        startTime = diffTime;
+                    } else {
+                        Toast.makeText(getContext(), "Previous time not applicable", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (togTime == 2) {
+                    if (differFromNowTimeCalculate(day, month, year, hour, min)) {
+                        end_date_display.setText(val);
+                        off_time.setText(valHour_final + ":" + valMin_final);
+                        endTime = diffTime - startTime;
+                    } else {
+                        Toast.makeText(getContext(), "Previous time not applicable", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
+        Calendar cal = Calendar.getInstance();
+        int h = cal.get(Calendar.HOUR_OF_DAY);
+        int m = cal.get(Calendar.MINUTE);
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+        timePickerDialog = new TimePickerDialog(getContext(), style, timeSetListener, h, m, true);
+        timePickerDialog.show();
+    }
+
+    private boolean differFromNowTimeCalculate(int day, int month, int year, int hour, int min) {
+        boolean bol = false;
+        Calendar cal = Calendar.getInstance();
+        int yearNow = cal.get(Calendar.YEAR);
+        int monthNow = cal.get(Calendar.MONTH);
+        monthNow++;
+        int dayNow = cal.get(Calendar.DATE);
+        int hourNow = cal.get(Calendar.HOUR_OF_DAY);
+        int minNow = cal.get(Calendar.MINUTE);
+        if (year > yearNow) {
+            bol = true;
+        } else if (year == yearNow) {
+            if (month > monthNow) {
+                bol = true;
+
+            } else if (month == monthNow) {
+                if (day > dayNow) {
+                    bol = true;
+                } else if (day == dayNow) {
+                    if (hour > hourNow) {
+                        bol = true;
+                    } else if (hour == hourNow) {
+                        bol = min >= minNow;
+                    }
+                }
+            }
+        }
+        diffTime = (year - yearNow) * 365 * 24 * 60 + (month - monthNow) * 30 * 24 * 60 + (day - dayNow) * 24 * 60 + (hour - hourNow) * 60 + (min - minNow);
+        return bol;
+    }
+
+    private String makeDateString(int day, int month, int year, int hour, int min) {
+        String valMin = "", valHour = "";
+        if (min < 10) {
+            valMin = ("0" + String.valueOf(min));
+        } else {
+            valMin = String.valueOf(min);
+        }
+        if (hour < 10) {
+            valHour = ("0" + String.valueOf(hour));
+        } else {
+            valHour = String.valueOf(hour);
+        }
+        valHour_final = valHour;
+        valMin_final = valMin;
+        return day + "-" + month + "-" + year;
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+        String currentDateString = DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.getTime());
+
+        if(flag == 1){
+            start_date.setText(currentDateString);
+        }else if(flag == 2){
+            end_date.setText(currentDateString);
+        }
+        flag = 0;
     }
 
 
@@ -171,7 +396,6 @@ public class SetTempFragment extends Fragment {
         lineDataSet.setLineWidth(2);
         lineDataSet.setCircleRadius(4);
         lineDataSet.setValueTextSize(10);
-
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataSet);
@@ -455,10 +679,10 @@ public class SetTempFragment extends Fragment {
                 if (temp == null) return;
                 if (initialValue) {
                     initialValue = false;
-                    curveSeekView.setProgress(temp);
-                    tempTextView.setProgress(temp);
+//                    curveSeekView.setProgress(temp);
+                   // tempTextView.setProgress(temp);
                 }
-                currTemp.setProgress(temp);
+//                currTemp.setProgress(temp);
                 SetTempFragment.this.temp = temp;
             }
 

@@ -232,7 +232,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         IndusDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //showNetworkDialog();
                 if (coolingDevices.size() != 0) {
                     coolingRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -243,13 +242,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 tempRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
 
-
-
                 IndusDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
-
             }
         });
 

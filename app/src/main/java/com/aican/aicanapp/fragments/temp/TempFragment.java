@@ -54,7 +54,6 @@ import java.util.Locale;
 
 public class TempFragment extends Fragment {
 
-
     DatabaseReference deviceRef;
     float temp = 0;
     TextView tvTempCurr, tvTempNext;
@@ -103,7 +102,6 @@ public class TempFragment extends Fragment {
 
         setupListeners();
         setupGraph();
-
     }
 
     private void setupListeners() {
@@ -139,7 +137,6 @@ public class TempFragment extends Fragment {
         lineDataSet.setLineWidth(2);
         lineDataSet.setCircleRadius(4);
         lineDataSet.setValueTextSize(10);
-
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataSet);

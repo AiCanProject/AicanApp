@@ -5,125 +5,349 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
+    android:background="#fff"
     tools:context=".specificactivities.TemperatureActivity">
 
-    <Button
-        android:id="@+id/themButton"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/set_temperature"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintStart_toEndOf="@+id/curveSeekView"
-        app:layout_constraintBottom_toTopOf="@id/line_chart" />
-
-    <TextView
-        android:id="@+id/temperatureLabelTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/current_temperature"
-        android:textAllCaps="true"
-        android:textColor="?attr/secondaryTextColor"
-        app:layout_constraintBottom_toTopOf="@id/temperatureTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/curveSeekView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/temperatureTextView"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/tempLabelTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/temperatureLabelTextView" />
-
-    <TextView
-        android:id="@+id/tempLabelTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="16dp"
-        android:clipChildren="false"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/temperature"
-        android:textAllCaps="true"
-        android:textColor="?attr/secondaryTextColor"
-        app:layout_constraintBottom_toTopOf="@id/humidityTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/temperatureTextView"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
+        android:background="#FFF"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.aican.aicanapp.tempController.CurveSeekView
-        android:id="@+id/curveSeekView"
-        android:layout_width="168dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@id/line_chart"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </com.aican.aicanapp.tempController.CurveSeekView>
-
-    <com.aican.aicanapp.tempController.ProgressLabelView
-        android:id="@+id/humidityTextView"
-        android:layout_width="0dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/temperatureLabelTextView"
-        app:layout_constraintTop_toBottomOf="@id/tempLabelTextView"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        app:layout_constraintBottom_toTopOf="@id/graphLoggingOptions"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <include
-        layout="@layout/graph_time_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="26dp"
-        app:layout_constraintBottom_toBottomOf="@id/line_chart"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <include
-        android:id="@+id/graphLoggingOptions"
-        layout="@layout/graph_logging_options"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="150dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="130dp"
+                android:text="@string/mode"
+                android:textColor="#9309C7"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.668"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.121" />
+
+            <Spinner
+                android:id="@+id/spinner_mode"
+                android:layout_width="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.143" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/categoriesLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="160dp"
+            android:background="#fff"
+            android:backgroundTint="#fff"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ph_dev"
+                android:layout_width="230dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="#fff"
+                android:backgroundTint="#fff"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp">
+
+                <TextView
+                    android:id="@+id/temp1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="23°C"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="50dp"
+                    android:fontFamily="@font/sofia_light"
+                    android:text="@string/temperature_1"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/temp2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="80dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="23°C"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="120dp"
+                    android:fontFamily="@font/sofia_light"
+                    android:text="@string/temperature_2"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/temp_dev"
+                android:layout_width="370dp"
+                android:layout_height="160dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="25dp"
+                android:background="#fff"
+                android:backgroundTint="#fff"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="5dp">
+
+                <EditText
+                    android:id="@+id/temp_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginTop="65dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:layout_marginStart="15dp"
+                    android:indeterminateOnly="false"
+                    android:progressDrawable="@drawable/circle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:progress="60" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="108dp"
+                    android:layout_marginTop="75dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="°C"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/plus"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="110dp"
+                    android:layout_marginTop="110dp"
+                    android:background="#000"
+                    android:backgroundTint="#FFF"
+                    android:src="@mipmap/pluss" />
+
+                <ImageView
+                    android:id="@+id/minus"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="110dp"
+                    android:src="@mipmap/minuss" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="78dp"
+                    android:layout_marginTop="45dp"
+                    android:src="@mipmap/celcius" />
+
+                <Button
+                    android:id="@+id/themButton"
+                    android:layout_width="100dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="end|center"
+                    android:background="@drawable/start_btn_layout"
+                    android:layout_marginEnd="30dp"
+                    android:text="@string/set"
+                    android:textSize="13sp" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/calibrate_dev"
+            android:layout_width="630dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:background="#fff"
+            android:backgroundTint="#fff"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="60dp"
+                android:fontFamily="@font/sofia_light"
+                android:text="@string/device_status"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <Button
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/set_btn_layout" />
+
+            <Button
+                android:id="@+id/modeButton"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/start_btn_layout"
+                android:text="@string/start"
+                android:textSize="13sp" />
+
+            <!-- <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/spinner_layout" />-->
+
+            <TextView
+                android:id="@+id/start_date_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="75dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/sofia_light"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/start_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/sofia_light"
+                android:text="@string/start_date"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/end_date_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="75dp"
+                android:layout_marginTop="85dp"
+                android:fontFamily="@font/sofia_light"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="110dp"
+                android:fontFamily="@font/sofia_light"
+                android:text="@string/end_date"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/on_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/sofia_light"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/sofia_light"
+                android:text="@string/start_time"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/off_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="85dp"
+                android:fontFamily="@font/sofia_light"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="110dp"
+                android:fontFamily="@font/sofia_light"
+                android:text="@string/end_time"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

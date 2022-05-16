@@ -109,18 +109,21 @@
                 app:cardCornerRadius="24dp"
                 app:cardElevation="10dp">
 
-                <TextView
+                <EditText
+                    android:id="@+id/temp_set"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_marginStart="80dp"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginStart="75dp"
+                    android:inputType="number"
+                    android:layout_marginTop="65dp"
                     android:fontFamily="@font/sofia_bold"
                     android:text="114C"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <ImageView
+                    android:id="@+id/plus"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginStart="110dp"
@@ -128,6 +131,7 @@
                     android:src="@drawable/ic_baseline_add" />
 
                 <ImageView
+                    android:id="@+id/minus"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginStart="70dp"
@@ -202,6 +206,14 @@
                 android:background="@drawable/spinner_layout" />
 
             <TextView
+                android:id="@+id/start_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="85dp"
+                android:layout_marginTop="20dp"
+                android:hint="Start Date"/>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -221,6 +233,14 @@
                 android:background="@drawable/spinner_layout" />
 
             <TextView
+                android:id="@+id/end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="85dp"
+                android:layout_marginTop="90dp"
+                android:hint="End Date"/>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -231,6 +251,28 @@
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
+            <cn.iwgang.countdownview.CountdownView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isHideTimeBackground="true"
+                app:isShowDay="false"
+                app:isShowHour="true"
+                app:isShowMinute="true"
+                app:isShowSecond="true"
+                app:isShowMillisecond="false"
+                app:timeTextColor="#757575"
+                app:timeTextSize="22sp"
+                app:isTimeTextBold="true"
+                app:suffixGravity="bottom"
+                app:suffixTextColor="#000000"
+                app:suffixTextSize="12sp"
+                android:layout_marginStart="270dp"
+                android:layout_marginTop="20dp"
+                app:suffixHour=":"
+                app:suffixMinute=":"
+                app:suffixSecond=":"
+                app:suffixMillisecond=":" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -240,6 +282,28 @@
                 android:text="@string/start_time"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
+
+            <cn.iwgang.countdownview.CountdownView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:isHideTimeBackground="true"
+                app:isShowDay="false"
+                app:isShowHour="true"
+                app:isShowMinute="true"
+                app:isShowSecond="true"
+                app:isShowMillisecond="false"
+                app:timeTextColor="#757575"
+                app:timeTextSize="22sp"
+                app:isTimeTextBold="true"
+                app:suffixGravity="bottom"
+                app:suffixTextColor="#000000"
+                app:suffixTextSize="12sp"
+                android:layout_marginStart="270dp"
+                android:layout_marginTop="90dp"
+                app:suffixHour=":"
+                app:suffixMinute=":"
+                app:suffixSecond=":"
+                app:suffixMillisecond=":" />
 
             <TextView
                 android:layout_width="wrap_content"

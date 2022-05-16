@@ -1,4 +1,4 @@
-package com.aican.aicanapp.fragments.ph;
+package com.aican.aicanapp.fragments.temp;
 
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -32,10 +32,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public class phAlarmFragment extends Fragment {
+public class AlarmTempFragment extends Fragment {
 
     RadioGroup radioGroup;
-    DatabaseReference deviceRef;
+   // DatabaseReference deviceRef;
     Button alarm, stopAlarm;
     Ringtone ringtone;
     String phForm;
@@ -47,7 +47,7 @@ public class phAlarmFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ph_alarm, container, false);
+        return inflater.inflate(R.layout.fragment_temp_alarm, container, false);
     }
 
     @Override
@@ -59,21 +59,21 @@ public class phAlarmFragment extends Fragment {
         stopAlarm = view.findViewById(R.id.stopAlarm);
         phValue = view.findViewById(R.id.etPhValue);
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+     //   deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+       /* deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
                 if (ph == null) return;
                 phForm = String.format(Locale.UK, "%.2f", ph);
-                phAlarmFragment.this.ph = ph;
+                AlarmTempFragment.this.ph = ph;
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
-        });
+        });*/
 
 //        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 //                    @Override
@@ -102,23 +102,23 @@ public class phAlarmFragment extends Fragment {
                     Toast.makeText(requireContext(), "No answer has been selected", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                  radioButton = (RadioButton)radioGroup.findViewById(selectedId);
+                    radioButton = (RadioButton)radioGroup.findViewById(selectedId);
 
-                  if(radioButton.getText().toString().equals("Greater than")){
-                      if(phV > phFire){
-                          ringtone.play();
-                          alarm.setEnabled(false);
-                          Toast.makeText(requireContext(),"Greater1", Toast.LENGTH_SHORT).show();
-                      } else {
-                          Toast.makeText(requireContext(),"Lesser1", Toast.LENGTH_SHORT).show();
-                      }
-                  } else if(radioButton.getText().toString().equals("Less than")){
-                      if(phV < phFire){
-                          Toast.makeText(requireContext(),"Less", Toast.LENGTH_SHORT).show();
-                      } else {
-                          Toast.makeText(requireContext(),"Great", Toast.LENGTH_SHORT).show();
-                      }
-                  }
+                    if(radioButton.getText().toString().equals("Greater than")){
+                        if(phV > phFire){
+                            ringtone.play();
+                            alarm.setEnabled(false);
+                            Toast.makeText(requireContext(),"Greater1", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(),"Lesser1", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if(radioButton.getText().toString().equals("Less than")){
+                        if(phV < phFire){
+                            Toast.makeText(requireContext(),"Less", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(),"Great", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
                 }
 

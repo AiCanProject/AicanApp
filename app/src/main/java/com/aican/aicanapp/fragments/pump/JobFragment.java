@@ -25,7 +25,6 @@ public class JobFragment extends Fragment {
     Spinner spin;
     CardView repeat, timer;
     public JobFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -36,7 +35,6 @@ public class JobFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_job, container, false);
     }
 
@@ -55,7 +53,6 @@ public class JobFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
 
-
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -63,13 +60,11 @@ public class JobFragment extends Fragment {
                     case 0:
                         repeat.setVisibility(View.VISIBLE);
                         timer.setVisibility(View.GONE);
-
                         break;
                     case 1:
-                            timer.setVisibility(View.VISIBLE);
-                            repeat.setVisibility(View.GONE);
+                        timer.setVisibility(View.VISIBLE);
+                        repeat.setVisibility(View.GONE);
                         break;
-
                 }
             }
 
@@ -78,7 +73,5 @@ public class JobFragment extends Fragment {
                 Toast.makeText(requireContext(), "Select a mode of callibration", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 }

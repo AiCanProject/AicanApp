@@ -69,7 +69,7 @@ public class PumpCalibFragment extends Fragment {
         startBtn = view.findViewById(R.id.startCalib);
         date = view.findViewById(R.id.date);
         time = view.findViewById(R.id.time);
-        seekArc = view.findViewById(R.id.seekArc);
+       // seekArc = view.findViewById(R.id.seekArc);
         //seekArcText = view.findViewById(R.id.seekArcText);
 
         startBtn.setOnClickListener(v->{

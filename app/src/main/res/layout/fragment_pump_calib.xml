@@ -7,7 +7,6 @@
     android:backgroundTint="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
 <androidx.cardview.widget.CardView
     android:id="@+id/calibCard"
     android:layout_width="0dp"
@@ -29,37 +28,74 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--<com.aican.aicanapp.pumpController.VerticalSlider
-                android:id="@+id/speedController"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="10dp"
-                app:invert="false" /> -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <com.triggertrap.seekarc.SeekArc
-                android:id="@+id/seekArc"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="10dp"
-                android:padding="30dp"
-                seekarc:rotation="180"
-                seekarc:startAngle="30"
-                seekarc:sweepAngle="300"
-                seekarc:touchInside="true" />
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:layout_gravity="center"
+                    android:indeterminateOnly="false"
+                    android:progressDrawable="@drawable/circle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:progress="60" />
+
+                <EditText
+                    android:id="@+id/temp_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:fontFamily="@font/sofia_bold"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    seekarc:layout_constraintBottom_toBottomOf="parent"
+                    seekarc:layout_constraintEnd_toEndOf="parent"
+                    seekarc:layout_constraintStart_toStartOf="parent"
+                    seekarc:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/plus"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="#000"
+                    android:backgroundTint="#FFF"
+                    android:src="@mipmap/pluss"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    seekarc:layout_constraintHorizontal_bias="0.612"
+                    seekarc:layout_constraintVertical_bias="0.696" />
+
+                <ImageView
+                    android:id="@+id/minus"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@mipmap/minuss"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    seekarc:layout_constraintHorizontal_bias="0.406"
+                    seekarc:layout_constraintVertical_bias="0.696" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="160dp"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:text="Speed"
                 android:textColor="@color/black"
                 android:textSize="19sp" />

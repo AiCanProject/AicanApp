@@ -52,14 +52,17 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.github.uzairiqbal91:CircularTimerView:1.0'
+    implementation 'com.github.marcinmoskala:ArcSeekBar:0.31'
 
     implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
 
     implementation 'com.google.firebase:firebase-auth:20.0.4'
     implementation 'com.google.firebase:firebase-database:19.7.0'
+    implementation 'com.github.iwgang:countdownview:2.1.6'
 
     def preference_version = "1.1.1"
     implementation "androidx.preference:preference:$preference_version"
+
 
 
     //graph view

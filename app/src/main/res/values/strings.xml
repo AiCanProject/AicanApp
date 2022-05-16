@@ -55,4 +55,9 @@
     <string name="calliberate">Calliberate</string>
     <string name="alarm">Alarm</string>
 
+    <string-array name="mode">
+        <item>Regular</item>
+        <item>Timer</item>
+    </string-array>
+
 </resources>

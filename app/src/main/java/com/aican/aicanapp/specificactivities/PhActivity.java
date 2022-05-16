@@ -125,7 +125,6 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                     .addToBackStack(null)
                     .commit();
 
-
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
 
             return true;
