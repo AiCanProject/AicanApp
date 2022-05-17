@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.fragments.temp.AlarmTempFragment;
 import com.aican.aicanapp.fragments.temp.LogTempFragment;
 import com.aican.aicanapp.fragments.temp.SetTempFragment;
@@ -47,6 +48,8 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
         if (DEVICE_ID == null || deviceType == null) {
             throw new RuntimeException();
         }
+
+        Source.deviceID = DEVICE_ID;
 
       //  deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 

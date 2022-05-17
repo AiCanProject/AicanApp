@@ -38,12 +38,14 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
-import com.aican.aicanapp.DataPickerFragment;
+import com.aican.aicanapp.FirebaseAccounts.DevicesAccount;
+import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
+import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.tempController.CurveSeekView;
@@ -72,12 +74,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-
 public class SetTempFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
-    DatabaseReference deviceRef = null;
+    DatabaseReference deviceRef = null, temp_value;
     ProgressLabelView currTemp;
     ProgressLabelView tempTextView;
     CurveSeekView curveSeekView;
@@ -87,6 +86,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     EditText temp_set;
     TextView temp1, temp2, end_time, start_time, on_time, off_time;
     int skipPoints = 0;
+    public static String DEVICE_ID = null;
     int togTime = 1;
     int skipCount = 0;
     String valMin_final = "", valHour_final = "";
@@ -109,6 +109,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     long diffTime, startTime, endTime;
     Spinner spinner_mode;
     String mode_array[];
+    ArrayList<String> list_temp;
     Button changeBtn, startBtn;
     boolean ON_CLICKED = false;
 
@@ -127,19 +128,18 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         super.onViewCreated(view, savedInstanceState);
 
         lineChart = view.findViewById(R.id.line_chart);
-        //  curveSeekView = view.findViewById(R.id.curveSeekView);
-        //   tempTextView = view.findViewById(R.id.humidityTextView);
         if (light) setLightStatusBar(curveSeekView);
-        //  currTemp = view.findViewById(R.id.temperatureTextView);
         changeBtn = view.findViewById(R.id.themButton);
         spinner_mode = view.findViewById(R.id.spinner_mode);
         startBtn = view.findViewById(R.id.modeButton);
+        list_temp = new ArrayList<>();
         temp1 = view.findViewById(R.id.temp1);
         temp2 = view.findViewById(R.id.temp2);
         end_time = view.findViewById(R.id.end_time);
         start_time = view.findViewById(R.id.start_time);
         on_time = view.findViewById(R.id.on_time);
         off_time = view.findViewById(R.id.off_time);
+        temp_value = FirebaseDatabase.getInstance(DevicesAccount.getInstance(getContext())).getReference();
 
         mode_array = getResources().getStringArray(R.array.mode);
 
@@ -157,14 +157,30 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         plus = view.findViewById(R.id.plus);
         temp_set = view.findViewById(R.id.temp_set);
 
-       // cvClock = view.findViewById(R.id.cvClock);
-
         start_date = view.findViewById(R.id.start_date);
         end_date = view.findViewById(R.id.end_date);
         start_date_display = view.findViewById(R.id.start_date_display);
         end_date_display = view.findViewById(R.id.end_date_display);
 
         updateProgressBar();
+
+        temp_value = temp_value.child("TEMP_CONTROLLER").child(Source.deviceID).child("Data");
+
+        temp_value.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list_temp.clear();
+                for(DataSnapshot data : snapshot.getChildren()){
+                    list_temp.add(data.getValue().toString());
+                }
+                temp1.setText(list_temp.get(0));
+                temp2.setText(list_temp.get(1));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
         ArrayAdapter adapter = new ArrayAdapter(getContext(),R.layout.custom_spinner_mode,mode_array);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -679,20 +695,14 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                 if (temp == null) return;
                 if (initialValue) {
                     initialValue = false;
-//                    curveSeekView.setProgress(temp);
-                   // tempTextView.setProgress(temp);
                 }
-//                currTemp.setProgress(temp);
                 SetTempFragment.this.temp = temp;
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
-
-
     }
 
     private int getAttr(@AttrRes int attrRes) {
