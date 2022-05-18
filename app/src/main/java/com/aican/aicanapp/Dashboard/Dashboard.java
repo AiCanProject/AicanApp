@@ -157,7 +157,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-          //      showNetworkDialog();
+                //      showNetworkDialog();
                 Intent intent = new Intent(Dashboard.this, InstructionActivity.class);
                 startActivity(intent);
             }
@@ -165,7 +165,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            //    showNetworkDialog();
+                //    showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -507,28 +507,28 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     case "P_PUMP": {
                         Integer mode = ui.child("Mode").getValue(Integer.class);
                         Integer status = ui.child("Start").getValue(Integer.class);
-//                        if (mode == 0) {
-//                            pumpDevices.add(new PumpDevice(
-//                                    id,
-//                                    name,
-//                                    mode,
-//                                    ui.child("Speed").getValue(Integer.class),
-//                                    ui.child("Direction").getValue(Integer.class),
-//                                    ui.child("Volume").getValue(Integer.class),
-//                                    status
-//
-//                            ));
-//                        } else {
-//                            pumpDevices.add(new PumpDevice(
-//                                    id,
-//                                    name,
-//                                    mode,
-//                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
-//                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
-//                                    null,
-//                                    status
-//                            ));
-//                        }
+/*                        if (mode == 0) {
+                            pumpDevices.add(new PumpDevice(
+                                    id,
+                                    name,
+                                    mode,
+                                    ui.child("Speed").getValue(Integer.class),
+                                    ui.child("Direction").getValue(Integer.class),
+                                    ui.child("Volume").getValue(Integer.class),
+                                    status
+
+                            ));
+                        } else {
+                            pumpDevices.add(new PumpDevice(
+                                    id,
+                                    name,
+                                    mode,
+                                    ui.child("MODE").child("PUMP").child("SPEED").getValue(Integer.class),
+                                    ui.child("MODE").child("PUMP").child("DIR").getValue(Integer.class),
+                                    null,
+                                    status
+                            ));
+                        }*/
 
                         pumpDevices.add(new PumpDevice(
                                 id,
@@ -547,7 +547,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         tempDevices.add(new TempDevice(
                                 id,
                                 name,
-                                data.child("TEMP1_VAL").getValue(Integer.class)
+                                data.child("TEMP2_VAL").getValue(Integer.class)
                         ));
                         break;
                     }
@@ -555,7 +555,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         coolingDevices.add(new CoolingDevice(
                                 id,
                                 name,
-                                ui.child("TEMP").child("TEMP_VAL").getValue(Integer.class)
+                                (Integer) ui.child("TEMP").child("TEMP_VAL").getValue()
                         ));
                         break;
                     }
@@ -570,28 +570,28 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 //                        tvTemp.setVisibility(View.GONE);
                     } else {
                         tempRecyclerView.setVisibility(View.VISIBLE);
-  //                      tvTemp.setVisibility(View.VISIBLE);
+                        //                      tvTemp.setVisibility(View.VISIBLE);
                     }
                     if (coolingDevices.size() == 0) {
                         coolingRecyclerView.setVisibility(View.GONE);
-    //                    tvCooling.setVisibility(View.GONE);
+                        //                    tvCooling.setVisibility(View.GONE);
                     } else {
                         coolingRecyclerView.setVisibility(View.VISIBLE);
-      //                  tvCooling.setVisibility(View.VISIBLE);
+                        //                  tvCooling.setVisibility(View.VISIBLE);
                     }
                     if (phDevices.size() == 0) {
                         phRecyclerView.setVisibility(View.GONE);
-        //                tvPh.setVisibility(View.GONE);
+                        //                tvPh.setVisibility(View.GONE);
                     } else {
                         phRecyclerView.setVisibility(View.VISIBLE);
-          //              tvPh.setVisibility(View.VISIBLE);
+                        //              tvPh.setVisibility(View.VISIBLE);
                     }
                     if (pumpDevices.size() == 0) {
                         pumpRecyclerView.setVisibility(View.GONE);
-            //            tvPump.setVisibility(View.GONE);
+                        //            tvPump.setVisibility(View.GONE);
                     } else {
                         pumpRecyclerView.setVisibility(View.VISIBLE);
-              //          tvPump.setVisibility(View.VISIBLE);
+                        //          tvPump.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -625,7 +625,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 }
             }
         }
-
         return false;
     }
 

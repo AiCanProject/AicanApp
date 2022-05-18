@@ -14,7 +14,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,14 +41,11 @@ import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.FirebaseAccounts.DevicesAccount;
-import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
-import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.graph.ForegroundService;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
 import com.aican.aicanapp.tempController.CurveSeekView;
-import com.aican.aicanapp.tempController.ProgressLabelView;
 import com.aican.aicanapp.utils.PlotGraphNotifier;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -57,6 +53,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,11 +75,9 @@ import java.util.List;
 public class SetTempFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     DatabaseReference deviceRef = null, temp_value;
-    ProgressLabelView currTemp;
-    ProgressLabelView tempTextView;
     CurveSeekView curveSeekView;
     LinearLayout llStart, llStop, llClear, llExport;
-    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
+    CardView cv1Min, cv5Min, cv10Min, cv15Min;
     ImageView minus, plus;
     EditText temp_set;
     TextView temp1, temp2, end_time, start_time, on_time, off_time;
@@ -93,24 +89,24 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     ArrayList<Entry> entriesOriginal;
+    String spinner_status = "Regular";
+    String status;
     float temp = 0;
-    boolean isTimeOptionsVisible = false;
     ArrayList<Entry> logs = new ArrayList<>();
     long start = 0;
     ForegroundService myService;
     PlotGraphNotifier plotGraphNotifier;
     int flag=0;
     TextView start_date, end_date, end_date_display, start_date_display;
-    private float progress = 150f;
+    private final float progress = 150f;
     private LineChart lineChart;
     private boolean initialValue = true;
     private boolean isLogging = false;
-    private boolean light = false;
     long diffTime, startTime, endTime;
     Spinner spinner_mode;
-    String mode_array[];
+    String[] mode_array;
     ArrayList<String> list_temp;
-    Button changeBtn, startBtn;
+    Button set_btn, start_btn, stop_btn, green_btn, orange_btn;
     boolean ON_CLICKED = false;
 
     int bar_progress= 0;
@@ -128,17 +124,21 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         super.onViewCreated(view, savedInstanceState);
 
         lineChart = view.findViewById(R.id.line_chart);
+        boolean light = false;
         if (light) setLightStatusBar(curveSeekView);
-        changeBtn = view.findViewById(R.id.themButton);
+        set_btn = view.findViewById(R.id.set_btn);
         spinner_mode = view.findViewById(R.id.spinner_mode);
-        startBtn = view.findViewById(R.id.modeButton);
+        start_btn = view.findViewById(R.id.start_btn);
         list_temp = new ArrayList<>();
         temp1 = view.findViewById(R.id.temp1);
         temp2 = view.findViewById(R.id.temp2);
         end_time = view.findViewById(R.id.end_time);
         start_time = view.findViewById(R.id.start_time);
+        stop_btn = view.findViewById(R.id.stop_btn);
         on_time = view.findViewById(R.id.on_time);
         off_time = view.findViewById(R.id.off_time);
+        green_btn = view.findViewById(R.id.green_btn);
+        orange_btn = view.findViewById(R.id.orange_btn);
         temp_value = FirebaseDatabase.getInstance(DevicesAccount.getInstance(getContext())).getReference();
 
         mode_array = getResources().getStringArray(R.array.mode);
@@ -164,9 +164,9 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
         updateProgressBar();
 
-        temp_value = temp_value.child("TEMP_CONTROLLER").child(Source.deviceID).child("Data");
+        temp_value = temp_value.child("TEMP_CONTROLLER").child(Source.deviceID);
 
-        temp_value.addValueEventListener(new ValueEventListener() {
+        temp_value.child("Data").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list_temp.clear();
@@ -179,6 +179,71 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        temp_value.child("UI").child("TEMP").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list_temp.clear();
+                for(DataSnapshot data : snapshot.getChildren()){
+                    list_temp.add(data.getValue().toString());
+                }
+                status = list_temp.get(4);
+                if(status.equals("ON")){
+                    orange_btn.setVisibility(View.INVISIBLE);
+                    green_btn.setVisibility(View.VISIBLE);
+                }else if(status.equals("OFF")){
+                    orange_btn.setVisibility(View.VISIBLE);
+                    green_btn.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        start_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                start_btn.setVisibility(View.INVISIBLE);
+                stop_btn.setVisibility(View.VISIBLE);
+
+                int statee = 0;
+                if(spinner_status.equals("Regular")){
+                    statee = 1;
+                } else if(spinner_status.equals("Timer")){
+                    statee = 2;
+                }
+
+                temp_value.child("UI").child("TEMP").child("STATUS").setValue(statee).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+            }
+        });
+
+        stop_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                start_btn.setVisibility(View.VISIBLE);
+                stop_btn.setVisibility(View.INVISIBLE);
+
+                temp_value.child("UI").child("TEMP").child("STATUS").setValue(0).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
             }
         });
 
@@ -232,11 +297,13 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(mode_array[i].equals("Regular")){
+                    spinner_status = "Regular";
                     start_time.setEnabled(false);
                     end_time.setEnabled(false);
                     start_date.setEnabled(false);
                     end_date.setEnabled(false);
                 }else if(mode_array[i].equals("Timer")){
+                    spinner_status = "Timer";
                     start_time.setEnabled(true);
                     end_time.setEnabled(true);
                     start_date.setEnabled(true);
@@ -249,11 +316,9 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
-        changeBtn.setBackgroundColor(getAttr(R.attr.warningTextColor));
-
         entriesOriginal = new ArrayList<>();
 
-        changeBtn.setOnClickListener(new View.OnClickListener() {
+        set_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deviceRef.child("Data").child("TEMP1_VAL").setValue(temp_set.getText().toString());
@@ -279,7 +344,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
                 .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
 
-        setupListeners();
+        //setupListeners();
     }
 
     private void updateProgressBar(){

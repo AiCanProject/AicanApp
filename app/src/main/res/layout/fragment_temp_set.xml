@@ -85,8 +85,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
                     android:fontFamily="@font/sofia_bold"
-                    android:text="23°C"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="°C"
+                    android:layout_marginStart="30dp"
                     android:textColor="@color/black"
                     android:textSize="30sp" />
 
@@ -103,11 +114,22 @@
                 <TextView
                     android:id="@+id/temp2"
                     android:layout_width="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="80dp"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="80dp"
                     android:fontFamily="@font/sofia_bold"
-                    android:text="23°C"
+                    android:text="°C"
+                    android:layout_marginStart="30dp"
                     android:textColor="@color/black"
                     android:textSize="30sp" />
 
@@ -196,7 +218,7 @@
                     android:src="@mipmap/celcius" />
 
                 <Button
-                    android:id="@+id/themButton"
+                    android:id="@+id/set_btn"
                     android:layout_width="100dp"
                     android:layout_height="35dp"
                     android:layout_gravity="end|center"
@@ -233,6 +255,8 @@
                 android:textSize="15sp" />
 
             <Button
+                android:id="@+id/green_btn"
+                android:visibility="invisible"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="end"
@@ -241,7 +265,16 @@
                 android:background="@drawable/set_btn_layout" />
 
             <Button
-                android:id="@+id/modeButton"
+                android:id="@+id/orange_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/set_btn_layoutt" />
+
+            <Button
+                android:id="@+id/start_btn"
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_gravity="end|center"
@@ -250,13 +283,16 @@
                 android:text="@string/start"
                 android:textSize="13sp" />
 
-            <!-- <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/spinner_layout" />-->
+            <Button
+                android:id="@+id/stop_btn"
+                android:visibility="invisible"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/start_btn_layout"
+                android:text="@string/start"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/start_date_display"
