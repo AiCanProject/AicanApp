@@ -4,6 +4,7 @@
     package="com.aican.aicanappnoncfr">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE">
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">
@@ -34,9 +35,9 @@
         tools:targetApi="m"
         tools:replace="android:icon">
 
-        <activity
-            android:name=".CheckConnectionReciever"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".CheckConnectionReciever"-->
+<!--            android:exported="false" />-->
 
         <activity
             android:name="com.aican.aicanappnoncfr.specificactivities.InstructionActivity"
@@ -106,6 +107,8 @@
                 android:resource="@xml/provider_paths" />
             //provider_paths.xml file path in this example
         </provider>
+
+        <service android:name=".services.AlarmForegroundService"></service>
 
     </application>
 

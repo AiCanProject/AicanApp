@@ -276,14 +276,14 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7" />
 
-            <TextView
-                android:id="@+id/lastCalibration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:layout_marginTop="0dp"
-                android:text="Last Calibrated at: \n 12/03/2022 20:05"
-                android:textSize="16sp" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/lastCalibration"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="18dp"-->
+            <!--                android:layout_marginTop="0dp"-->
+            <!--                android:text="Last Calibrated at: \n 12/03/2022 20:05"-->
+            <!--                android:textSize="16sp" />-->
 
         </LinearLayout>
 
