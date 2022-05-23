@@ -260,31 +260,36 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }
         });
 
+
+        SharedPreferences sha = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+        int toggleVal = sha.getInt("toggleValue", 0);
+        if(toggleVal == 1){
+            switchAtc.setChecked(true);
+        } else if(toggleVal == 0){
+            switchAtc.setChecked(false);
+        }
+
         switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
 
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("ATC").setValue(isChecked ? 1  : 0);
-//            if (isChecked){
-//                switchAtc.setText("On  ");
-//            }else {
-//                switchAtc.setText("Off  ");
-//            }
+            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1  : 0);
+
+            if(switchAtc.isChecked()){
+
+                SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editT = togglePref.edit();
+                editT.putInt("toggleValue", 1);
+                editT.commit();
+
+            } else {
+
+                SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editT = togglePref.edit();
+                editT.putInt("toggleValue", 0);
+                editT.commit();
+
+            }
         });
 
-
-//        deviceRef.child("Data").child("ATC").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                Integer atc = snapshot.getValue(Integer.class);
-//                if (atc == null) return;
-//
-//                if (switchAtc.setChecked(true))
-//                switchAtc.setChecked(atc == 1);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//            }
-//        });
 
 
     }
