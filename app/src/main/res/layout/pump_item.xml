@@ -70,7 +70,7 @@ app:cardElevation="10dp">
         android:textColor="@color/grey_dark"
         android:textSize="16sp" />
 
-    <View
+    <!--<View
         android:id="@+id/view1"
         android:layout_width="160dp"
         android:layout_height="160dp"
@@ -81,7 +81,22 @@ app:cardElevation="10dp">
         android:layout_marginStart="39dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="39dp"
-        android:background="@drawable/shape_ph" />
+        android:background="@drawable/shape_ph" />-->
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="50dp"
+        android:indeterminateOnly="false"
+        android:progressDrawable="@drawable/circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView

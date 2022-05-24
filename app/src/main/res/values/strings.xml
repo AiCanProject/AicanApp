@@ -54,6 +54,7 @@
     <string name="add_mobile_number">Add Mobile Number</string>
     <string name="calliberate">Calliberate</string>
     <string name="alarm">Alarm</string>
+    <string name="schedule_mode">Schedule Mode</string>
 
     <string-array name="mode">
         <item>Regular</item>

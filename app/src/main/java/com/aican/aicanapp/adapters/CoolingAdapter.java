@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -71,14 +72,14 @@ public class CoolingAdapter extends RecyclerView.Adapter<CoolingAdapter.CoolingA
         private TextView cooling;
         private TextView tvName;
         private ImageView ivOptions;
-
+        private ProgressBar progressBar;
 
         public CoolingAdapterViewHolder(View itemView) {
             super(itemView);
             cooling = itemView.findViewById(R.id.cooling);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
-
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
 
         public void bind(CoolingDevice device) {

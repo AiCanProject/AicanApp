@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -82,11 +83,15 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
         private TextView temperature;
         private TextView tvName;
         private ImageView ivOptions;
+        private ProgressBar progressBar;
 
-
-        //Viewholder-----------------------------------------------------------------------------------------
+        /**
+         * ViewHolder
+         * @param itemView
+         */
         public TempAdapterViewHolder(View itemView) {
             super(itemView);
+            progressBar = itemView.findViewById(R.id.progress_bar);
             temperature = itemView.findViewById(R.id.ph);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,15 +30,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolder> {
-
-//    private String[] phs;     // Store data here in list or array from backend
-//    private String deviceId;
-//    Context context;// unique device id
-
-//    public PhAdapter(String[] phs,Context context) {
-//        this.phs = phs;
-//        this.context = context;
-//    }
 
     ArrayList<PhDevice> phDevices;
     DashboardListsOptionsClickListener optionsClickListener;
@@ -67,17 +59,21 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     public class PhAdapterViewHolder extends RecyclerView.ViewHolder {
         private TextView ph, ec, temp, tds, tvName;
         private ImageView ivOptions;
+        private ProgressBar progressBar;
 
-        //Viewholder-----------------------------------------------------------------------------------------
+        /**
+         * ViewHolder
+         *
+         * @param itemView
+         */
         public PhAdapterViewHolder(View itemView) {
             super(itemView);
             ph = itemView.findViewById(R.id.ph);
             ec = itemView.findViewById(R.id.ec);
             temp = itemView.findViewById(R.id.temp);
-//            tds = itemView.findViewById(R.id.tds);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
-
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
 
         public void bind(PhDevice device) {
@@ -94,17 +90,11 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             } else {
                 tempString = String.format(Locale.UK, "Temp: %d°C", device.getTemp());
             }
-            String tdsString;
-            if (device.getTds() < 0 || device.getTds() > 9999) {
-                tdsString = "TDS: -";
-            } else {
-                tdsString = String.format(Locale.UK, "TDS: %d ppm", device.getTds());
-            }
+
             ph.setText(phString);
             ec.setText(ecString);
             temp.setText(tempString);
-//            tds.setText(tdsString);
-            tvName.setText("ph Meter "+device.getId());
+            tvName.setText("ph Meter " + device.getId());
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), PhActivity.class);
@@ -126,7 +116,6 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             dataRef.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
                 }
 
                 @Override
@@ -151,12 +140,6 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
                             device.setEc(val);
                             break;
                         }
-                        //case "TDS_VAL": {
-                            //Long val = snapshot.getValue(Long.class);
-                            //if (val == null) return;
-                            //device.setTds(val);
-                          //  break;
-                        //}
                     }
                     notifyItemChanged(getAdapterPosition());
                 }
@@ -177,8 +160,6 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
                 }
             });
         }
-
-        //Viewholder-----------------------------------------------------------------------------------------
     }
 
 }

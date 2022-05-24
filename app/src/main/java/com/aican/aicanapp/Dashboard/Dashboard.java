@@ -162,6 +162,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 startActivity(intent);
             }
         });
+
         phDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,20 +198,16 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 coolingRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
 
-
                 tempDev.setCardBackgroundColor(Color.GRAY);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
-
-
             }
         });
 
         peristalticDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //showNetworkDialog();
                 if (pumpDevices.size() != 0) {
                     pumpRecyclerView.setVisibility(View.VISIBLE);
                 }else {
@@ -220,12 +217,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 coolingRecyclerView.setVisibility(View.GONE);
                 phRecyclerView.setVisibility(View.GONE);
 
-
                 peristalticDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
-
             }
         });
 
@@ -263,7 +258,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
                 intent.putExtra("checkBtn","addUser");
                 startActivity(intent);
-
             }
         });
 
@@ -285,7 +279,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpPump();
     }
 
-    private void showNetworkDialog(){
+/*    private void showNetworkDialog(){
         if(!isNetworkAvailable()==true)
         {
             new AlertDialog.Builder(this)
@@ -304,7 +298,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             Toast.makeText(Dashboard.this,
                     "Welcome", Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     private void getList() {
         Cursor res = databaseHelper.get_data();
@@ -459,7 +453,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 }
             });
         }
-
     }
 
     private void initialiseFirebaseForDevice(String deviceId, DeviceAccount deviceAccount) {
@@ -538,9 +531,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 ui.child("Direction").getValue(Integer.class),
                                 ui.child("Volume").getValue(Integer.class),
                                 status
-
                         ));
-
                         break;
                     }
                     case "TEMP_CONTROLLER": {

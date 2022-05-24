@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,8 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
         private TextView tvMode, tvVol, tvSpeed, tvDir, tvName;
         private ImageView ivOptions;
         private SwitchCompat onOffSwitch;
+        private ProgressBar progressBar;
+
 
         //Viewholder-----------------------------------------------------------------------------------------
         public PumpAdapterViewHolder(View itemView) {
@@ -79,6 +82,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
             onOffSwitch = itemView.findViewById(R.id.switch1);
+            progressBar = itemView.findViewById(R.id.progress_bar);
         }
 
         public void bind(PumpDevice device){
@@ -115,6 +119,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
                 itemView.getContext().startActivity(intent);
             });
+
             ivOptions.setOnClickListener(v -> {
                 optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
@@ -141,6 +146,7 @@ public class PumpAdapter extends RecyclerView.Adapter<PumpAdapter.PumpAdapterVie
 
                 }
             });
+
             uiRef.child("Start").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
