@@ -276,6 +276,15 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7" />
 
+            <Button
+                android:id="@+id/printCalibData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Print"
+                android:layout_gravity="center"
+
+                />
+
             <!--            <TextView-->
             <!--                android:id="@+id/lastCalibration"-->
             <!--                android:layout_width="wrap_content"-->
@@ -691,6 +700,14 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCalibFileView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="40dp"
+            />
 
     </LinearLayout>
 </RelativeLayout>
