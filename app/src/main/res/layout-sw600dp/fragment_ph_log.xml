@@ -192,6 +192,29 @@
                     android:src="@drawable/ic_play_arrow" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/batch_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Batch Number"
+                    android:textColor="#000"
+                    android:textColorHint="#000" />
+
+                <ImageButton
+                    android:id="@+id/batch_text"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_play_arrow" />
+
+            </LinearLayout>
+
+
         </LinearLayout>
     </LinearLayout>
 
@@ -209,16 +232,16 @@
                 android:id="@+id/table_heading_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/table_border">
 
                 <TableRow tools:ignore="UselessParent">
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="10dp"
                         android:layout_height="30dp"
                         android:layout_column="0"
                         android:layout_gravity="center_horizontal"
@@ -226,10 +249,20 @@
                         android:gravity="center"
                         android:text="@string/date"
                         android:textAlignment="center" />
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="5dp"
+                        android:layout_height="30dp"
+                        android:layout_column="0"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/time"
+                        android:textAlignment="center" />
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="5dp"
                         android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
@@ -242,7 +275,7 @@
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="5dp"
                         android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
@@ -254,14 +287,40 @@
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="10dp"
                         android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingEnd="5dp"
-                        android:text="@string/compound_name"
+                        android:text="Compound"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="5dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="Batch No"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="5dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="AR No"
                         android:textAlignment="center"
                         tools:ignore="RtlSymmetry" />
                 </TableRow>

@@ -17,10 +17,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
-        sqLiteDatabase.execSQL("create Table LogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
-        sqLiteDatabase.execSQL("create Table PrintLogUserdetails(time TEXT, ph TEXT, temperature TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table LogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT)");
     }
 
     @Override
@@ -30,7 +31,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
         onCreate(sqLiteDatabase);
+    }
+
+    public Boolean insertCalibration(String PH, String MV, String DT){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("DT", DT);
+        long result = db.insert("CalibData", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public Boolean insertCalibData(String pH, String mV,String date){
@@ -62,12 +78,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insert_log_data(String time, String ph, String temperature, String compound){
+    public Boolean insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
         contentValues.put("time", time);
         contentValues.put("ph", ph);
         contentValues.put("temperature", temperature);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("arnum", arnum);
         contentValues.put("compound", compound);
         long result = db.insert("LogUserdetails", null, contentValues);
         if(result == -1){
@@ -77,12 +96,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean print_insert_log_data(String time, String ph, String temperature, String compound){
+    public Boolean print_insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
         contentValues.put("time", time);
         contentValues.put("ph", ph);
         contentValues.put("temperature", temperature);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("arnum", arnum);
         contentValues.put("compound", compound);
         long result = db.insert("PrintLogUserdetails", null, contentValues);
         if(result == -1){

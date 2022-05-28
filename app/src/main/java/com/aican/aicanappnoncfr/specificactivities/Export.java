@@ -100,6 +100,8 @@ public class Export extends AppCompatActivity {
                 tvStartDate.setText(startDateString);
                 tvEndDate.setText(endDateString);
             });
+
+
         });
 
         exportCSV.setOnClickListener(new View.OnClickListener() {
@@ -129,32 +131,6 @@ public class Export extends AppCompatActivity {
             }
         });
 
-//        exportUserData.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                exportUserData();
-//
-//
-//                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-//                File root = new File(path);
-//                File[] filesAndFolders = root.listFiles();
-//
-//                if (filesAndFolders == null || filesAndFolders.length == 0) {
-//
-//                    return;
-//                } else {
-//                    for (int i = 0; i < filesAndFolders.length; i++) {
-//                        filesAndFolders[i].getName().endsWith(".csv");
-//                    }
-//                }
-//
-//                uAdapter = new UserDataAdapter(Export.this, filesAndFolders);
-//                userRecyclerView.setAdapter(uAdapter);
-//                uAdapter.notifyDataSetChanged();
-//                userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//
-//            }
-//        });
 
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
         String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
@@ -235,16 +211,16 @@ public class Export extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(time) BETWEEN '" + startDateString + "' AND '" + endDateString + "'", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "'", null);
 
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + slope + "," + temp+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("pH,mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
 
             while (calibCSV.moveToNext()) {
@@ -257,18 +233,21 @@ public class Export extends AppCompatActivity {
                 printWriter.println(record1);
             }
             calibCSV.close();
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("TIME,pH,TEMP,NAME");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Date,Time,pH,Temp,Batch,AR,Compound");
 
             while (curCSV.moveToNext()) {
 
+                String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
                 String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+                String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
+                String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 
-                String record = time + "," + pH + "," + temp + "," + comp;
+                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
 
                 printWriter.println(record);
             }
@@ -280,60 +259,7 @@ public class Export extends AppCompatActivity {
         }
     }
 
-    public void exportUserData() {
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
 
-        File file;
-        PrintWriter printWriter = null;
-
-        try {
-
-            file = new File(exportDir, "DataUserActivity.csv");
-            file.createNewFile();
-            printWriter = new PrintWriter(new FileWriter(file), true);
-
-
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
-
-            SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
-
-            Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
-
-
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("TIME,ACTIVITY,pH,TEMPERATURE,mV");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-
-
-            while (userCSV.moveToNext()) {
-                String Time = userCSV.getString(userCSV.getColumnIndex("time"));
-                String Activity = userCSV.getString(userCSV.getColumnIndex("useraction"));
-                String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
-                String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
-                String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
-
-                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
-
-                printWriter.println(record2);
-            }
-
-            userCSV.close();
-            db.close();
-
-        } catch (Exception e) {
-            Log.d("csvexception", String.valueOf(e));
-        }
-    }
 
 
     private boolean checkPermission() {
