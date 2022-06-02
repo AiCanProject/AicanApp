@@ -11,6 +11,7 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.aican.aicanappnoncfr.Dashboard.Dashboard;
@@ -32,6 +34,8 @@ import com.aican.aicanappnoncfr.adapters.UserDataAdapter;
 import com.aican.aicanappnoncfr.data.DatabaseHelper;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +46,7 @@ import com.google.firebase.database.annotations.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Export extends AppCompatActivity {
@@ -49,10 +54,11 @@ public class Export extends AppCompatActivity {
 
     //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button mDateBtn, exportUserData, exportCSV;
-    TextView tvStartDate, tvEndDate;
+    TextView tvStartDate, tvEndDate, tvStartTime, tvEndTime;
     TextView deviceId;
     String user, roleExport;
-    String startDateString, endDateString, startDate, endDate;
+    String startDateString, endDateString, startTimeString, endTimeString;
+    Integer startHour, startMinute, endHour, endMinute;
     String offset, battery, slope, temp;
     String companyName;
     String nullEntry;
@@ -68,14 +74,15 @@ public class Export extends AppCompatActivity {
         setContentView(R.layout.activity_export);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewCSV);
-//        RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
-//        TextView noFilesText = findViewById(R.id.nofiles_textview);
+
         deviceId = findViewById(R.id.DeviceId);
         tvStartDate = findViewById(R.id.dateStart);
         tvEndDate = findViewById(R.id.dateEnd);
         exportCSV = findViewById(R.id.exportCSV);
         mDateBtn = findViewById(R.id.materialDateBtn);
-//        exportUserData = findViewById(R.id.exportUserData);
+        tvStartTime = findViewById(R.id.timeStart);
+        tvEndTime = findViewById(R.id.timeEnd);
+
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
@@ -99,6 +106,48 @@ public class Export extends AppCompatActivity {
                 Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
                 tvStartDate.setText(startDateString);
                 tvEndDate.setText(endDateString);
+
+                MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                        .setTimeFormat(TimeFormat.CLOCK_24H)
+                        .setTitleText("Select Start Time")
+                        .setHour(12)
+                        .setMinute(10)
+                        .build();
+                timePicker.show(getSupportFragmentManager(), "time");
+
+                timePicker.addOnPositiveButtonClickListener(dialog -> {
+
+                    startHour = timePicker.getHour();
+                    startMinute = timePicker.getMinute();
+
+                    Calendar calendar = Calendar.getInstance();
+
+                    calendar.set(0,0,0,startHour,startMinute);
+
+                    startTimeString = DateFormat.format("HH:mm", calendar).toString();
+                    tvStartTime.setText(DateFormat.format("HH:mm", calendar));
+
+                    MaterialTimePicker timePicker2 = new MaterialTimePicker.Builder()
+                            .setTimeFormat(TimeFormat.CLOCK_24H)
+                            .setTitleText("Select End Time")
+                            .setHour(12)
+                            .setMinute(10)
+                            .build();
+                    timePicker2.show(getSupportFragmentManager(), "time");
+
+                    timePicker2.addOnPositiveButtonClickListener(dialog2 -> {
+
+                        endHour = timePicker2.getHour();
+                        endMinute = timePicker2.getMinute();
+
+                        Calendar calendar2 = Calendar.getInstance();
+
+                        calendar2.set(0,0,0,endHour, endMinute);
+
+                        endTimeString = DateFormat.format("HH:mm", calendar2).toString();
+                        tvEndTime.setText(DateFormat.format("HH:mm", calendar2));
+                    });
+                });
             });
 
 
@@ -211,7 +260,7 @@ public class Export extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "'", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
 
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);

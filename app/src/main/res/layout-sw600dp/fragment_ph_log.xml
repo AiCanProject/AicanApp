@@ -16,23 +16,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center"
         tools:ignore="UselessParent">
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/graph"
-            android:layout_width="400dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp">
-
-        </com.github.mikephil.charting.charts.LineChart>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            >
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/phLevelCard"
@@ -126,51 +119,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
             android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/logBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="20dp"
-                    android:backgroundTint="#3CEA43"
-                    android:text="@string/log"
-                    android:visibility="visible"
-                    android:textAllCaps="false"
-                    android:textSize="15sp" />
-
-                <Button
-                    android:id="@+id/export"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/export"
-                    android:textAllCaps="false"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
-
-                <Button
-                    android:id="@+id/print"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-
-                    android:text="Print"
-                    android:textAllCaps="false"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
-
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -213,6 +167,72 @@
                     android:src="@drawable/ic_play_arrow" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/ar_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter AR Number"
+                    android:textColor="#000"
+                    android:textColorHint="#000" />
+
+                <ImageButton
+                    android:id="@+id/ar_text"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_play_arrow" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/logBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="#3CEA43"
+                android:text="@string/log"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/export"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="20dp"
+                android:text="@string/export"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/print"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+
+                android:text="Print"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
 
 
         </LinearLayout>

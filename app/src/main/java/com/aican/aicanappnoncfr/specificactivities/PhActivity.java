@@ -15,6 +15,7 @@ import com.aican.aicanappnoncfr.R;
 import com.aican.aicanappnoncfr.fragments.ph.PhCalibFragment;
 import com.aican.aicanappnoncfr.fragments.ph.PhFragment;
 import com.aican.aicanappnoncfr.fragments.ph.phAlarmFragment;
+import com.aican.aicanappnoncfr.fragments.ph.phGraphFragment;
 import com.aican.aicanappnoncfr.fragments.ph.phLogFragment;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
@@ -22,13 +23,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class PhActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView ph, calibrate, log, alarm, tabItemPh, tabItemCalib;
+    TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
 
     DatabaseReference deviceRef;
 
     PhFragment phFragment = new PhFragment();
     PhCalibFragment phCalibFragment = new PhCalibFragment();
     phLogFragment phLogFragment = new phLogFragment();
+    phGraphFragment phGraphFragment = new phGraphFragment();
     phAlarmFragment phAlarmFragment = new phAlarmFragment();
 
     public static String DEVICE_ID = null;
@@ -55,13 +57,15 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         ph = findViewById(R.id.item1);
         calibrate = findViewById(R.id.item2);
         log = findViewById(R.id.item3);
-        alarm = findViewById(R.id.item4);
+        graph = findViewById(R.id.item4);
+        alarm = findViewById(R.id.item5);
         tabItemPh = findViewById(R.id.tabItemP);
         tabItemCalib = findViewById(R.id.select2);
 
         ph.setOnClickListener(this);
         calibrate.setOnClickListener(this);
         log.setOnClickListener(this);
+        graph.setOnClickListener(this);
         alarm.setOnClickListener(this);
     }
 
@@ -73,6 +77,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             ph.setTextColor(Color.WHITE);
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
+            graph.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
         } else if (view.getId() == R.id.item2) {
 
@@ -80,6 +85,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             calibrate.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
+            graph.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth();
             tabItemPh.animate().x(size).setDuration(100);
@@ -89,16 +95,28 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             log.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            graph.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 2;
             tabItemPh.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item4) {
+            loadFragments(phGraphFragment);
+
+            graph.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth() * 3;
+            tabItemPh.animate().x(size).setDuration(100);
+
+        } else if (view.getId() == R.id.item5) {
             loadFragments(phAlarmFragment);
 
             alarm.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            graph.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 3;
             tabItemPh.animate().x(size).setDuration(100);

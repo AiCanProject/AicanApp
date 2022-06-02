@@ -74,9 +74,10 @@ public class phLogFragment extends Fragment {
     PhView phView;
     TextView tvPhCurr, tvPhNext;
     String ph, temp, mv, date, time, batchnum, arnum, compound_name, ph_fetched, m_fetched,
-            currentDate_fetched, currentTime_fetched, batchnum_fetched, arnum_fetched, compound_name_fetched;
+            currentDate_fetched, currentTime_fetched, batchnum_fetched,
+            arnum_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
-    LineChart lineChart;
+//    LineChart lineChart;
     String mode;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
@@ -85,9 +86,9 @@ public class phLogFragment extends Fragment {
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, printBtn;
-    ImageButton enterBtn, batchBtn;
+    ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
-    EditText compound_name_txt, batch_number;
+    EditText compound_name_txt, batch_number, ar_number;
     String TABLE_NAME = "LogUserdetails";
 
     @Override
@@ -118,7 +119,7 @@ public class phLogFragment extends Fragment {
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
 
-        lineChart = view.findViewById(R.id.graph);
+//        lineChart = view.findViewById(R.id.graph);
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
         enterBtn = view.findViewById(R.id.enter_text);
@@ -126,6 +127,8 @@ public class phLogFragment extends Fragment {
         compound_name_txt = view.findViewById(R.id.compound_name);
         batch_number = view.findViewById(R.id.batch_number);
         batchBtn = view.findViewById(R.id.batch_text);
+        ar_number = view.findViewById(R.id.ar_number);
+        arBtn = view.findViewById(R.id.ar_text);
 
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
@@ -197,13 +200,13 @@ public class phLogFragment extends Fragment {
             }
         });
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showChart();
-            }
-        }, 5000);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showChart();
+//            }
+//        }, 5000);
 
         batchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +219,27 @@ public class phLogFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             snapshot.getRef().setValue(batchnum);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+            }
+        });
+
+        arBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                arnum = ar_number.getText().toString();
+                if (arnum.matches("")) {
+                    Toast.makeText(getContext(), "Enter AR Name", Toast.LENGTH_SHORT).show();
+                } else {
+                    deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            snapshot.getRef().setValue(arnum);
                         }
 
                         @Override
@@ -313,7 +337,6 @@ public class phLogFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-//        String startsWith = "CurrentData";
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
@@ -433,37 +456,37 @@ public class phLogFragment extends Fragment {
         return count;
     }
 
-    public void showChart() {
-        int countColumns = columns();
-
-        ArrayList<Entry> yValues = new ArrayList<>();
-        for (int i = 0; i < countColumns; i++) {
-            yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
-            LineDataSet set = new LineDataSet(yValues, "pH");
-            set.setFillAlpha(110);
-            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(set);
-            LineData data = new LineData(dataSets);
-            lineChart.setData(data);
-            lineChart.setPinchZoom(true);
-            lineChart.setTouchEnabled(true);
-        }
-
-        lineChart.getDescription().setText("Tap on graph to Plot!");
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(250);
-        xAxis.setLabelCount(3);
-        xAxis.setValueFormatter(new MyXAxisValueFormatter());
-
-        LineDataSet set = new LineDataSet(yValues, "pH");
-        set.setFillAlpha(110);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set);
-
-        lineChart.setPinchZoom(true);
-        lineChart.setTouchEnabled(true);
-    }
+//    public void showChart() {
+//        int countColumns = columns();
+//
+//        ArrayList<Entry> yValues = new ArrayList<>();
+//        for (int i = 0; i < countColumns; i++) {
+//            yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
+//            LineDataSet set = new LineDataSet(yValues, "pH");
+//            set.setFillAlpha(110);
+//            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+//            dataSets.add(set);
+//            LineData data = new LineData(dataSets);
+//            lineChart.setData(data);
+//            lineChart.setPinchZoom(true);
+//            lineChart.setTouchEnabled(true);
+//        }
+//
+//        lineChart.getDescription().setText("Tap on graph to Plot!");
+//        XAxis xAxis = lineChart.getXAxis();
+//        xAxis.setAxisMinimum(0);
+//        xAxis.setAxisMaximum(250);
+//        xAxis.setLabelCount(3);
+//        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+//
+//        LineDataSet set = new LineDataSet(yValues, "pH");
+//        set.setFillAlpha(110);
+//        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+//        dataSets.add(set);
+//
+//        lineChart.setPinchZoom(true);
+//        lineChart.setTouchEnabled(true);
+//    }
 
     /**
      * Fetching the values from firebase
@@ -510,6 +533,17 @@ public class phLogFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 batchnum = (String) snapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                arnum = (String) snapshot.getValue();
             }
 
             @Override

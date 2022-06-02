@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Select Range of Date "
+        android:text="Select Range of Date and Time"
         android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -69,6 +69,20 @@
         app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
     <TextView
+        android:id="@+id/timeStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/sofia_medium"
+        android:hint="12:00"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/dateEnd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateStart" />
+
+
+    <TextView
         android:id="@+id/dateEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,6 +95,19 @@
         app:layout_constraintStart_toEndOf="@+id/dateStart"
         app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
+    <TextView
+        android:id="@+id/timeEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/sofia_medium"
+        android:hint="12:00"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toEndOf="@+id/dateStart"
+        app:layout_constraintTop_toBottomOf="@+id/dateEnd" />
+
     <Button
         android:id="@+id/exportCSV"
         android:layout_width="0dp"
@@ -90,7 +117,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateStart" />
+        app:layout_constraintTop_toBottomOf="@+id/timeStart" />
 
 
 
@@ -110,7 +137,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.50121653" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/nofiles_textview"-->
