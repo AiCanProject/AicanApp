@@ -34,6 +34,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanappnoncfr.Services.LogBackgroundService;
 import com.aican.aicanappnoncfr.Source;
 import com.aican.aicanappnoncfr.adapters.PrintLogAdapter;
 import com.aican.aicanappnoncfr.data.DatabaseHelper;
@@ -114,6 +115,9 @@ public class phLogFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Intent serviceIntent = new Intent(getActivity(), LogBackgroundService.class);
+        getActivity().startService(serviceIntent);
 
         phView = view.findViewById(R.id.phView);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
@@ -456,38 +460,6 @@ public class phLogFragment extends Fragment {
         return count;
     }
 
-//    public void showChart() {
-//        int countColumns = columns();
-//
-//        ArrayList<Entry> yValues = new ArrayList<>();
-//        for (int i = 0; i < countColumns; i++) {
-//            yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
-//            LineDataSet set = new LineDataSet(yValues, "pH");
-//            set.setFillAlpha(110);
-//            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-//            dataSets.add(set);
-//            LineData data = new LineData(dataSets);
-//            lineChart.setData(data);
-//            lineChart.setPinchZoom(true);
-//            lineChart.setTouchEnabled(true);
-//        }
-//
-//        lineChart.getDescription().setText("Tap on graph to Plot!");
-//        XAxis xAxis = lineChart.getXAxis();
-//        xAxis.setAxisMinimum(0);
-//        xAxis.setAxisMaximum(250);
-//        xAxis.setLabelCount(3);
-//        xAxis.setValueFormatter(new MyXAxisValueFormatter());
-//
-//        LineDataSet set = new LineDataSet(yValues, "pH");
-//        set.setFillAlpha(110);
-//        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-//        dataSets.add(set);
-//
-//        lineChart.setPinchZoom(true);
-//        lineChart.setTouchEnabled(true);
-//    }
-
     /**
      * Fetching the values from firebase
      */
@@ -564,7 +536,7 @@ public class phLogFragment extends Fragment {
         });
     }
 
-    /**
+    /**e
      * Fetching log entries from SQL Database
      *
      * @return

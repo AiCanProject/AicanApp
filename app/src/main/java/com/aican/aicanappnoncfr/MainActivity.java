@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.aican.aicanappnoncfr.Dashboard.*;
 import com.aican.aicanappnoncfr.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanappnoncfr.FirebaseAccounts.SecondaryAccount;
+import com.aican.aicanappnoncfr.Services.LogBackgroundService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -23,16 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        login = findViewById(R.id.main_login_btn);
-//        register = findViewById(R.id.main_register_btn);
 
-        // Login button on click listener
-//        login.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                checkLogin();
-//            }
-//        });
 
         DatabaseReference ref = FirebaseDatabase.getInstance(SecondaryAccount.getInstance(this)).getReference();
         ref.child("DEVICE1").get().addOnSuccessListener(dataSnapShot->{
@@ -45,27 +37,12 @@ public class MainActivity extends AppCompatActivity {
 //            });
         });
 
-    }
-    // Go to DashBoard
-    public void checkLogin(){
-        Intent toDashBoard = new Intent(MainActivity.this, Dashboard.class);
-        startActivity(toDashBoard);
+
+
     }
 
-    private void initialiseFirebaseForDevice(String deviceId, DeviceAccount deviceAccount) {
-        FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
-                .setApiKey(deviceAccount.api)
-                .setApplicationId(deviceAccount.app)
-                .setDatabaseUrl(deviceAccount.database)
-                .setProjectId(deviceAccount.project)
-                .build();
 
-        try {
-            FirebaseApp app = FirebaseApp.initializeApp(this, firebaseOptions, deviceId);
-            FirebaseDatabase.getInstance(app).setPersistenceEnabled(true);
-        } catch (IllegalStateException e) {
-            //Ignore
-        }
-    }
+
+
 
 }

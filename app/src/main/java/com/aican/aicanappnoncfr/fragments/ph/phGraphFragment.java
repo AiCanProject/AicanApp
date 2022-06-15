@@ -70,7 +70,7 @@ public class phGraphFragment extends Fragment {
             public void run() {
                 showChart();
             }
-        }, 5000);
+        }, 1000);
 
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override

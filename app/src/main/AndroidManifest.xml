@@ -108,7 +108,11 @@
             //provider_paths.xml file path in this example
         </provider>
 
-        <service android:name=".services.AlarmForegroundService"></service>
+        <service
+            android:name=".Services.LogBackgroundService"
+            android:enabled="true"
+            android:exported="true"
+            ></service>
 
     </application>
 
