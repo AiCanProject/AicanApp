@@ -16,6 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aican.aicanapp.R;
@@ -36,12 +39,18 @@ public class PumpCalibFragment extends Fragment {
     SwitchCompat switchClock;
     SwitchCompat switchAntiClock;
     //VerticalSlider speedController;
-    SeekArc seekArc;
+    //SeekArc seekArc;
     TextView seekArcText;
     Button speedSet, startBtn;
     TextView appMode, date, time;
     DatabaseReference deviceRef;
     boolean isStarted = false;
+    int bar_progress= 0;
+
+    ProgressBar progressBar;
+    EditText speed;
+    ImageView minus, plus;
+    Button speed_set;
 
     public PumpCalibFragment() {
         // Required empty public constructor
@@ -72,6 +81,38 @@ public class PumpCalibFragment extends Fragment {
        // seekArc = view.findViewById(R.id.seekArc);
         //seekArcText = view.findViewById(R.id.seekArcText);
 
+        progressBar = view.findViewById(R.id.progress_bar);
+        minus = view.findViewById(R.id.minus);
+        plus = view.findViewById(R.id.plus);
+        speed = view.findViewById(R.id.speed_set);
+        speedSet = view.findViewById(R.id.speedSet);
+
+        updateProgressBar();
+
+        speedSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deviceRef.child("UI").child("Speed").setValue(Integer.parseInt(speed.getText().toString()));
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress -= 1;
+                updateProgressBar();
+            }
+        });
+
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress += 1;
+                updateProgressBar();
+            }
+        });
+
+
         startBtn.setOnClickListener(v->{
             isStarted = !isStarted;
             refreshStartBtnUI();
@@ -83,11 +124,6 @@ public class PumpCalibFragment extends Fragment {
 
         });
 
-
-        speedSet.setOnClickListener(v->{
-            int speed = seekArc.getProgress();
-            deviceRef.child("UI").child("Speed").setValue(speed);
-        });
 
         SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
         String shTime = sh.getString("CalibTime", "N/A");
@@ -102,13 +138,18 @@ public class PumpCalibFragment extends Fragment {
         SetUpListener();
     }
 
+    private void updateProgressBar(){
+        progressBar.setProgress(bar_progress);
+        speed.setText(String.valueOf(bar_progress));
+    }
+
     private void SetUpListener() {
 
         deviceRef.child("UI").child("Speed").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int spd = snapshot.getValue(Integer.class);
-                seekArc.setProgress(spd);
+                //seekArc.setProgress(spd);
                 // speedController.setProgress(spd);
             }
 

@@ -51,7 +51,7 @@
                     tools:progress="60" />
 
                 <EditText
-                    android:id="@+id/temp_set"
+                    android:id="@+id/speed_set"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
