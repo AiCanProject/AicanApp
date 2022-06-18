@@ -65,10 +65,10 @@ public class LogBackgroundService extends Service {
                                             dbHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
                                             dbHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
                                             deviceReference.child("Data").child("HOLD").setValue(0);
-                                            counter++;
+                                            Toast.makeText(getApplicationContext(), "BG Service data", Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Wait for ph to be stable", Toast.LENGTH_SHORT).show();
+                                        Log.d("notstable", "Wait for ph to be stable");
                                     }
                                 }
 

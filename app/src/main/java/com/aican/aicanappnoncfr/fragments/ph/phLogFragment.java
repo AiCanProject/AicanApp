@@ -86,7 +86,7 @@ public class phLogFragment extends Fragment {
     LogAdapter adapter;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, printBtn;
+    Button logBtn, exportBtn, printBtn, deleteDB;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
     EditText compound_name_txt, batch_number, ar_number;
@@ -133,6 +133,7 @@ public class phLogFragment extends Fragment {
         batchBtn = view.findViewById(R.id.batch_text);
         ar_number = view.findViewById(R.id.ar_number);
         arBtn = view.findViewById(R.id.ar_text);
+        deleteDB = view.findViewById(R.id.btnClrDB);
 
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
@@ -204,14 +205,6 @@ public class phLogFragment extends Fragment {
             }
         });
 
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                showChart();
-//            }
-//        }, 5000);
-
         batchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -258,6 +251,7 @@ public class phLogFragment extends Fragment {
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Source.status_export = true;
                 time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
                 databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "");
@@ -279,7 +273,6 @@ public class phLogFragment extends Fragment {
                 Intent intent = new Intent(getContext(), Export.class);
                 startActivity(intent);
 
-                //                dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
             }
         });
 
@@ -301,6 +294,14 @@ public class phLogFragment extends Fragment {
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
+        });
+
+
+        deleteDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteButtonDB();
+            }
         });
 
         printBtn.setOnClickListener(new View.OnClickListener() {
@@ -448,6 +449,13 @@ public class phLogFragment extends Fragment {
     public void deleteAllLogs() {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.execSQL("DELETE FROM PrintLogUserdetails");
+        db.close();
+    }
+
+    public void deleteButtonDB(){
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM PrintLogUserdetails");
+        db.execSQL("DELETE FROM LogUserdetails");
         db.close();
     }
 

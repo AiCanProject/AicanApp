@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -54,17 +55,18 @@ public class Export extends AppCompatActivity {
 
     //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button mDateBtn, exportUserData, exportCSV;
-    TextView tvStartDate, tvEndDate, tvStartTime, tvEndTime;
+    ImageButton arNumBtn, batchNumBtn, compoundBtn;
+    TextView tvStartDate, tvEndDate;
     TextView deviceId;
     String user, roleExport;
-    String startDateString, endDateString, startTimeString, endTimeString;
+    String startDateString, endDateString, startTimeString, endTimeString, arNumString, batchNumString,compoundName;
     Integer startHour, startMinute, endHour, endMinute;
     String offset, battery, slope, temp;
     String companyName;
     String nullEntry;
     FileAdapter fAdapter;
     UserDataAdapter uAdapter;
-    EditText companyNameEditText;
+    EditText companyNameEditText, arNumEditText, batchNumEditText, compoundNameEditText;
     DatabaseHelper databaseHelper;
     private static final int PERMISSION_REQUEST_CODE = 200;
 
@@ -80,8 +82,12 @@ public class Export extends AppCompatActivity {
         tvEndDate = findViewById(R.id.dateEnd);
         exportCSV = findViewById(R.id.exportCSV);
         mDateBtn = findViewById(R.id.materialDateBtn);
-        tvStartTime = findViewById(R.id.timeStart);
-        tvEndTime = findViewById(R.id.timeEnd);
+        arNumEditText = findViewById(R.id.ar_num_sort);
+        batchNumEditText = findViewById(R.id.batch_num_sort);
+        arNumBtn = findViewById(R.id.ar_text_button);
+        batchNumBtn = findViewById(R.id.batch_text_button);
+        compoundBtn = findViewById(R.id.compound_text_button);
+        compoundNameEditText = findViewById(R.id.compound_num_sort);
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
@@ -125,7 +131,6 @@ public class Export extends AppCompatActivity {
                     calendar.set(0,0,0,startHour,startMinute);
 
                     startTimeString = DateFormat.format("HH:mm", calendar).toString();
-                    tvStartTime.setText(DateFormat.format("HH:mm", calendar));
 
                     MaterialTimePicker timePicker2 = new MaterialTimePicker.Builder()
                             .setTimeFormat(TimeFormat.CLOCK_24H)
@@ -145,13 +150,34 @@ public class Export extends AppCompatActivity {
                         calendar2.set(0,0,0,endHour, endMinute);
 
                         endTimeString = DateFormat.format("HH:mm", calendar2).toString();
-                        tvEndTime.setText(DateFormat.format("HH:mm", calendar2));
                     });
                 });
             });
 
 
         });
+
+        arNumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                arNumString = arNumEditText.getText().toString();
+            }
+        });
+
+        batchNumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                batchNumString = batchNumEditText.getText().toString();
+            }
+        });
+
+        compoundBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                companyName = compoundNameEditText.getText().toString();
+            }
+        });
+
 
         exportCSV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,13 +235,9 @@ public class Export extends AppCompatActivity {
         fAdapter = new FileAdapter(this, filesAndFolders);
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
-//        userRecyclerView.setAdapter(uAdapter);
         fAdapter.notifyDataSetChanged();
         uAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
 
         if (checkPermission()) {
             Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
@@ -260,7 +282,7 @@ public class Export extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + arNumString + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + compoundName + "')", null);
 
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
@@ -284,7 +306,7 @@ public class Export extends AppCompatActivity {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Date,Time,pH,Temp,Batch,AR,Compound");
+            printWriter.println("Date,Time,pH,Temp,Batch,AR,Product");
 
             while (curCSV.moveToNext()) {
 

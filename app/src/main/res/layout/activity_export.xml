@@ -68,18 +68,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
-    <TextView
-        android:id="@+id/timeStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:fontFamily="@font/sofia_medium"
-        android:hint="12:00"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/dateEnd"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateStart" />
+<!--    <TextView-->
+<!--        android:id="@+id/timeStart"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:fontFamily="@font/sofia_medium"-->
+<!--        android:hint="12:00"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/dateEnd"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/dateStart" />-->
 
 
     <TextView
@@ -95,18 +95,88 @@
         app:layout_constraintStart_toEndOf="@+id/dateStart"
         app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
-    <TextView
-        android:id="@+id/timeEnd"
+<!--    <TextView-->
+<!--        android:id="@+id/timeEnd"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:fontFamily="@font/sofia_medium"-->
+<!--        android:hint="12:00"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guideline4"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/dateStart"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/dateEnd" />-->
+
+    <EditText
+        android:id="@+id/ar_num_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:fontFamily="@font/sofia_medium"
-        android:hint="12:00"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintStart_toEndOf="@+id/dateStart"
+        android:hint="Enter AR Number to get data"
+        android:textColor="#000"
+        android:textColorHint="#676767"
+        app:layout_constraintEnd_toStartOf="@+id/ar_text_button"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateEnd" />
+
+    <ImageButton
+        android:id="@+id/ar_text_button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/ic_play_arrow"
+        app:layout_constraintBottom_toTopOf="@id/batch_text_button"
+        app:layout_constraintStart_toEndOf="@id/ar_num_sort"
+        app:layout_constraintEnd_toStartOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/dateEnd"
+        />
+
+
+
+    <EditText
+        android:id="@+id/batch_num_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Enter Batch Number to get data"
+        android:textColor="#000"
+        android:textColorHint="#676767"
+        app:layout_constraintBottom_toTopOf="@+id/compound_num_sort"
+        app:layout_constraintEnd_toStartOf="@+id/batch_text_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ar_num_sort" />
+
+    <ImageButton
+        android:id="@+id/batch_text_button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/ic_play_arrow"
+        app:layout_constraintStart_toEndOf="@id/batch_num_sort"
+        app:layout_constraintEnd_toStartOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/ar_text_button"
+        app:layout_constraintBottom_toTopOf="@id/compound_text_button"
+        />
+
+    <EditText
+        android:id="@+id/compound_num_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Enter Product Name to get data"
+        android:textColor="#000"
+        android:textColorHint="#676767"
+        app:layout_constraintBottom_toTopOf="@+id/exportCSV"
+        app:layout_constraintEnd_toStartOf="@+id/compound_text_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/batch_num_sort" />
+
+    <ImageButton
+        android:id="@+id/compound_text_button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/ic_play_arrow"
+        app:layout_constraintStart_toEndOf="@id/compound_num_sort"
+        app:layout_constraintEnd_toStartOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/batch_text_button"
+        app:layout_constraintBottom_toTopOf="@id/exportCSV"
+        />
 
     <Button
         android:id="@+id/exportCSV"
@@ -117,7 +187,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeStart" />
+        app:layout_constraintTop_toBottomOf="@+id/compound_num_sort" />
 
 
 
