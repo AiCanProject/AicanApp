@@ -24,11 +24,13 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/activity_ph.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_pump.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_pump_calib.xml" value="0.1580246913580247" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_pump_dose.xml" value="0.1580246913580247" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_temp_main.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_temp_set.xml" value="0.15" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/temp_activity.xml" value="0.15" />
       </map>
     </option>
   </component>

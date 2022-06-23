@@ -1,5 +1,6 @@
 package com.aican.aicanapp.specificactivities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,9 @@ import com.aican.aicanapp.fragments.temp.AlarmTempFragment;
 import com.aican.aicanapp.fragments.temp.LogTempFragment;
 import com.aican.aicanapp.fragments.temp.SetTempFragment;
 import com.aican.aicanapp.fragments.temp.TempFragment;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class TemperatureActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,7 +29,8 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
     public static String DEVICE_ID = null;
     public static String deviceType = null;
 
-    //DatabaseReference deviceRef;
+
+    DatabaseReference deviceRef;
 
     TempFragment tempFragment = new TempFragment();
     SetTempFragment setTempFragment = new SetTempFragment();
@@ -49,9 +54,11 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             throw new RuntimeException();
         }
 
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
+                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
+
         Source.deviceID = DEVICE_ID;
 
-      //  deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         loadFragments(setTempFragment);
         ph = findViewById(R.id.item1);
@@ -70,6 +77,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.item1) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(0);
             tabItemPh.animate().x(0).setDuration(100);
             loadFragments(setTempFragment);
             ph.setTextColor(Color.WHITE);
@@ -77,7 +85,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             log.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
         } else if (view.getId() == R.id.item2) {
-
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(1);
             loadFragments(tempFragment);
             calibrate.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
@@ -87,6 +95,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             tabItemPh.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item3) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(2);
             loadFragments(logTempFragment);
             log.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
@@ -96,6 +105,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             tabItemPh.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item4) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(3);
             loadFragments(alarmTempFragment);
 
             alarm.setTextColor(Color.WHITE);
@@ -107,13 +117,13 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    /*@Override
+    @Override
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
         Intent intent = new Intent(TemperatureActivity.this, Dashboard.class);
         startActivity(intent);
-    }*/
+    }
 
     private boolean loadFragments(Fragment fragment) {
         if (fragment != null) {

@@ -163,7 +163,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         end_date_display = view.findViewById(R.id.end_date_display);
 
         updateProgressBar();
-
+        //setupListeners();
         temp_value = temp_value.child("TEMP_CONTROLLER").child(Source.deviceID);
 
         temp_value.child("Data").addValueEventListener(new ValueEventListener() {
@@ -175,6 +175,8 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                 }
                 temp1.setText(list_temp.get(0));
                 temp2.setText(list_temp.get(1));
+              //  progress_bar.setProgress(Integer.parseInt(list_temp.get(0)));
+              //  temp_set.setText(Integer.parseInt(list_temp.get(0)));
             }
 
             @Override
@@ -756,12 +758,10 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Integer temp = snapshot.getValue(Integer.class);
+                String temp = snapshot.getValue(String.class);
                 if (temp == null) return;
-                if (initialValue) {
-                    initialValue = false;
-                }
-                SetTempFragment.this.temp = temp;
+                //temp_set.setText(temp);
+                progress_bar.setProgress(Integer.parseInt(temp));
             }
 
             @Override

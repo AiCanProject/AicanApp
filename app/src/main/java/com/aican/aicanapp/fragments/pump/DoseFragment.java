@@ -341,7 +341,7 @@ public class DoseFragment extends Fragment {
             if (speed == null) return;
 
             progress_bar.setProgress(speed);
-            speed_set.setText(speed);
+            speed_set.setText(speed.toString());
 
             //speedController.setProgress(speed);
         });
