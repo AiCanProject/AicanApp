@@ -1,6 +1,7 @@
 package com.aican.aicanappnoncfr.fragments.ph;
 
 
+import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import com.aican.aicanappnoncfr.R;
+import com.aican.aicanappnoncfr.Services.AlarmBackgroundService;
 import com.aican.aicanappnoncfr.specificactivities.PhActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -90,6 +92,10 @@ public class phAlarmFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
+
+                Intent alarmIntent = new Intent(getActivity(), AlarmBackgroundService.class);
+                getActivity().startService(alarmIntent);
+
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 String phVal = phValue.getText().toString();
                 Float phV = Float.parseFloat(phVal);
