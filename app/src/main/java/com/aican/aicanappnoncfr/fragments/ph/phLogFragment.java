@@ -6,7 +6,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,26 +19,30 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
-import android.os.Handler;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aican.aicanappnoncfr.Services.LogBackgroundService;
+import com.aican.aicanappnoncfr.Services.LogHoldBackgroundService;
+import com.aican.aicanappnoncfr.Services.LogIntervalBackgroundService;
 import com.aican.aicanappnoncfr.Source;
 import com.aican.aicanappnoncfr.adapters.PrintLogAdapter;
 import com.aican.aicanappnoncfr.data.DatabaseHelper;
@@ -46,13 +54,6 @@ import com.aican.aicanappnoncfr.dataClasses.phData;
 import com.aican.aicanappnoncfr.ph.PhView;
 import com.aican.aicanappnoncfr.specificactivities.Export;
 import com.aican.aicanappnoncfr.specificactivities.PhActivity;
-import com.aican.aicanappnoncfr.utils.MyXAxisValueFormatter;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -84,6 +85,7 @@ public class phLogFragment extends Fragment {
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
     LogAdapter adapter;
+    Spinner spinLogMode;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, printBtn, deleteDB;
@@ -91,6 +93,7 @@ public class phLogFragment extends Fragment {
     PrintLogAdapter plAdapter;
     EditText compound_name_txt, batch_number, ar_number;
     String TABLE_NAME = "LogUserdetails";
+    SwitchCompat switchHold, switchInterval, switchBtnClick;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -112,18 +115,16 @@ public class phLogFragment extends Fragment {
         super.onStop();
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Intent serviceIntent = new Intent(getActivity(), LogBackgroundService.class);
-        getActivity().startService(serviceIntent);
+
 
         phView = view.findViewById(R.id.phView);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
-
-//        lineChart = view.findViewById(R.id.graph);
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
         enterBtn = view.findViewById(R.id.enter_text);
@@ -133,7 +134,9 @@ public class phLogFragment extends Fragment {
         batchBtn = view.findViewById(R.id.batch_text);
         ar_number = view.findViewById(R.id.ar_number);
         arBtn = view.findViewById(R.id.ar_text);
-        deleteDB = view.findViewById(R.id.btnClrDB);
+        switchHold = view.findViewById(R.id.switchHold);
+        switchInterval = view.findViewById(R.id.switchInterval);
+        switchBtnClick = view.findViewById(R.id.switchBtnClick);
 
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
@@ -163,6 +166,7 @@ public class phLogFragment extends Fragment {
             requestPermission();
         }
 
+
         SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
         mv1 = shp.getString("MV1", "");
@@ -182,6 +186,32 @@ public class phLogFragment extends Fragment {
         ph3 = "7.0";
         ph4 = "9.2";
         ph5 = "12.0";
+
+        Intent serviceHoldIntent = new Intent(getActivity(), LogHoldBackgroundService.class);
+        Intent serviceIntervalIntent = new Intent(getActivity(), LogIntervalBackgroundService.class);
+
+        switchHold.setOnCheckedChangeListener((v, isChecked) -> {
+
+            if(switchHold.isChecked()) {
+//                if (isServiceRunning(getContext(), LogHoldBackgroundService.class)) {
+//                    deviceRef.child("Data").child("LogHoldService").setValue(1);
+//                    Toast.makeText(getContext().getApplicationContext(), "LogHoldService Running", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    deviceRef.child("Data").child("LogHoldService").setValue(0);
+//                    Toast.makeText(getContext().getApplicationContext(), "LogHoldService stopped", Toast.LENGTH_SHORT);
+//                    getActivity().startService(serviceHoldIntent);
+//                }
+
+            Toast.makeText(getContext(),"Service is running", Toast.LENGTH_SHORT).show();
+
+            } else {
+          Toast.makeText(getContext(),"Service is stopped", Toast.LENGTH_SHORT).show();
+//                getActivity().stopService(serviceHoldIntent);
+            }
+        });
+
+
+
 
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
@@ -297,13 +327,6 @@ public class phLogFragment extends Fragment {
         });
 
 
-        deleteDB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteButtonDB();
-            }
-        });
-
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -372,6 +395,28 @@ public class phLogFragment extends Fragment {
      *
      * @return
      */
+
+    public void checkService(View v){
+
+        if(isServiceRunning(requireContext().getApplicationContext(), LogHoldBackgroundService.class)){
+
+        }
+
+    }
+
+    public boolean isServiceRunning(Context c, Class<?> serviceClass){
+        ActivityManager activityManager = (ActivityManager)c.getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.RunningServiceInfo> services = activityManager.getRunningServices(Integer.MAX_VALUE);
+
+        for(ActivityManager.RunningServiceInfo runningServiceInfo: services){
+            if(serviceClass.getName().equals(runningServiceInfo.service.getClassName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void exportSensorCsv() {
         //We use the Download directory for saving our .csv file.

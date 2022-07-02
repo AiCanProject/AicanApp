@@ -1,18 +1,23 @@
 package com.aican.aicanappnoncfr.fragments.ph;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -35,10 +40,11 @@ public class phAlarmFragment extends Fragment {
     DatabaseReference deviceRef;
     Button alarm, stopAlarm;
     Ringtone ringtone;
-    String phForm;
+    String phForm, phVaal;
     EditText phValue;
     RadioButton radioButton;
     Boolean isRunning;
+    ImageButton enterPh;
     float ph = 0;
     Thread thread;
     int num;
@@ -58,33 +64,50 @@ public class phAlarmFragment extends Fragment {
         alarm = view.findViewById(R.id.startAlarm);
         stopAlarm = view.findViewById(R.id.stopAlarm);
         phValue = view.findViewById(R.id.etPhValue);
+        enterPh = view.findViewById(R.id.enterPh);
 
         thread = null;
         isRunning = false;
         num=0;
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
-        ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
-        if(!ringtone.isPlaying()){
-            stopAlarm.setEnabled(false);
-        }
-
-
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+        enterPh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ph = snapshot.getValue(Float.class);
-                if (ph == null) return;
-                phForm = String.format(Locale.UK, "%.2f", ph);
-                phAlarmFragment.this.ph = ph;
+            public void onClick(View v) {
+                phVaal = phValue.getText().toString();
 
-            }
+                SharedPreferences shp = getActivity().getSharedPreferences("alarmPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = shp.edit();
+                myEdit.putString("phval", phVaal);
+                myEdit.apply();
+                myEdit.commit();
+                Log.d("phVaal", phVaal);
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+//        ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+//        if(!ringtone.isPlaying()){
+//            stopAlarm.setEnabled(false);
+//        }
+//
+//
+//        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                Float ph = snapshot.getValue(Float.class);
+//                if (ph == null) return;
+//                phForm = String.format(Locale.UK, "%.2f", ph);
+//                phAlarmFragment.this.ph = ph;
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
 
 
         alarm.setOnClickListener(new View.OnClickListener() {
@@ -92,72 +115,80 @@ public class phAlarmFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
+                SharedPreferences sh = getActivity().getSharedPreferences("alarmPref", Context.MODE_PRIVATE);
+                String s1 = sh.getString("phval", "");
+
+                Intent intent = new Intent(getActivity(), AlarmBackgroundService.class);
+                Bundle b = new Bundle();
+                b.putString("alarm", s1);
+                intent.putExtras(b);
+                getActivity().startService(intent);
 
                 Intent alarmIntent = new Intent(getActivity(), AlarmBackgroundService.class);
                 getActivity().startService(alarmIntent);
 
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                String phVal = phValue.getText().toString();
-                Float phV = Float.parseFloat(phVal);
+//                int selectedId = radioGroup.getCheckedRadioButtonId();
+//                String phVal = phValue.getText().toString();
+//                Float phV = Float.parseFloat(phVal);
 
-                thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        isRunning= true;
-                        while (isRunning){
-                            try {
-                                Thread.sleep(2000);
-                                if (selectedId == -1) {
-                                    Toast.makeText(requireContext(), "No answer has been selected", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    radioButton = (RadioButton) radioGroup.findViewById(selectedId);
-
-                                    if (radioButton.getText().toString().equals("Greater than")) {
-                                        if (phV > Float.parseFloat(phForm)) {
-                                            ringtone.play();
-                                            alarm.setEnabled(false);
-                                            Toast.makeText(requireContext(), "Greater1", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(requireContext(), "Lesser1", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else if (radioButton.getText().toString().equals("Less than")) {
-                                        if (phV < Float.parseFloat(phForm)) {
-                                            Toast.makeText(requireContext(), "Less", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(requireContext(), "Great", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                }
-
-                                if (ringtone.isPlaying()) {
-                                    isRunning = false;
-                                    if(thread!=null){
-                                       try {
-                                           thread.interrupt();
-                                       } catch(Exception e){
-
-                                       }
-                                    }
-
-                                    stopAlarm.setEnabled(true);
-                                    stopAlarm.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            ringtone.stop();
-                                            stopAlarm.setEnabled(false);
-                                            alarm.setEnabled(true);
-
-                                        }
-                                    });
-                                }
-
-                            } catch (InterruptedException e) {
-                            }
-                    }
-                    }
-                });
-                thread.start();
+//                thread = new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        isRunning= true;
+//                        while (isRunning){
+//                            try {
+//                                Thread.sleep(2000);
+//                                if (selectedId == -1) {
+//                                    Toast.makeText(requireContext(), "No answer has been selected", Toast.LENGTH_SHORT).show();
+//                                } else {
+//                                    radioButton = (RadioButton) radioGroup.findViewById(selectedId);
+//
+//                                    if (radioButton.getText().toString().equals("Greater than")) {
+//                                        if (phV > Float.parseFloat(phForm)) {
+//                                            ringtone.play();
+//                                            alarm.setEnabled(false);
+//                                            Toast.makeText(requireContext(), "Greater1", Toast.LENGTH_SHORT).show();
+//                                        } else {
+//                                            Toast.makeText(requireContext(), "Lesser1", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    } else if (radioButton.getText().toString().equals("Less than")) {
+//                                        if (phV < Float.parseFloat(phForm)) {
+//                                            Toast.makeText(requireContext(), "Less", Toast.LENGTH_SHORT).show();
+//                                        } else {
+//                                            Toast.makeText(requireContext(), "Great", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }
+//
+//                                }
+//
+//                                if (ringtone.isPlaying()) {
+//                                    isRunning = false;
+//                                    if(thread!=null){
+//                                       try {
+//                                           thread.interrupt();
+//                                       } catch(Exception e){
+//
+//                                       }
+//                                    }
+//
+//                                    stopAlarm.setEnabled(true);
+//                                    stopAlarm.setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//                                            ringtone.stop();
+//                                            stopAlarm.setEnabled(false);
+//                                            alarm.setEnabled(true);
+//
+//                                        }
+//                                    });
+//                                }
+//
+//                            } catch (InterruptedException e) {
+//                            }
+//                    }
+//                    }
+//                });
+//                thread.start();
             }
         });
     }

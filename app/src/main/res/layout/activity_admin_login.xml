@@ -30,9 +30,9 @@
             android:id="@+id/etAdminEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/sofia_medium"
             android:inputType="textEmailAddress"
             android:lines="1"
-            android:fontFamily="@font/sofia_medium"
             android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>

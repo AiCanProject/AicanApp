@@ -1,17 +1,11 @@
 package com.aican.aicanappnoncfr;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.aican.aicanappnoncfr.Dashboard.*;
-import com.aican.aicanappnoncfr.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanappnoncfr.FirebaseAccounts.SecondaryAccount;
-import com.aican.aicanappnoncfr.Services.LogBackgroundService;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 

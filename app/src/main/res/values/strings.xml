@@ -55,5 +55,8 @@
     <string name="calliberate">Calliberate</string>
     <string name="alarm">Alarm</string>
     <string name="time">Time</string>
+    <string name="log_on_stable">Log On Stable:</string>
+    <string name="log_at_interval">Log at Interval:</string>
+    <string name="log_on_button_click">Log on Button:</string>
 
 </resources>

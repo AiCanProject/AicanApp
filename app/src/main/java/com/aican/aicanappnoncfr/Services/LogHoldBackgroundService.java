@@ -1,7 +1,10 @@
 package com.aican.aicanappnoncfr.Services;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
@@ -9,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.aican.aicanappnoncfr.Source;
 import com.aican.aicanappnoncfr.data.DatabaseHelper;
@@ -26,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class LogBackgroundService extends Service {
+public class LogHoldBackgroundService extends Service {
 
     DatabaseReference deviceReference;
     String ph, temp, mv, date, time, batchnum, arnum, compound_name;
@@ -53,37 +57,27 @@ public class LogBackgroundService extends Service {
 
                                     if (hold == 1) {
                                         Log.d("service", "Value is Stable");
-                                        fetch_logs();
 
                                         date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                                         time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                                         fetch_logs();
 
-                                        if (ph == null || temp == null || mv == null) {
-                                            Toast.makeText(getApplicationContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            dbHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
-                                            dbHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
-                                            deviceReference.child("Data").child("HOLD").setValue(0);
-                                            Toast.makeText(getApplicationContext(), "BG Service data", Toast.LENGTH_SHORT).show();
-                                        }
+                                        dbHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
+                                        dbHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
+                                        deviceReference.child("Data").child("HOLD").setValue(0);
+                                        Toast.makeText(getApplicationContext(), "BG Service data", Toast.LENGTH_SHORT).show();
+
                                     } else {
                                         Log.d("notstable", "Wait for ph to be stable");
+                                        Log.d("holdvaluein", hold.toString());
                                     }
+                                    Log.d("holdvalueout", hold.toString());
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                 }
                             });
-
-
-                            try {
-
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
                         }
                     }
                 }
