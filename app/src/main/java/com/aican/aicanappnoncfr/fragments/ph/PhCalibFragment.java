@@ -655,6 +655,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         strDate = simpleDateFormat.format(new Date());
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                         calibrateBtn.setText("DONE");
+                        calibrateBtn.setEnabled(false);
                         currentBuf = -1;
 
 
@@ -726,6 +727,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         strDate = simpleDateFormat.format(new Date());
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
                         calibrateBtn.setText("DONE");
+                        calibrateBtn.setEnabled(false);
                         currentBuf = -1;
 
 

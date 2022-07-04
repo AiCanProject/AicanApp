@@ -55,18 +55,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DeviceId" />
 
-    <TextView
-        android:id="@+id/dateStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:fontFamily="@font/sofia_medium"
-        android:hint="22/02/2022"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/dateEnd"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
+<!--    <TextView-->
+<!--        android:id="@+id/dateStart"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:fontFamily="@font/sofia_medium"-->
+<!--        android:hint="22/02/2022"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/dateEnd"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />-->
 
 <!--    <TextView-->
 <!--        android:id="@+id/timeStart"-->
@@ -82,18 +82,18 @@
 <!--        app:layout_constraintTop_toBottomOf="@+id/dateStart" />-->
 
 
-    <TextView
-        android:id="@+id/dateEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:fontFamily="@font/sofia_medium"
-        android:hint="22/02/2022"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintStart_toEndOf="@+id/dateStart"
-        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
+<!--    <TextView-->
+<!--        android:id="@+id/dateEnd"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:fontFamily="@font/sofia_medium"-->
+<!--        android:hint="22/02/2022"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guideline4"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/dateStart"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />-->
 
 <!--    <TextView-->
 <!--        android:id="@+id/timeEnd"-->
@@ -112,12 +112,12 @@
         android:id="@+id/ar_num_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter AR Number to get data"
+        android:hint="Enter Product Name to get data"
         android:textColor="#000"
         android:textColorHint="#676767"
         app:layout_constraintEnd_toStartOf="@+id/ar_text_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateEnd" />
+        app:layout_constraintTop_toBottomOf="@+id/materialDateBtn" />
 
     <ImageButton
         android:id="@+id/ar_text_button"
@@ -127,7 +127,7 @@
         app:layout_constraintBottom_toTopOf="@id/batch_text_button"
         app:layout_constraintStart_toEndOf="@id/ar_num_sort"
         app:layout_constraintEnd_toStartOf="@id/guideline4"
-        app:layout_constraintTop_toBottomOf="@id/dateEnd"
+        app:layout_constraintTop_toBottomOf="@id/materialDateBtn"
         />
 
 
@@ -159,7 +159,7 @@
         android:id="@+id/compound_num_sort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter Product Name to get data"
+        android:hint="Enter AR Num to get data"
         android:textColor="#000"
         android:textColorHint="#676767"
         app:layout_constraintBottom_toTopOf="@+id/exportCSV"
