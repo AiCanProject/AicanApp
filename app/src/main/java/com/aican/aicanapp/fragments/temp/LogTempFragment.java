@@ -73,7 +73,9 @@ public class LogTempFragment extends Fragment {
 
     PhView phView;
     TextView tvPhCurr, tvPhNext;
-    String ph, temp, mv, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
+    String ph, temp, mv, date, time, batchnum, arnum, compound_name, ph_fetched, m_fetched,
+            currentDate_fetched, currentTime_fetched, batchnum_fetched,
+            arnum_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     LineChart lineChart;
     String mode;
@@ -209,15 +211,16 @@ public class LogTempFragment extends Fragment {
          */
         logBtn.setOnClickListener(v -> {
 
-            time = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             //fetch_logs();
 
             if (ph == null || temp == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.print_insert_log_data(time, ph, temp, compound_name);
-                databaseHelper.insert_log_data(time, ph, temp, compound_name);
-                databaseHelper.insert_action_data(time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -352,7 +355,7 @@ public class LogTempFragment extends Fragment {
     }
 
     private List<phData> getList() {
-        phDataModelList.add(0, new phData(ph, temp, time, compound_name));
+        phDataModelList.add(0, new phData(ph, temp, date, time, batchnum, arnum, compound_name));
         return phDataModelList;
     }
 
@@ -474,13 +477,18 @@ public class LogTempFragment extends Fragment {
             Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
         }
         while (res.moveToNext()) {
-            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-            currentTime_fetched = res.getString(0);
-            ph_fetched = res.getString(1);
-            m_fetched = res.getString(2);
-            compound_name_fetched = res.getString(3);
-            if (time.equals(currentTime_fetched)) {
-                phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
+            date = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            currentDate_fetched = res.getString(0);
+            currentTime_fetched = res.getString(1);
+            ph_fetched = res.getString(2);
+            m_fetched = res.getString(3);
+            batchnum_fetched = res.getString(4);
+            arnum_fetched = res.getString(5);
+            compound_name_fetched = res.getString(6);
+            if (date.equals(currentDate_fetched) && time.equals(currentTime_fetched)) {
+                phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentDate_fetched,
+                        currentTime_fetched, batchnum_fetched, arnum_fetched, compound_name_fetched));
             }
         }
         return phDataModelList;

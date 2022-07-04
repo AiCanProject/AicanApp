@@ -73,9 +73,11 @@ public class phLogFragment extends Fragment {
 
     PhView phView;
     TextView tvPhCurr, tvPhNext;
-    String ph, temp, mv, time, compound_name, ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched;
+    String ph, temp, mv, date, time, batchnum, arnum, compound_name, ph_fetched, m_fetched,
+            currentDate_fetched, currentTime_fetched, batchnum_fetched,
+            arnum_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
-    LineChart lineChart;
+//    LineChart lineChart;
     String mode;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
@@ -84,9 +86,9 @@ public class phLogFragment extends Fragment {
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, printBtn;
-    ImageButton enterBtn;
+    ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
-    EditText compound_name_txt;
+    EditText compound_name_txt, batch_number, ar_number;
     String TABLE_NAME = "LogUserdetails";
 
     @Override
@@ -117,12 +119,15 @@ public class phLogFragment extends Fragment {
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
 
-        lineChart = view.findViewById(R.id.graph);
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
         enterBtn = view.findViewById(R.id.enter_text);
         printBtn = view.findViewById(R.id.print);
         compound_name_txt = view.findViewById(R.id.compound_name);
+        batch_number = view.findViewById(R.id.batch_number);
+        ar_number = view.findViewById(R.id.ar_number);
+        batchBtn = view.findViewById(R.id.batch_text);
+        arBtn = view.findViewById(R.id.ar_text);
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
@@ -197,13 +202,55 @@ public class phLogFragment extends Fragment {
             }
         });
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showChart();
+//            }
+//        }, 5000);
+
+        batchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                showChart();
+            public void onClick(View view) {
+                batchnum = batch_number.getText().toString();
+                if (batchnum.matches("")) {
+                    Toast.makeText(getContext(), "Enter Batch Name", Toast.LENGTH_SHORT).show();
+                } else {
+                    deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            snapshot.getRef().setValue(batchnum);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
             }
-        }, 5000);
+        });
+
+        arBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                arnum = ar_number.getText().toString();
+                if (arnum.matches("")) {
+                    Toast.makeText(getContext(), "Enter AR Name", Toast.LENGTH_SHORT).show();
+                } else {
+                    deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                            snapshot.getRef().setValue(arnum);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+            }
+        });
 
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,15 +282,16 @@ public class phLogFragment extends Fragment {
          */
         logBtn.setOnClickListener(v -> {
 
-            time = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             fetch_logs();
 
             if (ph == null || temp == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.print_insert_log_data(time, ph, temp, compound_name);
-                databaseHelper.insert_log_data(time, ph, temp, compound_name);
-                databaseHelper.insert_action_data(time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -340,9 +388,9 @@ public class phLogFragment extends Fragment {
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
 
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("pH,mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
 
             while (calibCSV.moveToNext()) {
@@ -355,18 +403,21 @@ public class phLogFragment extends Fragment {
                 printWriter.println(record1);
             }
             calibCSV.close();
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("TIME,pH,TEMP,NAME");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
 
             while (curCSV.moveToNext()) {
 
+                String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
                 String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+                String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
+                String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 
-                String record = time + "," + pH + "," + temp + "," + comp;
+                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
 
                 printWriter.println(record);
             }
@@ -379,7 +430,7 @@ public class phLogFragment extends Fragment {
     }
 
     private List<phData> getList() {
-        phDataModelList.add(0, new phData(ph, temp, time, compound_name));
+        phDataModelList.add(0, new phData(ph, temp, date, time, batchnum, arnum, compound_name));
         return phDataModelList;
     }
 
@@ -404,37 +455,37 @@ public class phLogFragment extends Fragment {
         return count;
     }
 
-    public void showChart() {
-        int countColumns = columns();
-
-        ArrayList<Entry> yValues = new ArrayList<>();
-        for (int i = 0; i < countColumns; i++) {
-            yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
-            LineDataSet set = new LineDataSet(yValues, "pH");
-            set.setFillAlpha(110);
-            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(set);
-            LineData data = new LineData(dataSets);
-            lineChart.setData(data);
-            lineChart.setPinchZoom(true);
-            lineChart.setTouchEnabled(true);
-        }
-
-        lineChart.getDescription().setText("Tap on graph to Plot!");
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(250);
-        xAxis.setLabelCount(3);
-        xAxis.setValueFormatter(new MyXAxisValueFormatter());
-
-        LineDataSet set = new LineDataSet(yValues, "pH");
-        set.setFillAlpha(110);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set);
-
-        lineChart.setPinchZoom(true);
-        lineChart.setTouchEnabled(true);
-    }
+//    public void showChart() {
+//        int countColumns = columns();
+//
+//        ArrayList<Entry> yValues = new ArrayList<>();
+//        for (int i = 0; i < countColumns; i++) {
+//            yValues.add(new Entry(Float.parseFloat(String.valueOf(i)), Float.parseFloat(ph)));
+//            LineDataSet set = new LineDataSet(yValues, "pH");
+//            set.setFillAlpha(110);
+//            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+//            dataSets.add(set);
+//            LineData data = new LineData(dataSets);
+//            lineChart.setData(data);
+//            lineChart.setPinchZoom(true);
+//            lineChart.setTouchEnabled(true);
+//        }
+//
+//        lineChart.getDescription().setText("Tap on graph to Plot!");
+//        XAxis xAxis = lineChart.getXAxis();
+//        xAxis.setAxisMinimum(0);
+//        xAxis.setAxisMaximum(250);
+//        xAxis.setLabelCount(3);
+//        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+//
+//        LineDataSet set = new LineDataSet(yValues, "pH");
+//        set.setFillAlpha(110);
+//        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+//        dataSets.add(set);
+//
+//        lineChart.setPinchZoom(true);
+//        lineChart.setTouchEnabled(true);
+//    }
 
     /**
      * Fetching the values from firebase
@@ -477,6 +528,29 @@ public class phLogFragment extends Fragment {
             }
         });
 
+        deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                batchnum = (String) snapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                arnum = (String) snapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+
         deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -501,13 +575,18 @@ public class phLogFragment extends Fragment {
             Toast.makeText(getContext(), "No entry", Toast.LENGTH_SHORT).show();
         }
         while (res.moveToNext()) {
-            time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-            currentTime_fetched = res.getString(0);
-            ph_fetched = res.getString(1);
-            m_fetched = res.getString(2);
-            compound_name_fetched = res.getString(3);
-            if (time.equals(currentTime_fetched)) {
-                phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentTime_fetched, compound_name_fetched));
+            date = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(new Date());
+            time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            currentDate_fetched = res.getString(0);
+            currentTime_fetched = res.getString(1);
+            ph_fetched = res.getString(2);
+            m_fetched = res.getString(3);
+            batchnum_fetched = res.getString(4);
+            arnum_fetched = res.getString(5);
+            compound_name_fetched = res.getString(6);
+            if (date.equals(currentDate_fetched) && time.equals(currentTime_fetched)) {
+                phDataModelList.add(0, new phData(ph_fetched, m_fetched, currentDate_fetched,
+                        currentTime_fetched, batchnum_fetched, arnum_fetched, compound_name_fetched));
             }
         }
         return phDataModelList;

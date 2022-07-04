@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -16,9 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +37,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanapp.adapters.CalibFileAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
@@ -58,10 +62,13 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,20 +86,24 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     LinearLayout log3, log5;
 
     int ec;
+    String nullEntry;
     Integer fault;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     DatabaseReference deviceRef;
-    Button calibrateBtn, btnNext;
+    Button calibrateBtn, btnNext, printCalib;
     Spinner spin;
+    String MV1, MV2, MV3, MV4, MV5, PH1, PH2, PH3, PH4, PH5, DT1, DT2, DT3, DT4, DT5;
     String mode;
     String test1, test2, test3;
     String mV1, mV2, mV3, mV4, mV5;
     String tm1, tm2, tm3, tm4, tm5;
+    RecyclerView calibRecyclerView;
 
     PhView phView;
     TextView title;
     DatabaseHelper databaseHelper;
+    CalibFileAdapter calibFileAdapter;
     ArrayList<BufferData> bufferList = new ArrayList<>();
     ArrayList<BufferData> bufferListThree = new ArrayList<>();
 
@@ -656,6 +667,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         strDate = simpleDateFormat.format(new Date());
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                         calibrateBtn.setText("DONE");
+                        calibrateBtn.setEnabled(false);
                         currentBuf = -1;
 
 
@@ -728,6 +740,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         strDate = simpleDateFormat.format(new Date());
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
                         calibrateBtn.setText("DONE");
+                        calibrateBtn.setEnabled(false);
                         currentBuf = -1;
 
 
@@ -791,382 +804,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
 
 
-    private void setupListenersForThree() {
 
-        mv1.setText(" ");
-        mv5.setText(" ");
-        dt1.setText(" ");
-        dt5.setText(" ");
-
-        l1.setVisibility(View.INVISIBLE);
-        l5.setVisibility(View.INVISIBLE);
-
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ph = snapshot.getValue(Float.class);
-                if (ph == null) return;
-                String phForm = String.format(Locale.UK, "%.2f", ph);
-                tvPhCurr.setText(phForm);
-                phView.moveTo(ph);
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float temp = snapshot.getValue(Float.class);
-                String tempForm = String.format(Locale.UK, "%.1f", temp);
-                tvTempCurr.setText(tempForm + "°C");
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
-                tvEcCurr.setText(ecForm);
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.1f", ec);
-                tvEcCurr.setText(ecForm);
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-//        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                Float ec = snapshot.getValue(Float.class);
-//                String ecForm = String.format(Locale.UK, "%.2f", ec);
-//                mv1.setText(ecForm);
-//                mV1 = mv1.getText().toString();
-//                Log.d("test1", mV1);
-//
-//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//
-//                myEdit.putString("MV1", mV1);
-//                myEdit.commit();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//            }
-//        });
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.2f", ec);
-                mv2.setText(ecForm);
-                mV2 = mv2.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("MV2", mV2);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_3").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.2f", ec);
-                mv3.setText(ecForm);
-                mV3 = mv3.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("MV3", mV3);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_4").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float ec = snapshot.getValue(Float.class);
-                String ecForm = String.format(Locale.UK, "%.2f", ec);
-                mv4.setText(ecForm);
-                mV4 = mv4.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("MV4", mV4);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-//        deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_5").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                Float ec = snapshot.getValue(Float.class);
-//                String ecForm = String.format(Locale.UK, "%.2f", ec);
-//                mv5.setText(ecForm);
-//                mV5 = mv5.getText().toString();
-//
-//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//
-//                myEdit.putString("MV5", mV5);
-//                myEdit.commit();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//            }
-//        });
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                ec = snapshot.getValue(Integer.class);
-
-//                if (ec == 10 || ec == 0) {
-//                    l1.setBackgroundColor(Color.GRAY);
-//                    l2.setBackgroundColor(Color.WHITE);
-//                    l3.setBackgroundColor(Color.WHITE);
-//                    l4.setBackgroundColor(Color.WHITE);
-//                    l5.setBackgroundColor(Color.WHITE);
-//                } else
-
-                if (ec == 20 || ec == 11) {
-                    l2.setBackgroundColor(Color.LTGRAY);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-
-                } else if (ec == 30 || ec == 21) {
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.LTGRAY);
-                    l4.setBackgroundColor(Color.WHITE);
-
-                } else if (ec == 40 || ec == 31) {
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.LTGRAY);
-
-                }
-//                    else if (ec == 50 || ec == 41) {
-//                    l1.setBackgroundColor(Color.WHITE);
-//                    l2.setBackgroundColor(Color.WHITE);
-//                    l3.setBackgroundColor(Color.WHITE);
-//                    l4.setBackgroundColor(Color.WHITE);
-//                    l5.setBackgroundColor(Color.GRAY);
-//                }
-                else {
-                    l2.setBackgroundColor(Color.WHITE);
-                    l3.setBackgroundColor(Color.WHITE);
-                    l4.setBackgroundColor(Color.WHITE);
-                }
-
-//                if (ec == 11) {
-//                    Date date = new Date();
-//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-//                    strDate = simpleDateFormat.format(date);
-//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
-//                    calibrateBtn.setEnabled(true);
-//
-//
-//                }
-                if (ec == 21) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
-
-
-                } else if (ec == 31) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
-                    calibrateBtn.setEnabled(true);
-
-
-                } else if (ec == 41) {
-                    Date date = new Date();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                    strDate = simpleDateFormat.format(date);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
-                    calibrateBtn.setText("DONE");
-                    currentBufThree = -1;
-
-
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            calibrateBtn.setText("START");
-                            calibrateBtn.setEnabled(true);
-                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                        }
-                    }, 10000);   //5 seconds
-
-                }
-//                else if (ec == 51) {
-//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-//                    strDate = simpleDateFormat.format(new Date());
-//                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
-//                    calibrateBtn.setText("DONE");
-//                    currentBuf = -1;
-//
-//
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        public void run() {
-//                            calibrateBtn.setText("START");
-//                            calibrateBtn.setEnabled(true);
-//                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-//                        }
-//                    }, 10000);   //5 seconds
-//
-//                }
-                else if (ec == 0) {
-                    calibrateBtn.setText("START");
-                    calibrateBtn.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        //        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                String time = snapshot.getValue(String.class);
-//                dt1.setText(time);
-//                tm1 = dt1.getText().toString();
-//
-//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//
-//                myEdit.putString("DT1", tm1);
-//                myEdit.commit();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//            }
-//        });
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String time = snapshot.getValue(String.class);
-                dt2.setText(time);
-                tm2 = dt2.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("DT2", tm2);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String time = snapshot.getValue(String.class);
-                dt3.setText(time);
-                tm3 = dt3.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("DT3", tm3);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String time = snapshot.getValue(String.class);
-                dt4.setText(time);
-                tm4 = dt4.getText().toString();
-
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                myEdit.putString("DT4", tm4);
-                myEdit.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-//        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//                String time = snapshot.getValue(String.class);
-//                dt5.setText(time);
-//                tm5 = dt5.getText().toString();
-//
-//                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-//                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//
-//                myEdit.putString("DT5", tm5);
-//                myEdit.commit();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-//            }
-//        });
-    }
 
 
     /**
@@ -1190,7 +828,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         btnNext = view.findViewById(R.id.nextBtn);
         phView = view.findViewById(R.id.phView);
-        lastCalib = view.findViewById(R.id.lastCalibration);
         ph1 = view.findViewById(R.id.ph1);
         mv1 = view.findViewById(R.id.mv1);
         ph2 = view.findViewById(R.id.ph2);
@@ -1199,6 +836,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         mv3 = view.findViewById(R.id.mv3);
         ph4 = view.findViewById(R.id.ph4);
         mv4 = view.findViewById(R.id.mv4);
+        printCalib = view.findViewById(R.id.printCalibData);
         ph5 = view.findViewById(R.id.ph5);
         mv5 = view.findViewById(R.id.mv5);
 
@@ -1233,7 +871,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         calibrateBtn = view.findViewById(R.id.startBtn);
         spin = view.findViewById(R.id.calibMode);
-        lastCalib = view.findViewById(R.id.lastCalibration);
+        calibRecyclerView = view.findViewById(R.id.rvCalibFileView);
+        nullEntry = "";
+
+
 
         databaseHelper = new DatabaseHelper(requireContext());
 
@@ -1267,9 +908,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         }
 
         title.setText("Do not exit/change fragments \nwhile calibrating");
-        if (liness != null) {
-            lastCalib.setText("Last Calibrated By \n" + liness[0]);
-        }
+//        if (liness != null) {
+//            lastCalib.setText("Last Calibrated By \n" + liness[0]);
+//        }
 
         String[] spinselect = { "5", "3"};
 
@@ -1283,6 +924,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         if(spinnerValue != -1){
             spin.setSelection(spinnerValue);
         }
+
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1303,6 +945,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         setupListeners();
                         loadBuffers();
 
+                        deleteAllCalibData();
+                        calibData();
+
+                        databaseHelper.insertCalibration(PH1, MV1, DT1);
+                        databaseHelper.insertCalibration(PH2, MV2, DT2);
+                        databaseHelper.insertCalibration(PH3, MV3, DT3);
+                        databaseHelper.insertCalibration(PH4, MV4, DT4);
+                        databaseHelper.insertCalibration(PH5, MV5, DT5);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
@@ -1329,6 +979,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         setupCoeffListener();
                         setupListeners();
                         loadBuffers();
+
+                        deleteAllCalibData();
+                        calibData();
+
+                        databaseHelper.insertCalibration(PH2, MV2, DT2);
+                        databaseHelper.insertCalibration(PH3, MV3, DT3);
+                        databaseHelper.insertCalibration(PH4, MV4, DT4);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
@@ -1422,8 +1079,145 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         test3 = mv2.getText().toString();
 
+        printCalib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exportCalibData();
+
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+                File root = new File(path);
+                File[] filesAndFolders = root.listFiles();
+
+                if (filesAndFolders == null || filesAndFolders.length == 0) {
+
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFolders.length; i++) {
+                        filesAndFolders[i].getName().endsWith(".csv");
+                    }
+                }
+
+                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFolders);
+                calibRecyclerView.setAdapter(calibFileAdapter);
+                calibFileAdapter.notifyDataSetChanged();
+                calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
+
+            }
+        });
+
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+        File root = new File(path);
+        File[] filesAndFolders = root.listFiles();
+
+        if (filesAndFolders == null || filesAndFolders.length == 0) {
+            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            for (int i = 0; i < filesAndFolders.length; i++) {
+                filesAndFolders[i].getName().endsWith(".csv");
+            }
+        }
+
+        calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFolders);
+        calibRecyclerView.setAdapter(calibFileAdapter);
+        calibFileAdapter.notifyDataSetChanged();
+        calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
 
+    }
+
+    public void calibData() {
+        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+        if (spin.getSelectedItemPosition() == 0){
+
+            MV1 = shp.getString("MV1", "");
+            MV2 = shp.getString("MV2", "");
+            MV3 = shp.getString("MV3", "");
+            MV4 = shp.getString("MV4", "");
+            MV5 = shp.getString("MV5", "");
+
+            DT1 = shp.getString("DT1", "");
+            DT2 = shp.getString("DT2", "");
+            DT3 = shp.getString("DT3", "");
+            DT4 = shp.getString("DT4", "");
+            DT5 = shp.getString("DT5", "");
+
+            PH1 = "1.2";
+            PH2 = "4.0";
+            PH3 = "7.0";
+            PH4 = "9.2";
+            PH5 = "12.0";
+        } else if(spin.getSelectedItemPosition() == 1){
+
+
+            MV2 = shp.getString("MV2", "");
+            MV3 = shp.getString("MV3", "");
+            MV4 = shp.getString("MV4", "");
+
+            DT2 = shp.getString("DT2", "");
+            DT3 = shp.getString("DT3", "");
+            DT4 = shp.getString("DT4", "");
+
+            PH2 = "4.0";
+            PH3 = "7.0";
+            PH4 = "9.2";
+
+        }
+
+
+
+    }
+
+    public void deleteAllCalibData() {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM CalibData");
+        db.close();
+    }
+
+    public void exportCalibData() {
+
+
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        File file;
+        PrintWriter printWriter = null;
+
+        try {
+
+            file = new File(exportDir, "CalibrationData.csv");
+            file.createNewFile();
+            printWriter = new PrintWriter(new FileWriter(file), true);
+
+
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("pH,mV,DATE");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+
+
+            while (calibCSV.moveToNext()) {
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+
+                String record1 = ph + "," + mv + "," + date;
+
+                printWriter.println(record1);
+            }
+            calibCSV.close();
+            db.close();
+
+        } catch (Exception e) {
+            Log.d("csvexception", String.valueOf(e));
+        }
 
     }
 

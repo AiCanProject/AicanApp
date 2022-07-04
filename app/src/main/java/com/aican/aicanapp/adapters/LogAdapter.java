@@ -38,6 +38,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
             holder.ph.setText(logs_list.get(position).getpH());
             holder.temp.setText(logs_list.get(position).getmV());
             holder.dt.setText(logs_list.get(position).getDate());
+            holder.time.setText(logs_list.get(position).getTime());
+            holder.batchnum.setText(logs_list.get(position).getBatchnum());
+            holder.arnum.setText(logs_list.get(position).getArnum());
             holder.compound_name.setText(logs_list.get(position).getCompound_name());
         }
     }
@@ -48,13 +51,16 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView ph, temp, dt, compound_name;
+        TextView ph, temp, dt, time, batchnum, arnum, compound_name;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ph = itemView.findViewById(R.id.phLog);
             temp = itemView.findViewById(R.id.tempLog);
+            time = itemView.findViewById(R.id.time);
             dt = itemView.findViewById(R.id.date);
+            batchnum = itemView.findViewById(R.id.batchnum);
+            arnum = itemView.findViewById(R.id.arnum);
             compound_name = itemView.findViewById(R.id.compound);
         }
     }

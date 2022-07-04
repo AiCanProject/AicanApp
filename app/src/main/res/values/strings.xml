@@ -18,12 +18,12 @@
     <string name="passcode">Passcode</string>
     <string name="authenticate">Authenticate</string>
     <string name="clear">Clear</string>
-    <string name="enter_compound_name">Enter Compound Name</string>
+    <string name="enter_compound_name">Enter Product Name</string>
     <string name="log">Log</string>
     <string name="add_user">Add User</string>
     <string name="home">Home</string>
     <string name="temp">Temp</string>
-    <string name="compound_name">Compound Name</string>
+    <string name="compound_name">Product Name</string>
     <string name="ph">pH</string>
     <string name="date">Date</string>
     <string name="tip_long_press_to_delete_the_record">TIP: Long Press to Delete the Record</string>
@@ -54,7 +54,11 @@
     <string name="add_mobile_number">Add Mobile Number</string>
     <string name="calliberate">Calliberate</string>
     <string name="alarm">Alarm</string>
+    <string name="time">Time</string>
     <string name="schedule_mode">Schedule Mode</string>
+    <string name="log_on_stable">Log On Stable:</string>
+    <string name="log_at_interval">Log at Interval:</string>
+    <string name="log_on_button_click">Log on Button:</string>
 
     <string-array name="mode">
         <item>Regular</item>

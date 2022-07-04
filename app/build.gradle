@@ -63,6 +63,8 @@ dependencies {
     def preference_version = "1.1.1"
     implementation "androidx.preference:preference:$preference_version"
 
+    implementation 'com.google.firebase:firebase-common-ktx:20.1.0'
+
 
 
     //graph view

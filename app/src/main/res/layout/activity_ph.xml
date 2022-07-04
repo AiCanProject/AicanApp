@@ -32,8 +32,9 @@
                 android:id="@+id/tabItemP"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/back_select2"
                 android:layout_weight="1"
+                android:background="@drawable/back_select2"
+                android:backgroundTint="@color/btnColor"
                 android:text="" />
 
             <TextView
@@ -52,6 +53,13 @@
 
             <TextView
                 android:id="@+id/select4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/select5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -82,7 +90,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center"
-                android:text="Calibrate"
+                android:text="Calliberate"
                 android:textColor="@color/btnColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -94,7 +102,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center"
-                android:text="@string/log"
+                android:text="Log"
                 android:textColor="@color/btnColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -106,7 +114,19 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center"
-                android:text="@string/alarm"
+                android:text="Graph"
+                android:textColor="@color/btnColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/item5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="center"
+                android:text="Alarm"
                 android:textColor="@color/btnColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />

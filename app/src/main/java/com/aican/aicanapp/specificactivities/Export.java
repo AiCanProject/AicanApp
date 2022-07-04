@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ import com.aican.aicanapp.adapters.UserDataAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,23 +46,28 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Export extends AppCompatActivity {
 
 
     //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button mDateBtn, exportUserData, exportCSV;
+    ImageButton arNumBtn, batchNumBtn, compoundBtn;
     TextView tvStartDate, tvEndDate;
     TextView deviceId;
-    String user, roleExport;
-    String startDateString, endDateString, startDate, endDate;
+    String deviceID;
+    String user, roleExport, reportDate, reportTime;
+    String startDateString, endDateString, startTimeString, endTimeString, arNumString, batchNumString,compoundName;
     String offset, battery, slope, temp;
+    Integer startHour, startMinute, endHour, endMinute;
     String companyName;
     String nullEntry;
     FileAdapter fAdapter;
     UserDataAdapter uAdapter;
-    EditText companyNameEditText;
+    EditText companyNameEditText, arNumEditText, batchNumEditText, compoundNameEditText;
     DatabaseHelper databaseHelper;
     private static final int PERMISSION_REQUEST_CODE = 200;
 
@@ -72,11 +80,16 @@ public class Export extends AppCompatActivity {
         RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
 //        TextView noFilesText = findViewById(R.id.nofiles_textview);
         deviceId = findViewById(R.id.DeviceId);
-        tvStartDate = findViewById(R.id.dateStart);
-        tvEndDate = findViewById(R.id.dateEnd);
         exportCSV = findViewById(R.id.exportCSV);
         mDateBtn = findViewById(R.id.materialDateBtn);
+        arNumEditText = findViewById(R.id.ar_num_sort);
         exportUserData = findViewById(R.id.exportUserData);
+        batchNumEditText = findViewById(R.id.batch_num_sort);
+        arNumBtn = findViewById(R.id.ar_text_button);
+        batchNumBtn = findViewById(R.id.batch_text_button);
+        compoundBtn = findViewById(R.id.compound_text_button);
+        compoundNameEditText = findViewById(R.id.compound_num_sort);
+
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
@@ -98,9 +111,70 @@ public class Export extends AppCompatActivity {
                 endDateString = DateFormat.format("yyyy-MM-dd", new Date(endDate)).toString();
                 String date = "Start: " + startDateString + " End: " + endDateString;
                 Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
-                tvStartDate.setText(startDateString);
-                tvEndDate.setText(endDateString);
+
+                MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                        .setTimeFormat(TimeFormat.CLOCK_24H)
+                        .setTitleText("Select Start Time")
+                        .setHour(12)
+                        .setMinute(10)
+                        .build();
+                timePicker.show(getSupportFragmentManager(), "time");
+
+                timePicker.addOnPositiveButtonClickListener(dialog -> {
+
+                    startHour = timePicker.getHour();
+                    startMinute = timePicker.getMinute();
+
+                    Calendar calendar = Calendar.getInstance();
+
+                    calendar.set(0,0,0,startHour,startMinute);
+
+                    startTimeString = DateFormat.format("HH:mm", calendar).toString();
+
+                    MaterialTimePicker timePicker2 = new MaterialTimePicker.Builder()
+                            .setTimeFormat(TimeFormat.CLOCK_24H)
+                            .setTitleText("Select End Time")
+                            .setHour(12)
+                            .setMinute(10)
+                            .build();
+                    timePicker2.show(getSupportFragmentManager(), "time");
+
+                    timePicker2.addOnPositiveButtonClickListener(dialog2 -> {
+
+                        endHour = timePicker2.getHour();
+                        endMinute = timePicker2.getMinute();
+
+                        Calendar calendar2 = Calendar.getInstance();
+
+                        calendar2.set(0,0,0,endHour, endMinute);
+
+                        endTimeString = DateFormat.format("HH:mm", calendar2).toString();
+                    });
+                });
             });
+
+
+        });
+
+        arNumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                arNumString = arNumEditText.getText().toString();
+            }
+        });
+
+        batchNumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                batchNumString = batchNumEditText.getText().toString();
+            }
+        });
+
+        compoundBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                compoundName = compoundNameEditText.getText().toString();
+            }
         });
 
         exportCSV.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +278,9 @@ public class Export extends AppCompatActivity {
 
     public void exportDatabaseCsv() {
 
-        companyName = "Company: " + companyNameEditText.getText().toString();
+        companyName = "Company Name: " + companyNameEditText.getText().toString();
+        reportDate ="Report Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        reportTime ="Report Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         //We use the Download directory for saving our .csv file.
         File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
@@ -227,25 +303,34 @@ public class Export extends AppCompatActivity {
             slope = "Slope: " + shp.getString("slope", "");
             temp = "Temperature: " + shp.getString("temp", "");
 
+            setFirebaseListeners();
+
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+            roleExport = "Report Generated By: " + shp2.getString("roleSuper", "");
 
             Log.d("debzdate", startDateString + "," + endDateString);
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE DATE(time) BETWEEN '" + startDateString + "' AND '" + endDateString + "'", null);
+            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+
+
+
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + slope + "," + temp+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("pH,mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+
 
 
             while (calibCSV.moveToNext()) {
@@ -258,21 +343,28 @@ public class Export extends AppCompatActivity {
                 printWriter.println(record1);
             }
             calibCSV.close();
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("TIME,pH,TEMP,NAME");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Date,Time,pH,Temp,Batch,AR,Product");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+
 
             while (curCSV.moveToNext()) {
 
+                String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
                 String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+                String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
+                String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 
-                String record = time + "," + pH + "," + temp + "," + comp;
+                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
 
                 printWriter.println(record);
             }
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
             curCSV.close();
             db.close();
 
@@ -369,6 +461,7 @@ public class Export extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
                 String p = snapshot.getValue(String.class);
+                deviceID = p;
                 deviceId.setText(p);
             }
 

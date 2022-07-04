@@ -103,6 +103,13 @@
                 android:resource="@xml/provider_paths" />
             //provider_paths.xml file path in this example
         </provider>
+
+        <service
+            android:name=".Services.LogHoldBackgroundService"
+            android:enabled="true"
+            android:exported="true"
+            ></service>
+
     </application>
 
 </manifest>
