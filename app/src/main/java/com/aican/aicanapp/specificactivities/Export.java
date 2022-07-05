@@ -31,6 +31,16 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.adapters.FileAdapter;
 import com.aican.aicanapp.adapters.UserDataAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.aspose.cells.FileFormatType;
+import com.aspose.cells.LoadOptions;
+import com.aspose.cells.PdfCompliance;
+import com.aspose.cells.PdfSaveOptions;
+import com.aspose.cells.Protection;
+import com.aspose.cells.ProtectionType;
+import com.aspose.cells.SaveFormat;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -54,7 +64,7 @@ public class Export extends AppCompatActivity {
 
 
     //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
-    Button mDateBtn, exportUserData, exportCSV;
+    Button mDateBtn, exportUserData, exportCSV, convertToXls;
     ImageButton arNumBtn, batchNumBtn, compoundBtn;
     TextView tvStartDate, tvEndDate;
     TextView deviceId;
@@ -89,11 +99,14 @@ public class Export extends AppCompatActivity {
         batchNumBtn = findViewById(R.id.batch_text_button);
         compoundBtn = findViewById(R.id.compound_text_button);
         compoundNameEditText = findViewById(R.id.compound_num_sort);
+        convertToXls = findViewById(R.id.convertToXls);
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         nullEntry = " ";
         setFirebaseListeners();
+
+        convertToXls.setVisibility(View.INVISIBLE);
 
         mDateBtn.setOnClickListener(v -> {
             MaterialDatePicker datePicker =
@@ -183,8 +196,9 @@ public class Export extends AppCompatActivity {
 
                 exportDatabaseCsv();
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
                 File root = new File(path);
+                fileNotWrite(root);
                 File[] filesAndFolders = root.listFiles();
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
@@ -192,7 +206,7 @@ public class Export extends AppCompatActivity {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(".csv");
+                        filesAndFolders[i].getName().endsWith(".xlsx");
                     }
                 }
 
@@ -201,6 +215,24 @@ public class Export extends AppCompatActivity {
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                convertToXls.setVisibility(View.VISIBLE);
+            }
+        });
+
+        convertToXls.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
+
+                    PdfSaveOptions options = new PdfSaveOptions();
+                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/Generated.pdf", options);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -212,6 +244,7 @@ public class Export extends AppCompatActivity {
 
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
                 File root = new File(path);
+                fileNotWrite(root);
                 File[] filesAndFolders = root.listFiles();
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
@@ -231,10 +264,12 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
         String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
         File root = new File(path);
         File root2 = new File(path2);
+        fileNotWrite(root);
+        fileNotWrite(root2);
         File[] filesAndFolders = root.listFiles();
         File[] filesAndFolders2 = root2.listFiles();
 
@@ -243,7 +278,7 @@ public class Export extends AppCompatActivity {
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().endsWith(".csv");
+                filesAndFolders[i].getName().endsWith(".xlsx");
             }
         }
 
@@ -278,14 +313,18 @@ public class Export extends AppCompatActivity {
 
     public void exportDatabaseCsv() {
 
-        companyName = "Company Name: " + companyNameEditText.getText().toString();
-        reportDate ="Report Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        reportTime ="Report Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        companyName = "Company: " + companyNameEditText.getText().toString();
+        reportDate ="Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        reportTime ="Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         //We use the Download directory for saving our .csv file.
         File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
+        }
+        File outputDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles");
+        if(!outputDir.exists()){
+            outputDir.mkdirs();
         }
 
         File file;
@@ -307,7 +346,7 @@ public class Export extends AppCompatActivity {
 
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Report Generated By: " + shp2.getString("roleSuper", "");
+            roleExport = "Made By: " + shp2.getString("roleSuper", "");
 
             Log.d("debzdate", startDateString + "," + endDateString);
 
@@ -316,16 +355,13 @@ public class Export extends AppCompatActivity {
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
-
-
-
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + slope + "," + temp+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("pH,mV,DATE");
@@ -365,11 +401,30 @@ public class Export extends AppCompatActivity {
             }
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+            fileNotWrite(file);
             curCSV.close();
             db.close();
 
+            LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+
+                Workbook workbook = new Workbook(inputFile + "DataSensorLog.csv", loadOptions);
+                Worksheet worksheet = workbook.getWorksheets().get(0);
+                worksheet.getCells().setColumnWidth(0,18.5);
+                worksheet.getCells().setColumnWidth(2,18.5);
+                workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
+
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
+        }
+    }
+
+    public void fileNotWrite(File file){
+        file.setWritable(false);
+        if(file.canWrite()){
+            Log.d("csv","Nhi kaam kar rha");
+        } else {
+            Log.d("csvnw","Party Bhaiiiii");
         }
     }
 
