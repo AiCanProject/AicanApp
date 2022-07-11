@@ -1,32 +1,41 @@
 package com.aican.aicanappnoncfr.specificactivities;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.aican.aicanappnoncfr.Dashboard.Dashboard;
 import com.aican.aicanappnoncfr.R;
-import com.aican.aicanappnoncfr.adapters.ViewPagerAdapter;
+import com.aican.aicanappnoncfr.Source;
+import com.aican.aicanappnoncfr.fragments.temp.AlarmTempFragment;
+import com.aican.aicanappnoncfr.fragments.temp.LogTempFragment;
 import com.aican.aicanappnoncfr.fragments.temp.SetTempFragment;
 import com.aican.aicanappnoncfr.fragments.temp.TempFragment;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
+public class TemperatureActivity extends AppCompatActivity implements View.OnClickListener {
 
-public class TemperatureActivity extends AppCompatActivity {
+    TextView ph, calibrate, log, alarm, tabItemPh, tabItemCalib;
 
     public static final String DEVICE_TYPE_KEY = "device_type";
     public static String DEVICE_ID = null;
     public static String deviceType = null;
 
-    TabLayout tabLayout;
-    ViewPager2 viewPager;
-    ViewPagerAdapter viewPagerAdapter;
-    ArrayList<Fragment> fragments;
+
+    DatabaseReference deviceRef;
+
+    TempFragment tempFragment = new TempFragment();
+    SetTempFragment setTempFragment = new SetTempFragment();
+    LogTempFragment logTempFragment = new LogTempFragment();
+    AlarmTempFragment alarmTempFragment = new AlarmTempFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,9 @@ public class TemperatureActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temp_activity);
+        getWindow().setStatusBarColor(this.getResources().getColor(R.color.btnColor));
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         DEVICE_ID = getIntent().getStringExtra(Dashboard.KEY_DEVICE_ID);
         deviceType = getIntent().getStringExtra(DEVICE_TYPE_KEY);
@@ -42,21 +54,90 @@ public class TemperatureActivity extends AppCompatActivity {
             throw new RuntimeException();
         }
 
-        tabLayout = findViewById(R.id.tabLayout);
-        viewPager = findViewById(R.id.viewPager);
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
+                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
 
-        fragments = new ArrayList<>();
-        fragments.add(new SetTempFragment());
-        fragments.add(new TempFragment());
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragments);
-        viewPager.setAdapter(viewPagerAdapter);
+        Source.deviceID = DEVICE_ID;
 
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            if (position == 0) {
-                tab.setText("set temp");
-            } else if (position == 1) {
-                tab.setText("temp");
-            }
-        }).attach();
+
+        loadFragments(setTempFragment);
+        ph = findViewById(R.id.item1);
+        calibrate = findViewById(R.id.item2);
+        log = findViewById(R.id.item3);
+        alarm = findViewById(R.id.item4);
+        tabItemPh = findViewById(R.id.tabItemP);
+        tabItemCalib = findViewById(R.id.select2);
+
+        ph.setOnClickListener(this);
+        calibrate.setOnClickListener(this);
+        log.setOnClickListener(this);
+        alarm.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.item1) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(0);
+            tabItemPh.animate().x(0).setDuration(100);
+            loadFragments(setTempFragment);
+            ph.setTextColor(Color.WHITE);
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+        } else if (view.getId() == R.id.item2) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(1);
+            loadFragments(tempFragment);
+            calibrate.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth();
+            tabItemPh.animate().x(size).setDuration(100);
+
+        } else if (view.getId() == R.id.item3) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(2);
+            loadFragments(logTempFragment);
+            log.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth() * 2;
+            tabItemPh.animate().x(size).setDuration(100);
+
+        } else if (view.getId() == R.id.item4) {
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(3);
+            loadFragments(alarmTempFragment);
+
+            alarm.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth() * 3;
+            tabItemPh.animate().x(size).setDuration(100);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        Intent intent = new Intent(TemperatureActivity.this, Dashboard.class);
+        startActivity(intent);
+    }
+
+    private boolean loadFragments(Fragment fragment) {
+        if (fragment != null) {
+            Log.d("navigation", "loadFragments: Frag is loaded");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainerView, fragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            // deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+
+            return true;
+        }
+        return false;
     }
 }

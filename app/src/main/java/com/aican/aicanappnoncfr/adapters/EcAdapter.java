@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanappnoncfr.Dashboard.Dashboard;
 import com.aican.aicanappnoncfr.R;
+import com.aican.aicanappnoncfr.dataClasses.EcDevice;
 import com.aican.aicanappnoncfr.dataClasses.TempDevice;
+import com.aican.aicanappnoncfr.specificactivities.EcActivity;
 import com.aican.aicanappnoncfr.specificactivities.TemperatureActivity;
 import com.aican.aicanappnoncfr.utils.DashboardListsOptionsClickListener;
 import com.google.firebase.FirebaseApp;
@@ -27,71 +29,59 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterViewHolder> {
-
-    ArrayList<TempDevice> tempDevices;
+public class EcAdapter extends RecyclerView.Adapter<EcAdapter.EcAdapterViewHolder> {
+    ArrayList<EcDevice> ecDevices;
     DashboardListsOptionsClickListener optionsClickListener;
 
-    public TempAdapter(ArrayList<TempDevice> tempDevices, DashboardListsOptionsClickListener optionsClickListener) {
-        this.tempDevices = tempDevices;
+    public EcAdapter(ArrayList<EcDevice> ecDevices, DashboardListsOptionsClickListener optionsClickListener) {
+        this.ecDevices = ecDevices;
         this.optionsClickListener = optionsClickListener;
     }
 
+    @NonNull
     @Override
-    public TempAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EcAdapter.EcAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.temp_item,parent,false);
-        return new TempAdapterViewHolder(view);
+        View view = inflater.inflate(R.layout.ec_item,parent,false);
+        return new EcAdapter.EcAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TempAdapter.TempAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(EcAdapter.EcAdapterViewHolder holder, int position) {
 
-//        holder.temperature.setText(temps[position]);
-//        deviceId = Integer.toString(position);
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String deviceIdStr;
-//                deviceIdStr = "temp " + deviceId;
-//                Intent toTemp = new Intent(context, TemperatureActivity.class);
-//                toTemp.putExtra("deviceId",deviceIdStr);
-//                toTemp.putExtra("deviceTemp",temps[position]);
-//                context.startActivity(toTemp);
-//            }
-//        });
-        holder.bind(tempDevices.get(position));
+
+        holder.bind(ecDevices.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return tempDevices.size();
+        return ecDevices.size();
     }
 
-    public class TempAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class EcAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView temperature;
+        private TextView ec;
         private TextView tvName;
         private ImageView ivOptions;
 
 
         //Viewholder-----------------------------------------------------------------------------------------
-        public TempAdapterViewHolder(View itemView) {
+        public EcAdapterViewHolder(View itemView) {
             super(itemView);
-            temperature = itemView.findViewById(R.id.ph);
+            ec = itemView.findViewById(R.id.ph);
             tvName = itemView.findViewById(R.id.custom_device_name);
             ivOptions = itemView.findViewById(R.id.ivOptions);
         }
 
-        public void bind(TempDevice device) {
-            String tempString = String.format(Locale.UK, "%d°C", device.getTemp());
+        public void bind(EcDevice device) {
+            String ecString = String.format(Locale.UK, "%d", device.getEc());
             tvName.setText(device.getName());
-            temperature.setText(tempString);
+            ec.setText(ecString);
 
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), TemperatureActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
-                intent.putExtra(TemperatureActivity.DEVICE_TYPE_KEY, Dashboard.DEVICE_TYPE_TEMP);
+                intent.putExtra(EcActivity.DEVICE_TYPE_KEY, Dashboard.DEVICE_TYPE_EC);
                 itemView.getContext().startActivity(intent);
             });
 
@@ -102,18 +92,18 @@ public class TempAdapter extends RecyclerView.Adapter<TempAdapter.TempAdapterVie
             setFirebaseListeners(device);
         }
 
-        private void setFirebaseListeners(TempDevice device) {
+        private void setFirebaseListeners(EcDevice device) {
 
-            DatabaseReference deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_TEMP).child(device.getId());
+            DatabaseReference deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(device.getId())).getReference().child(Dashboard.DEVICE_TYPE_EC).child(device.getId());
 
-            deviceRef.child("UI").child("TEMP").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+            deviceRef.child("UI").child("EC").child("EC_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     Integer val = snapshot.getValue(Integer.class);
                     if (val == null) return;
-                    int prev = device.getTemp();
-                    device.setTemp(val);
-                    if (prev != device.getTemp())
+                    int prev = device.getEc();
+                    device.setEc(val);
+                    if (prev != device.getEc())
                         notifyDataSetChanged();
                 }
 

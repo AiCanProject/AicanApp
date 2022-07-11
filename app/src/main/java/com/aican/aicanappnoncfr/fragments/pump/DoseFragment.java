@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,9 +24,9 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanappnoncfr.R;
-import com.aican.aicanappnoncfr.pumpController.ProgressBar;
 import com.aican.aicanappnoncfr.pumpController.VerticalSlider;
 import com.aican.aicanappnoncfr.specificactivities.PumpActivity;
+import com.aican.aicanappnoncfr.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DoseFragment extends Fragment {
 
-    VerticalSlider volController, speedController;
+    //    VerticalSlider volController, speedController;
     LineChart lineChart;
     Button calibrateBtn, speedSet, volumeSet, startBtn;
     //ShapeableImageView startBtn;
@@ -46,9 +49,12 @@ public class DoseFragment extends Fragment {
     Integer speed;
     Integer vol;
     TextView appMode;
+    int bar_progress= 0;
+    ProgressBar progress_bar, volProgress_bar;
+    EditText speed_set, vol_set;
+    ImageView minus, plus, vol_minus, vol_plus;
+    Button set_btn, vol_setBtn;
 
-
-    ProgressBar progressBar;
     DatabaseReference deviceRef = null;
     RelativeLayout startLayout, stopLayout;
     Button btnStop;
@@ -70,32 +76,27 @@ public class DoseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         speedSet = view.findViewById(R.id.speedSet);
-        volumeSet =  view.findViewById(R.id.volumeSet);
+        //volumeSet =  view.findViewById(R.id.volumeSet);
         date = view.findViewById(R.id.date);
         time = view.findViewById(R.id.time);
         switchClock = view.findViewById(R.id.switch1);
         switchAntiClock = view.findViewById(R.id.switch2);
         startBtn = view.findViewById(R.id.startBtn);
-        volController = view.findViewById(R.id.volumeController);
-        speedController = view.findViewById(R.id.speedController);
         switchClock = view.findViewById(R.id.switch1);
         switchAntiClock = view.findViewById(R.id.switch2);
         appMode = view.findViewById(R.id.appMode);
         startBtn = view.findViewById(R.id.startBtn);
 
-        //lineChart = view.findViewById(R.id.line_chart);
-        //calibrateBtn = view.findViewById(R.id.calibrateBtn);
-        //tvStart = view.findViewById(R.id.tvStart);
-        //switchDir = view.findViewById(R.id.switchDir);
-        //progressBar = view.findViewById(R.id.progressBar);
-        //startLayout = view.findViewById(R.id.startLayout);
-        //stopLayout = view.findViewById(R.id.stopLayout);
-        //btnStop = view.findViewById(R.id.btnStop);
-
-        volController.setProgress(0);
-        speedController.setProgress(0);
-        speedController.setMaxRange(150);
-
+        minus = view.findViewById(R.id.minus);
+        progress_bar = view.findViewById(R.id.progress_bar);
+        plus = view.findViewById(R.id.plus);
+        speed_set = view.findViewById(R.id.speed_set);
+        set_btn = view.findViewById(R.id.set_btn);
+        volProgress_bar = view.findViewById(R.id.progressBar);
+        vol_minus = view.findViewById(R.id.minuss);
+        vol_plus = view.findViewById(R.id.pluss);
+        vol_set = view.findViewById(R.id.volume_set);
+        vol_setBtn = view.findViewById(R.id.setBtn);
 
         /*calibrateBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), PumpCalibrateActivity.class);
@@ -104,6 +105,55 @@ public class DoseFragment extends Fragment {
         });
 */
 
+        updateProgressBar();
+
+        set_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deviceRef.child("UI").child("Speed").setValue(Integer.parseInt(speed_set.getText().toString()));
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress -= 1;
+                updateProgressBar();
+            }
+        });
+
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress += 1;
+                updateProgressBar();
+            }
+        });
+
+        vol_setBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deviceRef.child("UI").child("Volume").setValue(Integer.parseInt(vol_set.getText().toString()));
+            }
+        });
+
+        vol_minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress -= 1;
+                updateVolProgressBar();
+            }
+        });
+
+        vol_plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bar_progress += 1;
+                updateVolProgressBar();
+            }
+        });
+
+
         startBtn.setOnClickListener(v -> {
             isStarted = true;
             //showProgressBarLayout();
@@ -111,16 +161,6 @@ public class DoseFragment extends Fragment {
             deviceRef.child("UI").child("Start").setValue(1);
         });
 
-
-        speedSet.setOnClickListener( v ->{
-            int spee= speedController.getProgress();
-            deviceRef.child("UI").child("Speed").setValue(spee);
-
-        });
-
-        volumeSet.setOnClickListener(v ->{
-            volController.setProgress(vol);
-        });
        /* btnStop.setOnClickListener(v -> {
             isStarted = false;
             hideProgressBarLayout();
@@ -196,8 +236,8 @@ public class DoseFragment extends Fragment {
 
     private void startProgressBar() {
 
-        float speed = speedController.getProgress();
-        float vol = speedController.getProgress();
+//        float speed = speedController.getProgress();
+//        float vol = speedController.getProgress();
 
         long duration = (int) (vol * 60 * 1000 / speed);
 
@@ -210,13 +250,13 @@ public class DoseFragment extends Fragment {
                 progress = (int) ((duration - millisUntilFinished) * 100 / duration);
 
                 if (progress != prevProgress) {
-                    progressBar.setProgress(progress);
+                    //progressBar.setProgress(progress);
                 }
             }
 
             @Override
             public void onFinish() {
-                progressBar.setProgress(100);
+                // progressBar.setProgress(100);
                 deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_DOSE_COMPLETED);
             }
         };
@@ -227,7 +267,7 @@ public class DoseFragment extends Fragment {
         if (timer != null) {
             timer.cancel();
         }
-        progressBar.setProgress(0);
+        //progressBar.setProgress(0);
         deviceRef.child("UI").child("Start").setValue(PumpActivity.STATUS_OFF);
 
     }
@@ -245,9 +285,9 @@ public class DoseFragment extends Fragment {
                 } else {
                     isStarted = false;
 //                    refreshStartBtnUI();
-                    volController.setProgress(0);
-                    speedController.setProgress(0);
-                    switchClock.setChecked(false);
+//                    volController.setProgress(0);
+//                    speedController.setProgress(0);
+//                    switchClock.setChecked(false);
                 }
             }
 
@@ -256,6 +296,16 @@ public class DoseFragment extends Fragment {
 
             }
         });
+    }
+
+
+    private void updateProgressBar(){
+        progress_bar.setProgress(bar_progress);
+        speed_set.setText(String.valueOf(bar_progress));
+    }
+    private void updateVolProgressBar(){
+        volProgress_bar.setProgress(bar_progress);
+        vol_set.setText(String.valueOf(bar_progress));
     }
 
     private void setupListeners() {
@@ -290,14 +340,18 @@ public class DoseFragment extends Fragment {
         deviceRef.child("UI").child("Speed").get().addOnSuccessListener(snapshot -> {
             speed = snapshot.getValue(Integer.class);
             if (speed == null) return;
-            speedController.setProgress(speed);
+
+            progress_bar.setProgress(speed);
+            speed_set.setText(speed.toString());
+
+            //speedController.setProgress(speed);
         });
 
         deviceRef.child("UI").child("Volume").get().addOnSuccessListener(snapshot -> {
             vol = snapshot.getValue(Integer.class);
             if (vol == null) return;
-            volController.getProgress();
-            volController.setProgress(vol);
+            //    volController.getProgress();
+            //  volController.setProgress(vol);
         });
 
         deviceRef.child("UI").child("Start").get().addOnSuccessListener(snapshot -> {
@@ -306,23 +360,23 @@ public class DoseFragment extends Fragment {
 
             if (status == PumpActivity.STATUS_DOSE) {
                 isStarted = true;
-              //  showProgressBarLayout();
+                //  showProgressBarLayout();
                 //progressBar.setVisibility(View.INVISIBLE);
             }
         });
 
-        speedController.setOnProgressChangeListener(progress -> {
-            deviceRef.child("UI").child("Speed").setValue(progress);
-        });
+//        speedController.setOnProgressChangeListener(progress -> {
+//            deviceRef.child("UI").child("Speed").setValue(progress);
+//        });
+//
+//        volController.setOnProgressChangeListener(progress -> {
+//            deviceRef.child("UI").child("Volume").setValue(progress);
+//        });
 
-        volController.setOnProgressChangeListener(progress -> {
-            deviceRef.child("UI").child("Volume").setValue(progress);
-        });
-
-       switchClock.setOnCheckedChangeListener((v, isChecked) -> {
-           if (isChecked){
-               switchAntiClock.setChecked(false);
-           }
+        switchClock.setOnCheckedChangeListener((v, isChecked) -> {
+            if (isChecked){
+                switchAntiClock.setChecked(false);
+            }
             deviceRef.child("UI").child("Direction").setValue(isChecked ? 0 : 1);
         });
 

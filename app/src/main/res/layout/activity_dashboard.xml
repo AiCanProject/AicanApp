@@ -167,7 +167,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Industrial"
+                    android:text="EC"
                     android:textSize="30sp"
                     android:layout_marginTop="7dp"
                     android:layout_marginStart="22dp"
@@ -177,7 +177,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="pH"
+                    android:text="Meter"
                     android:textSize="20sp"
                     android:layout_marginTop="49dp"
                     android:layout_marginStart="22dp"
@@ -324,6 +324,14 @@
                         android:paddingTop="5dp"
                         android:visibility="gone" />
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/ec_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:paddingTop="5dp"
+                        android:visibility="gone" />
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -349,6 +357,7 @@
         android:id="@+id/drawer"
         android:layout_gravity = "start"
         android:layout_width="250dp"
+        android:visibility="gone"
         android:layout_height="match_parent"
         android:background="@color/white"
         tools:layout_gravity="">

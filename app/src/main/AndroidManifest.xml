@@ -4,23 +4,18 @@
     package="com.aican.aicanappnoncfr">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE">
-    </uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">
-    </uses-permission>
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -33,15 +28,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AicanApp"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m"
-        tools:replace="android:icon">
-
-<!--        <activity-->
-<!--            android:name=".CheckConnectionReciever"-->
-<!--            android:exported="false" />-->
-
+        tools:replace="android:icon"
+        tools:targetApi="m">
         <activity
-            android:name="com.aican.aicanappnoncfr.specificactivities.InstructionActivity"
+            android:name=".EcActivity"
+            android:exported="false" />
+        <!-- <activity -->
+        <!-- android:name=".CheckConnectionReciever" -->
+        <!-- android:exported="false" /> -->
+        <activity
+            android:name=".InstructionActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
@@ -53,7 +49,7 @@
             android:exported="true"
             android:screenOrientation="landscape" />
         <activity
-            android:name="com.aican.aicanappnoncfr.specificactivities.Export"
+            android:name=".Export"
             android:screenOrientation="landscape" />
         <activity
             android:name="com.aican.aicanappnoncfr.dialogs.AuthenticateRoleDialog"
@@ -63,9 +59,7 @@
             android:name="com.aican.aicanappnoncfr.Dashboard.SettingActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
-
-        <activity android:name="com.aican.aicanappnoncfr.specificactivities.ConnectDeviceActivity" />
-
+        <activity android:name=".ConnectDeviceActivity" />
         <activity android:name="com.aican.aicanappnoncfr.Authentication.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,27 +67,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.aican.aicanappnoncfr.specificactivities.EcTdsCalibrateActivity" />
+        <activity android:name=".EcTdsCalibrateActivity" />
         <activity
-            android:name="com.aican.aicanappnoncfr.specificactivities.PhCalibrateActivity"
-            android:parentActivityName="com.aican.aicanappnoncfr.specificactivities.PhActivity" />
+            android:name=".PhCalibrateActivity"
+            android:parentActivityName=".PhActivity" />
         <activity
-            android:name="com.aican.aicanappnoncfr.specificactivities.PhActivity"
+            android:name=".PhActivity"
             android:screenOrientation="landscape" />
         <activity android:name="com.aican.aicanappnoncfr.AddDevice.AddDeviceOption" />
-
-        <activity android:name="com.aican.aicanappnoncfr.specificactivities.TemperatureActivity" />
+        <activity
+            android:name=".TemperatureActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name="com.aican.aicanappnoncfr.Dashboard.Dashboard"
             android:screenOrientation="landscape" />
         <activity android:name="com.aican.aicanappnoncfr.MainActivity" />
         <activity android:name="com.aican.aicanappnoncfr.Authentication.LoginActivity" />
         <activity android:name="com.aican.aicanappnoncfr.Authentication.SignUpActivity" />
-        <activity android:name="com.aican.aicanappnoncfr.specificactivities.PumpCalibrateActivity" />
-
-        <activity android:name="com.aican.aicanappnoncfr.specificactivities.PumpActivity"
-            android:screenOrientation="landscape"/>
-
+        <activity android:name=".PumpCalibrateActivity" />
+        <activity
+            android:name=".PumpActivity"
+            android:screenOrientation="landscape" />
         <activity android:name="com.aican.aicanappnoncfr.AddDevice.ScanQrActivity" />
 
         <service android:name="com.aican.aicanappnoncfr.graph.ForegroundService" />
@@ -112,15 +106,11 @@
         <service
             android:name=".Services.LogHoldBackgroundService"
             android:enabled="true"
-            android:exported="true"
-            ></service>
-
+            android:exported="true" />
         <service
             android:name=".Services.AlarmBackgroundService"
             android:enabled="true"
-            android:exported="true"
-            ></service>
-
+            android:exported="true" />
     </application>
 
 </manifest>

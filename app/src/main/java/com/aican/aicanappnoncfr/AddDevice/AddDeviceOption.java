@@ -10,12 +10,13 @@ import com.aican.aicanappnoncfr.R;
 
 public class AddDeviceOption extends AppCompatActivity {
 
-    CardView cvTemp, cvCooling, cvPh, cvPump;
+    CardView cvTemp, cvCooling, cvPh, cvPump, cvEc;
 
     public static final String TYPE_TEMP = "temp";
     public static final String TYPE_COOLING = "cooling";
     public static final String TYPE_PH = "ph";
     public static final String TYPE_PUMP = "pump";
+    public static final String TYPE_EC = "ec";
 
     public static final String KEY_DEVICE_TYPE = "type";
 
@@ -28,6 +29,7 @@ public class AddDeviceOption extends AppCompatActivity {
         cvCooling = findViewById(R.id.cvCooling);
         cvPh = findViewById(R.id.cvPh);
         cvPump = findViewById(R.id.cvPump);
+        cvEc = findViewById(R.id.ecMeter);
 
         cvTemp.setOnClickListener(v->{
             startQrActivity(TYPE_TEMP);
@@ -40,6 +42,9 @@ public class AddDeviceOption extends AppCompatActivity {
         });
         cvPump.setOnClickListener(v->{
             startQrActivity(TYPE_PUMP);
+        });
+        cvEc.setOnClickListener(v->{
+            startQrActivity(TYPE_EC);
         });
     }
 
