@@ -29,15 +29,28 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/activity_add_device_option.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/activity_ec.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/activity_ph.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/activity_pump.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/calib_item.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/cooling_item.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/custom_spinner_mode.xml" value="0.19895833333333332" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/dialog_edit_ph_buffer.xml" value="0.22" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/ec_item.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fault_dialog.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_alarm_temp.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_dose.xml" value="0.22" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ec.xml" value="0.1" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ec_alarm.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ec_calib.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ec_graph.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ec_log.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_log_temp.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_p_calib.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ph_alarm.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ph_calib.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ph_graph.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ph_log.xml" value="0.2" />
+        <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_ph_main.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_temp_main.xml" value="0.2" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/fragment_temp_set.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanApp2/app/src/main/res/layout/temp_activity.xml" value="0.2" />

@@ -31,8 +31,9 @@
         tools:replace="android:icon"
         tools:targetApi="m">
         <activity
-            android:name=".EcActivity"
-            android:exported="false" />
+            android:name=".specificactivities.EcActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"/>
         <!-- <activity -->
         <!-- android:name=".CheckConnectionReciever" -->
         <!-- android:exported="false" /> -->

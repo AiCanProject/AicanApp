@@ -79,9 +79,9 @@ public class EcAdapter extends RecyclerView.Adapter<EcAdapter.EcAdapterViewHolde
             ec.setText(ecString);
 
             itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(itemView.getContext(), TemperatureActivity.class);
+                Intent intent = new Intent(itemView.getContext(), EcActivity.class);
                 intent.putExtra(Dashboard.KEY_DEVICE_ID, device.getId());
-                intent.putExtra(EcActivity.DEVICE_TYPE_KEY, Dashboard.DEVICE_TYPE_EC);
+              //  intent.putExtra(EcActivity.DEVICE_TYPE_KEY, Dashboard.DEVICE_TYPE_EC);
                 itemView.getContext().startActivity(intent);
             });
 
