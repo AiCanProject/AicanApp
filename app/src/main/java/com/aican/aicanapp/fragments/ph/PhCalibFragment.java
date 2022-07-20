@@ -444,6 +444,47 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             l4.setVisibility(View.INVISIBLE);
             l5.setVisibility(View.INVISIBLE);
 
+            deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ph = snapshot.getValue(Float.class);
+                    if (ph == null) return;
+                    String phForm = String.format(Locale.UK, "%.2f", ph);
+                    tvPhCurr.setText(phForm);
+                    phView.moveTo(ph);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float temp = snapshot.getValue(Float.class);
+                    String tempForm = String.format(Locale.UK, "%.1f", temp);
+                    tvTempCurr.setText(tempForm + "°C");
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.1f", ec);
+                    tvEcCurr.setText(ecForm);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
             deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
