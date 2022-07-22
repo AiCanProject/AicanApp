@@ -1513,7 +1513,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             if (coeff == null) return;
                             currentBuf += 1;
                         });
-                        setupListeners();
+                        
+                        deviceRef.child("Data").child("PH_VAL").get().addOnSuccessListener(dataSnapshot -> {
+                            Float ph = dataSnapshot.getValue(Float.class);
+                            String phForm = String.format(Locale.UK, "%.2f", ph);
+                            tvPhCurr.setText(phForm);
+                        });
                     }
                 };
                 runnable.run();
