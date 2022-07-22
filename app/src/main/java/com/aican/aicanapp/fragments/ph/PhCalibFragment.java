@@ -99,6 +99,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String mV1, mV2, mV3, mV4, mV5;
     String tm1, tm2, tm3, tm4, tm5;
     RecyclerView calibRecyclerView;
+    String offset, battery, slope, temp;
 
     PhView phView;
     TextView title;
@@ -433,6 +434,72 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 }
             });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph1.setText(phVal);
+                    PH1 = ph1.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph2.setText(phVal);
+                    PH2 = ph2.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph3.setText(phVal);
+                    PH3 = ph3.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph4.setText(phVal);
+                    PH4 = ph4.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph5.setText(phVal);
+                    PH5 = ph5.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
         }
         else if(spin.getSelectedItemPosition() == 1){
 
@@ -491,7 +558,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     Float ec = snapshot.getValue(Float.class);
                     String ecForm = String.format(Locale.UK, "%.2f", ec);
                     mv1.setText(ecForm);
-                    mV1 = mv2.getText().toString();
+                    mV1 = mv1.getText().toString();
 
                     SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -602,6 +669,47 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 }
             });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph1.setText(phVal);
+                    PH1 = ph1.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph2.setText(phVal);
+                    PH2 = ph2.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    String phVal = snapshot.getValue(String.class);
+                    ph3.setText(phVal);
+                    PH3 = ph3.getText().toString();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+
         }
 
 
@@ -1068,7 +1176,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                tvPhCurr.setText("--");
                 FileOutputStream fos = null;
 
                 try {
@@ -1232,16 +1340,33 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             file = new File(exportDir, "CalibrationData.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
+            SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
+            offset = "Offset: " + shp.getString("offset", "");
+            battery = "Battery: " + shp.getString("battery", "");
+            slope = "Slope: " + shp.getString("slope", "");
+            temp = "Temperature: " + shp.getString("temp", "");
 
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+//            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+//            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("pH,mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+
+//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println("pH,mV,DATE");
+//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
             while (calibCSV.moveToNext()) {
@@ -1253,6 +1378,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 printWriter.println(record1);
             }
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+
             calibCSV.close();
             db.close();
 
@@ -1341,6 +1469,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         }
 
+        setupListeners();
     }
 
 
@@ -1384,6 +1513,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             if (coeff == null) return;
                             currentBuf += 1;
                         });
+                        setupListeners();
                     }
                 };
                 runnable.run();
