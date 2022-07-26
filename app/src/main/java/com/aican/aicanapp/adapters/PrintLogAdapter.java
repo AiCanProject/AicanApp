@@ -50,19 +50,19 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Currentlog/CurrentData.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Currentlog/CurrentData.pdf";
                 File file = new File(path);
 
                 try {
                     Intent mIntent = new Intent(Intent.ACTION_VIEW);
 
-                    mIntent.setDataAndType(Uri.fromFile(file), "text/plain");
+                    mIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     //This line is used to open the csv File via the specific app I want
-                    mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
+                    mIntent.setClassName("com.adobe.reader", "com.adobe.reader.AdobeReader");
 
                     Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
                     cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

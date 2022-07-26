@@ -59,7 +59,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                    mIntent.setClassName("com.google.android.apps.docs.editors.sheets", "com.google.android.apps.docs.editors.sheets.QuickSheetDocumentOpenerActivityAlias");
+                    mIntent.setClassName("com.adobe.reader", "com.adobe.reader.AdobeReader");
 
                     Intent cIntent = Intent.createChooser(mIntent, "Open Excel");
                     cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

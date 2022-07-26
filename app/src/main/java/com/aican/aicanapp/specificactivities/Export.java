@@ -307,7 +307,7 @@ public class Export extends AppCompatActivity {
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().endsWith(".xlsx");
+                filesAndFolders[i].getName().endsWith(".pdf");
             }
         }
 
@@ -316,7 +316,7 @@ public class Export extends AppCompatActivity {
             return;
         } else {
             for (int j = 0; j < filesAndFolders2.length; j++) {
-                filesAndFolders2[j].getName().endsWith(".csv");
+                filesAndFolders2[j].getName().endsWith(".pdf");
             }
         }
 
