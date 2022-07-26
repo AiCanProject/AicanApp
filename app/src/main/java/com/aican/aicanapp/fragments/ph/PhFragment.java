@@ -173,6 +173,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String tempForm = String.format(Locale.UK, "%.1f", temp);
                 tvTempCurr.setText(tempForm + "°C");
 
+                if(Integer.parseInt(tempp)<=-127){
+                    tvTempCurr.setText("NA");
+                }
+
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                 SharedPreferences.Editor edit = sharedPreferences.edit();
                 edit.putString("temp", tvTempCurr.getText().toString());
