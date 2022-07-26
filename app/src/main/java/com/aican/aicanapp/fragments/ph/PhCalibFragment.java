@@ -86,7 +86,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     LinearLayout log3, log5;
 
     int ec;
-    String nullEntry;
+    String nullEntry, reportDate, reportTime;
     Integer fault;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
@@ -449,6 +449,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String phVal = snapshot.getValue(String.class);
                     ph1.setText(phVal);
                     PH1 = ph1.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH1", PH1);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -462,6 +468,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String phVal = snapshot.getValue(String.class);
                     ph2.setText(phVal);
                     PH2 = ph2.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH2", PH2);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -475,6 +487,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String phVal = snapshot.getValue(String.class);
                     ph3.setText(phVal);
                     PH3 = ph3.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH3", PH3);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -488,6 +506,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String phVal = snapshot.getValue(String.class);
                     ph4.setText(phVal);
                     PH4 = ph4.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH4", PH4);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -501,6 +525,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String phVal = snapshot.getValue(String.class);
                     ph5.setText(phVal);
                     PH5 = ph5.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH5", PH5);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -683,7 +713,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String phVal = snapshot.getValue(String.class);
                     ph1.setText(phVal);
-                    PH1 = ph1.getText().toString();
+                    PH2 = ph1.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH2", PH2);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -696,7 +732,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String phVal = snapshot.getValue(String.class);
                     ph2.setText(phVal);
-                    PH2 = ph2.getText().toString();
+                    PH3 = ph2.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH3", PH3);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -709,7 +751,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String phVal = snapshot.getValue(String.class);
                     ph3.setText(phVal);
-                    PH3 = ph3.getText().toString();
+                    PH4 = ph3.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("PH4", PH4);
+                    myEdit.commit();
                 }
 
                 @Override
@@ -1138,7 +1186,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         loadBuffers();
 
                         deleteAllCalibData();
-                        calibData();
+                        calibDataThree();
 
                         databaseHelper.insertCalibration(PH2, MV2, DT2);
                         databaseHelper.insertCalibration(PH3, MV3, DT3);
@@ -1286,8 +1334,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public void calibData() {
         SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
-        if (spin.getSelectedItemPosition() == 0){
-
             MV1 = shp.getString("MV1", "");
             MV2 = shp.getString("MV2", "");
             MV3 = shp.getString("MV3", "");
@@ -1300,31 +1346,32 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             DT4 = shp.getString("DT4", "");
             DT5 = shp.getString("DT5", "");
 
-            PH1 = "1.2";
-            PH2 = "4.0";
-            PH3 = "7.0";
-            PH4 = "9.2";
-            PH5 = "12.0";
-        } else if(spin.getSelectedItemPosition() == 1){
-
-
-            MV2 = shp.getString("MV2", "");
-            MV3 = shp.getString("MV3", "");
-            MV4 = shp.getString("MV4", "");
-
-            DT2 = shp.getString("DT2", "");
-            DT3 = shp.getString("DT3", "");
-            DT4 = shp.getString("DT4", "");
-
-            PH2 = "4.0";
-            PH3 = "7.0";
-            PH4 = "9.2";
-
-        }
-
-
+            PH1 = shp.getString("PH1","");
+            PH2 = shp.getString("PH2","");
+            PH3 = shp.getString("PH3","");
+            PH4 = shp.getString("PH4","");
+            PH5 = shp.getString("PH5","");
 
     }
+
+    public void calibDataThree(){
+
+        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+        MV2 = shp.getString("MV2", "");
+        MV3 = shp.getString("MV3", "");
+        MV4 = shp.getString("MV4", "");
+
+        DT2 = shp.getString("DT2", "");
+        DT3 = shp.getString("DT3", "");
+        DT4 = shp.getString("DT4", "");
+
+        PH2 = shp.getString("PH2","");
+        PH3 = shp.getString("PH3","");
+        PH4 = shp.getString("PH4","");
+    }
+
+
 
     public void deleteAllCalibData() {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -1345,6 +1392,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         try {
 
+            reportDate ="Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            reportTime ="Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
             file = new File(exportDir, "CalibrationData.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
@@ -1359,23 +1409,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("pH,mV,DATE");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println("pH,mV,DATE");
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-
 
             while (calibCSV.moveToNext()) {
                 String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
