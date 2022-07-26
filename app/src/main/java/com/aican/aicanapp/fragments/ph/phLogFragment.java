@@ -85,7 +85,7 @@ public class phLogFragment extends Fragment {
             arnum_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
 //    LineChart lineChart;
-    String mode;
+    String mode, reportDate, reportTime;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
@@ -177,11 +177,11 @@ public class phLogFragment extends Fragment {
         dt4 = shp.getString("DT4", "");
         dt5 = shp.getString("DT5", "");
 
-        ph1 = "1.2";
-        ph2 = "4.0";
-        ph3 = "7.0";
-        ph4 = "9.2";
-        ph5 = "12.0";
+        ph1 = shp.getString("PH1", "");
+        ph2 = shp.getString("PH2", "");
+        ph3 = shp.getString("PH3", "");
+        ph4 = shp.getString("PH4", "");
+        ph5 = shp.getString("PH5", "");
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
@@ -442,21 +442,27 @@ public class phLogFragment extends Fragment {
         PrintWriter printWriter = null;
 
         try {
+            reportDate ="Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            reportTime ="Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
             file = new File(exportDir, "CurrentData.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
 
+            SharedPreferences shp = requireContext().getSharedPreferences("Extras", MODE_PRIVATE);
+            offset = "Offset: " + shp.getString("offset", "");
+            battery = "Battery: " + shp.getString("battery", "");
+            slope = "Slope: " + shp.getString("slope", "");
+            temp = "Temperature: " + shp.getString("temp", "");
+
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-            Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
+            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
 
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
@@ -464,40 +470,22 @@ public class phLogFragment extends Fragment {
             printWriter.println("pH,mV,DATE");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
-//            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println("pH,mV,DATE");
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-
 
             while (calibCSV.moveToNext()) {
-                String ph = calibCSV.getString(calibCSV.getColumnIndex("pH"));
-                String mv = calibCSV.getString(calibCSV.getColumnIndex("mV"));
-                String date = calibCSV.getString(calibCSV.getColumnIndex("date"));
+
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
 
                 String record1 = ph + "," + mv + "," + date;
 
                 printWriter.println(record1);
             }
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
             calibCSV.close();
-
-
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-//            printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
 
             while (curCSV.moveToNext()) {
 

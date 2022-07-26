@@ -214,7 +214,7 @@ public class Export extends AppCompatActivity {
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/Generated.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -257,7 +257,7 @@ public class Export extends AppCompatActivity {
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/Generated.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -381,7 +381,7 @@ public class Export extends AppCompatActivity {
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-            Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
+            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 //            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')')", null);
 
@@ -478,9 +478,9 @@ public class Export extends AppCompatActivity {
 
 
             while (calibCSV.moveToNext()) {
-                String ph = calibCSV.getString(calibCSV.getColumnIndex("pH"));
-                String mv = calibCSV.getString(calibCSV.getColumnIndex("mV"));
-                String date = calibCSV.getString(calibCSV.getColumnIndex("date"));
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
 
                 String record1 = ph + "," + mv + "," + date;
 
