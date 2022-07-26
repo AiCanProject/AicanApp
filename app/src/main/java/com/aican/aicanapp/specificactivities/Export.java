@@ -214,7 +214,7 @@ public class Export extends AppCompatActivity {
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/Generated.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -257,7 +257,7 @@ public class Export extends AppCompatActivity {
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/Generated.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();

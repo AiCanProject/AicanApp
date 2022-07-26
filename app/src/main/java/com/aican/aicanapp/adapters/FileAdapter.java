@@ -49,13 +49,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf";
                 File file = new File(path);
 
                 try {
                     Intent mIntent = new Intent(Intent.ACTION_VIEW);
 
-                    mIntent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
+                    mIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
