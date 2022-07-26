@@ -46,6 +46,13 @@ import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
+import com.aspose.cells.FileFormatType;
+import com.aspose.cells.LoadOptions;
+import com.aspose.cells.PdfCompliance;
+import com.aspose.cells.PdfSaveOptions;
+import com.aspose.cells.SaveFormat;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -317,7 +324,52 @@ public class phLogFragment extends Fragment {
                     }
                 }
 
-                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
+
+                String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+                File root1 = new File(path1);
+                fileNotWrite(root1);
+                File[] filesAndFolders1 = root1.listFiles();
+
+                if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFolders1.length; i++) {
+                        filesAndFolders1[i].getName().endsWith(".xlsx");
+                    }
+                }
+
+                try {
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
+
+                    PdfSaveOptions options = new PdfSaveOptions();
+                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.pdf", options);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
+                File rootPDF = new File(pathPDF);
+                fileNotWrite(root);
+                File[] filesAndFoldersPDF = rootPDF.listFiles();
+                File[] filesAndFoldersNewPDF = new File[1];
+
+
+                if (filesAndFoldersPDF == null || filesAndFoldersPDF.length == 0) {
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFoldersPDF.length; i++) {
+                        if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
+                            filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
+                        }
+                    }
+                }
+
+                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersNewPDF);
                 csvRecyclerView.setAdapter(plAdapter);
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
@@ -339,25 +391,37 @@ public class phLogFragment extends Fragment {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
+        File[] filesAndFoldersPDF =new File[1];
 
         if (filesAndFolders == null || filesAndFolders.length == 0) {
             Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().startsWith("CurrentData");
+                if(filesAndFolders[i].getName().endsWith(".pdf")){
+                    filesAndFoldersPDF[0] = filesAndFolders[i];
+                }
             }
         }
 
-        plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
-        csvRecyclerView.setAdapter(plAdapter);
-        plAdapter.notifyDataSetChanged();
-        csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+//        plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
+//        csvRecyclerView.setAdapter(plAdapter);
+//        plAdapter.notifyDataSetChanged();
+//        csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
 
         if (checkPermission()) {
             Toast.makeText(getContext().getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
             requestPermission();
+        }
+    }
+
+    public void fileNotWrite(File file){
+        file.setWritable(false);
+        if(file.canWrite()){
+            Log.d("csv","Not Working");
+        } else {
+            Log.d("csvnw","Working");
         }
     }
 
@@ -453,6 +517,15 @@ public class phLogFragment extends Fragment {
             printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
             curCSV.close();
             db.close();
+
+            LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
+
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
+            Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
+            Worksheet worksheet = workbook.getWorksheets().get(0);
+            worksheet.getCells().setColumnWidth(0,18.5);
+            worksheet.getCells().setColumnWidth(2,18.5);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));

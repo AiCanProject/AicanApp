@@ -49,6 +49,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
 
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/CalibrationData.csv";
                 File file = new File(path);
+//                CalibrationData/Generated.pdf
 
                 try {
                     Intent mIntent = new Intent(Intent.ACTION_VIEW);
@@ -58,6 +59,18 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
+
+//                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
+//
+//                    mIntent.setDataAndType(Uri.fromFile(file), "text/plain");
+//                    mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                    mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+////                    mIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
+//                    mIntent.setDataAndType(Uri.parse(path),"application/pdf");
+////                    Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
+//                    mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.getApplicationContext().startActivity(mIntent);
 
                     Intent cIntent = Intent.createChooser(mIntent, "Open CSV");
                     cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

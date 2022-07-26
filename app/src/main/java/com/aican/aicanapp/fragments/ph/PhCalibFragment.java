@@ -52,6 +52,13 @@ import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 import com.aican.aicanapp.utils.OnBackPressed;
+import com.aspose.cells.FileFormatType;
+import com.aspose.cells.LoadOptions;
+import com.aspose.cells.PdfCompliance;
+import com.aspose.cells.PdfSaveOptions;
+import com.aspose.cells.SaveFormat;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -212,6 +219,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     Float temp = snapshot.getValue(Float.class);
                     String tempForm = String.format(Locale.UK, "%.1f", temp);
                     tvTempCurr.setText(tempForm + "°C");
+
+                    if(temp<=-127.0){
+                        tvTempCurr.setText("NA");
+                    }
                 }
 
                 @Override
@@ -540,6 +551,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     Float temp = snapshot.getValue(Float.class);
                     String tempForm = String.format(Locale.UK, "%.1f", temp);
                     tvTempCurr.setText(tempForm + "°C");
+
+                    if(temp<=-127.0){
+                        tvTempCurr.setText("NA");
+                    }
                 }
 
                 @Override
@@ -1254,7 +1269,54 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     }
                 }
 
-                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFolders);
+
+                String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/";
+                File root1 = new File(path1);
+                fileNotWrite(root1);
+                File[] filesAndFolders1 = root1.listFiles();
+
+                if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFolders1.length; i++) {
+                        filesAndFolders1[i].getName().endsWith(".xlsx");
+                    }
+                }
+
+                try {
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData.xlsx");
+
+                    PdfSaveOptions options = new PdfSaveOptions();
+                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/Generated.pdf", options);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+                File rootPDF = new File(pathPDF);
+                fileNotWrite(root);
+                File[] filesAndFoldersPDF = rootPDF.listFiles();
+                File[] filesAndFoldersNewPDF = new File[1];
+
+
+                if (filesAndFoldersPDF == null || filesAndFoldersPDF.length == 0) {
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFoldersPDF.length; i++) {
+                        if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
+                            filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
+                        }
+                    }
+                }
+
+
+
+                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersNewPDF);
                 calibRecyclerView.setAdapter(calibFileAdapter);
                 calibFileAdapter.notifyDataSetChanged();
                 calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
@@ -1262,25 +1324,37 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
+        File[] filesAndFoldersPDF = new File[1];
 
         if (filesAndFolders == null || filesAndFolders.length == 0) {
             Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().endsWith(".csv");
+                if( filesAndFolders[i].getName().endsWith(".pdf")){
+                    filesAndFoldersPDF[0] = filesAndFolders[i];
+                }
             }
         }
 
-        calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFolders);
+        calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
         calibRecyclerView.setAdapter(calibFileAdapter);
         calibFileAdapter.notifyDataSetChanged();
         calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
 
+    }
+
+    public void fileNotWrite(File file){
+        file.setWritable(false);
+        if(file.canWrite()){
+            Log.d("csv","Nhi kaam kar rha");
+        } else {
+            Log.d("csvnw","Party Bhaiiiii");
+        }
     }
 
     public void calibData() {
@@ -1391,6 +1465,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             calibCSV.close();
             db.close();
+
+            LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
+
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+            Workbook workbook = new Workbook(inputFile + "CalibrationData.csv", loadOptions);
+            Worksheet worksheet = workbook.getWorksheets().get(0);
+            worksheet.getCells().setColumnWidth(0,18.5);
+            worksheet.getCells().setColumnWidth(2,18.5);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
