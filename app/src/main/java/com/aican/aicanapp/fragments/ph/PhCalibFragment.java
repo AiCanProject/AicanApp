@@ -148,9 +148,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 ph5.setText(String.valueOf(buffers[4]));
 
             } else if (spin.getSelectedItemPosition() == 1) {
-                ph1.setText(String.valueOf(buffers[0]));
-                ph2.setText(String.valueOf(buffers[1]));
-                ph3.setText(String.valueOf(buffers[2]));
+                ph1.setText(String.valueOf(buffersThree[0]));
+                ph2.setText(String.valueOf(buffersThree[1]));
+                ph3.setText(String.valueOf(buffersThree[2]));
             }
         });
     }
@@ -172,6 +172,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         }
         coeffRef = deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]);
         coeffRef.addValueEventListener(coeffListener);
+    }
+
+    private void setupCoeffListenerThree() {
+        if (coeffRefThree != null) {
+            coeffRefThree.removeEventListener(coeffListener);
+        }
+        coeffRefThree = deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]);
+        coeffRefThree.addValueEventListener(coeffListener);
     }
 
 
@@ -1125,7 +1133,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calValues = new int[]{20, 30, 40};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-                        setupCoeffListener();
+                        setupCoeffListenerThree();
                         setupListeners();
                         loadBuffers();
 
@@ -1485,7 +1493,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
         isCalibrating = true;
-        setupCoeffListener();
+        if(mode.equals("5")) {
+            setupCoeffListener();
+        }else{
+            setupCoeffListenerThree();
+        }
         CountDownTimer timer = new CountDownTimer(45000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -1507,12 +1519,24 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         tvTimer.setVisibility(View.INVISIBLE);
                         currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
                         bufferList.add(new BufferData(null, null, currentTime));
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
-                            Float coeff = dataSnapshot.getValue(Float.class);
-                            if (coeff == null) return;
-                            currentBuf += 1;
-                        });
+                        bufferListThree.add(new BufferData(null, null, currentTime));
+
+                        if(spin.getSelectedItemPosition()==0) {
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
+                                Float coeff = dataSnapshot.getValue(Float.class);
+                                if (coeff == null) return;
+                                currentBuf += 1;
+                            });
+                        }
+                        else{
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree] + 1);
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]).get().addOnSuccessListener(dataSnapshot -> {
+                                Float coeff = dataSnapshot.getValue(Float.class);
+                                if (coeff == null) return;
+                                currentBufThree += 1;
+                            });
+                        }
                         
                         deviceRef.child("Data").child("PH_VAL").get().addOnSuccessListener(dataSnapshot -> {
                             Float ph = dataSnapshot.getValue(Float.class);
@@ -1544,7 +1568,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         public void onCancelled(@NonNull @NotNull DatabaseError error) {
         }
     };
-
 
 
     @Override

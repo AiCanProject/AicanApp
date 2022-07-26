@@ -384,6 +384,85 @@ public class Export extends AppCompatActivity {
             Cursor calibCSV = db.rawQuery("SELECT * FROM Calibdetails", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 //            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')')", null);
+
+            if(arNumEditText.getText().toString().isEmpty()){
+                arNumString=null;
+            }
+
+            if(compoundNameEditText.getText().toString().isEmpty()){
+                compoundName=null;
+            }
+
+            if(batchNumEditText.getText().toString().isEmpty()){
+                batchNumString=null;
+            }
+
+            //Setting sql query according to filer
+            if(startDateString!=null && compoundName!=null && batchNumString!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(startDateString!=null && compoundName!=null && batchNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
+
+            }else if(startDateString!=null && compoundName!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(startDateString!=null && batchNumString!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(compoundName!=null && batchNumString!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(startDateString!=null && compoundName!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "')", null);
+
+            }else if(startDateString!=null &&batchNumString!=null ){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "')", null);
+
+            }else if(startDateString!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(compoundName!=null && batchNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
+
+            }else if(compoundName!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(batchNumString!=null && arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+            }else if(startDateString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+
+            }else if(compoundName!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "')", null);
+
+            }else if(batchNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (batchnum = '" + batchNumString + "') ", null);
+
+            }else if(arNumString!=null){
+
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (compound = '" + arNumString + "')", null);
+
+            }else{
+                curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+            }
+
+
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
@@ -410,7 +489,7 @@ public class Export extends AppCompatActivity {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Date,Time,pH,Temp,Batch,AR,Product");
+            printWriter.println("Date,Time,device,pH,Temp,Batch,AR,Product");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
 
@@ -418,13 +497,14 @@ public class Export extends AppCompatActivity {
 
                 String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
+                String device="EPT2016";
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
                 String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
                 String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
                 String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 
-                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
+                String record = date + "," + time +  "," + device+ "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
 
                 printWriter.println(record);
             }
