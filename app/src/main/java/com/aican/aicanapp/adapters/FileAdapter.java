@@ -53,17 +53,27 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 File file = new File(path);
 
                 try {
-                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
+//                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
+//
+//                    mIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
+//                    mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                    mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+////                    mIntent.setClassName("com.google.android.apps.docs.editors.sheets", "com.google.android.apps.docs.editors.sheets.QuickSheetDocumentOpenerActivityAlias");
+//
+//                    Intent cIntent = Intent.createChooser(mIntent, "Open PDF");
+//                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.getApplicationContext().startActivity(cIntent);
 
-                    mIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
+                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
+//
+                    mIntent.setDataAndType(Uri.fromFile(file), "text/plain");
                     mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                    mIntent.setClassName("com.google.android.apps.docs.editors.sheets", "com.google.android.apps.docs.editors.sheets.QuickSheetDocumentOpenerActivityAlias");
-
-                    Intent cIntent = Intent.createChooser(mIntent, "Open Excel");
-                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.getApplicationContext().startActivity(cIntent);
+                    mIntent.setDataAndType(Uri.parse(path),"application/pdf");
+                    mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.getApplicationContext().startActivity(mIntent);
 
 
                 } catch (Exception e) {
