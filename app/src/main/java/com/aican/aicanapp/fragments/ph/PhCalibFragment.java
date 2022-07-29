@@ -1313,7 +1313,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(".csv");
+                        filesAndFolders[i].getName().endsWith(".pdf");
                     }
                 }
 
@@ -1328,16 +1328,16 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders1.length; i++) {
-                        filesAndFolders1[i].getName().endsWith(".xlsx");
+                        filesAndFolders1[i].getName().endsWith(".pdf");
                     }
                 }
 
                 try {
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData.xlsx");
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx");
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/Generated.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1514,7 +1514,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             Worksheet worksheet = workbook.getWorksheets().get(0);
             worksheet.getCells().setColumnWidth(0,18.5);
             worksheet.getCells().setColumnWidth(2,18.5);
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData.xlsx", SaveFormat.XLSX);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));

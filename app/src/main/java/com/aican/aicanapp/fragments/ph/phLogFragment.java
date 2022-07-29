@@ -335,7 +335,7 @@ public class phLogFragment extends Fragment {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders1.length; i++) {
-                        filesAndFolders1[i].getName().endsWith(".xlsx");
+                        filesAndFolders1[i].getName().endsWith(".pdf");
                     }
                 }
 
