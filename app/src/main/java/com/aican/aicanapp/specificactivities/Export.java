@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.DateFormat;
@@ -41,6 +42,8 @@ import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -79,6 +82,7 @@ public class Export extends AppCompatActivity {
     UserDataAdapter uAdapter;
     EditText companyNameEditText, arNumEditText, batchNumEditText, compoundNameEditText;
     DatabaseHelper databaseHelper;
+    private DatabaseReference deviceRef;
     private static final int PERMISSION_REQUEST_CODE = 200;
 
     @Override
@@ -100,6 +104,7 @@ public class Export extends AppCompatActivity {
         compoundBtn = findViewById(R.id.compound_text_button);
         compoundNameEditText = findViewById(R.id.compound_num_sort);
         convertToXls = findViewById(R.id.convertToXls);
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
@@ -268,7 +273,30 @@ public class Export extends AppCompatActivity {
         exportUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exportUserData();
+
+                final Boolean[] isSuccessful = {false};
+
+                if (companyName.isEmpty()) {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                companyName = String.valueOf(task.getResult().getValue());
+                                isSuccessful[0] = true;
+                                Log.d("TAG", "onComplete: on success " + companyName);
+                            } else {
+                                companyNameEditText.setError("Enter Company Name");
+                            }
+                        }
+                    });
+                } else {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
+                    isSuccessful[0] = true;
+                }
+
+                if (isSuccessful[0]){
+
+                    exportUserData();
 
 
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
@@ -289,6 +317,7 @@ public class Export extends AppCompatActivity {
                 userRecyclerView.setAdapter(uAdapter);
                 uAdapter.notifyDataSetChanged();
                 userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            }
 
             }
         });
@@ -464,7 +493,7 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + companyName+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
