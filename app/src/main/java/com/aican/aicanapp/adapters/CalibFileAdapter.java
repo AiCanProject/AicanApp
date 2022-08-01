@@ -48,7 +48,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/Generated.pdf";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/"+selectedFile.getName();
                 File file = new File(path);
 
                 try {
@@ -111,7 +111,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/Generated.pdf";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/"+selectedFile.getName();
                             File file = new File(path);
 
                             try {

@@ -92,6 +92,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 Source.userName = name.getText().toString();
                 Source.userPasscode = passcode.getText().toString();
                 databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode);
+                databaseHelper.insertUserData(Source.userName,Source.userRole);
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
 
                 FileOutputStream fos = null;

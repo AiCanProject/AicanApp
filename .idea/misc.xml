@@ -41,12 +41,18 @@
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/layout/fragment_pump_dose.xml" value="0.29322916666666665" />
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/layout/fragment_temp_set.xml" value="0.29322916666666665" />
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/layout/item_log.xml" value="0.27447916666666666" />
+        <entry key="app/src/main/res/layout-sw600dp/fragment_ph_log.xml" value="0.67" />
         <entry key="app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.128515625" />
+        <entry key="app/src/main/res/layout/activity_authenticate_role_dialog.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_export.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_pdfviewer.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_ph.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/activity_ph_calibrate.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/activity_setting.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/activity_user_database.xml" value="0.152" />
         <entry key="app/src/main/res/layout/custom_tab.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_ph_calib.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_ph_log.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_ph_main.xml" value="0.17135416666666667" />
       </map>
     </option>

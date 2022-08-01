@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,26 +22,27 @@ import com.aican.aicanapp.utils.PDFViewer;
 
 import java.io.File;
 
-public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
 
     Context context;
     File[] files;
-    //ImageView imageView;
 
-    public FileAdapter(Context context, File[] files) {
+    public UserAdapter(Context context, File[] files) {
         this.context = context;
         this.files = files;
     }
 
     @NonNull
     @Override
-    public FileAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.file_item, parent, false);
-        return new ViewHolder(view);
+        return new UserAdapter.ViewHolder(view);
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull FileAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         File selectedFile = files[position];
         holder.textView.setText(selectedFile.getName());
@@ -49,23 +51,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/"+selectedFile.getName();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/UserData/"+selectedFile.getName();
                 File file = new File(path);
 
                 try {
-//                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
-//
-//                    mIntent.setDataAndType(Uri.fromFile(file), "application/pdf");
-//                    mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                    mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-////                    mIntent.setClassName("com.google.android.apps.docs.editors.sheets", "com.google.android.apps.docs.editors.sheets.QuickSheetDocumentOpenerActivityAlias");
-//
-//                    Intent cIntent = Intent.createChooser(mIntent, "Open PDF");
-//                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.getApplicationContext().startActivity(cIntent);
-
                     if(file.length()!=0) {
                         Intent intent = new Intent(context.getApplicationContext(), PDFViewer.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -74,8 +66,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                     }else{
                         Toast.makeText(context, "File is empty", Toast.LENGTH_SHORT).show();
                     }
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -102,37 +92,25 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/"+selectedFile.getName();
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/UserData/"+selectedFile.getName();
                             File file = new File(path);
 
                             try {
-//                                Intent mIntent = new Intent(Intent.ACTION_VIEW);
-//
-//                                mIntent.setData(Uri.fromFile(file));
-//                                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                                mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                                mIntent.setClassName("csv.to.excel", "csv.to.excel.HomeActivity");
-//
-//                                Intent chooserIntent = Intent.createChooser(mIntent, "Convert PDF");
-//                                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                context.startActivity(chooserIntent);
+                                if (!file.exists()){
+                                    Toast.makeText(context, "File doesn't exists", Toast.LENGTH_LONG).show();
+                                }else {
+                                    Intent intentShare = new Intent(Intent.ACTION_SEND);
+                                    intentShare.setType("application/pdf");
+                                    intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    intentShare.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                    intentShare.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intentShare.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file));
 
-                                Intent intentShare = new Intent(Intent.ACTION_SEND);
-                                intentShare.setType("application/pdf");
-                                intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                intentShare.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                intentShare.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intentShare.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file));
+                                    Intent chooserIntent = Intent.createChooser(intentShare, "Send file");
+                                    chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-//                                    Intent sharingIntent = new Intent(Intent.ACTION_VIEW);
-//                                    sharingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                    sharingIntent.setData(Uri.fromFile(file));
-//
-                                Intent chooserIntent = Intent.createChooser(intentShare, "Send file");
-                                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-                                context.getApplicationContext().startActivity(chooserIntent);
+                                    context.getApplicationContext().startActivity(chooserIntent);
+                                }
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -166,4 +144,5 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         }
     }
 }
+
 

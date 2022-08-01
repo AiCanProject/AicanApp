@@ -325,25 +325,35 @@ public class phLogFragment extends Fragment {
                 }
 
 
-                String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
-                File root1 = new File(path1);
-                fileNotWrite(root1);
-                File[] filesAndFolders1 = root1.listFiles();
-
-                if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFolders1.length; i++) {
-                        filesAndFolders1[i].getName().endsWith(".pdf");
-                    }
-                }
-
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
                     PdfSaveOptions options = new PdfSaveOptions();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.pdf", options);
+//                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/LogPdf");
+//                    if (!Pdfdir.exists()) {
+//                        if (!Pdfdir.mkdirs()) {
+//                            Log.d("App", "failed to create directory");
+//                        }
+//                    }
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+".pdf", options);
+
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")  ){
+                                filesAndFolders1[i].delete();
+                            }
+                        }
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -368,7 +378,7 @@ public class phLogFragment extends Fragment {
                     }
                 }
 
-                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersNewPDF);
+                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
                 csvRecyclerView.setAdapter(plAdapter);
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));

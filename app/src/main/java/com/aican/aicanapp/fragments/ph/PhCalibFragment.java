@@ -1318,26 +1318,38 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
 
 
-                String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/";
-                File root1 = new File(path1);
-                fileNotWrite(root1);
-                File[] filesAndFolders1 = root1.listFiles();
 
-                if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFolders1.length; i++) {
-                        filesAndFolders1[i].getName().endsWith(".pdf");
-                    }
-                }
 
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx");
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.pdf", options);
+//                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/CalibPdf");
+////                    if (!Pdfdir.exists()) {
+////                        if (!Pdfdir.mkdirs()) {
+////                            Log.d("App", "failed to create directory");
+////                        }
+////                    }
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData"+currentDateandTime+".pdf", options);
+
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx") ){
+                                filesAndFolders1[i].delete();
+                            }
+                        }
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1349,22 +1361,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
-                File[] filesAndFoldersNewPDF = new File[1];
-
-
-                if (filesAndFoldersPDF == null || filesAndFoldersPDF.length == 0) {
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFoldersPDF.length; i++) {
-                        if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
-                            filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
-                        }
-                    }
-                }
 
 
 
-                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersNewPDF);
+
+                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
                 calibRecyclerView.setAdapter(calibFileAdapter);
                 calibFileAdapter.notifyDataSetChanged();
                 calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));

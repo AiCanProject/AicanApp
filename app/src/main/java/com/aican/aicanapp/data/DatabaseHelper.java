@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT)");
+        sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT)");
     }
 
     @Override
@@ -32,7 +33,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserDataDetails");
         onCreate(sqLiteDatabase);
+    }
+
+    public boolean insertUserData(String userName,String role){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Username", userName);
+        contentValues.put("Role", role);
+        long result = db.insert("UserDataDetails",null,contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+
     }
 
     public Boolean insertCalibration(String PH, String MV, String DT){

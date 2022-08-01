@@ -216,10 +216,27 @@ public class Export extends AppCompatActivity {
                 }
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
-
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog"+currentDateandTime+".pdf", options);
+
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx") ){
+                                filesAndFolders1[i].delete();
+                            }
+                        }
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -231,21 +248,10 @@ public class Export extends AppCompatActivity {
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
-                File[] filesAndFoldersNewPDF = new File[1];
 
 
-                if (filesAndFoldersPDF == null || filesAndFoldersPDF.length == 0) {
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFoldersPDF.length; i++) {
-                        if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
-                            filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
-                        }
-                    }
-                }
 
-
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersNewPDF);
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF);
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
