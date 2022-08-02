@@ -31,10 +31,12 @@
         tools:replace="android:icon"
         tools:targetApi="m">
         <activity
+            android:name=".userdatabase.EditUserDatabase"
+            android:exported="false" />
+        <activity
             android:name=".utils.PDFViewer"
             android:exported="false"
-            android:screenOrientation="landscape"
-            />
+            android:screenOrientation="landscape" />
         <!--
         <activity
             android:name=".CheckConnectionReciever"

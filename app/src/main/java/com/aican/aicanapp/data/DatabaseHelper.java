@@ -162,6 +162,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean delete_Userdata(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from UserDataDetails where name = ?", new String[]{name});
+        if(cursor.getCount()>0){
+            long result = db.delete("UserDataDetails", "name=?", new String[]{name});
+            if(result == -1){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return false;
+        }
+    }
+
     public Cursor get_data(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails", null);
@@ -172,5 +187,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM LogUserDetails", null);
         return cursor;
+    }
+
+    public boolean updateUserDetails(String name,String newName,String role){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from UserDataDetails where name = ?", new String[]{name});
+
+        if(cursor.getCount()>0){
+            ContentValues dataToInsert = new ContentValues();
+            dataToInsert.put("Username",newName);
+            dataToInsert.put("Role",role);
+            long result = db.update("UserDataDetails",dataToInsert,"name=?", new String[]{name});
+            if(result==-1){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
+            return false;
+        }
+
+
+
+
+
     }
 }

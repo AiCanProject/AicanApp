@@ -493,11 +493,17 @@ public class phLogFragment extends Fragment {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
+//            printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
+            int i=0;
             while (curCSV.moveToNext()) {
-
+                if(i==0){
+//                    printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
+                    String record = "Date" + "," + "Time" + "," + "pH" + "," + "Temp" + "," + "Batch No" + "," + "AR No" + "," + "Compound";
+                    printWriter.println(record);
+                    i++;
+                }
                 String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));

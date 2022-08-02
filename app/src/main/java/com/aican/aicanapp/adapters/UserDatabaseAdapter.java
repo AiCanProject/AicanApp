@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.userdatabase.EditUserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 
@@ -77,9 +79,26 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
             }
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(context,EditUserDatabase.class);
+                intent.putExtra("username",users_list.get(position).getUser_name());
+                intent.putExtra("userrole",users_list.get(position).getUser_role());
+                context.getApplicationContext().startActivity(intent);
+            }
+        });
+
+        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserDatabaseModel model = users_list.get(position);
+                databaseHelper.delete_data(model.getUser_name());
+                databaseHelper.delete_Userdata(model.getUser_name());
+                Toast.makeText(view.getContext(), "Record Deleted Successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, UserDatabase.class);
+                context.startActivity(intent);
+                ((Activity) context).finish();
             }
         });
     }
@@ -91,10 +110,13 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView user_role, user_name;
+        ImageButton editBtn,deleteBtn;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             user_role = itemView.findViewById(R.id.user_role);
             user_name = itemView.findViewById(R.id.user_name);
+            editBtn = itemView.findViewById(R.id.editBtn);
+            deleteBtn = itemView.findViewById(R.id.deleteBtn);
         }
     }
 }
