@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,6 +27,7 @@ import com.aican.aicanapp.Source;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -171,10 +175,24 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
+            saveImage(photo);
             imageView.setImageBitmap(photo);
             imageView.setVisibility(View.VISIBLE);
             addSign.setText("Ok!");
             addSign.setEnabled(false);
         }
+    }
+
+    private void saveImage(Bitmap realImage) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        realImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        SharedPreferences shre = getSharedPreferences("signature", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit=shre.edit();
+        edit.putString("signature_data",encodedImage);
+        edit.commit();
     }
 }

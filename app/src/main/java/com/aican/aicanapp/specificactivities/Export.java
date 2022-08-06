@@ -11,14 +11,18 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -215,6 +219,7 @@ public class Export extends AppCompatActivity {
                     }
                 }
                 try {
+                    Bitmap sign = getSign();
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
@@ -290,6 +295,7 @@ public class Export extends AppCompatActivity {
                                 companyName = String.valueOf(task.getResult().getValue());
                                 isSuccessful[0] = true;
                                 Log.d("TAG", "onComplete: on success " + companyName);
+                                databaseHelper.insert_action_data("","User data exported","","","","");
                             } else {
                                 companyNameEditText.setError("Enter Company Name");
                             }
@@ -373,6 +379,18 @@ public class Export extends AppCompatActivity {
         }
 
 
+    }
+
+    private Bitmap getSign() {
+        SharedPreferences sh = getSharedPreferences("signature", Context.MODE_PRIVATE);
+        String photo = sh.getString("signature_data", "");
+        Bitmap bitmap = null;
+        
+        if( !photo.equalsIgnoreCase("") ){
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+            return bitmap;
     }
 
     public void exportDatabaseCsv() {
