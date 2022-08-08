@@ -28,6 +28,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+//    packagingOptions{
+//        exclude 'com/itextpdf/io/font/cmap_info.txt'
+//        exclude 'com/itextpdf/io/font/cmap/*'
+//    }
 }
 
 dependencies {
@@ -57,7 +62,7 @@ dependencies {
     implementation 'com.github.uzairiqbal91:CircularTimerView:1.0'
     implementation 'com.github.marcinmoskala:ArcSeekBar:0.31'
 
-    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
+//    implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
 
     implementation 'com.google.firebase:firebase-auth:20.0.4'
     implementation 'com.google.firebase:firebase-database:19.7.0'
@@ -100,6 +105,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
 
     implementation 'com.github.Triggertrap:SeekArc:v1.1'
+
+    // iTextPdf
+    implementation 'com.itextpdf:itextg:5.5.10'
 
 
 }

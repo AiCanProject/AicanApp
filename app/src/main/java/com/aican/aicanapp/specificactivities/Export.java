@@ -59,6 +59,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -220,6 +222,14 @@ public class Export extends AppCompatActivity {
                 }
                 try {
                     Bitmap sign = getSign();
+                    if(sign != null){
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                        sign.compress(Bitmap.CompressFormat.PNG,100,stream);
+
+                        byte[] bitmapData = stream.toByteArray();
+                    }
+
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
