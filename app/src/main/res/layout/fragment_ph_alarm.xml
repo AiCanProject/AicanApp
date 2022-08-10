@@ -48,7 +48,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -56,8 +57,8 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="45dp"
-                    android:text="For pH Value: "
                     android:fontFamily="@font/sofia_medium"
+                    android:text="For pH Value: "
                     android:textColor="#232323"
                     android:textSize="25sp"
                     app:boxStrokeColor="@color/colorPrimary" />
@@ -99,11 +100,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/sofia_medium"
                     android:layout_marginEnd="45dp"
-                    android:text="Enter pH Value: "
+                    android:fontFamily="@font/sofia_medium"
+                    android:text="Enter min pH Value: "
                     android:textColor="#232323"
                     android:textSize="25sp" />
 
@@ -115,16 +117,59 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="32dp"
                     android:layout_marginRight="16dp"
-                    android:hint="Enter pH value"
+                    android:hint="Enter min pH value"
                     app:hintTextColor="@color/black">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPhValue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:lines="1"
                         android:fontFamily="@font/sofia_medium"
+                        android:inputType="numberDecimal"
+                        android:lines="1"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="45dp"
+                    android:fontFamily="@font/sofia_medium"
+                    android:text="Enter max pH Value: "
+                    android:textColor="#232323"
+                    android:textSize="25sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/maxPh"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginRight="16dp"
+                    android:hint="Enter max pH value"
+                    app:hintTextColor="@color/black">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/maxPhValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sofia_medium"
+                        android:inputType="numberDecimal"
+                        android:lines="1"
                         android:textColor="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -183,31 +228,31 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-            <Button
-                android:id="@+id/startAlarm"
-                android:layout_width="235dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ll1"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#FF7676"
-                android:gravity="center"
-                android:text="@string/start_alarm"
-                android:textAllCaps="false" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/stopAlarm"
-                android:layout_width="235dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ll1"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#FF7676"
-                android:gravity="center"
-                android:text="Stop Alarm"
-                android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/startAlarm"
+                    android:layout_width="235dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll1"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="#FF7676"
+                    android:gravity="center"
+                    android:text="@string/start_alarm"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/stopAlarm"
+                    android:layout_width="235dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll1"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="#FF7676"
+                    android:gravity="center"
+                    android:text="Stop Alarm"
+                    android:textAllCaps="false" />
             </LinearLayout>
 
         </LinearLayout>

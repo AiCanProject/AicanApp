@@ -1,7 +1,11 @@
 package com.aican.aicanapp.fragments.ph;
 
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,7 +24,9 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Services.alarmBackgroundService;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.AlarmConstants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +46,9 @@ public class phAlarmFragment extends Fragment {
     Ringtone ringtone;
     String phForm;
     EditText phValue;
+    EditText maxPhValue;
     RadioButton radioButton;
+    Intent serviceIntent;
     float ph = 0;
 
     @Override
@@ -58,6 +66,7 @@ public class phAlarmFragment extends Fragment {
         alarm = view.findViewById(R.id.startAlarm);
         stopAlarm = view.findViewById(R.id.stopAlarm);
         phValue = view.findViewById(R.id.etPhValue);
+        maxPhValue = view.findViewById(R.id.maxPhValue);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
@@ -65,6 +74,7 @@ public class phAlarmFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
+                AlarmConstants.PH = ph;
                 if (ph == null) return;
                 phForm = String.format(Locale.UK, "%.2f", ph);
                 phAlarmFragment.this.ph = ph;
@@ -83,57 +93,67 @@ public class phAlarmFragment extends Fragment {
 //                    }
 //                });
 
-        ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
-        if(!ringtone.isPlaying()){
-            stopAlarm.setEnabled(false);
+        stopAlarm.setEnabled(false);
+
+        if(AlarmConstants.ringtone == null)
+        AlarmConstants.ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+
+        if(AlarmConstants.ringtone.isPlaying()){
+            stopAlarm.setEnabled(true);
+            alarm.setEnabled(false);
         }
 
         alarm.setOnClickListener(new View.OnClickListener() {
-
             @Override
-            public void onClick(View v)
-            {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                String phVal = phValue.getText().toString();
-                Float phV = Float.parseFloat(phVal);
-                Float phFire = Float.parseFloat(phForm);
+            public void onClick(View view) {
+                String minPH = phValue.getText().toString();
+                String maxPH = maxPhValue.getText().toString();
 
-                if (selectedId == -1) {
-                    Toast.makeText(requireContext(), "No answer has been selected", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                  radioButton = (RadioButton)radioGroup.findViewById(selectedId);
-
-                  if(radioButton.getText().toString().equals("Greater than")){
-                      if(phV > phFire){
-                          ringtone.play();
-                          alarm.setEnabled(false);
-                          Toast.makeText(requireContext(),"Greater1", Toast.LENGTH_SHORT).show();
-                      } else {
-                          Toast.makeText(requireContext(),"Lesser1", Toast.LENGTH_SHORT).show();
-                      }
-                  } else if(radioButton.getText().toString().equals("Less than")){
-                      if(phV < phFire){
-                          Toast.makeText(requireContext(),"Less", Toast.LENGTH_SHORT).show();
-                      } else {
-                          Toast.makeText(requireContext(),"Great", Toast.LENGTH_SHORT).show();
-                      }
-                  }
-
-                }
-
-                if(ringtone.isPlaying()){
+                if(phValue.getText().toString().isEmpty() || maxPhValue.getText().toString().isEmpty()){
+                    Toast.makeText(getContext(),"Please enter all values" , Toast.LENGTH_SHORT).show();
+                }else {
+                    Log.d("Alarm","Start alarm clicked");
                     stopAlarm.setEnabled(true);
-                    stopAlarm.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ringtone.stop();
-                            stopAlarm.setEnabled(false);
-                            alarm.setEnabled(true);
-                        }
-                    });
+                    AlarmConstants.maxPh = Float.parseFloat(minPH);
+                    AlarmConstants.minPh = Float.parseFloat(maxPH);
+
+                    stopAlarm.setEnabled(true);
+                    alarm.setEnabled(false);
+                    AlarmConstants.isServiceAvailable = true;
+                    new alarmBackgroundService().execute(minPH,maxPH);
                 }
             }
         });
+
+        stopAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(AlarmConstants.ringtone.isPlaying()) {
+                    AlarmConstants.isServiceAvailable = false;
+                    AlarmConstants.ringtone.stop();
+                }
+
+                stopAlarm.setEnabled(false);
+                alarm.setEnabled(true);
+            }
+        });
+    }
+
+    public class alarmBackgroundService extends AsyncTask<String,String,String>{
+        @Override
+        protected String doInBackground(String... strings) {
+            while(AlarmConstants.isServiceAvailable){
+                if(AlarmConstants.ringtone.isPlaying()) break;
+                Float minPH = Float.parseFloat(strings[0]);
+                Float maxPH = Float.parseFloat(strings[1]);
+                Log.d("AlarmFragment","AlarmFragment: doInBackground in if "+AlarmConstants.PH);
+                if(AlarmConstants.PH<minPH || AlarmConstants.PH>maxPH){
+                    AlarmConstants.ringtone.play();
+                }
+
+                }
+
+            return null;
+        }
     }
 }
