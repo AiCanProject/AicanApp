@@ -1,36 +1,36 @@
-name: Building APK
+name: Build and Test
 
-  on:
-    push:
-      branches: [ LabApp_CFR ]
+on:
+  push:
+    branches: [ LabApp_CFR ]
 
   workflow_dispatch:
 
-  jobs:
+jobs:
 
-    build_job:
-      name: Building the apk
-        runs-on: ubuntu-latest
-        continue-on-error: true
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v2.4.2
-          - name: Restore Cache
-            uses: actions/cache@v3.0.6
-            with:
-              path: |
-                ~/.gradle/caches
-                ~/.gradle/wrapper
-              key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-              restore-keys: |
-                ${{ runner.os }}-gradle-
-          - name: Change wrapper permissions
-            run: chmod +x ./gradlew
-          - name: Assemble Debug
-            run: ./gradlew assembleDebug
+  build_job:
+    name: Building the apk
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+      - name: Restore Cache
+        uses: actions/cache@v3.0.6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+      - name: Assemble Debug
+        run: ./gradlew assembleDebug
 
-          - name: Upload Apk
-            uses: actions/upload-artifact@v2
-            with:
-              name: apk
-              path: app/build/outputs/apk/debug/**.apk
+      - name: Upload Apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/**.apk
