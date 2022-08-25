@@ -2,6 +2,7 @@ package com.aican.aicanapp.fragments.ph;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -55,22 +58,22 @@ public class phGraphFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         databaseHelper = new DatabaseHelper(getContext());
-        lineChart = view.findViewById(R.id.graph);
+        lineChart = view.findViewById(R.id.activity_main_linechart);
         refresh = view.findViewById(R.id.btnGraphRefresh);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         fetchLogs();
+        new graphBackgroundService().execute();
 
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showChart();
-            }
-        }, 5000);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showChart();
+//            }
+//        }, 5000);
 
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +108,7 @@ public class phGraphFragment extends Fragment {
             lineChart.setData(data);
             lineChart.setPinchZoom(true);
             lineChart.setTouchEnabled(true);
+            lineChart.invalidate();
         }
 
         lineChart.getDescription().setText("Tap on graph to Plot!");
@@ -121,6 +125,8 @@ public class phGraphFragment extends Fragment {
 
         lineChart.setPinchZoom(true);
         lineChart.setTouchEnabled(true);
+        lineChart.callOnClick();
+        lineChart.refreshDrawableState();
     }
 
     private void fetchLogs(){
@@ -129,6 +135,7 @@ public class phGraphFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float p = snapshot.getValue(Float.class);
                 ph = String.format(Locale.UK, "%.2f", p);
+                showChart();
             }
 
             @Override
@@ -140,5 +147,14 @@ public class phGraphFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public class graphBackgroundService extends AsyncTask<String,String,String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            fetchLogs();
+//            lineChart.callOnClick();
+            return null;
+        }
     }
 } 

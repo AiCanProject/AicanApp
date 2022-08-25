@@ -552,7 +552,7 @@ public class Export extends AppCompatActivity {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," +nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," +nullEntry);
-            printWriter.println("Date,Time,device,pH,Temp,Batch,AR,Product");
+            printWriter.println("__Date____" + "," + "_____Time__" + "," + "______pH" + "," + "___Temp" + "," + "_Batch No" + "," + "+__AR No" + "," + "Compound");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," +nullEntry);
 
 

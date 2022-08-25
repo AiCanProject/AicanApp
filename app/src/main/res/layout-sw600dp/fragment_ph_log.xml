@@ -267,7 +267,19 @@
                 android:visibility="visible" />
 
 
+
+
         </LinearLayout>
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Clear"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:visibility="visible" />
 
         <LinearLayout
             android:layout_width="wrap_content"

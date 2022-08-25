@@ -43,8 +43,9 @@
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/layout/item_log.xml" value="0.27447916666666666" />
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.18" />
         <entry key="app/src/main/res/drawable/round_button.xml" value="0.18" />
-        <entry key="app/src/main/res/layout-sw600dp/fragment_ph_log.xml" value="0.67" />
+        <entry key="app/src/main/res/layout-sw600dp/fragment_ph_log.xml" value="0.5" />
         <entry key="app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.128515625" />
+        <entry key="app/src/main/res/layout-sw600dp/set_timer_dialog_layout.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_add_device_option.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_authenticate_role_dialog.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_detailed.xml" value="0.17135416666666667" />
@@ -56,9 +57,11 @@
         <entry key="app/src/main/res/layout/activity_ph_calibrate.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.4004106776180698" />
         <entry key="app/src/main/res/layout/activity_user_database.xml" value="0.152" />
+        <entry key="app/src/main/res/layout/alert_dialog_layout.xml" value="0.22" />
         <entry key="app/src/main/res/layout/custom_tab.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_ph_alarm.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_ph_calib.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_ph_graph.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_ph_log.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_ph_main.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/round_button.xml" value="0.17135416666666667" />

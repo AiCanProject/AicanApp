@@ -35,8 +35,14 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/graph"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="400dp">
     </com.github.mikephil.charting.charts.LineChart>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/activity_main_linechart"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" />
 
 
 

@@ -6,14 +6,18 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -27,7 +31,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -45,12 +51,17 @@ import com.aican.aicanapp.dataClasses.phData;
 
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
 import com.aspose.cells.PdfCompliance;
 import com.aspose.cells.PdfSaveOptions;
+import com.aspose.cells.Range;
 import com.aspose.cells.SaveFormat;
+import com.aspose.cells.Style;
+import com.aspose.cells.StyleFlag;
+import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.github.mikephil.charting.charts.LineChart;
@@ -92,11 +103,19 @@ public class phLogFragment extends Fragment {
     LogAdapter adapter;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, printBtn;
+    Button logBtn, exportBtn, printBtn,clearBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
     EditText compound_name_txt, batch_number, ar_number;
     String TABLE_NAME = "LogUserdetails";
+    RecyclerView recyclerView;
+    Handler handler;
+    Runnable runnable;
+    SwitchCompat switchHold,switchInterval,switchBtnClick;
+
+
+    int timerInSec;
+    Boolean isTimer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,8 +154,12 @@ public class phLogFragment extends Fragment {
         ar_number = view.findViewById(R.id.ar_number);
         batchBtn = view.findViewById(R.id.batch_text);
         arBtn = view.findViewById(R.id.ar_text);
+        switchHold = view.findViewById(R.id.switchHold);
+        switchInterval = view.findViewById(R.id.switchInterval);
+        switchBtnClick = view.findViewById(R.id.switchBtnClick);
+        clearBtn = view.findViewById(R.id.clear);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLog);
+        recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -187,6 +210,9 @@ public class phLogFragment extends Fragment {
         dialogMain.setCancelable(false);
         Source.userTrack = "PhLogFragment logged in by ";
         dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+
+        deviceRef.child("Data").child("LOG").setValue(0);
+        deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,6 +282,78 @@ public class phLogFragment extends Fragment {
                         }
                     });
                 }
+            }
+        });
+
+        if(deviceRef.child("Data").child("LOG") != null)
+        deviceRef.child("Data").child("LOG").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int log = snapshot.getValue(Integer.class);
+
+                if(log == 1){
+                    deviceRef.child("Data").child("LOG").setValue(0);
+                    date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                    fetch_logs();
+                    if (ph == null || temp == null || mv == null) {
+                        Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                        databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("Data").child("HOLD").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+               int hold = snapshot.getValue(Integer.class);
+
+               if(switchHold.isChecked())
+               if(hold == 1){
+                   date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                   time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                   fetch_logs();
+                   deviceRef.child("Data").child("HOLD").setValue(0);
+
+                   if (ph == null || temp == null || mv == null) {
+                       Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                   } else {
+                       databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                       databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                       databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                   }
+                   adapter = new LogAdapter(getContext(), getList());
+                   recyclerView.setAdapter(adapter);
+               }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+
+        deviceRef.child("Data").child("AUTOLOG").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                int clicked = snapshot.getValue(Integer.class);
+                if(clicked == 1){
+                   takeLog();
+                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
 
@@ -331,6 +429,7 @@ public class phLogFragment extends Fragment {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
+
 //                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/LogPdf");
 //                    if (!Pdfdir.exists()) {
 //                        if (!Pdfdir.mkdirs()) {
@@ -374,8 +473,10 @@ public class phLogFragment extends Fragment {
                     for (int i = 0; i < filesAndFoldersPDF.length; i++) {
                         if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
                             filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
+
                         }
                     }
+
                 }
 
                 plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
@@ -423,6 +524,131 @@ public class phLogFragment extends Fragment {
         } else {
             requestPermission();
         }
+
+        switchInterval.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(switchInterval.isChecked()){
+                    switchBtnClick.setChecked(false);
+                    switchHold.setChecked(false);
+                    deviceRef.child("Data").child("AUTOLOG").setValue(1);
+                    openTimerDialog();
+                }else{
+                    isTimer = false;
+                    handler.removeCallbacks(runnable);
+                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                }
+            }
+        });
+
+        switchBtnClick.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(switchBtnClick.isChecked()){
+                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+
+                    if(switchInterval.isChecked()) {
+                        isTimer = false;
+                        handler.removeCallbacks(runnable);
+                        switchInterval.setChecked(false);
+                    }
+                    switchHold.setChecked(false);
+                }
+            }
+        });
+
+        switchHold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(switchHold.isChecked()){
+                    deviceRef.child("Data").child("HOLD").setValue(0);
+                    deviceRef.child("Data").child("AUTOLOG").setValue(1);
+                    if(switchInterval.isChecked()) {
+                        isTimer = false;
+                        handler.removeCallbacks(runnable);
+                        switchInterval.setChecked(false);
+                    }
+
+                    switchBtnClick.setChecked(false);
+                }else{
+                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                }
+            }
+        });
+
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                phDataModelList.clear();
+                adapter = new LogAdapter(getContext(), getList());
+                recyclerView.setAdapter(adapter);
+            }
+        });
+    }
+
+    private void openTimerDialog() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.set_timer_dialog_layout);
+        dialog.show();
+
+        Button cancel,set_timer;
+        cancel = dialog.findViewById(R.id.cancelBtn);
+        set_timer=dialog.findViewById(R.id.set_timer);
+
+
+        EditText timer = dialog.findViewById(R.id.timerEditText);
+
+        set_timer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!timer.getText().toString().isEmpty()) {
+                    double d = Double.parseDouble(timer.getText().toString())*60000;
+                    Double db = new Double(d);
+                    timerInSec = db.intValue();
+                    handler();
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        cancel.setOnClickListener(view -> {
+            dialog.dismiss();
+            switchInterval.setChecked(false);
+        });
+    }
+
+    void handler(){
+        Log.d("Timer", "doInBackground: in while "+timerInSec);
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d("Timer", "doInBackground: in handler");
+                takeLog();
+                handler();
+            }
+        };
+        handler.postDelayed(runnable,timerInSec);
+        Log.d("Timer", "doInBackground: out handler");
+
+    }
+
+    void takeLog(){
+
+        date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        fetch_logs();
+
+        if (ph == null || temp == null || mv == null) {
+            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+        } else {
+            databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+            databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+            databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+        }
+        adapter = new LogAdapter(getContext(), getList());
+        recyclerView.setAdapter(adapter);
     }
 
     public void fileNotWrite(File file){
@@ -500,7 +726,7 @@ public class phLogFragment extends Fragment {
             while (curCSV.moveToNext()) {
                 if(i==0){
 //                    printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
-                    String record = "Date" + "," + "Time" + "," + "pH" + "," + "Temp" + "," + "Batch No" + "," + "AR No" + "," + "Compound";
+                    String record = "__Date____" + "," + "_____Time__" + "," + "______pH" + "," + "___Temp" + "," + "_Batch No" + "," + "+__AR No" + "," + "Compound";
                     printWriter.println(record);
                     i++;
                 }
@@ -520,7 +746,7 @@ public class phLogFragment extends Fragment {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
             curCSV.close();
             db.close();
 
@@ -529,8 +755,20 @@ public class phLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0,18.5);
-            worksheet.getCells().setColumnWidth(2,18.5);
+            worksheet.getCells().setColumnWidth(0,10.0);
+            worksheet.getCells().setColumnWidth(1,10.0);
+
+            Range rng = worksheet.getCells().createRange("B2:D7");
+            Style st = worksheet.getWorkbook().createStyle();
+            st.setVerticalAlignment(TextAlignmentType.LEFT);
+            st.setHorizontalAlignment(TextAlignmentType.LEFT);
+
+            StyleFlag flag = new StyleFlag();
+
+            flag.setAlignments(true);
+
+            rng.applyStyle(st,flag);
+
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
