@@ -535,6 +535,7 @@ public class phLogFragment extends Fragment {
                     openTimerDialog();
                 }else{
                     isTimer = false;
+                    if(handler!=null)
                     handler.removeCallbacks(runnable);
                     deviceRef.child("Data").child("AUTOLOG").setValue(0);
                 }
@@ -580,8 +581,10 @@ public class phLogFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 phDataModelList.clear();
-                adapter = new LogAdapter(getContext(), getList());
+                ArrayList<phData> ar = new ArrayList<>();
+                adapter = new LogAdapter(getContext(),ar);
                 recyclerView.setAdapter(adapter);
+
             }
         });
     }

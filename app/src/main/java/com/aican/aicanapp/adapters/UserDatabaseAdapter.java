@@ -52,6 +52,8 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
             UserDatabaseModel model = users_list.get(position);
             holder.user_role.setText(model.getUser_role());
             holder.user_name.setText(model.getUser_name());
+            holder.expiry_date.setText(model.getExpiry_date());
+            holder.dateCreated.setText(model.getDateCreated());
         }
         else{
             return;
@@ -85,6 +87,7 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
                 Intent intent = new Intent(context,EditUserDatabase.class);
                 intent.putExtra("username",users_list.get(position).getUser_name());
                 intent.putExtra("userrole",users_list.get(position).getUser_role());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.getApplicationContext().startActivity(intent);
             }
         });
@@ -109,7 +112,7 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView user_role, user_name;
+        TextView user_role, user_name,expiry_date,dateCreated;
         ImageButton editBtn,deleteBtn;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -117,6 +120,8 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
             user_name = itemView.findViewById(R.id.user_name);
             editBtn = itemView.findViewById(R.id.editBtn);
             deleteBtn = itemView.findViewById(R.id.deleteBtn);
+            expiry_date = itemView.findViewById(R.id.expiry_date);
+            dateCreated = itemView.findViewById(R.id.dateCreated);
         }
     }
 }

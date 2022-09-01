@@ -142,7 +142,7 @@ public class UserDatabase extends AppCompatActivity {
             Toast.makeText(UserDatabase.this, "No entry", Toast.LENGTH_SHORT).show();
         }
         while(res.moveToNext()){
-            userDatabaseModelList.add(new UserDatabaseModel(res.getString(0),res.getString(1)));
+            userDatabaseModelList.add(new UserDatabaseModel(res.getString(0),res.getString(1),res.getString(4),res.getString(5)));
         }
         return userDatabaseModelList;
     }

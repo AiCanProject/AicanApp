@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +31,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -95,8 +101,11 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 Source.userId = userId.getText().toString();
                 Source.userName = name.getText().toString();
                 Source.userPasscode = passcode.getText().toString();
-                databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode);
-                databaseHelper.insertUserData(Source.userName,Source.userRole);
+                Source.expiryDate = getExpiryDate();
+                Source.dateCreated = getPresentDate();
+                Log.d("expiryDate", "onCreate: "+Source.expiryDate);
+                databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode,Source.expiryDate,Source.dateCreated);
+                databaseHelper.insertUserData(Source.userName,Source.userRole,Source.expiryDate,Source.dateCreated);
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
 
                 FileOutputStream fos = null;
@@ -194,5 +203,32 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         SharedPreferences.Editor edit=shre.edit();
         edit.putString("signature_data",encodedImage);
         edit.commit();
+    }
+
+    private String getExpiryDate(){
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try{
+            cal.setTime(sdf.parse(presentDate));
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+
+        // use add() method to add the days to the given date  
+        cal.add(Calendar.DAY_OF_MONTH, 90);
+        String expiryDate = sdf.format(cal.getTime());
+
+        return expiryDate;
+    }
+
+    private String getPresentDate(){
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+        return presentDate;
     }
 }

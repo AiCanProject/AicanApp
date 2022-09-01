@@ -297,6 +297,7 @@ public class Export extends AppCompatActivity {
 
                 final Boolean[] isSuccessful = {false};
 
+                companyName="";
                 if (companyName.isEmpty()) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
@@ -316,7 +317,7 @@ public class Export extends AppCompatActivity {
                     isSuccessful[0] = true;
                 }
 
-                if (isSuccessful[0]){
+                if (true){
 
                     exportUserData();
 
@@ -335,7 +336,60 @@ public class Export extends AppCompatActivity {
                     }
                 }
 
-                uAdapter = new UserDataAdapter(Export.this, filesAndFolders);
+
+
+                    try {
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            filesAndFolders1[i].getName().endsWith(".xlsx");
+                        }
+                    }
+
+                    Workbook workbook = null;
+
+                        workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                        String currentDateandTime = sdf.format(new Date());
+                        PdfSaveOptions options = new PdfSaveOptions();
+                        options.setCompliance(PdfCompliance.PDF_A_1_B);
+                        workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity"+currentDateandTime+".pdf", options);
+
+                        String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                        File root_1 = new File(path_1);
+                        fileNotWrite(root_1);
+                        File[] filesAndFolders_1 = root_1.listFiles();
+
+                        if (filesAndFolders_1 == null || filesAndFolders_1.length == 0) {
+
+                            return;
+                        } else {
+                            for (int i = 0; i < filesAndFolders1.length; i++) {
+                                if(filesAndFolders_1[i].getName().endsWith(".csv") || filesAndFolders_1[i].getName().endsWith(".xlsx") ){
+                                    filesAndFolders_1[i].delete();
+                                }
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                    File rootPDF = new File(pathPDF);
+                    fileNotWrite(root);
+                    File[] filesAndFoldersPDF = rootPDF.listFiles();
+
+
+                uAdapter = new UserDataAdapter(Export.this, filesAndFoldersPDF);
                 userRecyclerView.setAdapter(uAdapter);
                 uAdapter.notifyDataSetChanged();
                 userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -669,6 +723,15 @@ public class Export extends AppCompatActivity {
             printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
             userCSV.close();
             db.close();
+
+            LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+
+            Workbook workbook = new Workbook(inputFile + "DataUserActivity.csv", loadOptions);
+            Worksheet worksheet = workbook.getWorksheets().get(0);
+            worksheet.getCells().setColumnWidth(0,18.5);
+            worksheet.getCells().setColumnWidth(2,18.5);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));

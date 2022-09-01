@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.utils.PDFViewer;
 
 import java.io.File;
 
@@ -50,22 +51,28 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             public void onClick(View v) {
 
 
-                String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/DataUserActivity.csv";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/"+selectedFile.getName();
 
-                File file2 = new File(path2);
+
+                File file = new File(path);
 
                 try {
 
-                    Intent dIntent = new Intent(Intent.ACTION_VIEW);
-                    dIntent.setDataAndType(Uri.fromFile(file2), "text/plain");
-                    dIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    dIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    dIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    dIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
+//                    Intent dIntent = new Intent(Intent.ACTION_VIEW);
+//                    dIntent.setDataAndType(Uri.fromFile(file2), "text/plain");
+//                    dIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    dIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                    dIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                    dIntent.setClassName("csv.file.reader", "csv.file.reader.CsvFileViewerActivity");
+//
+//                    Intent vIntent = Intent.createChooser(dIntent, "Open User Data");
+//                    vIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.getApplicationContext().startActivity(vIntent);
 
-                    Intent vIntent = Intent.createChooser(dIntent, "Open User Data");
-                    vIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.getApplicationContext().startActivity(vIntent);
+                    Intent intent = new Intent(context.getApplicationContext(), PDFViewer.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("Path", path);
+                    context.getApplicationContext().startActivity(intent);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -93,21 +100,41 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/DataUserActivity.csv";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/"+selectedFile.getName();
                             File file = new File(path);
 
                             try {
-                                Intent mIntent = new Intent(Intent.ACTION_VIEW);
+//                                Intent mIntent = new Intent(Intent.ACTION_VIEW);
+//
+//                                mIntent.setData(Uri.fromFile(file));
+//                                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                                mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                                mIntent.setClassName("csv.to.excel", "csv.to.excel.HomeActivity");
+//
+//                                Intent chooserIntent = Intent.createChooser(mIntent, "Convert PDF");
+//                                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                context.startActivity(chooserIntent);
 
-                                mIntent.setData(Uri.fromFile(file));
-                                mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                mIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                                mIntent.setClassName("csv.to.excel", "csv.to.excel.HomeActivity");
+                                if (!file.exists()){
+                                    Toast.makeText(context, "File doesn't exists", Toast.LENGTH_LONG).show();
+                                }else {
+                                    Intent intentShare = new Intent(Intent.ACTION_SEND);
+                                    intentShare.setType("application/pdf");
+                                    intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    intentShare.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                    intentShare.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intentShare.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file));
 
-                                Intent chooserIntent = Intent.createChooser(mIntent, "Convert PDF");
-                                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(chooserIntent);
+//                                    Intent sharingIntent = new Intent(Intent.ACTION_VIEW);
+//                                    sharingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                    sharingIntent.setData(Uri.fromFile(file));
+//
+                                    Intent chooserIntent = Intent.createChooser(intentShare, "Send file");
+                                    chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+                                    context.getApplicationContext().startActivity(chooserIntent);
+                                }
 
                             } catch (Exception e) {
                                 e.printStackTrace();

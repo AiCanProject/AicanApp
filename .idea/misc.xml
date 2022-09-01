@@ -56,7 +56,7 @@
         <entry key="app/src/main/res/layout/activity_ph.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_ph_calibrate.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.4004106776180698" />
-        <entry key="app/src/main/res/layout/activity_user_database.xml" value="0.152" />
+        <entry key="app/src/main/res/layout/activity_user_database.xml" value="0.25" />
         <entry key="app/src/main/res/layout/alert_dialog_layout.xml" value="0.22" />
         <entry key="app/src/main/res/layout/custom_tab.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_ph_alarm.xml" value="0.25" />
@@ -65,11 +65,11 @@
         <entry key="app/src/main/res/layout/fragment_ph_log.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_ph_main.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/round_button.xml" value="0.17135416666666667" />
-        <entry key="app/src/main/res/layout/tablelayout.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/tablelayout.xml" value="0.22" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

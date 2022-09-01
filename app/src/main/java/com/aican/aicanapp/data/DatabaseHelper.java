@@ -16,13 +16,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT)");
+        sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT)");
-        sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT)");
+        sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
     }
 
     @Override
@@ -37,11 +37,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertUserData(String userName,String role){
+    public boolean insertUserData(String userName,String role,String expiryDate,String dateCreated){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Username", userName);
         contentValues.put("Role", role);
+        contentValues.put("expiryDate", expiryDate);
+        contentValues.put("dateCreated", dateCreated);
         long result = db.insert("UserDataDetails",null,contentValues);
         if(result == -1){
             return false;
@@ -79,13 +81,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insert_data(String name, String role,String id, String passcode){
+    public Boolean insert_data(String name, String role,String id, String passcode,String expiryDate,String dateCreated){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("role", role);
         contentValues.put("id", id);
         contentValues.put("passcode", passcode);
+        contentValues.put("expiryDate", expiryDate);
+        contentValues.put("dateCreated", dateCreated);
         long result = db.insert("Userdetails", null, contentValues);
         if(result == -1){
             return false;
@@ -149,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Boolean delete_data(String name){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from Userdetails where name = ?", new String[]{name});
+        Cursor cursor = db.rawQuery("Select * from Userdetails", null);
         if(cursor.getCount()>0){
             long result = db.delete("Userdetails", "name=?", new String[]{name});
             if(result == -1){
@@ -164,9 +168,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Boolean delete_Userdata(String name){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from UserDataDetails where name = ?", new String[]{name});
+        Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
         if(cursor.getCount()>0){
-            long result = db.delete("UserDataDetails", "name=?", new String[]{name});
+            long result = db.delete("UserDataDetails", "Username=?", new String[]{name});
             if(result == -1){
                 return false;
             }else{
@@ -191,14 +195,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean updateUserDetails(String name,String newName,String role){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from UserDataDetails where name = ?", new String[]{name});
+        Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
 
         if(cursor.getCount()>0){
             ContentValues dataToInsert = new ContentValues();
-            dataToInsert.put("Username",newName);
-            dataToInsert.put("Role",role);
-            long result = db.update("UserDataDetails",dataToInsert,"name=?", new String[]{name});
-            if(result==-1){
+            dataToInsert.put("id",newName);
+            dataToInsert.put("role",role);
+
+            ContentValues dataToInsertUserData = new ContentValues();
+            dataToInsertUserData.put("Username",newName);
+            dataToInsertUserData.put("Role",role);
+
+            long result = db.update("Userdetails",dataToInsert,"id=?", new String[]{name});
+            long result2 = db.update("UserDataDetails",dataToInsertUserData,"Username=?", new String[]{name});
+            if(result==-1 || result2==-1){
                 return false;
             }else{
                 return true;

@@ -119,6 +119,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         Source.passcode_fetched = new ArrayList<>();
         Source.role_fetched = new ArrayList<>();
         Source.name_fetched = new ArrayList<>();
+        Source.expiryDate_fetched = new ArrayList<>();
+        Source.dateCreated_fetched = new ArrayList<>();
 
         phDev = findViewById(R.id.ph_dev);
         IndusDev = findViewById(R.id.indusPh_dev);
@@ -310,6 +312,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             Source.passcode_fetched.add(res.getString(res.getColumnIndex("passcode")));
             Source.role_fetched.add(res.getString(res.getColumnIndex("role")));
             Source.name_fetched.add(res.getString(res.getColumnIndex("name")));
+            Source.expiryDate_fetched.add(res.getString(res.getColumnIndex("expiryDate")));
+            Source.dateCreated_fetched.add(res.getString(res.getColumnIndex("dateCreated")));
         }
     }
 

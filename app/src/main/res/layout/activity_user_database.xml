@@ -32,7 +32,7 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="1,2,3"
+        android:stretchColumns="1,2,3,4,5"
         android:layout_marginTop="20dp">
 
         <TableRow android:background="@color/grey">
@@ -48,6 +48,27 @@
 
             <TextView
                 android:text="@string/user_role"
+                android:textColor="#FFF"
+                android:padding="10sp"
+                android:textSize="14sp"
+                android:layout_weight="1"
+                android:layout_column="1"
+                android:gravity="center_horizontal"/>
+
+
+            <TextView
+                android:text="Date created"
+                android:textColor="#FFF"
+                android:padding="10sp"
+                android:textSize="14sp"
+                android:layout_weight="1"
+                android:layout_column="1"
+                android:gravity="center_horizontal"/>
+
+
+
+            <TextView
+                android:text="Expiry date"
                 android:textColor="#FFF"
                 android:padding="10sp"
                 android:textSize="14sp"
