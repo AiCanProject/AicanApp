@@ -254,9 +254,9 @@
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/green_btn"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="end"
@@ -266,6 +266,7 @@
 
             <Button
                 android:id="@+id/orange_btn"
+                android:visibility="gone"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="end"

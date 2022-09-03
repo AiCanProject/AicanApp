@@ -206,6 +206,28 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
+        temp_value.child("UI").child("TEMP").child("STATE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String data = snapshot.getValue(String.class);
+
+                if(data.equals("ON")){
+                    orange_btn.setVisibility(View.INVISIBLE);
+                    green_btn.setVisibility(View.VISIBLE);
+                }else{
+                    orange_btn.setVisibility(View.VISIBLE);
+                    green_btn.setVisibility(View.INVISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
