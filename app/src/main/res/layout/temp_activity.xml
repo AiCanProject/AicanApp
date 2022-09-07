@@ -82,7 +82,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center"
-                android:text="Tune"
+                android:text="Oil Bath"
                 android:textColor="@color/btnColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />

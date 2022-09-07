@@ -158,8 +158,32 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="@string/date"
+                        android:text="Date"
                         android:textAlignment="center" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_column="0"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Time"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="Set Temp"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
 
                     <TextView
                         style="@style/table_header"
@@ -185,6 +209,17 @@
                         android:paddingEnd="5dp"
                         android:text="Temp 2"
                         android:textAlignment="center" />
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="Product"
+                        android:textAlignment="center" />
 
                     <TextView
                         style="@style/table_header"
@@ -195,9 +230,10 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingEnd="5dp"
-                        android:text="Set Temp"
-                        android:textAlignment="center"
-                        tools:ignore="RtlSymmetry" />
+                        android:text="Batch"
+                        android:textAlignment="center" />
+
+
                 </TableRow>
             </TableLayout>
 
