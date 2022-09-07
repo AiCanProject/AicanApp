@@ -346,6 +346,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        tools:visibility="gone"
         android:id="@+id/drawer"
         android:layout_gravity = "start"
         android:layout_width="250dp"

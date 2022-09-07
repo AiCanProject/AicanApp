@@ -79,4 +79,9 @@
     <color name="ph13">#63459d</color>
     <color name="ph14">#462c83</color>
 
+    <color name="temp1">#FF5353</color>
+    <color name="temp2">#63DE69</color>
+
+
+
 </resources>

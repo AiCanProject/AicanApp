@@ -1,37 +1,40 @@
 package com.aican.aicanapp.fragments.temp;
 
-import android.Manifest;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
+
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.TypedValue;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.graph.ForegroundService;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.specificactivities.TemperatureActivity;
-import com.aican.aicanapp.utils.PlotGraphNotifier;
+import com.aican.aicanapp.utils.MyXAxisValueFormatter;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -42,78 +45,85 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.opencsv.CSVWriter;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
 public class TempFragment extends Fragment {
 
+    DatabaseHelper databaseHelper;
+    LineChart lineChart;
     DatabaseReference deviceRef;
+    String ph;
     float temp = 0;
+    Button refresh, btnGraphCancel;
+    LineDataSet lineDataSet = new LineDataSet(null, "TEMP1");
+    LineDataSet lineDataSet2 = new LineDataSet(null, "TEMP2");
+    ArrayList<ILineDataSet> iLineDataSets = new ArrayList<>();
+    LineData lineData;
     TextView tvTempCurr, tvTempNext;
-    LinearLayout llStart, llStop, llClear, llExport;
-    CardView cv1Min, cv5Min, cv10Min, cv15Min, cvClock;
-    int skipPoints = 0;
-    int skipCount = 0;
-    ArrayList<Entry> entriesOriginal;
-    boolean isTimeOptionsVisible = false;
-    ArrayList<Entry> logs = new ArrayList<>();
-    long start = 0;
-    ForegroundService myService;
-    PlotGraphNotifier plotGraphNotifier;
-    private LineChart lineChart;
-    private boolean isLogging = false;
+    Spinner graphInterval;
+    CountDownTimer countDownTimer;
+    public static String intervalSelected = "5 sec";
 
-    @Nullable
-    @org.jetbrains.annotations.Nullable
-    @Override
-    public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_temp_main, container, false);
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    private String mParam1;
+    private String mParam2;
+
+    public TempFragment() {
+        // Required empty public constructor
+    }
+
+    public static TempFragment newInstance(String param1, String param2) {
+        TempFragment fragment = new TempFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_temp_main, container, false);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        lineChart = view.findViewById(R.id.graph);
+        refresh = view.findViewById(R.id.btnGraphRefresh);
+        btnGraphCancel = view.findViewById(R.id.btnGraphCancel);
         tvTempCurr = view.findViewById(R.id.tvTempCurr);
         tvTempNext = view.findViewById(R.id.tvTempNext);
-        lineChart = view.findViewById(R.id.line_chart);
+        graphInterval = view.findViewById(R.id.graphInterval);
+        btnGraphCancel.setEnabled(false);
+        spinnerAction();
 
-        llStart = view.findViewById(R.id.llStart);
-        llStop = view.findViewById(R.id.llStop);
-        llClear = view.findViewById(R.id.llClear);
-        llExport = view.findViewById(R.id.llExport);
-        cv5Min = view.findViewById(R.id.cv5min);
-        cv1Min = view.findViewById(R.id.cv1min);
-        cv10Min = view.findViewById(R.id.cv10min);
-        cv15Min = view.findViewById(R.id.cv15min);
-        cvClock = view.findViewById(R.id.cvClock);
 
-        entriesOriginal = new ArrayList<>();
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference().child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
-                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
-
-        setupListeners();
-        setupGraph();
-    }
-
-    private void setupListeners() {
-
-        cvClock.setOnClickListener(v -> {
-            isTimeOptionsVisible = !isTimeOptionsVisible;
-            if (isTimeOptionsVisible) {
-                showTimeOptions();
-            } else {
-                hideTimeOptions();
-            }
-        });
 
         deviceRef.child("Data").child("TEMP2_VAL").addValueEventListener(new ValueEventListener() {
             @Override
@@ -122,294 +132,256 @@ public class TempFragment extends Fragment {
                 if (temp == null) return;
                 updateTemp(temp);
                 TempFragment.this.temp = temp;
+
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
-    }
+        String valURL1 = "https://labdevices-8c9a5-default-rtdb.asia-southeast1.firebasedatabase.app/" + TemperatureActivity.deviceType + "/" + TemperatureActivity.DEVICE_ID + "/Data/.json";
 
-    private void setupGraph() {
-        LineDataSet lineDataSet = new LineDataSet(new ArrayList<>(), "Temp");
+        fetchData(valURL1);
+        float fe = temp2_val;
+        Toast.makeText(getContext(), "" + fe, Toast.LENGTH_SHORT).show();
 
-        lineDataSet.setLineWidth(2);
-        lineDataSet.setCircleRadius(4);
-        lineDataSet.setValueTextSize(10);
+        lineDataSet.setCircleColor(getResources().getColor(R.color.temp1));
+        lineDataSet2.setCircleColor(getResources().getColor(R.color.temp2));
 
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(lineDataSet);
+        lineDataSet.setHighLightColor(getResources().getColor(R.color.temp1));
+        lineDataSet2.setHighLightColor(getResources().getColor(R.color.temp2));
 
-        LineData data = new LineData(dataSets);
-        lineChart.setData(data);
-        lineChart.invalidate();
-        lineChart.setDrawGridBackground(true);
-        lineChart.setDrawBorders(true);
+//        lineDataSet2.setLabel("TEMP2");
+//        lineDataSet.setLabel("TEMP1");
 
-        Description d = new Description();
-        d.setText("Temp Graph");
-        lineChart.setDescription(d);
-
-        llStart.setOnClickListener(v -> {
-            if (ForegroundService.isRunning()) {
-                Toast.makeText(requireContext(), "Another graph is logging", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-            startLogging();
-        });
-        llStop.setOnClickListener(v -> {
-            llStart.setVisibility(View.VISIBLE);
-            llStop.setVisibility(View.INVISIBLE);
-            llClear.setVisibility(View.VISIBLE);
-            llExport.setVisibility(View.VISIBLE);
-            stopLogging();
-        });
-        llClear.setOnClickListener(v -> {
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-            clearLogs();
-        });
-        llExport.setOnClickListener(v -> {
-            exportLogs();
-        });
-        cv1Min.setOnClickListener(v -> {
-            skipPoints = (60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-        cv5Min.setOnClickListener(v -> {
-            skipPoints = (5 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-        cv10Min.setOnClickListener(v -> {
-            skipPoints = (10 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-        cv15Min.setOnClickListener(v -> {
-            skipPoints = (15 * 60 * 1000) / Dashboard.GRAPH_PLOT_DELAY;
-            rescaleGraph();
-        });
-    }
-
-    private void exportLogs() {
-        if (!checkStoragePermission()) {
-            return;
-        }
-        String csv = (requireContext().getExternalFilesDir(null).getAbsolutePath() + "/" + System.currentTimeMillis() + ".csv");
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter(csv));
-
-            List<String[]> data = new ArrayList<String[]>();
-            data.add(new String[]{"X", "Y"});
-            for (int i = 0; i < logs.size(); i++) {
-                String[] s = {String.valueOf(logs.get(i).getX()), String.valueOf(logs.get(i).getY())};
-                data.add(s);
-            }
-            writer.writeAll(data); // data is adding to csv
-            Toast.makeText(requireContext(), "Exported", Toast.LENGTH_LONG).show();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private boolean checkStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (requireActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 111);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void clearLogs() {
-        logs.clear();
-        if (myService != null) {
-            myService.clearEntries();
-        }
-    }
-
-    private void stopLogging() {
-        isLogging = false;
-        if (myService != null) {
-            myService.stopLogging(TempFragment.class);
-        }
-    }
-
-    private void startLogging() {
-        logs.clear();
-        isLogging = true;
-
-        Context context = requireContext();
-        Intent intent = new Intent(context, ForegroundService.class);
-        DatabaseReference ref = deviceRef.child("Data").child("TEMP2_VAL");
-        ForegroundService.setInitials(TemperatureActivity.DEVICE_ID, ref, TempFragment.class, start, TemperatureActivity.deviceType);
-        context.startService(intent);
-        context.bindService(intent, new ServiceConnection() {
+        spinnerSelected();
+        refresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                if (service instanceof ForegroundService.MyBinder) {
-                    myService = ((ForegroundService.MyBinder) service).getService();
+            public void onClick(View v) {
+//                fetchLogs();
+                if (intervalSelected.equals("5 sec")) {
+                    graphShow(5, 5);
+                }
+                if (intervalSelected.equals("10 sec")) {
+                    graphShow(10, 10);
+                }
+                if (intervalSelected.equals("30 sec")) {
+                    graphShow(30, 30);
+                }
+                if (intervalSelected.equals("1 min")) {
+                    graphShow(30, 60);
+                }
+                if (intervalSelected.equals("3 min")) {
+                    graphShow(40, 180);
+                }
+                if (intervalSelected.equals("5 min")) {
+                    graphShow(50, 300);
+                }
+                if (intervalSelected.equals("10 min")) {
+                    graphShow(60, 600);
                 }
             }
+        });
 
+        btnGraphCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onServiceDisconnected(ComponentName name) {
+            public void onClick(View v) {
+                countDownTimer.cancel();
+                btnGraphCancel.setEnabled(false);
+                refresh.setEnabled(true);
+            }
+        });
+
+    }
+
+    public void spinnerSelected() {
+        graphInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                if (position == 0) {
+                    intervalSelected = "5 sec";
+                }
+                if (position == 1) {
+                    intervalSelected = "10 sec";
+                }
+                if (position == 2) {
+                    intervalSelected = "30 sec";
+                }
+                if (position == 3) {
+                    intervalSelected = "1 min";
+                }
+                if (position == 4) {
+                    intervalSelected = "3 min";
+                }
+                if (position == 5) {
+                    intervalSelected = "5 min";
+                }
+                if (position == 6) {
+                    intervalSelected = "10 min";
+                }
 
             }
-        }, 0);
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                intervalSelected = "5 sec";
+
+            }
+        });
+    }
+
+    private void spinnerAction() {
+        // 30, 1 min , 3 min , 5 , 10
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("5 sec");
+        categories.add("10 sec");
+        categories.add("30 sec");
+        categories.add("1 min");
+        categories.add("3 min");
+        categories.add("5 min");
+        categories.add("10 min");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        graphInterval.setAdapter(dataAdapter);
+    }
+
+    public static float temp1_val;
+    public static float temp2_val;
+
+    public static boolean start = false;
+
+    public void graphShow(long totalMin, long interval) {
+
+        lineChart.clear();
+        lineChart.invalidate();
+
+        ArrayList<Entry> information = new ArrayList<>();
+        ArrayList<Entry> information2 = new ArrayList<>();
+        float ecValue;
+        int[] times = {0};
+        btnGraphCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                countDownTimer.cancel();
+                btnGraphCancel.setEnabled(false);
+                refresh.setEnabled(true);
+            }
+        });
+        String valURL = "https://labdevices-8c9a5-default-rtdb.asia-southeast1.firebasedatabase.app/" + TemperatureActivity.deviceType + "/" + TemperatureActivity.DEVICE_ID + "/Data/.json";
+
+        countDownTimer = new CountDownTimer(totalMin * 60 * 1000, interval * 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+
+                start = true;
+
+                refresh.setEnabled(false);
+                btnGraphCancel.setEnabled(true);
+                fetchData(valURL);
+//                Toast.makeText(getContext(), "" + getConductivity, Toast.LENGTH_SHORT).show();
+                if (temp1_val != -10000) {
+                    information.add(new Entry(times[0], temp1_val));
+                    information2.add(new Entry(times[0], temp2_val));
+                    times[0] = (int) (times[0] + interval);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showChart(information, information2);
+
+                        }
+                    });
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lineChart.clear();
+                            lineChart.invalidate();
+                            countDownTimer.cancel();
+                        }
+                    });
+
+
+                }
+
+            }
+
+            @Override
+            public void onFinish() {
+                refresh.setEnabled(true);
+                btnGraphCancel.setEnabled(false);
+            }
+        };
+
+        countDownTimer.start();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        plotGraphNotifier.stop();
-    }
-
-    private void rescaleGraph() {
-        ArrayList<Entry> entries = new ArrayList<>();
-        int count = 0;
-        for (Entry entry : entriesOriginal) {
-            if (count == 0) {
-                entries.add(entry);
-            }
-            ++count;
-            if (count >= skipPoints) {
-                count = 0;
-            }
-        }
-
-        lineChart.getLineData().clearValues();
-
-        LineDataSet lds = new LineDataSet(entries, "Temp");
-
-        lds.setLineWidth(2);
-        lds.setCircleRadius(4);
-        lds.setValueTextSize(10);
-
-
-        ArrayList<ILineDataSet> ds = new ArrayList<>();
-        ds.add(lds);
-
-        LineData ld = new LineData(ds);
-        lineChart.setData(ld);
+        lineChart.clear();
         lineChart.invalidate();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        start = System.currentTimeMillis();
-
-        if (ForegroundService.isMyTypeRunning(TemperatureActivity.DEVICE_ID, TempFragment.class, TemperatureActivity.deviceType)) {
-            llStart.setVisibility(View.INVISIBLE);
-            llStop.setVisibility(View.VISIBLE);
-            llClear.setVisibility(View.INVISIBLE);
-            llExport.setVisibility(View.INVISIBLE);
-
-            start = ForegroundService.start;
-
-            Intent intent = new Intent(requireContext(), ForegroundService.class);
-            requireContext().bindService(intent, new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    if (service instanceof ForegroundService.MyBinder) {
-                        myService = ((ForegroundService.MyBinder) service).getService();
-                        ArrayList<Entry> entries = myService.getEntries();
-                        logs.clear();
-                        logs.addAll(entries);
-
-                        lineChart.getLineData().clearValues();
-
-                        LineDataSet lineDataSet = new LineDataSet(logs, "Temp");
-
-                        lineDataSet.setLineWidth(2);
-                        lineDataSet.setCircleRadius(4);
-                        lineDataSet.setValueTextSize(10);
+    public void fetchData(String myUrl) {
 
 
-                        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-                        dataSets.add(lineDataSet);
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
-                        LineData data = new LineData(dataSets);
-                        lineChart.setData(data);
-                        lineChart.invalidate();
-                    }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, myUrl, null, new Response.Listener<JSONObject>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e("TEMP2_VAL", response.get("TEMP2_VAL").toString());
+                    String temp1_val1 = response.get("TEMP1_VAL").toString();
+                    String temp2_val2 = response.get("TEMP2_VAL").toString();
+                    temp1_val = Float.parseFloat(temp1_val1);
+                    temp2_val = Float.parseFloat(temp2_val2);
+
+
+//                    Toast.makeText(getContext(), "" + response.getLong("EC_VAL"), Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error" + e, Toast.LENGTH_SHORT).show();
                 }
 
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-
-                }
-            }, 0);
-        }
-
-        plotGraphNotifier = new PlotGraphNotifier(Dashboard.GRAPH_PLOT_DELAY, () -> {
-            if (skipCount < skipPoints) {
-                skipCount++;
-                return;
             }
-            skipCount = 0;
-            long seconds = (System.currentTimeMillis() - start) / 1000;
-            LineData data = lineChart.getData();
-            Entry entry = new Entry(seconds, temp);
-            entriesOriginal.add(entry);
-            data.addEntry(entry, 0);
-            lineChart.notifyDataSetChanged();
-            data.notifyDataChanged();
-            lineChart.invalidate();
-            if (isLogging) {
-                logs.add(entry);
-            }
-        });
-    }
-
-    private void showTimeOptions() {
-        cv1Min.setVisibility(View.VISIBLE);
-        cv5Min.setVisibility(View.VISIBLE);
-        cv10Min.setVisibility(View.VISIBLE);
-        cv15Min.setVisibility(View.VISIBLE);
-
-        Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
-        cv1Min.startAnimation(zoomIn);
-        cv5Min.startAnimation(zoomIn);
-        cv10Min.startAnimation(zoomIn);
-        cv15Min.startAnimation(zoomIn);
-    }
-
-    private void hideTimeOptions() {
-        Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
-        zoomOut.setAnimationListener(new Animation.AnimationListener() {
+        }, new Response.ErrorListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                cv1Min.setVisibility(View.INVISIBLE);
-                cv5Min.setVisibility(View.INVISIBLE);
-                cv10Min.setVisibility(View.INVISIBLE);
-                cv15Min.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        cv1Min.startAnimation(zoomOut);
-        cv5Min.startAnimation(zoomOut);
-        cv10Min.startAnimation(zoomOut);
-        cv15Min.startAnimation(zoomOut);
+
+        requestQueue.add(jsonObjectRequest);
+
+
+    }
+
+
+    public void showChart(ArrayList<Entry> dataVal, ArrayList<Entry> dataVal2) {
+        lineDataSet.setValues(dataVal);
+        lineDataSet2.setValues(dataVal2);
+        iLineDataSets.add(lineDataSet);
+        iLineDataSets.add(lineDataSet2);
+        lineData = new LineData(iLineDataSets);
+        lineChart.clear();
+        lineChart.setData(lineData);
+        lineChart.invalidate();
+
     }
 
     private void updateTemp(int temp) {
@@ -451,12 +423,5 @@ public class TempFragment extends Fragment {
         } else {
             tvTempCurr.setText(newText);
         }
-    }
-
-    private int getAttr(@AttrRes int attrRes) {
-        TypedValue typedValue = new TypedValue();
-        requireActivity().getTheme().resolveAttribute(attrRes, typedValue, true);
-
-        return typedValue.data;
     }
 }
