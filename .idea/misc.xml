@@ -65,7 +65,9 @@
         <entry key="app/src/main/res/layout/fragment_ph_graph.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_ph_log.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_ph_main.xml" value="0.17135416666666667" />
-        <entry key="app/src/main/res/layout/fragment_temp_set.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_temp_alarm.xml" value="0.14065840102607952" />
+        <entry key="app/src/main/res/layout/fragment_temp_set.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/graph_logging_options.xml" value="0.33" />
         <entry key="app/src/main/res/layout/round_button.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/tablelayout.xml" value="0.22" />
       </map>

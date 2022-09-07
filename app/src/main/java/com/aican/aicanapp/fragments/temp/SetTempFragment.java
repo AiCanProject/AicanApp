@@ -105,7 +105,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     long diffTime, startTime, endTime;
     Spinner spinner_mode;
     String[] mode_array;
-    ArrayList<String> list_temp;
+    ArrayList<String> list_temp,tempval;
     Button set_btn, start_btn, stop_btn, green_btn, orange_btn;
     boolean ON_CLICKED = false;
 
@@ -130,6 +130,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         spinner_mode = view.findViewById(R.id.spinner_mode);
         start_btn = view.findViewById(R.id.start_btn);
         list_temp = new ArrayList<>();
+        tempval = new ArrayList<>();
         temp1 = view.findViewById(R.id.temp1);
         temp2 = view.findViewById(R.id.temp2);
         end_time = view.findViewById(R.id.end_time);
@@ -227,6 +228,29 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
+        temp_value.child("UI").child("TEMP").child("STATUS").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int data = snapshot.getValue(Integer.class);
+
+                if(data == 0){
+                    stop_btn.setVisibility(View.INVISIBLE);
+                    start_btn.setVisibility(View.VISIBLE);
+                }else if(data == 1 || data == 2){
+                    stop_btn.setVisibility(View.VISIBLE);
+                    start_btn.setVisibility(View.INVISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
 
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -322,16 +346,23 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(mode_array[i].equals("Regular")){
                     spinner_status = "Regular";
+                    temp_value.child("UI").child("TEMP").child("MODE").setValue(1);
                     start_time.setEnabled(false);
                     end_time.setEnabled(false);
                     start_date.setEnabled(false);
                     end_date.setEnabled(false);
+                    start_date_display.setText("--");
+                    end_date_display.setText("--");
+                    on_time.setText("--");
+                    off_time.setText("--");
                 }else if(mode_array[i].equals("Timer")){
                     spinner_status = "Timer";
+                    temp_value.child("UI").child("TEMP").child("MODE").setValue(0);
                     start_time.setEnabled(true);
                     end_time.setEnabled(true);
                     start_date.setEnabled(true);
                     end_date.setEnabled(true);
+
                 }
             }
 
@@ -368,7 +399,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
                 .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
 
-        //setupListeners();
+        setupListeners();
     }
 
     private void updateProgressBar(){
@@ -407,6 +438,10 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                         start_date_display.setText(val);
                         on_time.setText(valHour_final + ":" + valMin_final);
                         startTime = diffTime;
+                        temp_value.child("UI").child("TEMP").child("ON_TIME").setValue(on_time.getText().toString());
+                        temp_value.child("UI").child("TEMP").child("ON_DATE").setValue(start_date_display.getText().toString());
+
+
                     } else {
                         Toast.makeText(getContext(), "Previous time not applicable", Toast.LENGTH_SHORT).show();
                     }
@@ -415,6 +450,8 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                         end_date_display.setText(val);
                         off_time.setText(valHour_final + ":" + valMin_final);
                         endTime = diffTime - startTime;
+                        temp_value.child("UI").child("TEMP").child("OFF_TIME").setValue(off_time.getText().toString());
+                        temp_value.child("UI").child("TEMP").child("OFF_DATE").setValue(end_date_display.getText().toString());
                     } else {
                         Toast.makeText(getContext(), "Previous time not applicable", Toast.LENGTH_SHORT).show();
                     }
@@ -777,17 +814,28 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
     private void setupListeners() {
 
-        deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
+        temp_value.child("data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String temp = snapshot.getValue(String.class);
-                if (temp == null) return;
-                //temp_set.setText(temp);
-                progress_bar.setProgress(Integer.parseInt(temp));
+                temp1.setText(temp);
             }
 
             @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        temp_value.child("data").child("TEMP2_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String temp = snapshot.getValue(String.class);
+                temp2.setText(temp);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }

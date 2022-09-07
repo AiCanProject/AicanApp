@@ -20,44 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="150dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="130dp"
-                android:text="@string/mode"
-                android:textColor="#9309C7"
-                android:textSize="17sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.668"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.121" />
-
-            <Spinner
-                android:id="@+id/spinner_mode"
-                android:layout_width="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.143" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/categoriesLayout"
@@ -236,6 +198,7 @@
             android:layout_width="630dp"
             android:layout_height="160dp"
             android:layout_gravity="center"
+            android:clickable="false"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:background="#fff"
@@ -274,6 +237,7 @@
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/set_btn_layoutt" />
 
+
             <Button
                 android:id="@+id/start_btn"
                 android:layout_width="100dp"
@@ -292,15 +256,58 @@
                 android:layout_gravity="end|center"
                 android:layout_marginEnd="30dp"
                 android:background="@drawable/start_btn_layout"
-                android:text="@string/start"
+                android:text="stop"
                 android:textSize="13sp" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="50dp"
+                    android:text="@string/mode"
+                    android:textColor="#9309C7"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.668"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.121" />
+
+                <Spinner
+                    android:id="@+id/spinner_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="50dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.1"
+                    app:layout_constraintStart_toEndOf="@+id/textView2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.143" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/start_date_display"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="75dp"
+                android:clickable="false"
+                android:text="--"
+                android:layout_marginStart="95dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/sofia_light"
                 android:textColor="@color/black"
@@ -323,8 +330,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="75dp"
-                android:layout_marginTop="85dp"
+                android:clickable="false"
+                android:text="--"
+                android:layout_marginStart="95dp"                android:layout_marginTop="85dp"
                 android:fontFamily="@font/sofia_light"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -345,7 +353,9 @@
                 android:id="@+id/on_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:layout_gravity="center_horizontal"
+                android:text="--"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/sofia_light"
                 android:textColor="@color/black"
@@ -357,6 +367,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="@font/sofia_light"
                 android:text="@string/start_time"
                 android:textColor="@color/black"
@@ -366,8 +377,11 @@
                 android:id="@+id/off_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:clickable="false"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="85dp"
+                android:text="--"
                 android:fontFamily="@font/sofia_light"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -378,6 +392,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="110dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="@font/sofia_light"
                 android:text="@string/end_time"
                 android:textColor="@color/black"
