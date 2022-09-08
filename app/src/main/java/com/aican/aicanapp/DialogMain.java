@@ -67,10 +67,10 @@ public class DialogMain extends AppCompatDialogFragment {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String presentDate = dateFormat.format(date);
                 Date present = getParsedDate(presentDate);
-                for(int i=0; i<Source.id_fetched.size(); i++){
-                    if(Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))){
+                for (int i = 0; i < Source.id_fetched.size(); i++) {
+                    if (Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))) {
                         if (present.compareTo(getParsedDate(Source.expiryDate_fetched.get(i))) < 0) {
-                            Log.d("expiryDate","Present date :"+presentDate+" Expiry Date: "+Source.expiryDate_fetched.get(i));
+                            Log.d("expiryDate", "Present date :" + presentDate + " Expiry Date: " + Source.expiryDate_fetched.get(i));
 
                             String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
                             databaseHelper.insert_action_data(time, Source.userTrack + Source.name_fetched.get(i), "", "", "", "");
@@ -97,9 +97,9 @@ public class DialogMain extends AppCompatDialogFragment {
 
                             dismiss();
                             return;
-                        }else{
-                            Toast.makeText(getContext(),"Password expired, please change it",Toast.LENGTH_SHORT).show();
-                            Log.d("expiryDate","Present date :"+presentDate+" Expiry Date: "+Source.expiryDate_fetched.get(i));
+                        } else {
+                            Toast.makeText(getContext(), "Password expired, please change it", Toast.LENGTH_SHORT).show();
+                            Log.d("expiryDate", "Present date :" + presentDate + " Expiry Date: " + Source.expiryDate_fetched.get(i));
                         }
                     }
                 }
@@ -109,10 +109,10 @@ public class DialogMain extends AppCompatDialogFragment {
         return builder.create();
     }
 
-    private Date getParsedDate(String date){
+    private Date getParsedDate(String date) {
         Date presentDt = null;
         try {
-             presentDt = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            presentDt = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
                     .parse(date);
 
         } catch (ParseException e) {

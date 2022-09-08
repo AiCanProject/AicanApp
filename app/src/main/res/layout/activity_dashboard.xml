@@ -26,8 +26,130 @@
             android:layout_marginEnd="0dp"
             android:background="@drawable/gradient_color"
             android:textAlignment="center"
-            app:title="DASHBOARD"
+            app:title="->"
             app:titleTextColor="@color/white">
+            <LinearLayout
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="Internet - "
+                    android:textColor="@color/colorPrimaryAlpha"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/internetStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="Inactive"
+                    android:textColor="@color/internetInactive"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="|"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="Battery - "
+                    android:textColor="@color/colorPrimaryAlpha"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/batteryPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="0%"
+                    android:textColor="@color/internetActive"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="|"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="Location - "
+                    android:textColor="@color/colorPrimaryAlpha"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/locationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="---"
+                    android:textColor="@color/internetActive"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="|"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="Weather - "
+                    android:textColor="@color/colorPrimaryAlpha"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/weather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="--"
+                    android:textColor="@color/internetActive"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="|"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/settings"

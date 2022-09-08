@@ -9,6 +9,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,6 +69,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -86,6 +93,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     DatabaseReference primaryDatabase;
     String mUid;
     Button setting, export;
+    private TextView internetStatus, locationD, weather, batteryPercentage;
 
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
@@ -132,6 +140,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         peristalticDev = findViewById(R.id.peristaltic_dev);
         tempDev = findViewById(R.id.temp_dev);
         tvInstruction = findViewById(R.id.tvInstruction);
+
+        batteryPercentage = findViewById(R.id.batteryPercent);
+        internetStatus = findViewById(R.id.internetStatus);
+        locationD = findViewById(R.id.locationText);
+        weather = findViewById(R.id.weather);
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
@@ -192,6 +205,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 IndusDev.setCardBackgroundColor(Color.WHITE);
             }
         });
+
+
+        NewAsyncTask newAsyncTask = new NewAsyncTask(this);
+        newAsyncTask.execute(Dashboard.this);
 
         tempDev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,6 +298,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             startActivity(new Intent(this, ConnectDeviceActivity.class));
         });
 
+        // battery percentage
+        BatteryManager bm = (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            batteryPercentage.setText(tabBatteryPer + "%");
+        }
+
         setUpNavDrawer();
         setUpToolBar();
         setUpTemp();
@@ -337,6 +361,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     @Override
     protected void onPause() {
         super.onPause();
+        NewAsyncTask newAsyncTask = new NewAsyncTask(this);
+        newAsyncTask.execute(Dashboard.this);
     }
 
     @Override
@@ -369,6 +395,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     @Override
     protected void onResume() {
         super.onResume();
+        NewAsyncTask newAsyncTask = new NewAsyncTask(this);
+        newAsyncTask.execute(Dashboard.this);
         refresh();
     }
 
@@ -790,5 +818,88 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         });
     }
 
+    private class NewAsyncTask extends AsyncTask<Context, Void, Void> {
+        private WeakReference<Dashboard> dashboardWeakReference;
 
+        NewAsyncTask(Dashboard dashboard) {
+            dashboardWeakReference = new WeakReference<Dashboard>(dashboard);
+        }
+
+        private boolean isNetworkAvailable2(Context context) {
+            ConnectivityManager manager =
+                    (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            boolean isAvailable = false;
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // Network is present and connected
+                isAvailable = true;
+            }
+            return isAvailable;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            Dashboard dashboard = dashboardWeakReference.get();
+            if (dashboard == null || dashboard.isFinishing()) {
+                return;
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Context... contexts) {
+            Dashboard dashboard = dashboardWeakReference.get();
+            if (dashboard == null || dashboard.isFinishing()) {
+                return null;
+            }
+
+            if (isNetworkAvailable2(contexts[0])) {
+                try {
+                    HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                    urlc.setRequestProperty("User-Agent", "Test");
+                    urlc.setRequestProperty("Connection", "close");
+                    urlc.setConnectTimeout(1500);
+                    urlc.connect();
+                    isConnected = (urlc.getResponseCode() == 200);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isConnected) {
+                                dashboard.internetStatus.setText("Active");
+                                dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetActive));
+                            } else {
+                                dashboard.internetStatus.setText("Inactive");
+                                dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+                            }
+                        }
+                    });
+
+                } catch (IOException e) {
+                    Log.e("LOG_TAG", "Error: ", e);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dashboard.internetStatus.setText("Inactive");
+                            dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+                        }
+                    });
+                }
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dashboard.internetStatus.setText("Inactive");
+                        dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+                    }
+                });
+                Log.d("LOG_TAG", "No network present");
+            }
+
+            return null;
+        }
+
+
+    }
+
+    public static boolean isConnected;
 }
