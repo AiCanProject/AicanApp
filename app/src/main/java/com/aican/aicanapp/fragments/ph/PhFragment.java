@@ -106,10 +106,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
 
         batteryDialog = new BatteryDialog();
-        DialogMain dialogMain = new DialogMain();
-        dialogMain.setCancelable(false);
-        Source.userTrack = "PhFragment logged in by ";
-        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+        if (Source.subscription.equals("cfr")) {
+            DialogMain dialogMain = new DialogMain();
+            dialogMain.setCancelable(false);
+            Source.userTrack = "PhFragment logged in by ";
+            dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+        }
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         setupListeners();

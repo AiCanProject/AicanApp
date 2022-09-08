@@ -1,10 +1,12 @@
 package com.aican.aicanapp.Dashboard;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.os.Build;
@@ -58,12 +60,15 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
@@ -148,6 +153,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
 
+        // subscription checking
+        subscriptionChecker();
+
         //showNetworkDialog();
 
         phRecyclerView.setVisibility(View.VISIBLE);
@@ -171,7 +179,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 //    showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     phRecyclerView.setVisibility(View.GONE);
                 }
                 tempRecyclerView.setVisibility(View.GONE);
@@ -193,7 +201,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
                 if (tempDevices.size() != 0) {
                     tempRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     tempRecyclerView.setVisibility(View.GONE);
                 }
                 phRecyclerView.setVisibility(View.GONE);
@@ -212,7 +220,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             public void onClick(View v) {
                 if (pumpDevices.size() != 0) {
                     pumpRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     pumpRecyclerView.setVisibility(View.GONE);
                 }
                 tempRecyclerView.setVisibility(View.GONE);
@@ -231,7 +239,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             public void onClick(View v) {
                 if (coolingDevices.size() != 0) {
                     coolingRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     coolingRecyclerView.setVisibility(View.GONE);
                 }
 
@@ -258,14 +266,14 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-                intent.putExtra("checkBtn","addUser");
+                intent.putExtra("checkBtn", "addUser");
                 startActivity(intent);
             }
         });
 
         ivLogout.setOnClickListener(v -> {
             Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-            intent.putExtra("checkBtn","logout");
+            intent.putExtra("checkBtn", "logout");
             startActivity(intent);
         });
 
@@ -347,7 +355,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         if (phDevices.size() != 0) {
             phRecyclerView.setVisibility(View.VISIBLE);
             phDev.setCardBackgroundColor(Color.GRAY);
-        }else {
+        } else {
             phRecyclerView.setVisibility(View.GONE);
         }
         tempRecyclerView.setVisibility(View.GONE);
@@ -560,7 +568,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     coolingAdapter.notifyDataSetChanged();
                     phAdapter.notifyDataSetChanged();
                     pumpAdapter.notifyDataSetChanged();
-                    if (tempDevices.size() == 0) {
+                 /*
+                 if (tempDevices.size() == 0) {
                         tempRecyclerView.setVisibility(View.GONE);
 //                        tvTemp.setVisibility(View.GONE);
                     } else {
@@ -588,6 +597,24 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         pumpRecyclerView.setVisibility(View.VISIBLE);
                         //          tvPump.setVisibility(View.VISIBLE);
                     }
+
+                    */
+
+                    if (phDevices.size() != 0) {
+                        phRecyclerView.setVisibility(View.VISIBLE);
+                        phDev.setCardBackgroundColor(Color.GRAY);
+                    } else {
+                        phRecyclerView.setVisibility(View.GONE);
+                    }
+                    tempRecyclerView.setVisibility(View.GONE);
+                    coolingRecyclerView.setVisibility(View.GONE);
+                    pumpRecyclerView.setVisibility(View.GONE);
+//                    ecRecyclerView.setVisibility(View.GONE);
+
+                    phDev.setCardBackgroundColor(Color.GRAY);
+                    tempDev.setCardBackgroundColor(Color.WHITE);
+                    peristalticDev.setCardBackgroundColor(Color.WHITE);
+                    IndusDev.setCardBackgroundColor(Color.WHITE);
                 }
             });
         }
@@ -670,4 +697,98 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 .child(type).child(deviceId).child("NAME").setValue(newName);
         refresh();
     }
+
+    private void subscriptionChecker() {
+
+        String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
+        if (uid == null) return;
+        DatabaseReference ref = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("USERS").child(uid).child("subscription");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    DatabaseReference subscription = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("USERS").child(uid);
+                    subscription.child("subscription").setValue("na");
+
+                    subscription.child("subscription").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot1) {
+
+//                            Toast.makeText(Dashboard.this, "Subscription : " + snapshot1.getValue(), Toast.LENGTH_SHORT).show();
+                            Dialog dialog = new Dialog(Dashboard.this);
+                            dialog.setContentView(R.layout.no_subscription);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.setCancelable(false);
+                            dialog.findViewById(R.id.contactWith).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(Dashboard.this, "Contact", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            dialog.show();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(Dashboard.this, "Failed " + error, Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+
+                } else {
+//                    Toast.makeText(Dashboard.this, " Subscribed " + snapshot.getValue(), Toast.LENGTH_SHORT).show();
+                    DatabaseReference subscription = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("USERS").child(uid);
+
+                    subscription.child("subscription").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot1) {
+//                            Toast.makeText(Dashboard.this, "Subscription : " + snapshot1.getValue(), Toast.LENGTH_SHORT).show();
+                            if (Objects.equals(snapshot1.getValue(), "na")) {
+                                Dialog dialog = new Dialog(Dashboard.this);
+                                dialog.setContentView(R.layout.no_subscription);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.setCancelable(false);
+                                dialog.findViewById(R.id.contactWith).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        finishAffinity();
+                                    }
+                                });
+                                dialog.show();
+                            }
+                            if (Objects.equals(snapshot1.getValue(), "non cfr") || Objects.equals(snapshot1.getValue(), "non_cfr")
+                                    || Objects.equals(snapshot1.getValue(), "nonCfr") || Objects.equals(snapshot1.getValue(), "noncfr")
+                                    || Objects.equals(snapshot1.getValue(), "Non Cfr") || Objects.equals(snapshot1.getValue(), "Non cfr")) {
+                                Source.subscription = "nonCfr";
+                                setting.setVisibility(View.GONE);
+                            }
+                            if (Objects.equals(snapshot1.getValue(), "cfr")) {
+                                Source.subscription = "cfr";
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(Dashboard.this, "Failed " + error, Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Dashboard.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+
 }
