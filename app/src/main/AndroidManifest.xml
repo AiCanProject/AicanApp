@@ -31,6 +31,9 @@
         tools:replace="android:icon"
         tools:targetApi="m">
         <activity
+            android:name=".specificactivities.PhMvTable"
+            android:exported="false" />
+        <activity
             android:name=".userdatabase.EditUserDatabase"
             android:exported="false" />
         <activity
@@ -116,9 +119,7 @@
             android:name=".Services.LogHoldBackgroundService"
             android:enabled="true"
             android:exported="true" />
-
-        <service android:name=".Services.alarmBackgroundService"></service>
-
+        <service android:name=".Services.alarmBackgroundService" />
     </application>
 
 </manifest>

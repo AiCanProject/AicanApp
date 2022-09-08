@@ -53,6 +53,7 @@ import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.ExitConfirmDialog;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
+import com.aican.aicanapp.specificactivities.PhMvTable;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 import com.aican.aicanapp.utils.OnBackPressed;
@@ -1344,8 +1345,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         phMvTable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), PhMvTable.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getContext(), PhMvTable.class);
+                startActivity(intent);
             }
         });
 
