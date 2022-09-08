@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
-        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT)");
+        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT, BFD TEXT)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
@@ -57,16 +57,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Boolean insertCalibration(String PH, String MV, String DT){
+    public Boolean insertCalibration(String PH, String MV, String DT, String BFD) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PH", PH);
         contentValues.put("MV", MV);
         contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
         long result = db.insert("CalibData", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
