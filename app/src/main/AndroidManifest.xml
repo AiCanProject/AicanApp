@@ -58,6 +58,9 @@
             android:name=".specificactivities.Export"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".ProbeScan.ProbeScanner"
+            android:exported="false" />
+        <activity
             android:name=".dialogs.AuthenticateRoleDialog"
             android:exported="false"
             tools:ignore="Instantiatable" />

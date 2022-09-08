@@ -44,14 +44,14 @@ import java.util.Locale;
 public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "PhFragment";
     PhView phView;
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, tabBattery;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, probeData;
 
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
     SwitchCompat switchAtc;
 
     BatteryDialog batteryDialog;
-
+    String probeInfo = "-";
     float ph = 0;
     int skipPoints = 0;
     String[] probe = {"Unbreakable", "Glass", "Others"};
@@ -85,7 +85,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         phView = view.findViewById(R.id.phView);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
-        tabBattery = view.findViewById(R.id.tabBattery);
+        probeData = view.findViewById(R.id.probesData);
         entriesOriginal = new ArrayList<>();
 
         databaseHelper = new DatabaseHelper(requireContext());
@@ -98,11 +98,20 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Source.userPasscode = res.getString(3);
         }
 
-        BatteryManager bm = (BatteryManager) getContext().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-            tabBattery.setText(tabBatteryPer + "%");
+        Cursor p = databaseHelper.get_probe();
+        while (p.moveToNext()) {
+            probeInfo = p.getString(0);
         }
+        probeData.setText(probeInfo);
+
+        probeData.setSelected(true);
+
+
+//        BatteryManager bm = (BatteryManager) getContext().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+//            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+//            tabBattery.setText(tabBatteryPer + "%");
+//        }
 
 
         batteryDialog = new BatteryDialog();
@@ -306,5 +315,16 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    @Override
+    public void onResume() {
+
+        Cursor p = databaseHelper.get_probe();
+        while (p.moveToNext()) {
+            probeInfo = p.getString(0);
+        }
+        probeData.setText(probeInfo);
+        super.onResume();
     }
 }

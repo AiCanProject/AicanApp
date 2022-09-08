@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
+import com.aican.aicanapp.ProbeScan.ProbeScanner;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 import com.aican.aicanapp.fragments.ph.PhFragment;
@@ -120,6 +121,11 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             log.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 3;
             tabItemPh.animate().x(size).setDuration(100);
+        } else if (view.getId() == R.id.cLProbes) {
+            Intent intent = new Intent(PhActivity.this, ProbeScanner.class);
+            intent.putExtra("activity","PhFragment");
+//            intent.addFlags()
+            startActivity(intent);
         }
     }
 

@@ -23,6 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
+        sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
+        sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
     }
 
     @Override
@@ -34,6 +36,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserDataDetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ProbeDetail");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ECProbeDetail");
         onCreate(sqLiteDatabase);
     }
 
@@ -96,6 +100,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }else{
             return true;
         }
+    }
+
+    public Boolean insert_probe(String data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("probeInfo", data);
+        long result = db.insert("ProbeDetail", null, contentValues);
+
+        return result != -1;
+    }
+
+    public Boolean insert_ec_probe(String data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ecProbeInfo", data);
+        long result = db.insert("ECProbeDetail", null, contentValues);
+
+        return result != -1;
     }
 
     public Boolean insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
@@ -184,6 +206,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor get_data(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails", null);
+        return cursor;
+    }
+
+
+    public Cursor get_probe() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from ProbeDetail", null);
+        return cursor;
+    }
+
+    public Cursor get_ec_probe() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from ECProbeDetail", null);
         return cursor;
     }
 
