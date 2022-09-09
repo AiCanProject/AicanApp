@@ -38,6 +38,15 @@ public class ConnectDeviceActivity extends AppCompatActivity {
         tilPass = findViewById(R.id.tilPassword);
         tilSsid = findViewById(R.id.tilSsid);
 
+        String ssid = getIntent().getStringExtra("ssid");
+        String pass = getIntent().getStringExtra("pass");
+        String flag = getIntent().getStringExtra("flag");
+
+        if (flag != null && flag.equals("c")){
+            etSsid.setText(ssid);
+            etPass.setText(pass);
+        }
+
 
         btnConnect.setOnClickListener(v -> {
             if(validate()){
@@ -45,7 +54,9 @@ public class ConnectDeviceActivity extends AppCompatActivity {
             }
         });
         btnOpenSettings.setOnClickListener(v->{
-            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            Intent i = new Intent(ConnectDeviceActivity.this,AvailableWifiDevices.class);
+            startActivity(i);
         });
     }
 

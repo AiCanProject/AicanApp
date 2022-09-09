@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".specificactivities.AvailableWifiDevices">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="6dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sofia_bold"
+            android:text="Available Devices"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:textSize="22dp" />
+        <Button
+            android:id="@+id/btnOpenSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/primary_button_selector"
+            android:text="Open Wifi Settings"
+            android:textAllCaps="false"
+            android:textColor="@color/white_force"
+            android:textSize="11dp"
+            />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="5dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/sendData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/primary_button_selector"
+            android:text="Send Data Manually"
+            android:textAllCaps="false"
+            android:textColor="@color/white_force"
+            app:layout_constraintBottom_toTopOf="@id/btnConnect"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="8dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

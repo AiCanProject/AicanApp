@@ -50,6 +50,7 @@ import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
+import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
@@ -295,7 +296,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         });
 
         tvConnectDevice.setOnClickListener(v -> {
-            startActivity(new Intent(this, ConnectDeviceActivity.class));
+            startActivity(new Intent(this, AvailableWifiDevices.class));
         });
 
         // battery percentage
