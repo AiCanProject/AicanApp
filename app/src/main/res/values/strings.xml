@@ -65,5 +65,6 @@
         <item>Regular</item>
         <item>Timer</item>
     </string-array>
+    <string name="folderLocation">AICAN Latest Apk</string>
 
 </resources>

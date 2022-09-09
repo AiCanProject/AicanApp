@@ -82,6 +82,7 @@
     <color name="temp1">#FF5353</color>
     <color name="temp2">#63DE69</color>
 
-
+    <color name="internetInactive">#FE4A51</color>
+    <color name="internetActive">#71ED19</color>
 
 </resources>

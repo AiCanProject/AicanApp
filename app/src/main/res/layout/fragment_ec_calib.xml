@@ -7,8 +7,7 @@
     android:background="@color/white"
     android:clipChildren="false"
     android:elevation="48dp"
-    app:cardCornerRadius="43dp"
-    tools:context=".fragments.ph.PhCalibFragment">
+    app:cardCornerRadius="43dp">
 
     <LinearLayout
         android:id="@+id/ll1"
@@ -37,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.aican.aicanapp.ph.PhView
+<!--                    <com.aican.aicanappnoncfr.ph.PhView
                         android:id="@+id/phView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -49,24 +48,24 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:vertical="true" />
-
+-->
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.4" />
+                        app:layout_constraintGuide_percent="0.21" />
 
 
                     <TextView
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="pH"
+                        android:text="Conductivity"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/phView"
+                        app:layout_constraintStart_toStartOf="@+id/guideline5"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -225,7 +224,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:padding="10dp"
-                android:text="00:45"
+                android:text="02:00"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:visibility="invisible"
@@ -280,17 +279,10 @@
                 android:id="@+id/printCalibData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Print"
                 android:layout_gravity="center"
-                android:text="Print" />
 
-            <Button
-                android:id="@+id/phMvTable"
-                android:layout_width="127dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="#9037C7"
-                android:text="pH mV Table"
-                android:textAllCaps="false" />
+                />
 
             <!--            <TextView-->
             <!--                android:id="@+id/lastCalibration"-->
@@ -306,7 +298,6 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -323,8 +314,6 @@
                     android:elevation="12dp"
                     app:cardCornerRadius="14dp">
 
-
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -337,30 +326,27 @@
                             android:layout_margin="2dp">
 
                             <TextView
-                                android:layout_width="10dp"
+                                android:layout_width="43dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginEnd="0dp"
                                 android:layout_marginBottom="1dp"
                                 android:layout_weight="1"
-                                android:text="pH"
+                                android:text="Conductivity"
                                 android:textSize="22sp" />
-
 
                             <View
                                 android:layout_width="2dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:background="#DFE6ED"
-                                android:translationX="20dp" />
+                                android:layout_marginStart="5dp"
+                                android:background="#DFE6ED" />
 
                             <TextView
-                                android:layout_width="10dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
                                 android:layout_marginBottom="1dp"
                                 android:layout_weight="1"
-                                android:paddingStart="20dp"
                                 android:text="mV"
                                 android:textSize="22sp" />
 
@@ -372,7 +358,7 @@
                                 android:background="#DFE6ED" />
 
                             <TextView
-                                android:layout_width="10dp"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
                                 android:layout_marginBottom="2dp"
@@ -412,7 +398,6 @@
                                 android:layout_gravity="center"
                                 android:layout_margin="2dp">
 
-
                                 <TextView
                                     android:id="@+id/ph1"
                                     android:layout_width="10dp"
@@ -444,7 +429,6 @@
                                     android:layout_gravity="center"
                                     android:background="#DFE6ED" />
 
-
                                 <TextView
                                     android:id="@+id/mv1"
                                     android:layout_width="0dp"
@@ -454,12 +438,10 @@
                                     android:layout_weight="1"
                                     android:textSize="16sp" />
 
-
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:layout_marginStart="5dp"
                                     android:background="#DFE6ED" />
 
                                 <TextView
@@ -479,9 +461,8 @@
                                     android:background="#DFE6ED"
                                     android:translationX="27dp" />
 
-
                                 <TextView
-                                    android:id="@+id/bufferD1"
+                                    android:id="@+id/ec_bufferD1"
                                     android:layout_width="10dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
@@ -496,7 +477,7 @@
                                     android:textSize="16sp" />
 
                                 <TextView
-                                    android:id="@+id/qr1"
+                                    android:id="@+id/ec_qr1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
@@ -509,6 +490,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_camera"
                                     app:drawableTint="@color/blueDark" />
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -573,6 +555,7 @@
                                     android:layout_weight="1"
                                     android:textSize="16sp" />
 
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -583,7 +566,7 @@
 
 
                                 <TextView
-                                    android:id="@+id/bufferD2"
+                                    android:id="@+id/ec_bufferD2"
                                     android:layout_width="10dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
@@ -598,7 +581,7 @@
                                     android:textSize="16sp" />
 
                                 <TextView
-                                    android:id="@+id/qr2"
+                                    android:id="@+id/ec_qr2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
@@ -687,7 +670,7 @@
 
 
                                 <TextView
-                                    android:id="@+id/bufferD3"
+                                    android:id="@+id/ec_bufferD3"
                                     android:layout_width="10dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
@@ -702,7 +685,7 @@
                                     android:textSize="16sp" />
 
                                 <TextView
-                                    android:id="@+id/qr3"
+                                    android:id="@+id/ec_qr3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
@@ -715,6 +698,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_camera"
                                     app:drawableTint="@color/blueDark" />
+
 
 
                             </LinearLayout>
@@ -800,7 +784,7 @@
 
 
                                 <TextView
-                                    android:id="@+id/bufferD4"
+                                    android:id="@+id/ec_bufferD4"
                                     android:layout_width="10dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
@@ -815,7 +799,7 @@
                                     android:textSize="16sp" />
 
                                 <TextView
-                                    android:id="@+id/qr4"
+                                    android:id="@+id/ec_qr4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
@@ -828,6 +812,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_camera"
                                     app:drawableTint="@color/blueDark" />
+
 
                             </LinearLayout>
 
@@ -903,7 +888,7 @@
 
 
                                 <TextView
-                                    android:id="@+id/bufferD5"
+                                    android:id="@+id/ec_bufferD5"
                                     android:layout_width="10dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
@@ -918,7 +903,7 @@
                                     android:textSize="16sp" />
 
                                 <TextView
-                                    android:id="@+id/qr5"
+                                    android:id="@+id/ec_qr5"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
@@ -933,19 +918,20 @@
                                     app:drawableTint="@color/blueDark" />
 
 
+
                             </LinearLayout>
                         </LinearLayout>
 
                     </LinearLayout>
-
                 </androidx.cardview.widget.CardView>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCalibFileView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:layout_margin="40dp"
-                    android:orientation="vertical" />
+                    />
             </LinearLayout>
         </ScrollView>
 

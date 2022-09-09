@@ -1,18 +1,24 @@
 package com.aican.aicanapp.specificactivities;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.ProbeScan.ProbeScanner;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.fragments.ec.EcAlarmFragment;
+import com.aican.aicanapp.fragments.ec.EcCalibFragment;
+import com.aican.aicanapp.fragments.ec.EcFragment;
+import com.aican.aicanapp.fragments.ec.EcGraphFragment;
+import com.aican.aicanapp.fragments.ec.EcLogFragment;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
@@ -22,17 +28,17 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class PhActivity extends AppCompatActivity implements View.OnClickListener {
+public class EcActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
 
     DatabaseReference deviceRef;
 
-    PhFragment phFragment = new PhFragment();
-    PhCalibFragment phCalibFragment = new PhCalibFragment();
-    phLogFragment phLogFragment = new phLogFragment();
-    phGraphFragment phGraphFragment = new phGraphFragment();
-    phAlarmFragment phAlarmFragment = new phAlarmFragment();
+    EcFragment ecFragment = new EcFragment();
+    EcCalibFragment ecCalibFragment = new EcCalibFragment();
+    EcAlarmFragment ecAlarmFragment = new EcAlarmFragment();
+    EcLogFragment ecLogFragment = new EcLogFragment();
+    EcGraphFragment ecGraphFragment = new EcGraphFragment();
 
     public static String DEVICE_ID = null;
 
@@ -42,7 +48,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         setTheme(R.style.AppTheme_Light);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ph);
+        setContentView(R.layout.activity_ec);
         getWindow().setStatusBarColor(this.getResources().getColor(R.color.btnColor));
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -51,10 +57,9 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         if (DEVICE_ID == null) {
             throw new RuntimeException();
         }
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("ECMETER").child(EcActivity.DEVICE_ID);
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-
-        loadFragments(phFragment);
+        loadFragments(ecFragment);
         ph = findViewById(R.id.item1);
         calibrate = findViewById(R.id.item2);
         log = findViewById(R.id.item3);
@@ -74,7 +79,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     public void onClick(View view) {
         if (view.getId() == R.id.item1) {
             tabItemPh.animate().x(0).setDuration(100);
-            loadFragments(phFragment);
+            loadFragments(ecFragment);
             ph.setTextColor(Color.WHITE);
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
@@ -82,7 +87,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             alarm.setTextColor(Color.parseColor("#FF24003A"));
         } else if (view.getId() == R.id.item2) {
 
-            loadFragments(phCalibFragment);
+            loadFragments(ecCalibFragment);
             calibrate.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
@@ -92,7 +97,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             tabItemPh.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item3) {
-            loadFragments(phLogFragment);
+            loadFragments(ecLogFragment);
             log.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
@@ -102,7 +107,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             tabItemPh.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item4) {
-            loadFragments(phGraphFragment);
+            loadFragments(ecGraphFragment);
 
             graph.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
@@ -112,28 +117,29 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             tabItemPh.animate().x(size).setDuration(100);
 
         } else if (view.getId() == R.id.item5) {
-            loadFragments(phAlarmFragment);
+            loadFragments(ecAlarmFragment);
 
             alarm.setTextColor(Color.WHITE);
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             graph.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
-            int size = calibrate.getWidth() * 3;
+            int size = calibrate.getWidth() * 4;
             tabItemPh.animate().x(size).setDuration(100);
-        } else if (view.getId() == R.id.cLProbes) {
-            Intent intent = new Intent(PhActivity.this, ProbeScanner.class);
-            intent.putExtra("activity","PhFragment");
+        } else if (view.getId() == R.id.ecProbes) {
+            Intent intent = new Intent(EcActivity.this, ProbeScanner.class);
+            intent.putExtra("activity","EcFragment");
 //            intent.addFlags()
             startActivity(intent);
         }
+
     }
 
     @Override
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
-        Intent intent = new Intent(PhActivity.this, Dashboard.class);
+        Intent intent = new Intent(EcActivity.this, Dashboard.class);
         startActivity(intent);
     }
 
@@ -147,7 +153,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                     .commit();
 
 
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+//            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
 
             return true;
         }

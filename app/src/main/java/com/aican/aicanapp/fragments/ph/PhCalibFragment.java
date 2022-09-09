@@ -2,10 +2,13 @@ package com.aican.aicanapp.fragments.ph;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static java.lang.Integer.parseInt;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -37,6 +40,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanapp.ProbeScan.ProbeScanner;
 import com.aican.aicanapp.adapters.CalibFileAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
@@ -49,6 +53,7 @@ import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.dialogs.ExitConfirmDialog;
 import com.aican.aicanapp.specificactivities.PhCalibrateActivity;
+import com.aican.aicanapp.specificactivities.PhMvTable;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 import com.aican.aicanapp.utils.OnBackPressed;
@@ -78,6 +83,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -97,10 +103,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     Integer fault;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
+    TextView qr1, qr2, qr3, qr4, qr5;
+    TextView bufferD1, bufferD2, bufferD3, bufferD4, bufferD5;
+
     DatabaseReference deviceRef;
-    Button calibrateBtn, btnNext, printCalib;
+    Button calibrateBtn, btnNext, printCalib, phMvTable;
     Spinner spin;
-    String MV1, MV2, MV3, MV4, MV5, PH1, PH2, PH3, PH4, PH5, DT1, DT2, DT3, DT4, DT5;
+    String MV1, MV2, MV3, MV4, MV5, PH1, PH2, PH3, PH4, PH5, DT1, DT2, DT3, DT4, DT5, BFD1, BFD2, BFD3, BFD4, BFD5;
     String mode;
     String test1, test2, test3;
     String mV1, mV2, mV3, mV4, mV5;
@@ -146,7 +155,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
-            if (spin.getSelectedItemPosition() == 0 ){
+            if (spin.getSelectedItemPosition() == 0) {
 
                 ph1.setText(String.valueOf(buffers[0]));
                 ph2.setText(String.valueOf(buffers[1]));
@@ -190,10 +199,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     }
 
 
-
     private void setupListeners() {
 
-        if(spin.getSelectedItemPosition() == 0){
+        if (spin.getSelectedItemPosition() == 0) {
 
             l4.setVisibility(View.VISIBLE);
             l5.setVisibility(View.VISIBLE);
@@ -220,7 +228,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String tempForm = String.format(Locale.UK, "%.1f", temp);
                     tvTempCurr.setText(tempForm + "°C");
 
-                    if(temp<=-127.0){
+                    if (temp <= -127.0) {
                         tvTempCurr.setText("NA");
                     }
                 }
@@ -511,7 +519,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             });
 
-             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String phVal = snapshot.getValue(String.class);
@@ -549,8 +557,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             });
 
-        }
-        else if(spin.getSelectedItemPosition() == 1){
+        } else if (spin.getSelectedItemPosition() == 1) {
 
             mv4.setText(" ");
             mv5.setText(" ");
@@ -582,7 +589,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String tempForm = String.format(Locale.UK, "%.1f", temp);
                     tvTempCurr.setText(tempForm + "°C");
 
-                    if(temp<=-127.0){
+                    if (temp <= -127.0) {
                         tvTempCurr.setText("NA");
                     }
                 }
@@ -761,7 +768,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             });
 
-             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     String phVal = snapshot.getValue(String.class);
@@ -784,7 +791,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         }
 
 
-
         deviceRef.child("Data").child("FAULT").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -792,7 +798,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 if (fault == null) return;
                 if (fault == 1) {
                     showAlertDialogButtonClicked();
-                }else {
+                } else {
 
                 }
 
@@ -804,7 +810,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         });
 
 
-        if(spin.getSelectedItemPosition() == 0 ) {
+        if (spin.getSelectedItemPosition() == 0) {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -910,8 +916,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 }
             });
-        }
-        else if (spin.getSelectedItemPosition() == 1) {
+        } else if (spin.getSelectedItemPosition() == 1) {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -955,7 +960,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calibrateBtn.setEnabled(true);
 
 
-                    }  else if (ec == 41) {
+                    } else if (ec == 41) {
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                         strDate = simpleDateFormat.format(new Date());
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
@@ -987,8 +992,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     }
 
-    public void showAlertDialogButtonClicked()
-    {
+    public void showAlertDialogButtonClicked() {
 
         // Create an alert builder
         AlertDialog.Builder builder
@@ -1003,17 +1007,16 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         // add a button
         builder.setPositiveButton(
-                        "OK",
-                        new DialogInterface.OnClickListener() {
+                "OK",
+                new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(
-                                    DialogInterface dialog,
-                                    int which)
-                            {
+                    @Override
+                    public void onClick(
+                            DialogInterface dialog,
+                            int which) {
 
-                            }
-                        });
+                    }
+                });
 
         // create and show
         // the alert dialog
@@ -1021,10 +1024,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 = builder.create();
         dialog.show();
     }
-
-
-
-
 
 
     /**
@@ -1054,9 +1053,30 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         mv2 = view.findViewById(R.id.mv2);
         ph3 = view.findViewById(R.id.ph3);
         mv3 = view.findViewById(R.id.mv3);
+
+        qr1 = view.findViewById(R.id.qr1);
+        qr2 = view.findViewById(R.id.qr2);
+        qr3 = view.findViewById(R.id.qr3);
+        qr4 = view.findViewById(R.id.qr4);
+        qr5 = view.findViewById(R.id.qr5);
+
+        bufferD1 = view.findViewById(R.id.bufferD1);
+        bufferD2 = view.findViewById(R.id.bufferD2);
+        bufferD3 = view.findViewById(R.id.bufferD3);
+        bufferD4 = view.findViewById(R.id.bufferD4);
+        bufferD5 = view.findViewById(R.id.bufferD5);
+
+        bufferD1.setSelected(true);
+        bufferD2.setSelected(true);
+        bufferD3.setSelected(true);
+        bufferD4.setSelected(true);
+        bufferD5.setSelected(true);
+
+
         ph4 = view.findViewById(R.id.ph4);
         mv4 = view.findViewById(R.id.mv4);
         printCalib = view.findViewById(R.id.printCalibData);
+        phMvTable = view.findViewById(R.id.phMvTable);
         ph5 = view.findViewById(R.id.ph5);
         mv5 = view.findViewById(R.id.mv5);
 
@@ -1095,7 +1115,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         nullEntry = "";
 
 
-
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
@@ -1132,7 +1151,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //            lastCalib.setText("Last Calibrated By \n" + liness[0]);
 //        }
 
-        String[] spinselect = { "5", "3"};
+        String[] spinselect = {"5", "3"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, spinselect);
 
@@ -1141,7 +1160,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         SharedPreferences spinPref = getContext().getSharedPreferences("spinnerPref", MODE_PRIVATE);
         int spinnerValue = spinPref.getInt("userChoiceSpinner", -1);
-        if(spinnerValue != -1){
+        if (spinnerValue != -1) {
             spin.setSelection(spinnerValue);
         }
 
@@ -1168,11 +1187,17 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deleteAllCalibData();
                         calibData();
 
-                        databaseHelper.insertCalibration(PH1, MV1, DT1);
-                        databaseHelper.insertCalibration(PH2, MV2, DT2);
-                        databaseHelper.insertCalibration(PH3, MV3, DT3);
-                        databaseHelper.insertCalibration(PH4, MV4, DT4);
-                        databaseHelper.insertCalibration(PH5, MV5, DT5);
+                        bufferD1.setText(BFD1);
+                        bufferD2.setText(BFD2);
+                        bufferD3.setText(BFD3);
+                        bufferD4.setText(BFD4);
+                        bufferD5.setText(BFD5);
+
+                        databaseHelper.insertCalibration(PH1, MV1, DT1, BFD1);
+                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2);
+                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3);
+                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4);
+                        databaseHelper.insertCalibration(PH5, MV5, DT5, BFD5);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
@@ -1203,9 +1228,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deleteAllCalibData();
                         calibDataThree();
 
-                        databaseHelper.insertCalibration(PH2, MV2, DT2);
-                        databaseHelper.insertCalibration(PH3, MV3, DT3);
-                        databaseHelper.insertCalibration(PH4, MV4, DT4);
+                        bufferD2.setText(BFD2);
+                        bufferD3.setText(BFD3);
+                        bufferD4.setText(BFD4);
+
+
+                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2);
+                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3);
+                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
@@ -1226,24 +1256,37 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
 
-        if(spin.getSelectedItemPosition() == 0){
+        if (spin.getSelectedItemPosition() == 0) {
             phEdit1.setOnClickListener(this::onClick);
             phEdit2.setOnClickListener(this::onClick);
             phEdit3.setOnClickListener(this::onClick);
             phEdit4.setOnClickListener(this::onClick);
             phEdit5.setOnClickListener(this::onClick);
-        }
-        else if(spin.getSelectedItemPosition() == 1){
+        } else if (spin.getSelectedItemPosition() == 1) {
             phEdit1.setOnClickListener(this::onClick);
             phEdit2.setOnClickListener(this::onClick);
             phEdit3.setOnClickListener(this::onClick);
         }
 
-        DialogMain dialogMain = new DialogMain();
-        dialogMain.setCancelable(false);
-        Source.userTrack = "PhCalibFragment logged in by ";
-        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+        if (spin.getSelectedItemPosition() == 0) {
+            qr1.setOnClickListener(this::onClick);
+            qr2.setOnClickListener(this::onClick);
+            qr3.setOnClickListener(this::onClick);
+            qr4.setOnClickListener(this::onClick);
+            qr5.setOnClickListener(this::onClick);
+        } else if (spin.getSelectedItemPosition() == 1) {
+            qr1.setOnClickListener(this::onClick);
+            qr2.setOnClickListener(this::onClick);
+            qr3.setOnClickListener(this::onClick);
+        }
 
+        if (Source.subscription.equals("cfr")) {
+
+            DialogMain dialogMain = new DialogMain();
+            dialogMain.setCancelable(false);
+            Source.userTrack = "PhCalibFragment logged in by ";
+            dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+        }
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1288,9 +1331,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }
                 }
-                if (mode.equals(3)){
+                if (mode.equals(3)) {
                     calibrate();
-                }else {
+                } else {
                     calibrate();
                 }
             }
@@ -1298,6 +1341,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
 
         test3 = mv2.getText().toString();
+
+        phMvTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), PhMvTable.class);
+                startActivity(intent);
+            }
+        });
 
         printCalib.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1318,8 +1369,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
 
 
-
-
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx");
 
@@ -1333,7 +1382,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 ////                    }
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData"+currentDateandTime+".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData" + currentDateandTime + ".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
                     File root1 = new File(path1);
@@ -1345,7 +1394,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         return;
                     } else {
                         for (int i = 0; i < filesAndFolders1.length; i++) {
-                            if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx") ){
+                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
                                 filesAndFolders1[i].delete();
                             }
                         }
@@ -1356,13 +1405,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
 
 
-
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
-
-
 
 
                 calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
@@ -1383,7 +1429,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                if( filesAndFolders[i].getName().endsWith(".pdf")){
+                if (filesAndFolders[i].getName().endsWith(".pdf")) {
                     filesAndFoldersPDF[0] = filesAndFolders[i];
                 }
             }
@@ -1397,39 +1443,46 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     }
 
-    public void fileNotWrite(File file){
+
+    public void fileNotWrite(File file) {
         file.setWritable(false);
-        if(file.canWrite()){
-            Log.d("csv","Nhi kaam kar rha");
+        if (file.canWrite()) {
+            Log.d("csv", "Nhi kaam kar rha");
         } else {
-            Log.d("csvnw","Party Bhaiiiii");
+            Log.d("csvnw", "Party Bhaiiiii");
         }
     }
 
     public void calibData() {
         SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
-            MV1 = shp.getString("MV1", "");
-            MV2 = shp.getString("MV2", "");
-            MV3 = shp.getString("MV3", "");
-            MV4 = shp.getString("MV4", "");
-            MV5 = shp.getString("MV5", "");
+        MV1 = shp.getString("MV1", "");
+        MV2 = shp.getString("MV2", "");
+        MV3 = shp.getString("MV3", "");
+        MV4 = shp.getString("MV4", "");
+        MV5 = shp.getString("MV5", "");
 
-            DT1 = shp.getString("DT1", "");
-            DT2 = shp.getString("DT2", "");
-            DT3 = shp.getString("DT3", "");
-            DT4 = shp.getString("DT4", "");
-            DT5 = shp.getString("DT5", "");
+        DT1 = shp.getString("DT1", "");
+        DT2 = shp.getString("DT2", "");
+        DT3 = shp.getString("DT3", "");
+        DT4 = shp.getString("DT4", "");
+        DT5 = shp.getString("DT5", "");
 
-            PH1 = shp.getString("PH1","");
-            PH2 = shp.getString("PH2","");
-            PH3 = shp.getString("PH3","");
-            PH4 = shp.getString("PH4","");
-            PH5 = shp.getString("PH5","");
+        PH1 = shp.getString("PH1", "");
+        PH2 = shp.getString("PH2", "");
+        PH3 = shp.getString("PH3", "");
+        PH4 = shp.getString("PH4", "");
+        PH5 = shp.getString("PH5", "");
+
+        BFD1 = shp.getString("BFD1", "");
+        BFD2 = shp.getString("BFD2", "");
+        BFD3 = shp.getString("BFD3", "");
+        BFD4 = shp.getString("BFD4", "");
+        BFD5 = shp.getString("BFD5", "");
 
     }
 
-    public void calibDataThree(){
+    public void calibDataThree() {
 
         SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
@@ -1441,11 +1494,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         DT3 = shp.getString("DT3", "");
         DT4 = shp.getString("DT4", "");
 
-        PH2 = shp.getString("PH2","");
-        PH3 = shp.getString("PH3","");
-        PH4 = shp.getString("PH4","");
-    }
+        PH2 = shp.getString("PH2", "");
+        PH3 = shp.getString("PH3", "");
+        PH4 = shp.getString("PH4", "");
 
+        BFD2 = shp.getString("BFD2", "");
+        BFD3 = shp.getString("BFD3", "");
+        BFD4 = shp.getString("BFD4", "");
+    }
 
 
     public void deleteAllCalibData() {
@@ -1467,8 +1523,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         try {
 
-            reportDate ="Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            reportTime ="Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
             file = new File(exportDir, "CalibrationData.csv");
             file.createNewFile();
@@ -1484,14 +1540,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 
-            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery + "," + temp + "," + slope + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("pH,mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             while (calibCSV.moveToNext()) {
                 String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
@@ -1502,8 +1558,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 printWriter.println(record1);
             }
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
 
             calibCSV.close();
             db.close();
@@ -1513,8 +1569,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
             Workbook workbook = new Workbook(inputFile + "CalibrationData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0,18.5);
-            worksheet.getCells().setColumnWidth(2,18.5);
+            worksheet.getCells().setColumnWidth(0, 18.5);
+            worksheet.getCells().setColumnWidth(2, 18.5);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
@@ -1523,10 +1579,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     }
 
+    private void onQRClick(View v) {
+
+    }
+
 
     private void onClick(View v) {
 
-        if(spin.getSelectedItemPosition() == 0){
+        if (spin.getSelectedItemPosition() == 0) {
             switch (v.getId()) {
                 case R.id.phEdit1:
                     EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
@@ -1566,12 +1626,25 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     });
                     dialog5.show(getParentFragmentManager(), null);
                     break;
+                case R.id.qr1:
+                    openQRActivity("qr1");
+                    break;
+                case R.id.qr2:
+                    openQRActivity("qr2");
+                    break;
+                case R.id.qr3:
+                    openQRActivity("qr3");
+                    break;
+                case R.id.qr4:
+                    openQRActivity("qr4");
+                    break;
+                case R.id.qr5:
+                    openQRActivity("qr5");
+                    break;
                 default:
                     break;
             }
-        }
-
-        else if(spin.getSelectedItemPosition() == 1){
+        } else if (spin.getSelectedItemPosition() == 1) {
             switch (v.getId()) {
                 case R.id.phEdit1:
                     EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
@@ -1596,7 +1669,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     });
                     dialog2.show(getParentFragmentManager(), null);
                     break;
-
+                case R.id.qr1:
+                    openQRActivity("qr1");
+                    break;
+                case R.id.qr2:
+                    openQRActivity("qr2");
+                    break;
+                case R.id.qr3:
+                    openQRActivity("qr3");
+                    break;
                 default:
                     break;
             }
@@ -1605,6 +1686,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         setupListeners();
     }
 
+    private void openQRActivity(String view) {
+        Intent intent = new Intent(getContext(), ProbeScanner.class);
+        intent.putExtra("activity", "PhCalibFragment");
+        intent.putExtra("view", view);
+        startActivity(intent);
+    }
 
 
     private void updateBufferValue(Float value) {
@@ -1618,9 +1705,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
         isCalibrating = true;
-        if(mode.equals("5")) {
+        if (mode.equals("5")) {
             setupCoeffListener();
-        }else{
+        } else {
             setupCoeffListenerThree();
         }
         CountDownTimer timer = new CountDownTimer(45000, 1000) {
@@ -1646,15 +1733,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferList.add(new BufferData(null, null, currentTime));
                         bufferListThree.add(new BufferData(null, null, currentTime));
 
-                        if(spin.getSelectedItemPosition()==0) {
+                        if (spin.getSelectedItemPosition() == 0) {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
                                 if (coeff == null) return;
                                 currentBuf += 1;
                             });
-                        }
-                        else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree] + 1);
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
@@ -1662,7 +1748,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 currentBufThree += 1;
                             });
                         }
-                        
+
                         deviceRef.child("Data").child("PH_VAL").get().addOnSuccessListener(dataSnapshot -> {
                             Float ph = dataSnapshot.getValue(Float.class);
                             String phForm = String.format(Locale.UK, "%.2f", ph);
@@ -1678,7 +1764,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             timer.start();
         });
     }
-
 
 
     ValueEventListener coeffListener = new ValueEventListener() {
@@ -1716,5 +1801,25 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         } else {
             getActivity().getSupportFragmentManager().popBackStack();
         }
+    }
+
+    @Override
+    public void onResume() {
+
+        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+        BFD1 = shp.getString("BFD1", "");
+        BFD2 = shp.getString("BFD2", "");
+        BFD3 = shp.getString("BFD3", "");
+        BFD4 = shp.getString("BFD4", "");
+        BFD5 = shp.getString("BFD5", "");
+
+        bufferD1.setText(BFD1);
+        bufferD2.setText(BFD2);
+        bufferD3.setText(BFD3);
+        bufferD4.setText(BFD4);
+        bufferD5.setText(BFD5);
+
+        super.onResume();
     }
 }

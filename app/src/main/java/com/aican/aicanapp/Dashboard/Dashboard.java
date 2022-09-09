@@ -1,15 +1,24 @@
 package com.aican.aicanapp.Dashboard;
 
+import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,21 +39,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.AddDevice.AddDeviceOption;
 import com.aican.aicanapp.Authentication.LoginActivity;
+import com.aican.aicanapp.DownloadHandler.DownloadHandler;
 import com.aican.aicanapp.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.CoolingAdapter;
+import com.aican.aicanapp.adapters.EcAdapter;
 import com.aican.aicanapp.adapters.PhAdapter;
 import com.aican.aicanapp.adapters.PumpAdapter;
 import com.aican.aicanapp.adapters.TempAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
+import com.aican.aicanapp.dataClasses.EcDevice;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
+import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
@@ -58,12 +71,28 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
@@ -75,12 +104,16 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String DEVICE_TYPE_PUMP = "P_PUMP";
     public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
+    public static final String DEVICE_TYPE_EC = "ECMETER";
 
-    CardView phDev, tempDev, IndusDev, peristalticDev;
-
+    CardView phDev, tempDev, IndusDev, peristalticDev, ecDev;
+    File file;
+    File fileDestination;
     DatabaseReference primaryDatabase;
+    DatabaseReference databaseReference;
     String mUid;
     Button setting, export;
+    private TextView internetStatus, locationD, weather, batteryPercentage;
 
     ArrayList<String> deviceIds;
     HashMap<String, String> deviceIdIds;
@@ -91,10 +124,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     ArrayList<PumpDevice> pumpDevices;
     ArrayList<TempDevice> tempDevices;
     ArrayList<CoolingDevice> coolingDevices;
+    ArrayList<EcDevice> ecDevices;
 
     TempAdapter tempAdapter;
     CoolingAdapter coolingAdapter;
     PhAdapter phAdapter;
+    EcAdapter ecAdapter;
     PumpAdapter pumpAdapter;
 
     private DatabaseHelper databaseHelper;
@@ -104,7 +139,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
-    private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView;
+    private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView, ecRecyclerView;
     private FloatingActionButton addNewDevice;
     private TextView tvTemp, tvCooling, tvPump, tvPh, tvName, tvConnectDevice, tvInstruction;
     private ImageView ivLogout;
@@ -125,14 +160,21 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phDev = findViewById(R.id.ph_dev);
         IndusDev = findViewById(R.id.indusPh_dev);
         peristalticDev = findViewById(R.id.peristaltic_dev);
+        ecDev = findViewById(R.id.ecMeter_dev);
         tempDev = findViewById(R.id.temp_dev);
         tvInstruction = findViewById(R.id.tvInstruction);
+
+        batteryPercentage = findViewById(R.id.batteryPercent);
+        internetStatus = findViewById(R.id.internetStatus);
+        locationD = findViewById(R.id.locationText);
+        weather = findViewById(R.id.weather);
 
         addNewDevice = findViewById(R.id.add_new_device);
         tempRecyclerView = findViewById(R.id.temp_recyclerview);
         coolingRecyclerView = findViewById(R.id.cooling_recyclerview);
         phRecyclerView = findViewById(R.id.ph_recyclerview);
         pumpRecyclerView = findViewById(R.id.pump_recyclerview);
+        ecRecyclerView = findViewById(R.id.ec_recyclerview);
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
@@ -147,6 +189,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceTypes = new HashMap<>();
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
+        ecDevices = new ArrayList<>();
+
+
+        // subscription checking
+        subscriptionChecker();
 
         //showNetworkDialog();
 
@@ -155,6 +202,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempRecyclerView.setVisibility(View.GONE);
         coolingRecyclerView.setVisibility(View.GONE);
         pumpRecyclerView.setVisibility(View.GONE);
+        ecRecyclerView.setVisibility(View.GONE);
 
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,19 +219,36 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 //    showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     phRecyclerView.setVisibility(View.GONE);
                 }
                 tempRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
+
 
                 phDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
             }
         });
+
+
+        NewAsyncTask newAsyncTask = new NewAsyncTask(this);
+        newAsyncTask.execute(Dashboard.this);
+
+        file = new File(getExternalFilesDir(null) + "/" + getString(R.string.folderLocation));
+
+        fileDestination = new File(Environment.getExternalStorageDirectory(), "/" + getString(R.string.folderLocation));
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+        CheckForUpdate();
 
         tempDev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,17 +258,19 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
                 if (tempDevices.size() != 0) {
                     tempRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     tempRecyclerView.setVisibility(View.GONE);
                 }
                 phRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
 
                 tempDev.setCardBackgroundColor(Color.GRAY);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
             }
         });
 
@@ -212,15 +279,42 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             public void onClick(View v) {
                 if (pumpDevices.size() != 0) {
                     pumpRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     pumpRecyclerView.setVisibility(View.GONE);
                 }
                 tempRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 phRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
 
                 peristalticDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
+                phDev.setCardBackgroundColor(Color.WHITE);
+                IndusDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
+
+            }
+        });
+
+
+        ecDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (ecDevices.size() != 0) {
+                    ecRecyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    ecRecyclerView.setVisibility(View.GONE);
+                }
+
+                phRecyclerView.setVisibility(View.GONE);
+                tempRecyclerView.setVisibility(View.GONE);
+                pumpRecyclerView.setVisibility(View.GONE);
+                coolingRecyclerView.setVisibility(View.GONE);
+
+                ecDev.setCardBackgroundColor(Color.GRAY);
+                tempDev.setCardBackgroundColor(Color.WHITE);
+                peristalticDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
             }
@@ -231,18 +325,20 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             public void onClick(View v) {
                 if (coolingDevices.size() != 0) {
                     coolingRecyclerView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     coolingRecyclerView.setVisibility(View.GONE);
                 }
 
                 phRecyclerView.setVisibility(View.GONE);
                 tempRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
 
                 IndusDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
             }
         });
 
@@ -258,20 +354,27 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-                intent.putExtra("checkBtn","addUser");
+                intent.putExtra("checkBtn", "addUser");
                 startActivity(intent);
             }
         });
 
         ivLogout.setOnClickListener(v -> {
             Intent intent = new Intent(Dashboard.this, AdminLoginActivity.class);
-            intent.putExtra("checkBtn","logout");
+            intent.putExtra("checkBtn", "logout");
             startActivity(intent);
         });
 
         tvConnectDevice.setOnClickListener(v -> {
-            startActivity(new Intent(this, ConnectDeviceActivity.class));
+            startActivity(new Intent(this, AvailableWifiDevices.class));
         });
+
+        // battery percentage
+        BatteryManager bm = (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            batteryPercentage.setText(tabBatteryPer + "%");
+        }
 
         setUpNavDrawer();
         setUpToolBar();
@@ -279,6 +382,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpCooling();
         setUpPh();
         setUpPump();
+        setUpEc();
     }
 
 /*    private void showNetworkDialog(){
@@ -329,6 +433,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     @Override
     protected void onPause() {
         super.onPause();
+        NewAsyncTask newAsyncTask = new NewAsyncTask(this);
+        newAsyncTask.execute(Dashboard.this);
     }
 
     @Override
@@ -347,12 +453,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         if (phDevices.size() != 0) {
             phRecyclerView.setVisibility(View.VISIBLE);
             phDev.setCardBackgroundColor(Color.GRAY);
-        }else {
+        } else {
             phRecyclerView.setVisibility(View.GONE);
         }
         tempRecyclerView.setVisibility(View.GONE);
         coolingRecyclerView.setVisibility(View.GONE);
         pumpRecyclerView.setVisibility(View.GONE);
+        ecRecyclerView.setVisibility(View.GONE);
 
         getList();
         super.onStart();
@@ -361,6 +468,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     @Override
     protected void onResume() {
         super.onResume();
+        NewAsyncTask newAsyncTask = new NewAsyncTask(this);
+        newAsyncTask.execute(Dashboard.this);
         refresh();
     }
 
@@ -398,7 +507,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phRecyclerView.setAdapter(phAdapter);
     }
     //Ph RC------------------------------------------------------------------------------------------------------
-
+    public void setUpEc() {
+        ecRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        ecAdapter = new EcAdapter(ecDevices, this::onOptionsIconClicked);
+        ecRecyclerView.setAdapter(ecAdapter);
+    }
     //Pump RC------------------------------------------------------------------------------------------------------
     public void setUpPump() {
         pumpRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -414,6 +527,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempDevices.clear();
         pumpDevices.clear();
         deviceIdIds.clear();
+        ecDevices.clear();
         getDeviceIds();
     }
 
@@ -546,6 +660,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         ));
                         break;
                     }
+                    case "ECMETER": {
+                        EcDevice device = new EcDevice(
+                                id,
+                                name,
+                                ui.child("EC").child("EC_CAL").child("CAL").getValue(Integer.class)
+                        );
+                        ecDevices.add(device);
+                        break;
+                    }
                     case "PELTIER": {
                         coolingDevices.add(new CoolingDevice(
                                 id,
@@ -560,7 +683,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     coolingAdapter.notifyDataSetChanged();
                     phAdapter.notifyDataSetChanged();
                     pumpAdapter.notifyDataSetChanged();
-                    if (tempDevices.size() == 0) {
+                 /*
+                 if (tempDevices.size() == 0) {
                         tempRecyclerView.setVisibility(View.GONE);
 //                        tvTemp.setVisibility(View.GONE);
                     } else {
@@ -588,6 +712,24 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         pumpRecyclerView.setVisibility(View.VISIBLE);
                         //          tvPump.setVisibility(View.VISIBLE);
                     }
+
+                    */
+
+                    if (phDevices.size() != 0) {
+                        phRecyclerView.setVisibility(View.VISIBLE);
+                        phDev.setCardBackgroundColor(Color.GRAY);
+                    } else {
+                        phRecyclerView.setVisibility(View.GONE);
+                    }
+                    tempRecyclerView.setVisibility(View.GONE);
+                    coolingRecyclerView.setVisibility(View.GONE);
+                    pumpRecyclerView.setVisibility(View.GONE);
+//                    ecRecyclerView.setVisibility(View.GONE);
+
+                    phDev.setCardBackgroundColor(Color.GRAY);
+                    tempDev.setCardBackgroundColor(Color.WHITE);
+                    peristalticDev.setCardBackgroundColor(Color.WHITE);
+                    IndusDev.setCardBackgroundColor(Color.WHITE);
                 }
             });
         }
@@ -670,4 +812,273 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 .child(type).child(deviceId).child("NAME").setValue(newName);
         refresh();
     }
+
+    private void subscriptionChecker() {
+
+        String uid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
+        if (uid == null) return;
+        DatabaseReference ref = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("USERS").child(uid).child("subscription");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    DatabaseReference subscription = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("USERS").child(uid);
+                    subscription.child("subscription").setValue("na");
+
+                    subscription.child("subscription").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot1) {
+
+//                            Toast.makeText(Dashboard.this, "Subscription : " + snapshot1.getValue(), Toast.LENGTH_SHORT).show();
+                            Dialog dialog = new Dialog(Dashboard.this);
+                            dialog.setContentView(R.layout.no_subscription);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.setCancelable(false);
+                            dialog.findViewById(R.id.contactWith).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(Dashboard.this, "Contact", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            dialog.show();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(Dashboard.this, "Failed " + error, Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+
+                } else {
+//                    Toast.makeText(Dashboard.this, " Subscribed " + snapshot.getValue(), Toast.LENGTH_SHORT).show();
+                    DatabaseReference subscription = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("USERS").child(uid);
+
+                    subscription.child("subscription").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot1) {
+//                            Toast.makeText(Dashboard.this, "Subscription : " + snapshot1.getValue(), Toast.LENGTH_SHORT).show();
+                            if (Objects.equals(snapshot1.getValue(), "na")) {
+                                Dialog dialog = new Dialog(Dashboard.this);
+                                dialog.setContentView(R.layout.no_subscription);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.setCancelable(false);
+                                dialog.findViewById(R.id.contactWith).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        finishAffinity();
+                                    }
+                                });
+                                dialog.show();
+                            }
+                            if (Objects.equals(snapshot1.getValue(), "non cfr") || Objects.equals(snapshot1.getValue(), "non_cfr")
+                                    || Objects.equals(snapshot1.getValue(), "nonCfr") || Objects.equals(snapshot1.getValue(), "noncfr")
+                                    || Objects.equals(snapshot1.getValue(), "Non Cfr") || Objects.equals(snapshot1.getValue(), "Non cfr")) {
+                                Source.subscription = "nonCfr";
+                                setting.setVisibility(View.GONE);
+                            }
+                            if (Objects.equals(snapshot1.getValue(), "cfr")) {
+                                Source.subscription = "cfr";
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(Dashboard.this, "Failed " + error, Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Dashboard.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    private void CheckForUpdate() {
+        try {
+            String version = this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+
+            databaseReference = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("version").child("v1");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String versionName = (String) dataSnapshot.getValue();
+
+                    if (versionName != null && !versionName.equals(version)) {
+
+                        Dialog dialog = new Dialog(Dashboard.this);
+                        dialog.setContentView(R.layout.update_ui);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.setCancelable(false);
+                        dialog.findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                runtimeStoragePermission();
+
+                            }
+                        });
+                        dialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                                Toast.makeText(Dashboard.this, "Please update your app as soon as possible, you are loosing lots of thing without this update", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        dialog.show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void runtimeStoragePermission() {
+        Dexter.withContext(Dashboard.this).withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (!getPackageManager().canRequestPackageInstalls()) {
+                                startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData(Uri.parse(String.format("package:%s", getPackageName()))), 1234);
+                            } else {
+                                Toast.makeText(Dashboard.this, "Allow the permission to install new update", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        databaseReference = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("version").child("latestApkLink");
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String apkUrl = (String) dataSnapshot.getValue();
+                                DownloadHandler downloadHandler = new DownloadHandler();
+                                downloadHandler.downloadFile(apkUrl, "labApp.apk", Dashboard.this, file);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), "There was an error : " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Log.e("Dexter", "There was an error: " + error.toString());
+                    }
+                }).check();
+    }
+
+
+
+    private class NewAsyncTask extends AsyncTask<Context, Void, Void> {
+        private WeakReference<Dashboard> dashboardWeakReference;
+
+        NewAsyncTask(Dashboard dashboard) {
+            dashboardWeakReference = new WeakReference<Dashboard>(dashboard);
+        }
+
+        private boolean isNetworkAvailable2(Context context) {
+            ConnectivityManager manager =
+                    (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            boolean isAvailable = false;
+            if (networkInfo != null && networkInfo.isConnected()) {
+                // Network is present and connected
+                isAvailable = true;
+            }
+            return isAvailable;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            Dashboard dashboard = dashboardWeakReference.get();
+            if (dashboard == null || dashboard.isFinishing()) {
+                return;
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Context... contexts) {
+            Dashboard dashboard = dashboardWeakReference.get();
+            if (dashboard == null || dashboard.isFinishing()) {
+                return null;
+            }
+
+            if (isNetworkAvailable2(contexts[0])) {
+                try {
+                    HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                    urlc.setRequestProperty("User-Agent", "Test");
+                    urlc.setRequestProperty("Connection", "close");
+                    urlc.setConnectTimeout(1500);
+                    urlc.connect();
+                    isConnected = (urlc.getResponseCode() == 200);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isConnected) {
+                                dashboard.internetStatus.setText("Active");
+                                dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetActive));
+                            } else {
+                                dashboard.internetStatus.setText("Inactive");
+                                dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+                            }
+                        }
+                    });
+
+                } catch (IOException e) {
+                    Log.e("LOG_TAG", "Error: ", e);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dashboard.internetStatus.setText("Inactive");
+                            dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+                        }
+                    });
+                }
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dashboard.internetStatus.setText("Inactive");
+                        dashboard.internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+                    }
+                });
+                Log.d("LOG_TAG", "No network present");
+            }
+
+            return null;
+        }
+
+
+    }
+
+    public static boolean isConnected;
 }

@@ -1,19 +1,15 @@
-package com.aican.aicanapp.fragments.ph;
+package com.aican.aicanapp.fragments.ec;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.os.BatteryManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,12 +18,11 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.BatteryDialog;
-import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.ph.PhView;
-import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.specificactivities.EcActivity;
 import com.github.mikephil.charting.data.Entry;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -41,17 +36,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-    private static final String TAG = "PhFragment";
-    PhView phView;
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, probeData;
+public class EcFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
+    private static final String TAG = "EcFragment";
+    PhView phView;
+    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, ecProbesData;
+    TextView tdsValue, resistivityValue;
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
     SwitchCompat switchAtc;
-
+    String ecProbeInfo;
     BatteryDialog batteryDialog;
-    String probeInfo = "-";
+
     float ph = 0;
     int skipPoints = 0;
     String[] probe = {"Unbreakable", "Glass", "Others"};
@@ -62,7 +58,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_ph_main, container, false);
+        return inflater.inflate(R.layout.fragment_ec, container, false);
     }
 
     boolean isTimeOptionsVisible = false;
@@ -73,9 +69,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         tvTempCurr = view.findViewById(R.id.tvTempCurr);
+        tdsValue = view.findViewById(R.id.tdsValue);
+        resistivityValue = view.findViewById(R.id.resistivityValue);
         tvTempNext = view.findViewById(R.id.tvTempNext);
 
-       switchAtc = view.findViewById(R.id.switchAtc);
+        switchAtc = view.findViewById(R.id.switchAtc);
 //        Spinner probesVal = view.findViewById(R.id.probesVal);
 
         offsetCurr = view.findViewById(R.id.offsetVal);
@@ -85,7 +83,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         phView = view.findViewById(R.id.phView);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
-        probeData = view.findViewById(R.id.probesData);
+        ecProbesData = view.findViewById(R.id.ecProbesData);
         entriesOriginal = new ArrayList<>();
 
         databaseHelper = new DatabaseHelper(requireContext());
@@ -98,59 +96,35 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Source.userPasscode = res.getString(3);
         }
 
-        Cursor p = databaseHelper.get_probe();
+        Cursor p = databaseHelper.get_ec_probe();
         while (p.moveToNext()) {
-            probeInfo = p.getString(0);
+            ecProbeInfo = p.getString(0);
         }
-        probeData.setText(probeInfo);
-
-        probeData.setSelected(true);
-
-
-//        BatteryManager bm = (BatteryManager) getContext().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-//            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-//            tabBattery.setText(tabBatteryPer + "%");
-//        }
+        ecProbesData.setText(ecProbeInfo);
+        ecProbesData.setSelected(true);
 
 
         batteryDialog = new BatteryDialog();
-        if (Source.subscription.equals("cfr")) {
-            DialogMain dialogMain = new DialogMain();
-            dialogMain.setCancelable(false);
-            Source.userTrack = "PhFragment logged in by ";
-            dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
-        }
+//        DialogMain dialogMain = new DialogMain();
+//        dialogMain.setCancelable(false);
+//        Source.userTrack = "PhFragment logged in by ";
+//        dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(EcActivity.DEVICE_ID)).getReference().child("ECMETER").child(EcActivity.DEVICE_ID);
         setupListeners();
     }
 
-    private void rescaleGraph() {
-        ArrayList<Entry> entries = new ArrayList<>();
-        int count = 0;
-        for (Entry entry : entriesOriginal) {
-            if (count == 0) {
-                entries.add(entry);
-            }
-            ++count;
-            if (count >= skipPoints) {
-                count = 0;
-            }
-        }
-    }
-
     private void setupListeners() {
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float ph = snapshot.getValue(Float.class);
                 if (ph == null) return;
-                phView.moveTo(ph);
+                //phView.moveTo(ph);
                 String phForm = String.format(Locale.UK, "%.2f", ph);
                 tvPhCurr.setText(phForm);
-                PhFragment.this.ph = ph;
-                phView.moveTo(ph);
+                EcFragment.this.ph = ph;
+                //phView.moveTo(ph);
             }
 
             @Override
@@ -184,10 +158,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String tempForm = String.format(Locale.UK, "%.1f", temp);
                 tvTempCurr.setText(tempForm + "°C");
 
-                if(Integer.parseInt(tempp)<=-127){
-                    tvTempCurr.setText("NA");
-                }
-
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                 SharedPreferences.Editor edit = sharedPreferences.edit();
                 edit.putString("temp", tvTempCurr.getText().toString());
@@ -199,7 +169,47 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }
         });
 
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("Data").child("TDS_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String tds = snapshot.getValue(Integer.class).toString();
+                tdsValue.setText(tds + "");
+                Float tds1 = snapshot.getValue(Float.class);
+                String tdsForm = String.format(Locale.UK, "%.1f", tds1);
+                tdsValue.setText(tdsForm + "");
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putString("tdsValue", tdsValue.getText().toString());
+                edit.commit();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("RESISTIVITY_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                String resistivity = snapshot.getValue(Integer.class).toString();
+                resistivityValue.setText(resistivity + "");
+                Float resistivity1 = snapshot.getValue(Float.class);
+                String resistivityForm = String.format(Locale.UK, "%.1f", resistivity1);
+                resistivityValue.setText(resistivityForm + "");
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putString("resistivityValue", resistivityValue.getText().toString());
+                edit.commit();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("VOLT").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String ecc = snapshot.getValue(Integer.class).toString();
@@ -278,17 +288,17 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         SharedPreferences sha = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
         int toggleVal = sha.getInt("toggleValue", 0);
-        if(toggleVal == 1){
+        if (toggleVal == 1) {
             switchAtc.setChecked(true);
-        } else if(toggleVal == 0){
+        } else if (toggleVal == 0) {
             switchAtc.setChecked(false);
         }
 
         switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
 
-            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1  : 0);
+            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1 : 0);
 
-            if(switchAtc.isChecked()){
+            if (switchAtc.isChecked()) {
 
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editT = togglePref.edit();
@@ -306,7 +316,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         });
 
 
-
     }
 
     @Override
@@ -320,11 +329,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     @Override
     public void onResume() {
 
-        Cursor p = databaseHelper.get_probe();
+        Cursor p = databaseHelper.get_ec_probe();
         while (p.moveToNext()) {
-            probeInfo = p.getString(0);
+            ecProbeInfo = p.getString(0);
         }
-        probeData.setText(probeInfo);
+        ecProbesData.setText(ecProbeInfo);
         super.onResume();
     }
+
 }
