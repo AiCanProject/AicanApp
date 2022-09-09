@@ -143,12 +143,14 @@ public class phAlarmFragment extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             while(AlarmConstants.isServiceAvailable){
-                if(AlarmConstants.ringtone.isPlaying()) break;
+//                if(AlarmConstants.ringtone.isPlaying()) break;
                 Float minPH = Float.parseFloat(strings[0]);
                 Float maxPH = Float.parseFloat(strings[1]);
                 Log.d("AlarmFragment","AlarmFragment: doInBackground in if "+AlarmConstants.PH);
                 if(AlarmConstants.PH<minPH || AlarmConstants.PH>maxPH){
                     AlarmConstants.ringtone.play();
+                }else if(AlarmConstants.ringtone.isPlaying()){
+                        AlarmConstants.ringtone.stop();
                 }
 
                 }
