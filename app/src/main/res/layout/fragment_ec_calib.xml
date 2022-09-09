@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clipChildren="false"
+    android:elevation="48dp"
+    app:cardCornerRadius="43dp">
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:id="@+id/lll1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="2dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/phLevelCard"
+                android:layout_width="220dp"
+                android:layout_height="90dp"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/white"
+                android:elevation="52dp"
+                app:cardCornerRadius="16dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+<!--                    <com.aican.aicanappnoncfr.ph.PhView
+                        android:id="@+id/phView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:vertical="true" />
+-->
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.21" />
+
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Conductivity"
+                        android:textColor="@color/black"
+                        android:textSize="22sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline5"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvPhCurr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="1dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text="@string/_7_4"
+                        android:textColor="@color/black"
+                        android:textSize="33sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/textView3"
+                        app:layout_constraintStart_toStartOf="@+id/textView3"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                    <TextView
+                        android:id="@+id/tvPhNext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="1dp"
+                        android:fontFamily="@font/montserrat_medium"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="33sp"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/textView3"
+                        app:layout_constraintStart_toStartOf="@+id/textView3"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tempCard"
+                android:layout_width="180dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:elevation="52dp"
+                app:cardCornerRadius="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Temperature"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvTempCurr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/type_TV"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:layout_toEndOf="@+id/IV"
+                    android:text="20 C"
+                    android:textColor="@color/black"
+                    android:textSize="37sp" />
+
+                <TextView
+                    android:id="@+id/tvTempNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/type_TV"
+                    android:layout_marginStart="57dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_toEndOf="@+id/IV"
+                    android:text=""
+                    android:textColor="#F5F5F5"
+                    android:textSize="40sp"
+                    android:visibility="invisible" />
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                android:layout_width="180dp"
+                android:layout_height="90dp"
+                android:layout_margin="10dp"
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:elevation="52dp"
+                app:cardCornerRadius="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Voltage"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvEcCurr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="32dp"
+                    android:text="123"
+                    android:textColor="@color/blueDark"
+                    android:textSize="37sp"
+                    android:textStyle="bold" />
+
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="200dp"
+                android:layout_height="90dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="16dp"
+                app:strokeColor="@color/red"
+                app:strokeWidth="2dp">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="10dp"
+                    android:text="Do not Exit/Change \n while calibrating."
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="-20dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:padding="10dp"
+                android:text="02:00"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+
+            <Button
+                android:id="@+id/startBtn"
+                android:layout_width="127dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#9037C7"
+                android:text="Start" />
+
+            <Button
+                android:id="@+id/nextBtn"
+                android:layout_width="127dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#9037C7"
+                android:text="Next"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="127dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#3CEA43"
+                android:text="Save"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="Mode"
+                android:textColor="#9037C7"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/calibMode"
+                android:layout_width="100dp"
+                android:layout_height="45dp"
+                android:layout_margin="10dp"
+                android:backgroundTint="#9037C7" />
+
+            <Button
+                android:id="@+id/printCalibData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Print"
+                android:layout_gravity="center"
+
+                />
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/lastCalibration"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="18dp"-->
+            <!--                android:layout_marginTop="0dp"-->
+            <!--                android:text="Last Calibrated at: \n 12/03/2022 20:05"-->
+            <!--                android:textSize="16sp" />-->
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="-8dp"
+                    android:layout_marginEnd="40dp"
+                    android:backgroundTint="@color/white"
+                    android:elevation="12dp"
+                    app:cardCornerRadius="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="2dp">
+
+                            <TextView
+                                android:layout_width="43dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="21dp"
+                                android:layout_marginBottom="1dp"
+                                android:layout_weight="1"
+                                android:text="Conductivity"
+                                android:textSize="22sp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="5dp"
+                                android:background="#DFE6ED" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="21dp"
+                                android:layout_marginBottom="1dp"
+                                android:layout_weight="1"
+                                android:text="mV"
+                                android:textSize="22sp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="5dp"
+                                android:background="#DFE6ED" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="23dp"
+                                android:layout_marginBottom="2dp"
+                                android:layout_weight="1"
+                                android:text="Date &amp; Time"
+                                android:textSize="22sp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="5dp"
+                                android:background="#DFE6ED" />
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="23dp"
+                                android:layout_marginBottom="2dp"
+                                android:layout_weight="1"
+                                android:text="Buffer Details"
+                                android:textSize="22sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/log3point"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <LinearLayout
+                                android:id="@+id/log1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="2dp">
+
+                                <TextView
+                                    android:id="@+id/ph1"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/phEdit1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_edit"
+                                    app:drawableTint="@color/blueDark" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/mv1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/dt1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED"
+                                    android:translationX="27dp" />
+
+                                <TextView
+                                    android:id="@+id/ec_bufferD1"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:paddingStart="15dp"
+                                    android:scrollHorizontally="true"
+                                    android:singleLine="true"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/ec_qr1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_camera"
+                                    app:drawableTint="@color/blueDark" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/log2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="3dp">
+
+                                <TextView
+                                    android:id="@+id/ph2"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/phEdit2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_edit"
+                                    app:drawableTint="@color/blueDark" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/mv2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/dt2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED"
+                                    android:translationX="27dp" />
+
+
+                                <TextView
+                                    android:id="@+id/ec_bufferD2"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:paddingStart="15dp"
+                                    android:scrollHorizontally="true"
+                                    android:singleLine="true"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/ec_qr2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_camera"
+                                    app:drawableTint="@color/blueDark" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/log3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp">
+
+                                <TextView
+                                    android:id="@+id/ph3"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/phEdit3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_edit"
+                                    app:drawableTint="@color/blueDark" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/mv3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/dt3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED"
+                                    android:translationX="27dp" />
+
+
+                                <TextView
+                                    android:id="@+id/ec_bufferD3"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:paddingStart="15dp"
+                                    android:scrollHorizontally="true"
+                                    android:singleLine="true"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/ec_qr3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_camera"
+                                    app:drawableTint="@color/blueDark" />
+
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/log5Point"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <LinearLayout
+                                android:id="@+id/log4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp">
+
+                                <TextView
+                                    android:id="@+id/ph4"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/phEdit4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_edit"
+                                    app:drawableTint="@color/blueDark" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/mv4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/dt4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED"
+                                    android:translationX="27dp" />
+
+
+                                <TextView
+                                    android:id="@+id/ec_bufferD4"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:paddingStart="15dp"
+                                    android:scrollHorizontally="true"
+                                    android:singleLine="true"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/ec_qr4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_camera"
+                                    app:drawableTint="@color/blueDark" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/log5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp">
+
+                                <TextView
+                                    android:id="@+id/ph5"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/phEdit5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_edit"
+                                    app:drawableTint="@color/blueDark" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/mv5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/dt5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED"
+                                    android:translationX="27dp" />
+
+
+                                <TextView
+                                    android:id="@+id/ec_bufferD5"
+                                    android:layout_width="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="1"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:paddingStart="15dp"
+                                    android:scrollHorizontally="true"
+                                    android:singleLine="true"
+                                    android:text=""
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/ec_qr5"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_marginBottom="6dp"
+                                    android:drawablePadding="2dp"
+                                    android:padding="2dp"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/blueDark"
+                                    android:textSize="14sp"
+                                    app:drawableStartCompat="@drawable/ic_camera"
+                                    app:drawableTint="@color/blueDark" />
+
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCalibFileView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="40dp"
+                    />
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</RelativeLayout>

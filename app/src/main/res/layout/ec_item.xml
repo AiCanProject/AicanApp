@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/phone_Cardview"
+    android:layout_width="220dp"
+    android:layout_height="250dp"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="10dp">
+
+    <RelativeLayout
+        android:id="@+id/background_color"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lightWhite"
+        android:padding="5dp">
+
+
+        <ImageView
+            android:id="@+id/ivOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/ic_three_dots"
+            app:tint="@color/black" />
+
+        <!--<ImageView
+            android:id="@+id/temp_image"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/temp_logo" />
+-->
+
+        <TextView
+            android:id="@+id/custom_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:paddingTop="10dp"
+            android:text="Custom Device Name"
+            android:textColor="@color/grey_dark"
+            android:textSize="18sp" />
+
+        <!-- <TextView
+             android:id="@+id/current_temp_text"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_below="@+id/ph"
+             android:layout_alignParentStart="true"
+             android:layout_toLeftOf="@id/temp_image"
+             android:paddingHorizontal="30dp"
+             android:text="Current Temperature"
+             android:textColor="@color/white"
+             android:textSize="14dp" />
+ -->
+
+        <TextView
+            android:id="@+id/ph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/custom_device_name"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:paddingHorizontal="30dp"
+            android:text="89"
+            android:textColor="@color/grey_dark"
+            android:textSize="40dp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/shape_ph" />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

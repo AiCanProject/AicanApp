@@ -46,11 +46,13 @@ import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.CoolingAdapter;
+import com.aican.aicanapp.adapters.EcAdapter;
 import com.aican.aicanapp.adapters.PhAdapter;
 import com.aican.aicanapp.adapters.PumpAdapter;
 import com.aican.aicanapp.adapters.TempAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dataClasses.CoolingDevice;
+import com.aican.aicanapp.dataClasses.EcDevice;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
@@ -102,8 +104,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String DEVICE_TYPE_PUMP = "P_PUMP";
     public static final String DEVICE_TYPE_TEMP = "TEMP_CONTROLLER";
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
+    public static final String DEVICE_TYPE_EC = "ECMETER";
 
-    CardView phDev, tempDev, IndusDev, peristalticDev;
+    CardView phDev, tempDev, IndusDev, peristalticDev, ecDev;
     File file;
     File fileDestination;
     DatabaseReference primaryDatabase;
@@ -121,10 +124,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     ArrayList<PumpDevice> pumpDevices;
     ArrayList<TempDevice> tempDevices;
     ArrayList<CoolingDevice> coolingDevices;
+    ArrayList<EcDevice> ecDevices;
 
     TempAdapter tempAdapter;
     CoolingAdapter coolingAdapter;
     PhAdapter phAdapter;
+    EcAdapter ecAdapter;
     PumpAdapter pumpAdapter;
 
     private DatabaseHelper databaseHelper;
@@ -134,7 +139,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
-    private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView;
+    private RecyclerView tempRecyclerView, coolingRecyclerView, phRecyclerView, pumpRecyclerView, ecRecyclerView;
     private FloatingActionButton addNewDevice;
     private TextView tvTemp, tvCooling, tvPump, tvPh, tvName, tvConnectDevice, tvInstruction;
     private ImageView ivLogout;
@@ -155,6 +160,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phDev = findViewById(R.id.ph_dev);
         IndusDev = findViewById(R.id.indusPh_dev);
         peristalticDev = findViewById(R.id.peristaltic_dev);
+        ecDev = findViewById(R.id.ecMeter_dev);
         tempDev = findViewById(R.id.temp_dev);
         tvInstruction = findViewById(R.id.tvInstruction);
 
@@ -168,6 +174,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         coolingRecyclerView = findViewById(R.id.cooling_recyclerview);
         phRecyclerView = findViewById(R.id.ph_recyclerview);
         pumpRecyclerView = findViewById(R.id.pump_recyclerview);
+        ecRecyclerView = findViewById(R.id.ec_recyclerview);
         tvName = findViewById(R.id.tvName);
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
@@ -182,6 +189,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceTypes = new HashMap<>();
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
+        ecDevices = new ArrayList<>();
+
 
         // subscription checking
         subscriptionChecker();
@@ -193,6 +202,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempRecyclerView.setVisibility(View.GONE);
         coolingRecyclerView.setVisibility(View.GONE);
         pumpRecyclerView.setVisibility(View.GONE);
+        ecRecyclerView.setVisibility(View.GONE);
 
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,11 +225,14 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 tempRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
+
 
                 phDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
             }
         });
 
@@ -251,11 +264,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 phRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
 
                 tempDev.setCardBackgroundColor(Color.GRAY);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
             }
         });
 
@@ -270,9 +285,36 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 tempRecyclerView.setVisibility(View.GONE);
                 coolingRecyclerView.setVisibility(View.GONE);
                 phRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
 
                 peristalticDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
+                phDev.setCardBackgroundColor(Color.WHITE);
+                IndusDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
+
+            }
+        });
+
+
+        ecDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (ecDevices.size() != 0) {
+                    ecRecyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    ecRecyclerView.setVisibility(View.GONE);
+                }
+
+                phRecyclerView.setVisibility(View.GONE);
+                tempRecyclerView.setVisibility(View.GONE);
+                pumpRecyclerView.setVisibility(View.GONE);
+                coolingRecyclerView.setVisibility(View.GONE);
+
+                ecDev.setCardBackgroundColor(Color.GRAY);
+                tempDev.setCardBackgroundColor(Color.WHITE);
+                peristalticDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
                 IndusDev.setCardBackgroundColor(Color.WHITE);
             }
@@ -290,11 +332,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 phRecyclerView.setVisibility(View.GONE);
                 tempRecyclerView.setVisibility(View.GONE);
                 pumpRecyclerView.setVisibility(View.GONE);
+                ecRecyclerView.setVisibility(View.GONE);
 
                 IndusDev.setCardBackgroundColor(Color.GRAY);
                 tempDev.setCardBackgroundColor(Color.WHITE);
                 peristalticDev.setCardBackgroundColor(Color.WHITE);
                 phDev.setCardBackgroundColor(Color.WHITE);
+                ecDev.setCardBackgroundColor(Color.WHITE);
             }
         });
 
@@ -338,6 +382,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpCooling();
         setUpPh();
         setUpPump();
+        setUpEc();
     }
 
 /*    private void showNetworkDialog(){
@@ -414,6 +459,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempRecyclerView.setVisibility(View.GONE);
         coolingRecyclerView.setVisibility(View.GONE);
         pumpRecyclerView.setVisibility(View.GONE);
+        ecRecyclerView.setVisibility(View.GONE);
 
         getList();
         super.onStart();
@@ -461,7 +507,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phRecyclerView.setAdapter(phAdapter);
     }
     //Ph RC------------------------------------------------------------------------------------------------------
-
+    public void setUpEc() {
+        ecRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        ecAdapter = new EcAdapter(ecDevices, this::onOptionsIconClicked);
+        ecRecyclerView.setAdapter(ecAdapter);
+    }
     //Pump RC------------------------------------------------------------------------------------------------------
     public void setUpPump() {
         pumpRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -477,6 +527,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         tempDevices.clear();
         pumpDevices.clear();
         deviceIdIds.clear();
+        ecDevices.clear();
         getDeviceIds();
     }
 
@@ -607,6 +658,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 name,
                                 data.child("TEMP2_VAL").getValue(Integer.class)
                         ));
+                        break;
+                    }
+                    case "ECMETER": {
+                        EcDevice device = new EcDevice(
+                                id,
+                                name,
+                                ui.child("EC").child("EC_CAL").child("CAL").getValue(Integer.class)
+                        );
+                        ecDevices.add(device);
                         break;
                     }
                     case "PELTIER": {
