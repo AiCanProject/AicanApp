@@ -1,5 +1,6 @@
 package com.aican.aicanapp.Dashboard;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,11 +11,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +39,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.AddDevice.AddDeviceOption;
 import com.aican.aicanapp.Authentication.LoginActivity;
+import com.aican.aicanapp.DownloadHandler.DownloadHandler;
 import com.aican.aicanapp.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.FirebaseAccounts.SecondaryAccount;
@@ -69,13 +74,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -90,8 +104,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public static final String DEVICE_TYPE_COOLING = "PELTIER";
 
     CardView phDev, tempDev, IndusDev, peristalticDev;
-
+    File file;
+    File fileDestination;
     DatabaseReference primaryDatabase;
+    DatabaseReference databaseReference;
     String mUid;
     Button setting, export;
     private TextView internetStatus, locationD, weather, batteryPercentage;
@@ -210,6 +226,16 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         NewAsyncTask newAsyncTask = new NewAsyncTask(this);
         newAsyncTask.execute(Dashboard.this);
+
+        file = new File(getExternalFilesDir(null) + "/" + getString(R.string.folderLocation));
+
+        fileDestination = new File(Environment.getExternalStorageDirectory(), "/" + getString(R.string.folderLocation));
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+
+        CheckForUpdate();
 
         tempDev.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -818,6 +844,98 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         });
     }
+
+    private void CheckForUpdate() {
+        try {
+            String version = this.getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+
+            databaseReference = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("version").child("v1");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String versionName = (String) dataSnapshot.getValue();
+
+                    if (versionName != null && !versionName.equals(version)) {
+
+                        Dialog dialog = new Dialog(Dashboard.this);
+                        dialog.setContentView(R.layout.update_ui);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.setCancelable(false);
+                        dialog.findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                runtimeStoragePermission();
+
+                            }
+                        });
+                        dialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                                Toast.makeText(Dashboard.this, "Please update your app as soon as possible, you are loosing lots of thing without this update", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                        dialog.show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void runtimeStoragePermission() {
+        Dexter.withContext(Dashboard.this).withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (!getPackageManager().canRequestPackageInstalls()) {
+                                startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData(Uri.parse(String.format("package:%s", getPackageName()))), 1234);
+                            } else {
+                                Toast.makeText(Dashboard.this, "Allow the permission to install new update", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        databaseReference = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(Dashboard.this)).getReference().child("version").child("latestApkLink");
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String apkUrl = (String) dataSnapshot.getValue();
+                                DownloadHandler downloadHandler = new DownloadHandler();
+                                downloadHandler.downloadFile(apkUrl, "labApp.apk", Dashboard.this, file);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), "There was an error : " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Log.e("Dexter", "There was an error: " + error.toString());
+                    }
+                }).check();
+    }
+
+
 
     private class NewAsyncTask extends AsyncTask<Context, Void, Void> {
         private WeakReference<Dashboard> dashboardWeakReference;

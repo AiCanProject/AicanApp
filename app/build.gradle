@@ -112,7 +112,11 @@ dependencies {
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    // dexter - for runtime permission
+    implementation 'com.karumi:dexter:6.2.3'
 
+    // pr downloader
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
 
 }
 repositories {

@@ -31,9 +31,15 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_temp_main.xml" value="0.1" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_temp_set.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/temp_activity.xml" value="0.15" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/cancel.xml" value="0.183" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/done.xml" value="0.183" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/error.xml" value="0.183" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/ic_mdi_slope_downhill.xml" value="0.23" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/update_background.xml" value="0.183" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/wifi.xml" value="0.183" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.4111328125" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/activity_available_wifi_devices.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/activity_connect_device.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.4" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/activity_detailed.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/activity_ec_tds_calibrate.xml" value="0.21927083333333333" />
@@ -67,6 +73,7 @@
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/no_subscription.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/temp.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/temp_activity.xml" value="0.536" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/layout/update_ui.xml" value="0.21927083333333333" />
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/drawable/ic_stat_name.xml" value="0.1875" />
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/layout-sw600dp/fragment_ph_log.xml" value="0.205859375" />
         <entry key="..\:/debz codes/Internship/LabAutomation/Key/AicanApp/app/src/main/res/layout/activity_export.xml" value="0.4" />
