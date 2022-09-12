@@ -26,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table PHBuffer(ID INTEGER PRIMARY KEY AUTOINCREMENT,PH_BUFF TEXT, minMV TEXT, maxMV TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogECdetails(date TEXT, conductivity TEXT, temperature TEXT, productName TEXT)");
     }
 
     @Override
@@ -40,6 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ProbeDetail");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ECProbeDetail");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PHBuffer");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogECdetails");
         onCreate(sqLiteDatabase);
     }
 
@@ -51,6 +53,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("expiryDate", expiryDate);
         contentValues.put("dateCreated", dateCreated);
         long result = db.insert("UserDataDetails",null,contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+    public boolean insertLogECDetails(String date,String ph,String temp,String productName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Username", date);
+        contentValues.put("Role", ph);
+        contentValues.put("expiryDate", temp);
+        contentValues.put("dateCreated", productName);
+        long result = db.insert("PrintLogECdetails",null,contentValues);
         if(result == -1){
             return false;
         }else{

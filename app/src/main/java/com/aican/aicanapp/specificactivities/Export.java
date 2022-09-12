@@ -231,11 +231,15 @@ public class Export extends AppCompatActivity {
                     }
 
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog"+currentDateandTime+".pdf", options);
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+                    File tempRoot = new File(tempPath);
+                    fileNotWrite(tempRoot);
+                    File[] tempFilesAndFolders = tempRoot.listFiles();
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL"+currentDateandTime+"_"+(tempFilesAndFolders.length-1), options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
                     File root1 = new File(path1);

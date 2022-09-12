@@ -40,6 +40,13 @@ import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.EcActivity;
+import com.aspose.cells.FileFormatType;
+import com.aspose.cells.LoadOptions;
+import com.aspose.cells.PdfCompliance;
+import com.aspose.cells.PdfSaveOptions;
+import com.aspose.cells.SaveFormat;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -826,7 +833,7 @@ public class EcCalibFragment extends Fragment {
             public void onClick(View v) {
                 exportCalibData();
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
@@ -839,7 +846,47 @@ public class EcCalibFragment extends Fragment {
                     }
                 }
 
-                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFolders);
+
+
+
+                try {
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/CalibrationData.xlsx");
+
+                    PdfSaveOptions options = new PdfSaveOptions();
+                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/CalibrationData" + currentDateandTime + ".pdf", options);
+
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
+                                filesAndFolders1[i].delete();
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/";
+                File rootPDF = new File(pathPDF);
+                fileNotWrite(root);
+                File[] filesAndFoldersPDF = rootPDF.listFiles();
+
+
+
+
+                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
                 calibRecyclerView.setAdapter(calibFileAdapter);
                 calibFileAdapter.notifyDataSetChanged();
                 calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
@@ -900,6 +947,16 @@ public class EcCalibFragment extends Fragment {
 
     }
 
+    public void fileNotWrite(File file) {
+        file.setWritable(false);
+        if (file.canWrite()) {
+            Log.d("csv", "Nhi kaam kar rha");
+        } else {
+            Log.d("csvnw", "Party Bhaiiiii");
+        }
+    }
+
+
     public void deleteAllCalibData() {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.execSQL("DELETE FROM CalibData");
@@ -909,7 +966,7 @@ public class EcCalibFragment extends Fragment {
     public void exportCalibData() {
 
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -945,6 +1002,16 @@ public class EcCalibFragment extends Fragment {
             }
             calibCSV.close();
             db.close();
+
+            LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
+
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/";
+            Workbook workbook = new Workbook(inputFile + "CalibrationData.csv", loadOptions);
+            Worksheet worksheet = workbook.getWorksheets().get(0);
+            worksheet.getCells().setColumnWidth(0, 18.5);
+            worksheet.getCells().setColumnWidth(2, 18.5);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/CalibrationData.xlsx", SaveFormat.XLSX);
+
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));

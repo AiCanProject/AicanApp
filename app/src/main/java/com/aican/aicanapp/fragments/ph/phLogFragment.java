@@ -105,7 +105,7 @@ public class phLogFragment extends Fragment {
     LogAdapter adapter;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, printBtn,clearBtn;
+    Button logBtn, exportBtn, printBtn,clearBtn,submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
     EditText compound_name_txt, batch_number, ar_number;
@@ -160,6 +160,7 @@ public class phLogFragment extends Fragment {
         switchInterval = view.findViewById(R.id.switchInterval);
         switchBtnClick = view.findViewById(R.id.switchBtnClick);
         clearBtn = view.findViewById(R.id.clear);
+        submitBtn = view.findViewById(R.id.submit);
 
         recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
@@ -286,6 +287,10 @@ public class phLogFragment extends Fragment {
                     });
                 }
             }
+        });
+
+        submitBtn.setOnClickListener(view1 -> {
+            saveDetails();
         });
 
         if(deviceRef.child("Data").child("LOG") != null)
@@ -598,6 +603,51 @@ public class phLogFragment extends Fragment {
 
             }
         });
+    }
+
+    private void saveDetails() {
+        compound_name = compound_name_txt.getText().toString();
+        if (!compound_name.isEmpty()) {
+            deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(compound_name);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+        //saving batch number
+        batchnum = batch_number.getText().toString();
+        if (!batchnum.isEmpty()) {
+            deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(batchnum);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+        arnum = ar_number.getText().toString();
+        if (!arnum.isEmpty()) {
+            deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(arnum);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
     }
 
     private void openTimerDialog() {

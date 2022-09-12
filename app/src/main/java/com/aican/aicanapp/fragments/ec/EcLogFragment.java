@@ -1,6 +1,7 @@
 package com.aican.aicanapp.fragments.ec;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.aican.aicanapp.R;
+
+import java.io.File;
 
 public class EcLogFragment extends Fragment {
 
@@ -46,6 +49,10 @@ public class EcLogFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
         }
     }
 

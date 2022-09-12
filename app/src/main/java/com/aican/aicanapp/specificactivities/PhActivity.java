@@ -108,6 +108,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 3;
             tabItemPh.animate().x(size).setDuration(100);
 
@@ -119,7 +120,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             graph.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
-            int size = calibrate.getWidth() * 3;
+            int size = calibrate.getWidth() * 4;
             tabItemPh.animate().x(size).setDuration(100);
         } else if (view.getId() == R.id.cLProbes) {
             Intent intent = new Intent(PhActivity.this, ProbeScanner.class);

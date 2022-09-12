@@ -6,31 +6,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".fragments.ph.phLogFragment">
 
     <LinearLayout
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
         tools:ignore="UselessParent">
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/graph"
-            android:layout_width="400dp"
-            android:layout_height="150dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp">
-
-        </com.github.mikephil.charting.charts.LineChart>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_margin="10dp"
+            android:layout_weight="1">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/phLevelCard"
@@ -123,88 +114,249 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="20dp"
+            android:layout_weight="7"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/logBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="20dp"
-                    android:backgroundTint="#3CEA43"
-                    android:text="@string/log"
-                    android:textAllCaps="false"
-                    android:textSize="15sp" />
-
-                <Button
-                    android:id="@+id/export"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/export"
-                    android:textAllCaps="false"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
-
-                <Button
-                    android:id="@+id/print"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:text="Print"
-                    android:textAllCaps="false"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
-
-
-            </LinearLayout>
-
-
-            <Button
-                android:id="@+id/clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Clear"
-                android:textAllCaps="false"
-                android:textSize="15sp"
-                android:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/compound_name"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/enter_compound_name"
-                    android:textColor="#000"
-                    android:textColorHint="#000" />
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginRight="10dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="1dp">
+
+                    <EditText
+                        android:id="@+id/compound_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/enter_compound_name"
+                        android:textColor="#000"
+                        android:layout_margin="2dp"
+                        android:textColorHint="#000"
+                        android:textSize="15dp" />
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <ImageButton
                     android:id="@+id/enter_text"
                     android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:visibility="gone"
+                    android:layout_height="match_parent"
                     android:src="@drawable/ic_play_arrow" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginRight="10dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="1dp">
+
+                    <EditText
+                        android:id="@+id/batch_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="Enter Batch Number"
+                        android:textColor="#000"
+                        android:layout_margin="2dp"
+                        android:textColorHint="#000"
+                        android:textSize="15dp" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <ImageButton
+                    android:id="@+id/batch_text"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_play_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginRight="10dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="1dp">
+
+                    <EditText
+                        android:id="@+id/ar_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="Enter AR Number"
+                        android:textColor="#000"
+                        android:layout_margin="2dp"
+                        android:textColorHint="#000"
+                        android:textSize="15dp" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <ImageButton
+                    android:id="@+id/ar_text"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_play_arrow" />
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/logBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#3CEA43"
+                android:text="@string/log"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/export"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:text="@string/export"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/print"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+
+                android:text="Print"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+            <Button
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:text="Clear"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="visible" />
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:backgroundTint="#F3F3F3"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchHold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginHorizontal="50dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/sofia_bold"
+                        android:text="@string/log_on_stable"
+                        android:textColor="@color/grey_dark"
+                        android:textSize="25sp"
+                        android:theme="@style/Switch" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchInterval"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginHorizontal="50dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/sofia_bold"
+                        android:text="@string/log_at_interval"
+                        android:textColor="@color/grey_dark"
+                        android:textSize="25sp"
+                        android:theme="@style/Switch" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/switchBtnClick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginHorizontal="50dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/sofia_bold"
+                        android:text="@string/log_on_button_click"
+                        android:textColor="@color/grey_dark"
+                        android:textSize="25sp"
+                        android:theme="@style/Switch" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:layout_below="@id/ll1">
 
         <LinearLayout
@@ -216,16 +368,16 @@
                 android:id="@+id/table_heading_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/table_border">
 
                 <TableRow tools:ignore="UselessParent">
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="10dp"
                         android:layout_height="30dp"
                         android:layout_column="0"
                         android:layout_gravity="center_horizontal"
@@ -236,7 +388,18 @@
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="5dp"
+                        android:layout_height="30dp"
+                        android:layout_column="0"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/time"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="5dp"
                         android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
@@ -249,7 +412,7 @@
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="5dp"
                         android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
@@ -261,14 +424,40 @@
 
                     <TextView
                         style="@style/table_header"
-                        android:layout_width="0dp"
+                        android:layout_width="10dp"
                         android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingEnd="5dp"
-                        android:text="@string/compound_name"
+                        android:text="Product"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="5dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="Batch No"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="5dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="AR No"
                         android:textAlignment="center"
                         tools:ignore="RtlSymmetry" />
                 </TableRow>
@@ -296,5 +485,6 @@
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical" />
         </LinearLayout>
+
     </ScrollView>
 </RelativeLayout>
