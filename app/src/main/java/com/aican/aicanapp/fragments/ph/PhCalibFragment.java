@@ -1295,6 +1295,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 try {
                     fos = getContext().openFileOutput(FILE_NAMEE, MODE_PRIVATE);
+                    if(Source.userName !=null)
                     fos.write(Source.userName.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1380,9 +1381,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 ////                            Log.d("App", "failed to create directory");
 ////                        }
 ////                    }
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData" + currentDateandTime + ".pdf", options);
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+                    File tempRoot = new File(tempPath);
+                    fileNotWrite(tempRoot);
+                    File[] tempFilesAndFolders = tempRoot.listFiles();
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData" + currentDateandTime +"_"+(tempFilesAndFolders.length-1)+".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
                     File root1 = new File(path1);

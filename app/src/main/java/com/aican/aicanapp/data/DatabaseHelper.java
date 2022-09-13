@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table PHBuffer(ID INTEGER PRIMARY KEY AUTOINCREMENT,PH_BUFF TEXT, minMV TEXT, maxMV TEXT)");
-        sqLiteDatabase.execSQL("create Table PrintLogECdetails(date TEXT, conductivity TEXT, temperature TEXT, productName TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogECdetails(date TEXT,time TEXT, conductivity TEXT,tds TEXT ,temperature TEXT, productName TEXT,batch TEXT)");
     }
 
     @Override
@@ -61,13 +61,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertLogECDetails(String date,String ph,String temp,String productName){
+    public boolean insertLogECDetails(String date,String time,String conductivity,String TDS,String temp,String productName,String batch){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("Username", date);
-        contentValues.put("Role", ph);
-        contentValues.put("expiryDate", temp);
-        contentValues.put("dateCreated", productName);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("conductivity", conductivity);
+        contentValues.put("tds", TDS);
+        contentValues.put("temperature", temp);
+        contentValues.put("productName", productName);
+        contentValues.put("batch", batch);
         long result = db.insert("PrintLogECdetails",null,contentValues);
         if(result == -1){
             return false;
@@ -289,7 +292,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public boolean updateUserDetails(String name,String newName,String role){
+    public boolean updateUserDetails(String name,String newName,String role,String password){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
 
@@ -301,6 +304,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues dataToInsertUserData = new ContentValues();
             dataToInsertUserData.put("Username",newName);
             dataToInsertUserData.put("Role",role);
+
+            if(!password.isEmpty())
+                dataToInsert.put("passcode",password);
 
             long result = db.update("Userdetails",dataToInsert,"id=?", new String[]{name});
             long result2 = db.update("UserDataDetails",dataToInsertUserData,"Username=?", new String[]{name});

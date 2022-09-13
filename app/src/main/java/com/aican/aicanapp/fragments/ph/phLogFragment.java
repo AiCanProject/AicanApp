@@ -442,7 +442,7 @@ public class phLogFragment extends Fragment {
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
                     PdfSaveOptions options = new PdfSaveOptions();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
 
@@ -452,7 +452,11 @@ public class phLogFragment extends Fragment {
 //                            Log.d("App", "failed to create directory");
 //                        }
 //                    }
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+".pdf", options);
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+                    File tempRoot = new File(tempPath);
+                    fileNotWrite(tempRoot);
+                    File[] tempFilesAndFolders = tempRoot.listFiles();
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+"_"+(tempFilesAndFolders.length-1)+".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                     File root1 = new File(path1);
@@ -766,7 +770,7 @@ public class phLogFragment extends Fragment {
             printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("pH,mV,DATE");
+            printWriter.println("_____pH,___mV,DATE");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
 
