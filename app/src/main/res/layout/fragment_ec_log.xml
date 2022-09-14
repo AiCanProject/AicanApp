@@ -226,12 +226,36 @@
                         style="@style/table_header"
                         android:layout_width="0dp"
                         android:layout_height="30dp"
+                        android:layout_column="0"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/time"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
                         android:layout_column="2"
                         android:layout_gravity="center_horizontal"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:paddingEnd="5dp"
-                        android:text="@string/ph"
+                        android:text="Conductivity"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="TDS"
                         android:textAlignment="center"
                         tools:ignore="RtlSymmetry" />
 
@@ -259,6 +283,19 @@
                         android:text="@string/compound_name"
                         android:textAlignment="center"
                         tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        style="@style/table_header"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_column="2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:text="Batch"
+                        android:textAlignment="center"
+                        tools:ignore="RtlSymmetry" />
                 </TableRow>
             </TableLayout>
 
@@ -273,7 +310,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical"
-                tools:listitem="@layout/item_log" />
+                tools:listitem="@layout/item_log_ec" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewCSVLog"

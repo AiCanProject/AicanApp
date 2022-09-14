@@ -103,6 +103,10 @@ public class phAlarmFragment extends Fragment {
             alarm.setEnabled(false);
         }
 
+        if(AlarmConstants.minPh !=null && AlarmConstants.maxPh !=null){
+            phValue.setText(""+AlarmConstants.minPh);
+            maxPhValue.setText(""+AlarmConstants.maxPh);
+        }
         alarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,7 +151,8 @@ public class phAlarmFragment extends Fragment {
                 Float minPH = Float.parseFloat(strings[0]);
                 Float maxPH = Float.parseFloat(strings[1]);
                 Log.d("AlarmFragment","AlarmFragment: doInBackground in if "+AlarmConstants.PH);
-                if(AlarmConstants.PH<minPH || AlarmConstants.PH>maxPH){
+                if(AlarmConstants.PH<minPH || AlarmConstants.PH>maxPH ){
+                    if(!AlarmConstants.ringtone.isPlaying() && AlarmConstants.ringtone!=null)
                     AlarmConstants.ringtone.play();
                 }else if(AlarmConstants.ringtone.isPlaying()){
                         AlarmConstants.ringtone.stop();

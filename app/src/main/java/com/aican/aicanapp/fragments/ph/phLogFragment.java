@@ -105,7 +105,7 @@ public class phLogFragment extends Fragment {
     LogAdapter adapter;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, printBtn,clearBtn;
+    Button logBtn, exportBtn, printBtn,clearBtn,submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
     EditText compound_name_txt, batch_number, ar_number;
@@ -160,6 +160,7 @@ public class phLogFragment extends Fragment {
         switchInterval = view.findViewById(R.id.switchInterval);
         switchBtnClick = view.findViewById(R.id.switchBtnClick);
         clearBtn = view.findViewById(R.id.clear);
+        submitBtn = view.findViewById(R.id.submit);
 
         recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
@@ -286,6 +287,10 @@ public class phLogFragment extends Fragment {
                     });
                 }
             }
+        });
+
+        submitBtn.setOnClickListener(view1 -> {
+            saveDetails();
         });
 
         if(deviceRef.child("Data").child("LOG") != null)
@@ -437,7 +442,7 @@ public class phLogFragment extends Fragment {
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
                     PdfSaveOptions options = new PdfSaveOptions();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
 
@@ -447,7 +452,11 @@ public class phLogFragment extends Fragment {
 //                            Log.d("App", "failed to create directory");
 //                        }
 //                    }
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+".pdf", options);
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+                    File tempRoot = new File(tempPath);
+                    fileNotWrite(tempRoot);
+                    File[] tempFilesAndFolders = tempRoot.listFiles();
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+"_"+(tempFilesAndFolders.length-1)+".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                     File root1 = new File(path1);
@@ -600,6 +609,51 @@ public class phLogFragment extends Fragment {
         });
     }
 
+    private void saveDetails() {
+        compound_name = compound_name_txt.getText().toString();
+        if (!compound_name.isEmpty()) {
+            deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(compound_name);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+        //saving batch number
+        batchnum = batch_number.getText().toString();
+        if (!batchnum.isEmpty()) {
+            deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(batchnum);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+        arnum = ar_number.getText().toString();
+        if (!arnum.isEmpty()) {
+            deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(arnum);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+    }
+
     private void openTimerDialog() {
         final Dialog dialog = new Dialog(getContext());
         dialog.setCancelable(false);
@@ -716,7 +770,7 @@ public class phLogFragment extends Fragment {
             printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("pH,mV,DATE");
+            printWriter.println("_____pH,___mV,DATE");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
 

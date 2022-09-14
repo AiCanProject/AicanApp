@@ -17,12 +17,13 @@ import com.aican.aicanapp.data.DatabaseHelper;
 
 public class EditUserDatabase extends AppCompatActivity {
     Spinner spinner;
-    EditText name;
+    EditText name,passwordText;
     String[] r = {"Operator", "Supervisor"};
     DatabaseHelper databaseHelper;
     String username="";
     String userRole="";
     Button update;
+    String password = "";
 
 
     @Override
@@ -34,6 +35,7 @@ public class EditUserDatabase extends AppCompatActivity {
         name = findViewById(R.id.username);
         databaseHelper = new DatabaseHelper(this);
         update = findViewById(R.id.updateBtn);
+        passwordText = findViewById(R.id.password);
 
         Intent intent = getIntent();
 
@@ -64,10 +66,13 @@ public class EditUserDatabase extends AppCompatActivity {
         }
 
         update.setOnClickListener(view -> {
-            if(databaseHelper.updateUserDetails(username,name.getText().toString(),userRole)){
+            if(!passwordText.getText().toString().isEmpty())
+                password = passwordText.getText().toString();
+
+            if(databaseHelper.updateUserDetails(username,name.getText().toString(),userRole,password)){
 
             }else{
-                Toast.makeText(this, "Something", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
     }
