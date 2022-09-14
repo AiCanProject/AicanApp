@@ -16,11 +16,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table TempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
         sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintTempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT, BFD TEXT)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
@@ -32,9 +36,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Userdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS TempLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintTempLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS TempUserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserDataDetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ProbeDetail");
@@ -137,24 +144,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public Boolean insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("date", date);
-        contentValues.put("time", time);
-        contentValues.put("ph", ph);
-        contentValues.put("temperature", temperature);
-        contentValues.put("batchnum", batchnum);
-        contentValues.put("arnum", arnum);
-        contentValues.put("compound", compound);
-        long result = db.insert("LogUserdetails", null, contentValues);
-        if(result == -1){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
     public Boolean updateBufferData(int id, String PH_BUFF, String minMV, String maxMV, Context context) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -181,6 +170,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        return result > 0;
     }
 
+    // for pH log
+    public Boolean insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("ph", ph);
+        contentValues.put("temperature", temperature);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("arnum", arnum);
+        contentValues.put("compound", compound);
+        long result = db.insert("LogUserdetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    // for temp log
+    public Boolean insert_temp_log_data(String date, String time, String set_temp, String temp1,String temp2, String batchnum, String product){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("set_temp", set_temp);
+        contentValues.put("temp1", temp1);
+        contentValues.put("temp2", temp2);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("product", product);
+        long result = db.insert("TempLogUserdetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+
+    // for pH log
     public Boolean print_insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -199,6 +228,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    // for temp log - temp
+    public Boolean print_insert_log_data_temp(String date, String time, String set_temp, String temp1,String temp2, String batchnum, String product){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("set_temp", set_temp);
+        contentValues.put("temp1", temp1);
+        contentValues.put("temp2", temp2);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("product", product);
+        long result = db.insert("PrintTempLogUserdetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    // for pH log
     public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv, String compound){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -209,6 +258,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("mv", mv);
         contentValues.put("compound", compound);
         long result = db.insertOrThrow("UserActiondetails", null, contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    // for temp log
+    public Boolean insert_action_data_temp(String time, String useraction, String ph, String temp1, String temp2, String product){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("time", time);
+        contentValues.put("useraction", useraction);
+        contentValues.put("ph", ph);
+        contentValues.put("temp1", temp1);
+        contentValues.put("temp2", temp2);
+        contentValues.put("product", product);
+        long result = db.insertOrThrow("TempUserActiondetails", null, contentValues);
         if(result == -1){
             return false;
         }else{
