@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table PHBuffer(ID INTEGER PRIMARY KEY AUTOINCREMENT,PH_BUFF TEXT, minMV TEXT, maxMV TEXT)");
-        sqLiteDatabase.execSQL("create Table PrintLogECdetails(date TEXT,time TEXT, conductivity TEXT,tds TEXT ,temperature TEXT, productName TEXT,batch TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogECdetails(date TEXT,time TEXT, conductivity TEXT,TDS TEXT ,temperature TEXT, productName TEXT,batch TEXT)");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("date", date);
         contentValues.put("time", time);
         contentValues.put("conductivity", conductivity);
-        contentValues.put("tds", TDS);
+        contentValues.put("TDS", TDS);
         contentValues.put("temperature", temp);
         contentValues.put("productName", productName);
         contentValues.put("batch", batch);
