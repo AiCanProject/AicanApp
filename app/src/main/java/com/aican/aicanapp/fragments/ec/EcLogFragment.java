@@ -47,12 +47,13 @@ public class EcLogFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     DatabaseReference deviceRef;
-    Button logBtn;
-    String conductivity,TDS, temp,productName,batchNo,date,time;
+    Button logBtn, export;
+    String conductivity, TDS, temp, productName, batchNo, date, time;
     DatabaseHelper databaseHelper;
     RecyclerView recyclerViewLog;
     ArrayList<ecLogModel> ecLogList;
     ECLogAdapter logAdapter;
+
     public EcLogFragment() {
         // Required empty public constructor
     }
@@ -96,6 +97,7 @@ public class EcLogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //initialise variables here
         logBtn = view.findViewById(R.id.logBtn);
+        export = view.findViewById(R.id.export);
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(EcActivity.DEVICE_ID)).getReference().child("ECMETER").child(EcActivity.DEVICE_ID);
         databaseHelper = new DatabaseHelper(getContext());
         recyclerViewLog = view.findViewById(R.id.recyclerViewLog);
@@ -111,15 +113,14 @@ public class EcLogFragment extends Fragment {
             if (conductivity == null || temp == null || batchNo == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.insertLogECDetails(date, time, conductivity, TDS, temp,productName, batchNo);
+                databaseHelper.insertLogECDetails(date, time, conductivity, TDS, temp, productName, batchNo);
             }
-            logAdapter = new ECLogAdapter(getContext(),getList());
+            logAdapter = new ECLogAdapter(getContext(), getList());
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
             recyclerViewLog.setLayoutManager(linearLayoutManager);
             recyclerViewLog.setAdapter(logAdapter);
 
         });
-
 
 
         File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails");
@@ -179,7 +180,7 @@ public class EcLogFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float tds = snapshot.getValue(Float.class);
-                TDS =String.format(Locale.UK, "%.2f", tds);
+                TDS = String.format(Locale.UK, "%.2f", tds);
             }
 
             @Override
@@ -189,7 +190,7 @@ public class EcLogFragment extends Fragment {
     }
 
     private List<ecLogModel> getList() {
-        ecLogList.add(0, new ecLogModel(date,time,conductivity,TDS, temp,batchNo,productName));
+        ecLogList.add(0, new ecLogModel(date, time, conductivity, TDS, temp, batchNo, productName));
         return ecLogList;
     }
 

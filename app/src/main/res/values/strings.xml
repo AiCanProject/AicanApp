@@ -67,4 +67,6 @@
     </string-array>
     <string name="folderLocation">AICAN Latest Apk</string>
 
+    <string name="ecLogFolder">/LabApp/Currentlog/ECLog</string>
+
 </resources>

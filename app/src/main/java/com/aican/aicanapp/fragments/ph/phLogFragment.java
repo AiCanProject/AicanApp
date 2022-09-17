@@ -97,7 +97,7 @@ public class phLogFragment extends Fragment {
             currentDate_fetched, currentTime_fetched, batchnum_fetched,
             arnum_fetched, compound_name_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
-//    LineChart lineChart;
+    //    LineChart lineChart;
     String mode, reportDate, reportTime;
     private static final int PERMISSION_REQUEST_CODE = 200;
     DatabaseReference deviceRef;
@@ -105,7 +105,7 @@ public class phLogFragment extends Fragment {
     LogAdapter adapter;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, printBtn,clearBtn,submitBtn;
+    Button logBtn, exportBtn, printBtn, clearBtn, submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
     EditText compound_name_txt, batch_number, ar_number;
@@ -113,7 +113,7 @@ public class phLogFragment extends Fragment {
     RecyclerView recyclerView;
     Handler handler;
     Runnable runnable;
-    SwitchCompat switchHold,switchInterval,switchBtnClick;
+    SwitchCompat switchHold, switchInterval, switchBtnClick;
 
 
     int timerInSec;
@@ -293,55 +293,55 @@ public class phLogFragment extends Fragment {
             saveDetails();
         });
 
-        if(deviceRef.child("Data").child("LOG") != null)
-        deviceRef.child("Data").child("LOG").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int log = snapshot.getValue(Integer.class);
+        if (deviceRef.child("Data").child("LOG") != null)
+            deviceRef.child("Data").child("LOG").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int log = snapshot.getValue(Integer.class);
 
-                if(log == 1){
-                    deviceRef.child("Data").child("LOG").setValue(0);
-                    date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                    fetch_logs();
-                    if (ph == null || temp == null || mv == null) {
-                        Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-                    } else {
-                        databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-                        databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                    if (log == 1) {
+                        deviceRef.child("Data").child("LOG").setValue(0);
+                        date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                        fetch_logs();
+                        if (ph == null || temp == null || mv == null) {
+                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                        } else {
+                            databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                        }
                     }
+
                 }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                }
+            });
 
         deviceRef.child("Data").child("HOLD").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-               int hold = snapshot.getValue(Integer.class);
+                int hold = snapshot.getValue(Integer.class);
 
-               if(switchHold.isChecked())
-               if(hold == 1){
-                   date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                   time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                   fetch_logs();
-                   deviceRef.child("Data").child("HOLD").setValue(0);
+                if (switchHold.isChecked())
+                    if (hold == 1) {
+                        date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                        fetch_logs();
+                        deviceRef.child("Data").child("HOLD").setValue(0);
 
-                   if (ph == null || temp == null || mv == null) {
-                       Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-                   } else {
-                       databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-                       databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-                       databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
-                   }
-                   adapter = new LogAdapter(getContext(), getList());
-                   recyclerView.setAdapter(adapter);
-               }
+                        if (ph == null || temp == null || mv == null) {
+                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                        } else {
+                            databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                        }
+                        adapter = new LogAdapter(getContext(), getList());
+                        recyclerView.setAdapter(adapter);
+                    }
             }
 
             @Override
@@ -354,8 +354,8 @@ public class phLogFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int clicked = snapshot.getValue(Integer.class);
-                if(clicked == 1){
-                   takeLog();
+                if (clicked == 1) {
+                    takeLog();
                     deviceRef.child("Data").child("AUTOLOG").setValue(0);
                 }
             }
@@ -410,8 +410,8 @@ public class phLogFragment extends Fragment {
             if (ph == null || temp == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-                databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
             }
             adapter = new LogAdapter(getContext(), getList());
@@ -456,7 +456,7 @@ public class phLogFragment extends Fragment {
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+"_"+(tempFilesAndFolders.length-1)+".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                     File root1 = new File(path1);
@@ -468,7 +468,7 @@ public class phLogFragment extends Fragment {
                         return;
                     } else {
                         for (int i = 0; i < filesAndFolders1.length; i++) {
-                            if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")  ){
+                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
                                 filesAndFolders1[i].delete();
                             }
                         }
@@ -477,7 +477,6 @@ public class phLogFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
@@ -491,8 +490,8 @@ public class phLogFragment extends Fragment {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFoldersPDF.length; i++) {
-                        if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
-                            filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
+                        if (filesAndFoldersPDF[i].getName().endsWith(".pdf")) {
+                            filesAndFoldersNewPDF[0] = filesAndFoldersPDF[i];
 
                         }
                     }
@@ -506,7 +505,7 @@ public class phLogFragment extends Fragment {
 
                 SQLiteDatabase db = databaseHelper.getWritableDatabase();
                 Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-                if (curCSV != null && curCSV.getCount() > 0){
+                if (curCSV != null && curCSV.getCount() > 0) {
                     deleteAllLogs();
                 } else {
                     Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
@@ -521,14 +520,14 @@ public class phLogFragment extends Fragment {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
-        File[] filesAndFoldersPDF =new File[1];
+        File[] filesAndFoldersPDF = new File[1];
 
         if (filesAndFolders == null || filesAndFolders.length == 0) {
             Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
             return;
         } else {
             for (int i = 0; i < filesAndFolders.length; i++) {
-                if(filesAndFolders[i].getName().endsWith(".pdf")){
+                if (filesAndFolders[i].getName().endsWith(".pdf")) {
                     filesAndFoldersPDF[0] = filesAndFolders[i];
                 }
             }
@@ -548,15 +547,15 @@ public class phLogFragment extends Fragment {
         switchInterval.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(switchInterval.isChecked()){
+                if (switchInterval.isChecked()) {
                     switchBtnClick.setChecked(false);
                     switchHold.setChecked(false);
                     deviceRef.child("Data").child("AUTOLOG").setValue(1);
                     openTimerDialog();
-                }else{
+                } else {
                     isTimer = false;
-                    if(handler!=null)
-                    handler.removeCallbacks(runnable);
+                    if (handler != null)
+                        handler.removeCallbacks(runnable);
                     deviceRef.child("Data").child("AUTOLOG").setValue(0);
                 }
             }
@@ -565,10 +564,10 @@ public class phLogFragment extends Fragment {
         switchBtnClick.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(switchBtnClick.isChecked()){
+                if (switchBtnClick.isChecked()) {
                     deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
-                    if(switchInterval.isChecked()) {
+                    if (switchInterval.isChecked()) {
                         isTimer = false;
                         handler.removeCallbacks(runnable);
                         switchInterval.setChecked(false);
@@ -581,17 +580,17 @@ public class phLogFragment extends Fragment {
         switchHold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(switchHold.isChecked()){
+                if (switchHold.isChecked()) {
                     deviceRef.child("Data").child("HOLD").setValue(0);
                     deviceRef.child("Data").child("AUTOLOG").setValue(1);
-                    if(switchInterval.isChecked()) {
+                    if (switchInterval.isChecked()) {
                         isTimer = false;
                         handler.removeCallbacks(runnable);
                         switchInterval.setChecked(false);
                     }
 
                     switchBtnClick.setChecked(false);
-                }else{
+                } else {
                     deviceRef.child("Data").child("AUTOLOG").setValue(0);
                 }
             }
@@ -602,7 +601,7 @@ public class phLogFragment extends Fragment {
             public void onClick(View view) {
                 phDataModelList.clear();
                 ArrayList<phData> ar = new ArrayList<>();
-                adapter = new LogAdapter(getContext(),ar);
+                adapter = new LogAdapter(getContext(), ar);
                 recyclerView.setAdapter(adapter);
 
             }
@@ -660,9 +659,9 @@ public class phLogFragment extends Fragment {
         dialog.setContentView(R.layout.set_timer_dialog_layout);
         dialog.show();
 
-        Button cancel,set_timer;
+        Button cancel, set_timer;
         cancel = dialog.findViewById(R.id.cancelBtn);
-        set_timer=dialog.findViewById(R.id.set_timer);
+        set_timer = dialog.findViewById(R.id.set_timer);
 
 
         EditText timer = dialog.findViewById(R.id.timerEditText);
@@ -670,8 +669,8 @@ public class phLogFragment extends Fragment {
         set_timer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!timer.getText().toString().isEmpty()) {
-                    double d = Double.parseDouble(timer.getText().toString())*60000;
+                if (!timer.getText().toString().isEmpty()) {
+                    double d = Double.parseDouble(timer.getText().toString()) * 60000;
                     Double db = new Double(d);
                     timerInSec = db.intValue();
                     handler();
@@ -686,8 +685,8 @@ public class phLogFragment extends Fragment {
         });
     }
 
-    void handler(){
-        Log.d("Timer", "doInBackground: in while "+timerInSec);
+    void handler() {
+        Log.d("Timer", "doInBackground: in while " + timerInSec);
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -697,12 +696,12 @@ public class phLogFragment extends Fragment {
                 handler();
             }
         };
-        handler.postDelayed(runnable,timerInSec);
+        handler.postDelayed(runnable, timerInSec);
         Log.d("Timer", "doInBackground: out handler");
 
     }
 
-    void takeLog(){
+    void takeLog() {
 
         date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -711,20 +710,20 @@ public class phLogFragment extends Fragment {
         if (ph == null || temp == null || mv == null) {
             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
         } else {
-            databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-            databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+            databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+            databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);
     }
 
-    public void fileNotWrite(File file){
+    public void fileNotWrite(File file) {
         file.setWritable(false);
-        if(file.canWrite()){
-            Log.d("csv","Not Working");
+        if (file.canWrite()) {
+            Log.d("csv", "Not Working");
         } else {
-            Log.d("csvnw","Working");
+            Log.d("csvnw", "Working");
         }
     }
 
@@ -745,8 +744,8 @@ public class phLogFragment extends Fragment {
         PrintWriter printWriter = null;
 
         try {
-            reportDate ="Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            reportTime ="Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
             file = new File(exportDir, "CurrentData.csv");
             file.createNewFile();
@@ -756,22 +755,33 @@ public class phLogFragment extends Fragment {
             offset = "Offset: " + shp.getString("offset", "");
             battery = "Battery: " + shp.getString("battery", "");
             slope = "Slope: " + shp.getString("slope", "");
-            temp = "Temperature: " + shp.getString("temp", "");
+            temp = "Temperature: " + shp.getString("temp", "na");
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
 
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("_____pH,___mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(reportDate);
+//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry);
+            printWriter.println(reportTime);
+//            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println(offset + "," + battery + "," + temp + "," + slope + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery);
+            printWriter.println(temp);
+            printWriter.println(slope);
+//            printWriter.println(offset + "," + battery);
+//            printWriter.println(temp + "," + slope);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println("Calibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Calibration Table");
+            printWriter.println("_______pH____,____mV___,___DATE__,__TIME__");
+            printWriter.println();
 
 
             while (calibCSV.moveToNext()) {
@@ -780,21 +790,21 @@ public class phLogFragment extends Fragment {
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
 
-                String record1 = ph + "," + mv + "," + date;
+                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(10, 16);
 
                 printWriter.println(record1);
             }
             calibCSV.close();
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 //            printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
-            int i=0;
+            int i = 0;
             while (curCSV.moveToNext()) {
-                if(i==0){
+                if (i == 0) {
 //                    printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
-                    String record = "__Date____" + "," + "_____Time__" + "," + "______pH" + "," + "___Temp" + "," + "_Batch No" + "," + "+__AR No" + "," + "Compound";
+                    String record = "____Date___" + "______Time__" + "___pH" + "_" + "___Temp___" + "_" + "_Batch No_" + "_" + "___AR No__" + "_" + "_Compound";
                     printWriter.println(record);
                     i++;
                 }
@@ -810,11 +820,11 @@ public class phLogFragment extends Fragment {
 
                 printWriter.println(record);
             }
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
             curCSV.close();
             db.close();
 
@@ -823,8 +833,8 @@ public class phLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0,10.0);
-            worksheet.getCells().setColumnWidth(1,10.0);
+            worksheet.getCells().setColumnWidth(0, 10.0);
+            worksheet.getCells().setColumnWidth(1, 10.0);
 
             Range rng = worksheet.getCells().createRange("B2:D7");
             Style st = worksheet.getWorkbook().createStyle();
@@ -835,7 +845,7 @@ public class phLogFragment extends Fragment {
 
             flag.setAlignments(true);
 
-            rng.applyStyle(st,flag);
+            rng.applyStyle(st, flag);
 
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx", SaveFormat.XLSX);
 
