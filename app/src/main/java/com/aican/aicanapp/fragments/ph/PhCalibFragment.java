@@ -155,6 +155,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
+            for(int i=0;i<bufferLabelsThree.length;i++){
+                buffersThree[i] = Float.parseFloat(snapshot.child(bufferLabelsThree[i]).getValue(String.class));
+
+            }
             if (spin.getSelectedItemPosition() == 0) {
 
                 ph1.setText(String.valueOf(buffers[0]));
@@ -1564,7 +1568,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 printWriter.println(record1);
             }
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor\nSign" + "," + nullEntry + "," + nullEntry);
 
             calibCSV.close();
             db.close();
