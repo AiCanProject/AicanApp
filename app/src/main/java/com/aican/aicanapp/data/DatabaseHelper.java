@@ -18,9 +18,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT,expiryDate TEXT,dateCreated TEXT)");
-        sqLiteDatabase.execSQL("create Table LogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table LogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT,deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
-        sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table PrintTempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
@@ -52,23 +52,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertUserData(String userName,String role,String expiryDate,String dateCreated){
+    public boolean insertUserData(String userName, String role, String expiryDate, String dateCreated) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Username", userName);
         contentValues.put("Role", role);
         contentValues.put("expiryDate", expiryDate);
         contentValues.put("dateCreated", dateCreated);
-        long result = db.insert("UserDataDetails",null,contentValues);
-        if(result == -1){
+        long result = db.insert("UserDataDetails", null, contentValues);
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
 
     }
 
-    public boolean insertLogECDetails(String date,String time,String conductivity,String TDS,String temp,String productName,String batch){
+    public boolean insertLogECDetails(String date, String time, String conductivity, String TDS, String temp, String productName, String batch) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("date", date);
@@ -78,10 +78,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("temperature", temp);
         contentValues.put("productName", productName);
         contentValues.put("batch", batch);
-        long result = db.insert("PrintLogECdetails",null,contentValues);
-        if(result == -1){
+        long result = db.insert("PrintLogECdetails", null, contentValues);
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
 
@@ -102,21 +102,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insertCalibData(String pH, String mV,String date){
+    public Boolean insertCalibData(String pH, String mV, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("pH", pH);
         contentValues.put("mV", mV);
         contentValues.put("date", date);
         long result = db.insert("Calibdetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public Boolean insert_data(String name, String role,String id, String passcode,String expiryDate,String dateCreated){
+    public Boolean insert_data(String name, String role, String id, String passcode, String expiryDate, String dateCreated) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
@@ -126,12 +126,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("expiryDate", expiryDate);
         contentValues.put("dateCreated", dateCreated);
         long result = db.insert("Userdetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
+
     public Boolean insertPHBuffer(int id, String PH_BUFF, String minMV, String maxMV, Context context) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -147,6 +148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
     public Boolean insert_probe(String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -192,7 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // for pH log
-    public Boolean insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
+    public Boolean insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("date", date);
@@ -202,16 +204,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("batchnum", batchnum);
         contentValues.put("arnum", arnum);
         contentValues.put("compound", compound);
+        contentValues.put("deviceID", deviceID);
         long result = db.insert("LogUserdetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     // for temp log
-    public Boolean insert_temp_log_data(String date, String time, String set_temp, String temp1,String temp2, String batchnum, String product){
+    public Boolean insert_temp_log_data(String date, String time, String set_temp, String temp1, String temp2, String batchnum, String product) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("date", date);
@@ -222,16 +225,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("batchnum", batchnum);
         contentValues.put("product", product);
         long result = db.insert("TempLogUserdetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
 
     // for pH log
-    public Boolean print_insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound){
+    public Boolean print_insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound,String deviceID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("date", date);
@@ -241,16 +244,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("batchnum", batchnum);
         contentValues.put("arnum", arnum);
         contentValues.put("compound", compound);
+        contentValues.put("deviceID", deviceID);
         long result = db.insert("PrintLogUserdetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     // for temp log - temp
-    public Boolean print_insert_log_data_temp(String date, String time, String set_temp, String temp1,String temp2, String batchnum, String product){
+    public Boolean print_insert_log_data_temp(String date, String time, String set_temp, String temp1, String temp2, String batchnum, String product) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("date", date);
@@ -261,15 +265,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("batchnum", batchnum);
         contentValues.put("product", product);
         long result = db.insert("PrintTempLogUserdetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     // for pH log
-    public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv, String compound){
+    public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv, String compound) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
@@ -279,15 +283,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("mv", mv);
         contentValues.put("compound", compound);
         long result = db.insertOrThrow("UserActiondetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     // for temp log
-    public Boolean insert_action_data_temp(String time, String useraction, String ph, String temp1, String temp2, String product){
+    public Boolean insert_action_data_temp(String time, String useraction, String ph, String temp1, String temp2, String product) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
@@ -297,44 +301,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("temp2", temp2);
         contentValues.put("product", product);
         long result = db.insertOrThrow("TempUserActiondetails", null, contentValues);
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public Boolean delete_data(String name){
+    public Boolean delete_data(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails", null);
-        if(cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             long result = db.delete("Userdetails", "name=?", new String[]{name});
-            if(result == -1){
+            if (result == -1) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
-        }else{
+        } else {
             return false;
         }
     }
 
-    public Boolean delete_Userdata(String name){
+    public Boolean delete_Userdata(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
-        if(cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             long result = db.delete("UserDataDetails", "Username=?", new String[]{name});
-            if(result == -1){
+            if (result == -1) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
-        }else{
+        } else {
             return false;
         }
     }
 
-    public Cursor get_data(){
+    public Cursor get_data() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails", null);
         return cursor;
@@ -353,41 +357,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor get_log(){
+    public Cursor get_log() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM LogUserDetails", null);
         return cursor;
     }
 
-    public boolean updateUserDetails(String name,String newName,String role,String password){
+    public boolean updateUserDetails(String name, String newName, String role, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
 
-        if(cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             ContentValues dataToInsert = new ContentValues();
-            dataToInsert.put("id",newName);
-            dataToInsert.put("role",role);
+            dataToInsert.put("id", newName);
+            dataToInsert.put("role", role);
 
             ContentValues dataToInsertUserData = new ContentValues();
-            dataToInsertUserData.put("Username",newName);
-            dataToInsertUserData.put("Role",role);
+            dataToInsertUserData.put("Username", newName);
+            dataToInsertUserData.put("Role", role);
 
-            if(!password.isEmpty())
-                dataToInsert.put("passcode",password);
+            if (!password.isEmpty())
+                dataToInsert.put("passcode", password);
 
-            long result = db.update("Userdetails",dataToInsert,"id=?", new String[]{name});
-            long result2 = db.update("UserDataDetails",dataToInsertUserData,"Username=?", new String[]{name});
-            if(result==-1 || result2==-1){
+            long result = db.update("Userdetails", dataToInsert, "id=?", new String[]{name});
+            long result2 = db.update("UserDataDetails", dataToInsertUserData, "Username=?", new String[]{name});
+            if (result == -1 || result2 == -1) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
-        }else{
+        } else {
             return false;
         }
-
-
-
 
 
     }

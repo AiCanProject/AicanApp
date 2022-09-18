@@ -590,16 +590,22 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + companyName+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + companyName);
+            printWriter.println(reportDate);
+            printWriter.println(reportTime);
+            printWriter.println(roleExport);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+//            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(offset + "," + battery);
+            printWriter.println(temp);
+            printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("pH,mV,DATE");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println();
+            printWriter.println("Calibration Table");
+//            printWriter.println("pH,mV,DATE");
+            printWriter.println("____pH________mV____DATE_____TIME___");
+
+            printWriter.println();
 
 
 
@@ -608,14 +614,17 @@ public class Export extends AppCompatActivity {
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
 
-                String record1 = ph + "," + mv + "," + date;
+
+                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(10, 16);
+
+//                String record1 = ph + "," + mv + "," + date;
 
                 printWriter.println(record1);
             }
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," +nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," +nullEntry);
-            printWriter.println("__Date____" + "," + "_____Time__" + "," + "______pH" + "," + "___Temp" + "," + "_Batch No" + "," + "+__AR No" + "," + "Compound");
+            printWriter.println("_____Date______Time_____pH______Temp___Batch No___AR No___Compound___Device___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," +nullEntry);
 
 
@@ -623,14 +632,15 @@ public class Export extends AppCompatActivity {
 
                 String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
-                String device="EPT2016";
+                String device= curCSV.getString(curCSV.getColumnIndex("deviceID"));
                 String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
                 String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
                 String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
                 String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
+//                String record = date + "   " + time +  "     " + pH + "       " + temp + "       " + batchnum + "       " + arnum + "       " + comp + "      " + device;
 
-                String record = date + "," + time +  "," + device+ "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
+                String record = date + "," + time +  "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp + "," + device;
 
                 printWriter.println(record);
             }
@@ -651,8 +661,14 @@ public class Export extends AppCompatActivity {
 
                 Workbook workbook = new Workbook(inputFile + "DataSensorLog.csv", loadOptions);
                 Worksheet worksheet = workbook.getWorksheets().get(0);
-                worksheet.getCells().setColumnWidth(0,18.5);
-                worksheet.getCells().setColumnWidth(2,18.5);
+                worksheet.getCells().setColumnWidth(0,10.0);
+                worksheet.getCells().setColumnWidth(1,8.0);
+                worksheet.getCells().setColumnWidth(2,8.0);
+                worksheet.getCells().setColumnWidth(3,10.0);
+                worksheet.getCells().setColumnWidth(4,10.0);
+                worksheet.getCells().setColumnWidth(5,10.0);
+                worksheet.getCells().setColumnWidth(6,10.0);
+                worksheet.getCells().setColumnWidth(7,10.0);
                 workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
@@ -702,7 +718,7 @@ public class Export extends AppCompatActivity {
             printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
             printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("TIME,ACTIVITY,pH,TEMPERATURE,mV");
+            printWriter.println("DATE,TIME,ACTIVITY,pH,TEMP,mV");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
 //            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -723,7 +739,7 @@ public class Export extends AppCompatActivity {
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
 
-                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
+                String record2 = Time.substring(0, 10) + "," + Time.substring(10, 16) + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
 
                 printWriter.println(record2);
             }

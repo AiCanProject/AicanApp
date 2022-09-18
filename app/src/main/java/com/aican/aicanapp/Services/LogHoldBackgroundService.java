@@ -62,8 +62,8 @@ public class LogHoldBackgroundService extends Service {
                                         time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                                         fetch_logs();
 
-                                        dbHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
-                                        dbHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name);
+                                        dbHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
+                                        dbHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
                                         deviceReference.child("Data").child("HOLD").setValue(0);
                                         Toast.makeText(getApplicationContext(), "BG Service data", Toast.LENGTH_SHORT).show();
 
