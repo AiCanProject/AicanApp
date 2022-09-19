@@ -307,7 +307,7 @@ public class phLogFragment extends Fragment {
                     if (ph == null || temp == null || mv == null) {
                         Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                     } else {
-                        databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                        databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
                         databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
                     }
                 }
@@ -335,8 +335,8 @@ public class phLogFragment extends Fragment {
                    if (ph == null || temp == null || mv == null) {
                        Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                    } else {
-                       databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-                       databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                       databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
+                       databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
                        databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
                    }
                    adapter = new LogAdapter(getContext(), getList());
@@ -410,8 +410,8 @@ public class phLogFragment extends Fragment {
             if (ph == null || temp == null || mv == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-                databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+                databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
+                databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
                 databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
             }
             adapter = new LogAdapter(getContext(), getList());
@@ -711,8 +711,8 @@ public class phLogFragment extends Fragment {
         if (ph == null || temp == null || mv == null) {
             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
         } else {
-            databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
-            databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name);
+            databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
+            databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
             databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
         }
         adapter = new LogAdapter(getContext(), getList());
