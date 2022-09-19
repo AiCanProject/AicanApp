@@ -111,7 +111,6 @@ public class Export extends AppCompatActivity {
         compoundNameEditText = findViewById(R.id.compound_num_sort);
         convertToXls = findViewById(R.id.convertToXls);
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-        exportUserData.setVisibility(View.GONE);
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
@@ -739,7 +738,7 @@ public class Export extends AppCompatActivity {
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
 
-                String record2 = Time.substring(0, 10) + "," + Time.substring(10, 16) + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
+                String record2 = Time+ "," + Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
 
                 printWriter.println(record2);
             }
