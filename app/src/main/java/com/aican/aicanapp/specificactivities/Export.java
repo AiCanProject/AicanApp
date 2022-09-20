@@ -655,6 +655,7 @@ public class Export extends AppCompatActivity {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Operator Sign");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "," + nullEntry + "," + "Supervisor Sign");
+
             fileNotWrite(file);
             curCSV.close();
             db.close();
@@ -742,13 +743,14 @@ public class Export extends AppCompatActivity {
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
 
-                String record2 = Time.substring(0, 10) + "," + Time.substring(10, 16) + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
+                String record2 = Time + "," + Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
 
                 printWriter.println(record2);
             }
 
+
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor\nSign" + "," + nullEntry + "," + nullEntry);
             userCSV.close();
             db.close();
 

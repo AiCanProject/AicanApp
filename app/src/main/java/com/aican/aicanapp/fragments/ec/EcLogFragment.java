@@ -464,7 +464,7 @@ public class EcLogFragment extends Fragment {
                 String date = curCSV.getString(curCSV.getColumnIndex("date"));
                 String time = curCSV.getString(curCSV.getColumnIndex("time"));
                 String conductivity = curCSV.getString(curCSV.getColumnIndex("conductivity"));
-                String tds = curCSV.getString(curCSV.getColumnIndex("tds"));
+                String tds = curCSV.getString(curCSV.getColumnIndex("TDS"));
                 String temperature = curCSV.getString(curCSV.getColumnIndex("temperature"));
                 String productName = curCSV.getString(curCSV.getColumnIndex("productName"));
                 String batch = curCSV.getString(curCSV.getColumnIndex("batch"));
