@@ -31,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table PHBuffer(ID INTEGER PRIMARY KEY AUTOINCREMENT,PH_BUFF TEXT, minMV TEXT, maxMV TEXT)");
         sqLiteDatabase.execSQL("create Table PrintLogECdetails(date TEXT,time TEXT, conductivity TEXT,TDS TEXT ,temperature TEXT, productName TEXT,batch TEXT)");
+        sqLiteDatabase.execSQL("create Table LogECdetails(date TEXT,time TEXT, conductivity TEXT,TDS TEXT ,temperature TEXT, productName TEXT,batch TEXT, deviceID TEXT)");
     }
 
     @Override
@@ -49,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ECProbeDetail");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PHBuffer");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogECdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogECdetails");
         onCreate(sqLiteDatabase);
     }
 
@@ -68,7 +70,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insertLogECDetails(String date, String time, String conductivity, String TDS, String temp, String productName, String batch) {
+    public boolean insertLogECDetails(String date, String time, String conductivity, String TDS, String temp, String productName, String batch, String deviceID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("conductivity", conductivity);
+        contentValues.put("TDS", TDS);
+        contentValues.put("temperature", temp);
+        contentValues.put("productName", productName);
+        contentValues.put("batch", batch);
+        contentValues.put("deviceID", deviceID);
+        long result = db.insert("LogECdetails", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public boolean printLogECDetails(String date, String time, String conductivity, String TDS, String temp, String productName, String batch) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("date", date);
@@ -360,6 +382,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor get_log() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM LogUserDetails", null);
+        return cursor;
+    }
+
+    public Cursor get_ec_log() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM LogECdetails", null);
         return cursor;
     }
 

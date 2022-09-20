@@ -38,6 +38,9 @@
         tools:replace="android:icon"
         tools:targetApi="m">
         <activity
+            android:name=".specificactivities.EcExport"
+            android:exported="false" />
+        <activity
             android:name=".specificactivities.EcActivity"
             android:exported="false" />
         <activity

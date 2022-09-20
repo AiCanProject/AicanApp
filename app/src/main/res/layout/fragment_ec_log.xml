@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".fragments.ph.phLogFragment">
+    tools:context=".fragments.ec.EcLogFragment">
 
     <LinearLayout
         android:id="@+id/ll1"
@@ -15,6 +15,7 @@
         tools:ignore="UselessParent">
 
         <com.github.mikephil.charting.charts.LineChart
+            android:visibility="gone"
             android:id="@+id/graph"
             android:layout_width="400dp"
             android:layout_height="150dp"
@@ -160,8 +161,20 @@
                     android:layout_gravity="bottom"
                     android:text="Print"
                     android:textAllCaps="false"
+                    android:layout_marginEnd="20dp"
                     android:textSize="15sp"
                     android:visibility="visible" />
+
+                   <Button
+                    android:id="@+id/clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="Clear"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    android:visibility="visible" />
+
 
 
             </LinearLayout>

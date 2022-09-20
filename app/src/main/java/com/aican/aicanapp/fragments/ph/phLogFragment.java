@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,7 +115,8 @@ public class phLogFragment extends Fragment {
     Handler handler;
     Runnable runnable;
     SwitchCompat switchHold, switchInterval, switchBtnClick;
-
+    LinearLayout autoLog;
+    TextView autoLogWarn;
 
     int timerInSec;
     Boolean isTimer;
@@ -146,6 +148,8 @@ public class phLogFragment extends Fragment {
         phView = view.findViewById(R.id.phView);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
+        autoLog = view.findViewById(R.id.autoLog);
+        autoLogWarn = view.findViewById(R.id.autoLogWarn);
 
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
@@ -181,6 +185,35 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         nullEntry = " ";
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+        autoLog.setVisibility(View.GONE);
+        autoLogWarn.setVisibility(View.VISIBLE);
+        deviceRef.child("AUTO_LOG").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String autoLogVar = snapshot.getValue(String.class);
+                    if (autoLogVar.equals("on")) {
+                        autoLog.setVisibility(View.VISIBLE);
+                        autoLogWarn.setVisibility(View.GONE);
+                    } else if (autoLogVar.equals("off")) {
+                        autoLog.setVisibility(View.GONE);
+                        autoLogWarn.setVisibility(View.VISIBLE);
+                    } else {
+                        autoLog.setVisibility(View.GONE);
+                        autoLogWarn.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    deviceRef.child("AUTO_LOG").setValue("off");
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
         fetch_logs();
 
         if (checkPermission()) {
@@ -824,7 +857,8 @@ public class phLogFragment extends Fragment {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator Sign");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "," + nullEntry + "," + "Supervisor Sign");
             curCSV.close();
             db.close();
 

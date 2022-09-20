@@ -95,6 +95,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static final String THREE_POINT_CALIBRATION = "three";
     public static final String FIVE_POINT_CALIBRATION = "five";
     public static final String CALIBRATION_TYPE = "calibration_type";
+    public static String PH_MODE = "both";
 
     LinearLayout log3, log5;
 
@@ -324,6 +325,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    
                 }
             });
 
@@ -1114,7 +1116,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibRecyclerView = view.findViewById(R.id.rvCalibFileView);
         nullEntry = "";
 
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    PH_MODE = snapshot.getValue(String.class);
+                } else {
+                    deviceRef.child("PH_MODE").setValue("both");
+                    PH_MODE = "both";
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
@@ -1150,8 +1167,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //        if (liness != null) {
 //            lastCalib.setText("Last Calibrated By \n" + liness[0]);
 //        }
-
-        String[] spinselect = {"5", "3"};
+        String[] spinselect = {};
+        switch (PH_MODE) {
+            case "both":
+                spinselect = new String[]{"5", "3"};
+                break;
+            case "5":
+                spinselect = new String[]{"5"};
+                break;
+            case "3":
+                spinselect = new String[]{"3"};
+                break;
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, spinselect);
 
@@ -1163,6 +1190,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         if (spinnerValue != -1) {
             spin.setSelection(spinnerValue);
         }
+
 
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1202,6 +1230,19 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
                         int userChoice = spin.getSelectedItemPosition();
+
+                        switch (PH_MODE) {
+                            case "both":
+                                userChoice = spin.getSelectedItemPosition();
+                                break;
+                            case "5":
+                                userChoice = 5;
+                                break;
+                            case "3":
+                                userChoice = 3;
+                                break;
+                        }
+
                         SharedPreferences sharedPrefs = getContext().getSharedPreferences("spinnerPref", 0);
                         SharedPreferences.Editor prefEditor = sharedPrefs.edit();
                         prefEditor.putInt("userChoiceSpinner", userChoice);
@@ -1240,6 +1281,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
                         int userChoice1 = spin.getSelectedItemPosition();
+
+                        switch (PH_MODE) {
+                            case "both":
+                                userChoice1 = spin.getSelectedItemPosition();
+                                break;
+                            case "5":
+                                userChoice1 = 5;
+                                break;
+                            case "3":
+                                userChoice1 = 3;
+                                break;
+                        }
                         SharedPreferences sharedPrefs1 = getContext().getSharedPreferences("spinnerPref", 0);
                         SharedPreferences.Editor prefEditor1 = sharedPrefs1.edit();
                         prefEditor1.putInt("userChoiceSpinner", userChoice1);
@@ -1295,8 +1348,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 try {
                     fos = getContext().openFileOutput(FILE_NAMEE, MODE_PRIVATE);
-                    if(Source.userName !=null)
-                    fos.write(Source.userName.getBytes());
+                    if (Source.userName != null)
+                        fos.write(Source.userName.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -1387,7 +1440,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData" + currentDateandTime +"_"+(tempFilesAndFolders.length-1)+".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
                     File root1 = new File(path1);
@@ -1581,10 +1634,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
         }
-
-    }
-
-    private void onQRClick(View v) {
 
     }
 
