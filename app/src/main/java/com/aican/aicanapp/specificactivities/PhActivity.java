@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -19,8 +22,11 @@ import com.aican.aicanapp.fragments.ph.phAlarmFragment;
 import com.aican.aicanapp.fragments.ph.phGraphFragment;
 import com.aican.aicanapp.fragments.ph.phLogFragment;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class PhActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -68,6 +74,23 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         log.setOnClickListener(this);
         graph.setOnClickListener(this);
         alarm.setOnClickListener(this);
+
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    PhCalibFragment.PH_MODE = snapshot.getValue(String.class);
+                } else {
+                    deviceRef.child("PH_MODE").setValue("both");
+                    PhCalibFragment.PH_MODE = "both";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
     }
 
     @Override

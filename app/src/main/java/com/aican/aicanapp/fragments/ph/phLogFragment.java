@@ -114,14 +114,10 @@ public class phLogFragment extends Fragment {
     RecyclerView recyclerView;
     Handler handler;
     Runnable runnable;
-<<<<<<< HEAD
     SwitchCompat switchHold, switchInterval, switchBtnClick;
     LinearLayout autoLog;
     TextView autoLogWarn;
-=======
-    SwitchCompat switchHold,switchInterval,switchBtnClick;
 
->>>>>>> 089dd0673f75bc46e847baefd9a61925f676f57e
 
     int timerInSec;
     Boolean isTimer;

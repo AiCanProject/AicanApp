@@ -97,7 +97,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static final String CALIBRATION_TYPE = "calibration_type";
     public static String PH_MODE = "both";
 
-    LinearLayout log3, log5;
+    LinearLayout log3, log5, calibSpinner;
 
     int ec;
     String nullEntry, reportDate, reportTime;
@@ -105,7 +105,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     TextView qr1, qr2, qr3, qr4, qr5;
-    TextView bufferD1, bufferD2, bufferD3, bufferD4, bufferD5;
+    TextView bufferD1, bufferD2, bufferD3, bufferD4, bufferD5, modeText;
 
     DatabaseReference deviceRef;
     Button calibrateBtn, btnNext, printCalib, phMvTable;
@@ -156,7 +156,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
             }
-            for(int i=0;i<bufferLabelsThree.length;i++){
+            for (int i = 0; i < bufferLabelsThree.length; i++) {
                 buffersThree[i] = Float.parseFloat(snapshot.child(bufferLabelsThree[i]).getValue(String.class));
 
             }
@@ -329,7 +329,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                    
+
                 }
             });
 
@@ -1117,25 +1117,27 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         tvEcCurr = view.findViewById(R.id.tvEcCurr);
         calibrateBtn = view.findViewById(R.id.startBtn);
         spin = view.findViewById(R.id.calibMode);
+        modeText = view.findViewById(R.id.modeText);
+        calibSpinner = view.findViewById(R.id.calibSpinner);
         calibRecyclerView = view.findViewById(R.id.rvCalibFileView);
         nullEntry = "";
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-        deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    PH_MODE = snapshot.getValue(String.class);
-                } else {
-                    deviceRef.child("PH_MODE").setValue("both");
-                    PH_MODE = "both";
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
-            }
-        });
+//        deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    PH_MODE = snapshot.getValue(String.class);
+//                } else {
+//                    deviceRef.child("PH_MODE").setValue("both");
+//                    PH_MODE = "both";
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+//            }
+//        });
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
@@ -1171,29 +1173,39 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //        if (liness != null) {
 //            lastCalib.setText("Last Calibrated By \n" + liness[0]);
 //        }
-        String[] spinselect = {};
-        switch (PH_MODE) {
-            case "both":
-                spinselect = new String[]{"5", "3"};
-                break;
-            case "5":
-                spinselect = new String[]{"5"};
-                break;
-            case "3":
-                spinselect = new String[]{"3"};
-                break;
-        }
+
+        String[] spinselect = {"5", "3"};
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, spinselect);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
+//
+//        if (PH_MODE.equals("5")) {
+//
+//        }
 
-        SharedPreferences spinPref = getContext().getSharedPreferences("spinnerPref", MODE_PRIVATE);
-        int spinnerValue = spinPref.getInt("userChoiceSpinner", -1);
-        if (spinnerValue != -1) {
-            spin.setSelection(spinnerValue);
+//        SharedPreferences spinPref = getContext().getSharedPreferences("spinnerPref", MODE_PRIVATE);
+//        int spinnerValue = spinPref.getInt("userChoiceSpinner", -1);
+//        if (spinnerValue != -1) {
+        switch (PH_MODE) {
+            case "both":
+                calibSpinner.setVisibility(View.VISIBLE);
+                spin.setSelection(0);
+                break;
+            case "5":
+                calibSpinner.setVisibility(View.INVISIBLE);
+                modeText.setText("Mode : 5 Point");
+                spin.setSelection(0);
+                break;
+            case "3":
+                calibSpinner.setVisibility(View.INVISIBLE);
+                modeText.setText("Mode : 3 Point");
+                spin.setSelection(1);
+                break;
         }
+//        }
 
 
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -1233,24 +1245,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
-                        int userChoice = spin.getSelectedItemPosition();
-
-                        switch (PH_MODE) {
-                            case "both":
-                                userChoice = spin.getSelectedItemPosition();
-                                break;
-                            case "5":
-                                userChoice = 5;
-                                break;
-                            case "3":
-                                userChoice = 3;
-                                break;
-                        }
-
-                        SharedPreferences sharedPrefs = getContext().getSharedPreferences("spinnerPref", 0);
-                        SharedPreferences.Editor prefEditor = sharedPrefs.edit();
-                        prefEditor.putInt("userChoiceSpinner", userChoice);
-                        prefEditor.commit();
+//                        int userChoice = spin.getSelectedItemPosition();
+//
+//                        SharedPreferences sharedPrefs = getContext().getSharedPreferences("spinnerPref", 0);
+//                        SharedPreferences.Editor prefEditor = sharedPrefs.edit();
+//                        prefEditor.putInt("userChoiceSpinner", userChoice);
+//                        prefEditor.commit();
 
                         break;
 
@@ -1284,23 +1284,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
-                        int userChoice1 = spin.getSelectedItemPosition();
-
-                        switch (PH_MODE) {
-                            case "both":
-                                userChoice1 = spin.getSelectedItemPosition();
-                                break;
-                            case "5":
-                                userChoice1 = 5;
-                                break;
-                            case "3":
-                                userChoice1 = 3;
-                                break;
-                        }
-                        SharedPreferences sharedPrefs1 = getContext().getSharedPreferences("spinnerPref", 0);
-                        SharedPreferences.Editor prefEditor1 = sharedPrefs1.edit();
-                        prefEditor1.putInt("userChoiceSpinner", userChoice1);
-                        prefEditor1.commit();
+//                        int userChoice1 = spin.getSelectedItemPosition();
+//
+//
+//                        SharedPreferences sharedPrefs1 = getContext().getSharedPreferences("spinnerPref", 0);
+//                        SharedPreferences.Editor prefEditor1 = sharedPrefs1.edit();
+//                        prefEditor1.putInt("userChoiceSpinner", userChoice1);
+//                        prefEditor1.commit();
 
                         break;
 
@@ -1398,7 +1388,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         });
 
 
-        test3 = mv2.getText().toString();
+        test3 = mv2.getText().
+
+                toString();
 
         phMvTable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1497,10 +1489,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         }
 
-        calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
+        calibFileAdapter = new
+
+                CalibFileAdapter(requireContext().
+
+                getApplicationContext(), filesAndFoldersPDF);
         calibRecyclerView.setAdapter(calibFileAdapter);
         calibFileAdapter.notifyDataSetChanged();
-        calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
+        calibRecyclerView.setLayoutManager(new
+
+                LinearLayoutManager(requireContext().
+
+                getApplicationContext()));
 
 
     }

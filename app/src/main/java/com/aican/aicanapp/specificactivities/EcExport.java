@@ -273,7 +273,7 @@ public class EcExport extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF);
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF,"EcExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -435,7 +435,7 @@ public class EcExport extends AppCompatActivity {
             }
         }
 
-        fAdapter = new FileAdapter(this, filesAndFolders);
+        fAdapter = new FileAdapter(this, filesAndFolders,"EcExport");
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
         userRecyclerView.setAdapter(uAdapter);
@@ -508,11 +508,11 @@ public class EcExport extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
 //            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
-//            Cursor curCSV = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND ('" + compoundName + "') AND (batch = '" + batchNumString + "') AND (productName = '" + arNumString + "')", null);
+            Cursor cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND ('" + compoundName + "') AND (batch = '" + batchNumString + "') AND (productName = '" + arNumString + "')", null);
 
 
 //            Cursor curCSV = db.rawQuery("Select * from LogECdetails ",null);
-            Cursor cursor = db.rawQuery("Select * from LogECdetails", null);
+//            Cursor cursor = db.rawQuery("Select * from LogECdetails", null);
 
             if (arNumEditText.getText().toString().isEmpty()) {
                 arNumString = null;
@@ -527,7 +527,7 @@ public class EcExport extends AppCompatActivity {
             }
 
             //Setting sql query according to filer
-            /*
+
             if (startDateString != null && compoundName != null && batchNumString != null && arNumString != null) {
 
                 cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
@@ -593,7 +593,7 @@ public class EcExport extends AppCompatActivity {
             }
 
 
-             */
+
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + companyName);
@@ -629,7 +629,7 @@ public class EcExport extends AppCompatActivity {
 //            calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("_____Date______Time_____pH______Temp___Batch No___AR No___Compound___Device___");
+            printWriter.println("_____Date______Time_____Conduct______TDS___Temp___productName___batch___Device___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -638,7 +638,7 @@ public class EcExport extends AppCompatActivity {
                 String date = cursor.getString(cursor.getColumnIndex("date"));
                 String time = cursor.getString(cursor.getColumnIndex("time"));
                 String conductivity = cursor.getString(cursor.getColumnIndex("conductivity"));
-                String tds = cursor.getString(cursor.getColumnIndex("tds"));
+                String tds = cursor.getString(cursor.getColumnIndex("TDS"));
                 String temperature = cursor.getString(cursor.getColumnIndex("temperature"));
                 String productName = cursor.getString(cursor.getColumnIndex("productName"));
                 String batch = cursor.getString(cursor.getColumnIndex("batch"));

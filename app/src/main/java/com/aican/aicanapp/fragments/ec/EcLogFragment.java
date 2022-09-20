@@ -135,7 +135,7 @@ public class EcLogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //initialise variables here
         logBtn = view.findViewById(R.id.logBtn);
-        export = view.findViewById(R.id.export);
+        export = view.findViewById(R.id.ec_export);
         clear = view.findViewById(R.id.clear);
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(EcActivity.DEVICE_ID)).getReference().child("ECMETER").child(EcActivity.DEVICE_ID);
         databaseHelper = new DatabaseHelper(getContext());

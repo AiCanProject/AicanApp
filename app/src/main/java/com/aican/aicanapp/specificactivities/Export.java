@@ -276,7 +276,7 @@ public class Export extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF);
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF,"PhExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -438,7 +438,7 @@ public class Export extends AppCompatActivity {
             }
         }
 
-        fAdapter = new FileAdapter(this, filesAndFolders);
+        fAdapter = new FileAdapter(this, filesAndFolders,"PhExport");
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
         userRecyclerView.setAdapter(uAdapter);
