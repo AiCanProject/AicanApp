@@ -899,6 +899,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
                         currentBuf = -1;
+                        currentBufThree = -1;
 
 
                         Handler handler = new Handler();
@@ -952,7 +953,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         Date date = new Date();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                         strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
                         calibrateBtn.setEnabled(true);
 
 
@@ -960,17 +961,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         Date date = new Date();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                         strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
                         calibrateBtn.setEnabled(true);
 
 
                     } else if (ec == 41) {
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                         strDate = simpleDateFormat.format(new Date());
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
                         currentBuf = -1;
+                        currentBufThree = -1;
 
 
                         Handler handler = new Handler();
@@ -1755,6 +1757,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 Float coeff = dataSnapshot.getValue(Float.class);
                                 if (coeff == null) return;
                                 currentBufThree += 1;
+                                currentBufThree = currentBufThree%3;
                             });
                         }
 
@@ -1769,9 +1772,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         };
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
-            timer.start();
-        });
+        if(spin.getSelectedItemPosition() == 0) {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
+                timer.start();
+            });
+        }else{
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree%3]).addOnSuccessListener(t -> {
+                timer.start();
+            });
+        }
     }
 
 
