@@ -18,7 +18,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.DateFormat;
@@ -41,12 +40,9 @@ import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
 import com.aspose.cells.PdfCompliance;
 import com.aspose.cells.PdfSaveOptions;
-import com.aspose.cells.Protection;
-import com.aspose.cells.ProtectionType;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -70,7 +66,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class Export extends AppCompatActivity {
+public class EcExport extends AppCompatActivity {
 
 
     //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
@@ -95,7 +91,7 @@ public class Export extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export);
+        setContentView(R.layout.activity_ec_export);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewCSV);
         RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
@@ -112,7 +108,7 @@ public class Export extends AppCompatActivity {
         compoundNameEditText = findViewById(R.id.compound_num_sort);
         convertToXls = findViewById(R.id.convertToXls);
         tvUserLog = findViewById(R.id.tvUserLog);
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(EcActivity.DEVICE_ID)).getReference().child("ECMETER").child(EcActivity.DEVICE_ID);
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
@@ -126,6 +122,7 @@ public class Export extends AppCompatActivity {
             userRecyclerView.setVisibility(View.GONE);
             tvUserLog.setVisibility(View.GONE);
         }
+
 
         mDateBtn.setOnClickListener(v -> {
             MaterialDatePicker datePicker =
@@ -215,7 +212,7 @@ public class Export extends AppCompatActivity {
 
                 exportDatabaseCsv();
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcExcelFiles/";
                 File root = new File(path);
                 fileNotWrite(root);
                 File[] filesAndFolders = root.listFiles();
@@ -238,18 +235,18 @@ public class Export extends AppCompatActivity {
                         byte[] bitmapData = stream.toByteArray();
                     }
 
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcExcelFiles/DataSensorLog.xlsx");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata";
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata/DSL" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
-                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata";
                     File root1 = new File(path1);
                     fileNotWrite(root1);
                     File[] filesAndFolders1 = root1.listFiles();
@@ -270,13 +267,13 @@ public class Export extends AppCompatActivity {
                 }
 
 
-                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata/";
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF,"PhExport");
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF,"EcExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -289,11 +286,11 @@ public class Export extends AppCompatActivity {
             public void onClick(View v) {
 
                 try {
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcExcelFiles/DataSensorLog.xlsx");
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata/DataSensorLog.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -309,7 +306,7 @@ public class Export extends AppCompatActivity {
 
                 companyName = "";
                 if (companyName.isEmpty()) {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    deviceRef.child("UI").child("EC").child("EC_CAL").child("COMPANY_NAME").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             if (task.isSuccessful()) {
@@ -323,7 +320,7 @@ public class Export extends AppCompatActivity {
                         }
                     });
                 } else {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
+                    deviceRef.child("UI").child("EC").child("EC_CAL").child("COMPANY_NAME").setValue(companyName);
                     isSuccessful[0] = true;
                 }
 
@@ -332,7 +329,7 @@ public class Export extends AppCompatActivity {
                     exportUserData();
 
 
-                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity";
                     File root = new File(path);
                     fileNotWrite(root);
                     File[] filesAndFolders = root.listFiles();
@@ -348,7 +345,7 @@ public class Export extends AppCompatActivity {
 
 
                     try {
-                        String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                        String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity/";
                         File root1 = new File(path1);
                         fileNotWrite(root1);
                         File[] filesAndFolders1 = root1.listFiles();
@@ -364,19 +361,19 @@ public class Export extends AppCompatActivity {
 
                         Workbook workbook = null;
 
-                        workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
+                        workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity/DataUserActivity.xlsx");
 
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
                         String currentDateandTime = sdf.format(new Date());
                         PdfSaveOptions options = new PdfSaveOptions();
                         options.setCompliance(PdfCompliance.PDF_A_1_B);
-                        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity";
                         File tempRoot = new File(tempPath);
                         fileNotWrite(tempRoot);
                         File[] tempFilesAndFolders = tempRoot.listFiles();
-                        workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+                        workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity/DataUserActivity" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
-                        String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                        String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity";
                         File root_1 = new File(path_1);
                         fileNotWrite(root_1);
                         File[] filesAndFolders_1 = root_1.listFiles();
@@ -396,13 +393,13 @@ public class Export extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                    String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity/";
                     File rootPDF = new File(pathPDF);
                     fileNotWrite(root);
                     File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                    uAdapter = new UserDataAdapter(Export.this, filesAndFoldersPDF);
+                    uAdapter = new UserDataAdapter(EcExport.this, filesAndFoldersPDF);
                     userRecyclerView.setAdapter(uAdapter);
                     uAdapter.notifyDataSetChanged();
                     userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -411,8 +408,8 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
-        String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcExcelFiles/";
+        String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity";
         File root = new File(path);
         File root2 = new File(path2);
         fileNotWrite(root);
@@ -438,7 +435,7 @@ public class Export extends AppCompatActivity {
             }
         }
 
-        fAdapter = new FileAdapter(this, filesAndFolders,"PhExport");
+        fAdapter = new FileAdapter(this, filesAndFolders,"EcExport");
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
         userRecyclerView.setAdapter(uAdapter);
@@ -476,11 +473,11 @@ public class Export extends AppCompatActivity {
         reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         //We use the Download directory for saving our .csv file.
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
-        File outputDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles");
+        File outputDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcExcelFiles");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
@@ -510,9 +507,12 @@ public class Export extends AppCompatActivity {
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
-            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
-//            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')')", null);
+//            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+            Cursor cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND ('" + compoundName + "') AND (batch = '" + batchNumString + "') AND (productName = '" + arNumString + "')", null);
+
+
+//            Cursor curCSV = db.rawQuery("Select * from LogECdetails ",null);
+//            Cursor cursor = db.rawQuery("Select * from LogECdetails", null);
 
             if (arNumEditText.getText().toString().isEmpty()) {
                 arNumString = null;
@@ -527,69 +527,72 @@ public class Export extends AppCompatActivity {
             }
 
             //Setting sql query according to filer
+
             if (startDateString != null && compoundName != null && batchNumString != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (startDateString != null && compoundName != null && batchNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
 
             } else if (startDateString != null && compoundName != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (startDateString != null && batchNumString != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (compoundName != null && batchNumString != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (startDateString != null && compoundName != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "')", null);
 
             } else if (startDateString != null && batchNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "')", null);
 
             } else if (startDateString != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (compoundName != null && batchNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
 
             } else if (compoundName != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (arnum = '" + compoundName + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (batchNumString != null && arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
             } else if (startDateString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
 
             } else if (compoundName != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (arnum = '" + compoundName + "')", null);
 
             } else if (batchNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (batchnum = '" + batchNumString + "') ", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (batchnum = '" + batchNumString + "') ", null);
 
             } else if (arNumString != null) {
 
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (compound = '" + arNumString + "')", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails WHERE  (compound = '" + arNumString + "')", null);
 
             } else {
-                curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+                cursor = db.rawQuery("SELECT * FROM LogECdetails", null);
             }
+
+
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -611,38 +614,37 @@ public class Export extends AppCompatActivity {
             printWriter.println();
 
 
-            while (calibCSV.moveToNext()) {
-                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-
-
-                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(10, 16);
-
-//                String record1 = ph + "," + mv + "," + date;
-
-                printWriter.println(record1);
-            }
-            calibCSV.close();
+//            while (calibCSV.moveToNext()) {
+//                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+//                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+//                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+//
+//
+//                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(10, 16);
+//
+////                String record1 = ph + "," + mv + "," + date;
+//
+//                printWriter.println(record1);
+//            }
+//            calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("_____Date______Time_____pH______Temp___Batch No___AR No___Compound___Device___");
+            printWriter.println("_____Date______Time_____Conduct______TDS___Temp___productName___batch___Device___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
-            while (curCSV.moveToNext()) {
+            while (cursor.moveToNext()) {
 
-                String date = curCSV.getString(curCSV.getColumnIndex("date"));
-                String time = curCSV.getString(curCSV.getColumnIndex("time"));
-                String device = curCSV.getString(curCSV.getColumnIndex("deviceID"));
-                String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
-                String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
-                String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
-                String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
-                String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
-//                String record = date + "   " + time +  "     " + pH + "       " + temp + "       " + batchnum + "       " + arnum + "       " + comp + "      " + device;
+                String date = cursor.getString(cursor.getColumnIndex("date"));
+                String time = cursor.getString(cursor.getColumnIndex("time"));
+                String conductivity = cursor.getString(cursor.getColumnIndex("conductivity"));
+                String tds = cursor.getString(cursor.getColumnIndex("TDS"));
+                String temperature = cursor.getString(cursor.getColumnIndex("temperature"));
+                String productName = cursor.getString(cursor.getColumnIndex("productName"));
+                String batch = cursor.getString(cursor.getColumnIndex("batch"));
+                String device = cursor.getString(cursor.getColumnIndex("deviceID"));
 
-                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp + "," + device;
+                String record = date + "," + time + "," + conductivity + "," + tds + "," + temperature + "," + productName + "," + batch + "," + device;
 
                 printWriter.println(record);
             }
@@ -655,13 +657,12 @@ public class Export extends AppCompatActivity {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Operator Sign");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "," + nullEntry + "," + "Supervisor Sign");
-
             fileNotWrite(file);
-            curCSV.close();
+            cursor.close();
             db.close();
 
             LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
-            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata/";
 
             Workbook workbook = new Workbook(inputFile + "DataSensorLog.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
@@ -673,7 +674,7 @@ public class Export extends AppCompatActivity {
             worksheet.getCells().setColumnWidth(5, 10.0);
             worksheet.getCells().setColumnWidth(6, 10.0);
             worksheet.getCells().setColumnWidth(7, 10.0);
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
@@ -690,7 +691,7 @@ public class Export extends AppCompatActivity {
     }
 
     public void exportUserData() {
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity");
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -702,6 +703,8 @@ public class Export extends AppCompatActivity {
 
             file = new File(exportDir, "DataUserActivity.csv");
             file.createNewFile();
+
+
             printWriter = new PrintWriter(new FileWriter(file), true);
 
 
@@ -710,7 +713,7 @@ public class Export extends AppCompatActivity {
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
             roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
 
-            Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
+//            Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -736,32 +739,31 @@ public class Export extends AppCompatActivity {
 //            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
-            while (userCSV.moveToNext()) {
-                String Time = userCSV.getString(userCSV.getColumnIndex("time"));
-                String Activity = userCSV.getString(userCSV.getColumnIndex("useraction"));
-                String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
-                String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
-                String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
-
-                String record2 = Time + "," + Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
-
-                printWriter.println(record2);
-            }
-
+//            while (userCSV.moveToNext()) {
+//                String Time = userCSV.getString(userCSV.getColumnIndex("time"));
+//                String Activity = userCSV.getString(userCSV.getColumnIndex("useraction"));
+//                String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
+//                String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
+//                String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
+//
+//                String record2 = Time.substring(0, 10) + "," + Time.substring(10, 16) + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
+//
+//                printWriter.println(record2);
+//            }
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor\nSign" + "," + nullEntry + "," + nullEntry);
-            userCSV.close();
+            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
+//            userCSV.close();
             db.close();
 
             LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
-            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity/";
 
             Workbook workbook = new Workbook(inputFile + "DataUserActivity.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
             worksheet.getCells().setColumnWidth(0, 18.5);
             worksheet.getCells().setColumnWidth(2, 18.5);
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx", SaveFormat.XLSX);
+            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcUseractivity/DataUserActivity.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
@@ -796,7 +798,7 @@ public class Export extends AppCompatActivity {
     }
 
     private void setFirebaseListeners() {
-        DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child(Dashboard.DEVICE_TYPE_PH).child(PhActivity.DEVICE_ID);
+        DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(EcActivity.DEVICE_ID)).getReference().child(Dashboard.DEVICE_TYPE_EC).child(EcActivity.DEVICE_ID);
         dataRef.child("ID").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {

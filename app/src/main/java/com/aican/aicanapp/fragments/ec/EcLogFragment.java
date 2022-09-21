@@ -1,8 +1,13 @@
 package com.aican.aicanapp.fragments.ec;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -16,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.ECLogAdapter;
+import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.adapters.PrintLogAdapter;
 import com.aican.aicanapp.adapters.printECLogAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
@@ -30,6 +38,8 @@ import com.aican.aicanapp.dataClasses.ecLogModel;
 import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.fragments.ph.phLogFragment;
 import com.aican.aicanapp.specificactivities.EcActivity;
+import com.aican.aicanapp.specificactivities.EcExport;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
@@ -63,21 +73,22 @@ public class EcLogFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     DatabaseReference deviceRef;
 
-    Button logBtn,print,export;
-    String conductivity,TDS, temp,productName,batchNo,date,time;
+    Button logBtn, print, export, clear;
+    String conductivity, TDS, temp, productName, batchNo, date, time;
 
     DatabaseHelper databaseHelper;
-    RecyclerView recyclerViewLog,recyclerViewCSVLog;
+    RecyclerView recyclerViewLog, recyclerViewCSVLog;
     ArrayList<ecLogModel> ecLogList;
     ECLogAdapter logAdapter;
 
-    String offset, battery, slope, nullEntry,temp2;
+    String offset, battery, slope, nullEntry, temp2;
     String reportDate, reportTime;
     printECLogAdapter plAdapter;
 
@@ -124,7 +135,8 @@ public class EcLogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //initialise variables here
         logBtn = view.findViewById(R.id.logBtn);
-        export = view.findViewById(R.id.export);
+        export = view.findViewById(R.id.ec_export);
+        clear = view.findViewById(R.id.clear);
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(EcActivity.DEVICE_ID)).getReference().child("ECMETER").child(EcActivity.DEVICE_ID);
         databaseHelper = new DatabaseHelper(getContext());
         recyclerViewLog = view.findViewById(R.id.recyclerViewLog);
@@ -132,38 +144,198 @@ public class EcLogFragment extends Fragment {
         nullEntry = " ";
         recyclerViewCSVLog = view.findViewById(R.id.recyclerViewCSVLog);
         print = view.findViewById(R.id.print);
-
+        if (checkPermission()) {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
         fetch_logs();
 
         logBtn.setOnClickListener(view1 -> {
             date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            fetch_logs();
 
             if (conductivity == null || temp == null || batchNo == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.insertLogECDetails(date, time, conductivity, TDS, temp, productName, batchNo);
+                databaseHelper.insertLogECDetails(date, time, conductivity, TDS, temp, productName, batchNo, EcActivity.DEVICE_ID);
+                databaseHelper.printLogECDetails(date, time, conductivity, TDS, temp, productName, batchNo);
             }
             logAdapter = new ECLogAdapter(getContext(), getList());
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
-            recyclerViewLog.setLayoutManager(linearLayoutManager);
+//            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+//            recyclerViewLog.setLayoutManager(linearLayoutManager);
             recyclerViewLog.setAdapter(logAdapter);
 
         });
+
+
+
+//        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails");
+//        if (!exportDir.exists()) {
+//            exportDir.mkdirs();
+//        }
 
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 exportSensorCsv();
-                XLSXtoPDF();
+
+
+                String startsWith = "CurrentData";
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
+                File root = new File(path);
+                File[] filesAndFolders = root.listFiles();
+
+
+                if (filesAndFolders == null || filesAndFolders.length == 0) {
+                    Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFolders.length; i++) {
+                        filesAndFolders[i].getName().startsWith(startsWith);
+                    }
+                }
+
+
+                try {
+                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/CurrentData.xlsx");
+                    PdfSaveOptions options = new PdfSaveOptions();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
+                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
+                    File tempRoot = new File(tempPath);
+                    fileNotWrite(tempRoot);
+                    File[] tempFilesAndFolders = tempRoot.listFiles();
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/ECLogDetails" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
+                                filesAndFolders1[i].delete();
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/";
+                File rootPDF = new File(pathPDF);
+                fileNotWrite(root);
+                File[] filesAndFoldersPDF = rootPDF.listFiles();
+                File[] filesAndFoldersNewPDF = new File[1];
+
+
+                if (filesAndFoldersPDF == null || filesAndFoldersPDF.length == 0) {
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFoldersPDF.length; i++) {
+                        if (filesAndFoldersPDF[i].getName().endsWith(".pdf")) {
+                            filesAndFoldersNewPDF[0] = filesAndFoldersPDF[i];
+
+                        }
+                    }
+
+                }
+
+                plAdapter = new printECLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
+                recyclerViewCSVLog.setAdapter(plAdapter);
+                plAdapter.notifyDataSetChanged();
+                recyclerViewCSVLog.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogECdetails", null);
+                if (curCSV != null && curCSV.getCount() > 0) {
+                    deleteAllLogs();
+                } else {
+                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
+                }
+//                XLSXtoPDF();
             }
         });
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
+        recyclerViewLog.setHasFixedSize(true);
+        recyclerViewLog.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+//        String startsWith = "CurrentData";
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
+        File root = new File(path);
+        File[] filesAndFolders = root.listFiles();
+        File[] filesAndFoldersPDF = new File[1];
+
+        if (filesAndFolders == null || filesAndFolders.length == 0) {
+            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            for (int i = 0; i < filesAndFolders.length; i++) {
+                if (filesAndFolders[i].getName().endsWith(".pdf")) {
+                    filesAndFoldersPDF[0] = filesAndFolders[i];
+                }
+            }
         }
 
+
+        if (checkPermission()) {
+            Toast.makeText(getContext().getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
+
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Source.status_export = true;
+                time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+//                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "");
+
+                SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
+                SharedPreferences.Editor roleE = sh.edit();
+                String roleSuper = Source.userName;
+                roleE.putString("roleSuper", roleSuper);
+                roleE.commit();
+
+//                deleteAll();
+//
+//                databaseHelper.insertCalibData(ph1, mv1, dt1);
+//                databaseHelper.insertCalibData(ph2, mv2, dt2);
+//                databaseHelper.insertCalibData(ph3, mv3, dt3);
+//                databaseHelper.insertCalibData(ph4, mv4, dt4);
+//                databaseHelper.insertCalibData(ph5, mv5, dt5);
+
+                if (Source.subscription.equals("cfr")) {
+//                    DialogMain dialogMain = new DialogMain();
+//                    dialogMain.setCancelable(false);
+//                    Source.userTrack = "PhLogFragment logged in by ";
+//                    dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+                } else {
+                    Intent intent = new Intent(getContext(), EcExport.class);
+                    startActivity(intent);
+                }
+            }
+        });
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ecLogList.clear();
+                ArrayList<ecLogModel> ar = new ArrayList<>();
+                logAdapter = new ECLogAdapter(getContext(), ar);
+                recyclerViewLog.setAdapter(logAdapter);
+
+            }
+        });
     }
 
     private void fetch_logs() {
@@ -242,8 +414,8 @@ public class EcLogFragment extends Fragment {
         PrintWriter printWriter = null;
 
         try {
-            reportDate ="Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            reportTime ="Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
             file = new File(exportDir, "CurrentData.csv");
             file.createNewFile();
@@ -254,18 +426,36 @@ public class EcLogFragment extends Fragment {
             battery = "Battery: " + shp.getString("battery", "");
             slope = "Slope: " + shp.getString("slope", "");
             temp2 = "Temperature: " + shp.getString("temp", "");
-
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogECdetails", null);
 
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
 
-            int i=0;
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(reportDate);
+//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry);
+            printWriter.println(reportTime);
+//            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println(offset + "," + battery + "," + temp + "," + slope + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery);
+            printWriter.println(temp);
+            printWriter.println(slope);
+//            printWriter.println(offset + "," + battery);
+//            printWriter.println(temp + "," + slope);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+
+
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Log Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+
+            int i = 0;
             while (curCSV.moveToNext()) {
-                if(i==0){
+                if (i == 0) {
 //                    printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
                     String record = "__Date____" + "," + "_____Time__" + "," + "conductivity" + "," + "___tds" + "," + "temperature" + "," + "productName" + "," + "batch";
                     printWriter.println(record);
@@ -283,11 +473,12 @@ public class EcLogFragment extends Fragment {
 
                 printWriter.println(record);
             }
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator Sign");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "," + nullEntry + "," + "Supervisor Sign");
             curCSV.close();
             db.close();
 
@@ -296,8 +487,8 @@ public class EcLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0,10.0);
-            worksheet.getCells().setColumnWidth(1,10.0);
+            worksheet.getCells().setColumnWidth(0, 10.0);
+            worksheet.getCells().setColumnWidth(1, 10.0);
 
             Range rng = worksheet.getCells().createRange("B2:D7");
             Style st = worksheet.getWorkbook().createStyle();
@@ -308,7 +499,7 @@ public class EcLogFragment extends Fragment {
 
             flag.setAlignments(true);
 
-            rng.applyStyle(st,flag);
+            rng.applyStyle(st, flag);
 
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/CurrentData.xlsx", SaveFormat.XLSX);
 
@@ -318,91 +509,63 @@ public class EcLogFragment extends Fragment {
         }
     }
 
-    public void XLSXtoPDF(){
-        String startsWith = "CurrentData";
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
-        File root = new File(path);
-        File[] filesAndFolders = root.listFiles();
+    public void XLSXtoPDF() {
 
-
-        if (filesAndFolders == null || filesAndFolders.length == 0) {
-            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().startsWith(startsWith);
-            }
-        }
-
-
-        try {
-            Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/CurrentData.xlsx");
-            PdfSaveOptions options = new PdfSaveOptions();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
-            String currentDateandTime = sdf.format(new Date());
-            options.setCompliance(PdfCompliance.PDF_A_1_B);
-
-            String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
-            File tempRoot = new File(tempPath);
-            fileNotWrite(tempRoot);
-            File[] tempFilesAndFolders = tempRoot.listFiles();
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/ECLogDetails"+currentDateandTime+"_"+(tempFilesAndFolders.length-1)+".pdf", options);
-
-            String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails";
-            File root1 = new File(path1);
-            fileNotWrite(root1);
-            File[] filesAndFolders1 = root1.listFiles();
-
-            if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                return;
-            } else {
-                for (int i = 0; i < filesAndFolders1.length; i++) {
-                    if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")  ){
-                        filesAndFolders1[i].delete();
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-        String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECLogDetails/";
-        File rootPDF = new File(pathPDF);
-        fileNotWrite(root);
-        File[] filesAndFoldersPDF = rootPDF.listFiles();
-        File[] filesAndFoldersNewPDF = new File[1];
-
-
-        if (filesAndFoldersPDF == null || filesAndFoldersPDF.length == 0) {
-            return;
-        } else {
-            for (int i = 0; i < filesAndFoldersPDF.length; i++) {
-                if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
-                    filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
-
-                }
-            }
-
-        }
-
-        plAdapter = new printECLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
-        recyclerViewCSVLog.setAdapter(plAdapter);
-        plAdapter.notifyDataSetChanged();
-        recyclerViewCSVLog.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
     }
 
-    public void fileNotWrite(File file){
+    public void fileNotWrite(File file) {
         file.setWritable(false);
-        if(file.canWrite()){
-            Log.d("csv","Not Working");
+        if (file.canWrite()) {
+            Log.d("csv", "Not Working");
         } else {
-            Log.d("csvnw","Working");
+            Log.d("csvnw", "Working");
         }
     }
 
+    public void deleteAllLogs() {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM PrintLogECdetails");
+        db.close();
+    }
+    /**
+     * checking of permissions.
+     *
+     * @return
+     */
+    private boolean checkPermission() {
+        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
 
+    /**
+     * requesting permissions if not provided.
+     */
+    private void requestPermission() {
+        ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+    /**
+     * after requesting permissions we are showing
+     * users a toast message of permission granted.
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+                boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                if (writeStorage && readStorage) {
+                    Toast.makeText(requireContext(), "Permission Granted..", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Permission Denined.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
 }

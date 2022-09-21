@@ -25,11 +25,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     Context context;
     File[] files;
+    String activity;
     //ImageView imageView;
 
-    public FileAdapter(Context context, File[] files) {
+    public FileAdapter(Context context, File[] files, String activity) {
         this.context = context;
         this.files = files;
+        this.activity = activity;
     }
 
     @NonNull
@@ -49,9 +51,19 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                File file = null;
+                String path = null;
+                if (activity.equals("PhExport")) {
+                     path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/" + selectedFile.getName();
+                    file = new File(path);
+                }
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/"+selectedFile.getName();
-                File file = new File(path);
+                if (activity.equals("EcExport")) {
+                    path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata/" + selectedFile.getName();
+                    file = new File(path);
+                }
+
+
 
                 try {
 //                    Intent mIntent = new Intent(Intent.ACTION_VIEW);
@@ -66,12 +78,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 //                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    context.getApplicationContext().startActivity(cIntent);
 
-                    if(file.length()!=0) {
+                    if (file.length() != 0) {
                         Intent intent = new Intent(context.getApplicationContext(), PDFViewer.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("Path", path);
                         context.getApplicationContext().startActivity(intent);
-                    }else{
+                    } else {
                         Toast.makeText(context, "File is empty", Toast.LENGTH_SHORT).show();
                     }
 
@@ -102,7 +114,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/"+selectedFile.getName();
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {

@@ -24,8 +24,6 @@ import java.io.File;
 
 public class printECLogAdapter extends RecyclerView.Adapter<printECLogAdapter.ViewHolder>{
 
-
-
     Context context;
     File[] files;
 
