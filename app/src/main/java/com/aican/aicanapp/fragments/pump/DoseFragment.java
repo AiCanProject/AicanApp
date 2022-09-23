@@ -40,7 +40,7 @@ public class DoseFragment extends Fragment {
 
 //    VerticalSlider volController, speedController;
     LineChart lineChart;
-    Button calibrateBtn, speedSet, volumeSet, startBtn;
+    Button calibrateBtn, speedSet, volumeSet, startBtn,stopBtn;
     //ShapeableImageView startBtn;
     TextView tvStart, date, time;
     SwitchCompat switchClock, switchAntiClock;
@@ -85,6 +85,7 @@ public class DoseFragment extends Fragment {
         switchAntiClock = view.findViewById(R.id.switch2);
         appMode = view.findViewById(R.id.appMode);
         startBtn = view.findViewById(R.id.startBtn);
+        stopBtn = view.findViewById(R.id.stopBtn);
 
         minus = view.findViewById(R.id.minus);
         progress_bar = view.findViewById(R.id.progress_bar);
@@ -158,6 +159,15 @@ public class DoseFragment extends Fragment {
             //showProgressBarLayout();
             //startProgressBar();
             deviceRef.child("UI").child("Start").setValue(1);
+            startBtn.setVisibility(View.GONE);
+            stopBtn.setVisibility(View.VISIBLE);
+        });
+
+        stopBtn.setOnClickListener(view1 -> {
+            isStarted = false;
+            deviceRef.child("UI").child("Start").setValue(0);
+            startBtn.setVisibility(View.VISIBLE);
+            stopBtn.setVisibility(View.GONE);
         });
 
        /* btnStop.setOnClickListener(v -> {
@@ -349,8 +359,9 @@ public class DoseFragment extends Fragment {
         deviceRef.child("UI").child("Volume").get().addOnSuccessListener(snapshot -> {
             vol = snapshot.getValue(Integer.class);
             if (vol == null) return;
-        //    volController.getProgress();
-          //  volController.setProgress(vol);
+//            volController.getProgress();
+            volProgress_bar.setProgress(vol);
+            vol_set.setText(""+vol);
         });
 
         deviceRef.child("UI").child("Start").get().addOnSuccessListener(snapshot -> {

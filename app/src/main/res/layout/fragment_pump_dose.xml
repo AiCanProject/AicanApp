@@ -185,6 +185,18 @@
             app:cardCornerRadius="24dp"
             app:cardElevation="5dp">
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/sofia_bold"
+                android:text="Speed"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
             <EditText
                 android:id="@+id/speed_set"
                 android:layout_width="wrap_content"
@@ -269,6 +281,18 @@
             android:backgroundTint="#fff"
             app:cardCornerRadius="24dp"
             app:cardElevation="5dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/sofia_bold"
+                android:text="Timer"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/volume_set"
@@ -589,6 +613,15 @@
                 android:layout_height="wrap_content"
                 android:text="Start"
                 android:backgroundTint="#9037C7"
+                android:layout_marginTop="3sp"
+                android:layout_gravity="center_horizontal"/>
+
+            <Button
+                android:id="@+id/stopBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:visibility="gone"
                 android:layout_marginTop="3sp"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
