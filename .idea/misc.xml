@@ -39,9 +39,14 @@
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/activity_export.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/activity_ph_calibrate.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/fragment_ec_log.xml" value="0.4" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/fragment_p_calib.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.6" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/fragment_pump.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/fragment_pump_calib.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/item_log.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/ph_item.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/temp_item.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/layout/temporary.xml" value="0.4" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/cancel.xml" value="0.183" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/done.xml" value="0.183" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New from GitHub/AicanApp/app/src/main/res/drawable/error.xml" value="0.183" />

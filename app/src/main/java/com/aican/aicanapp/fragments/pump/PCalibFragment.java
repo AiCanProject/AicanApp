@@ -2,6 +2,7 @@ package com.aican.aicanapp.fragments.pump;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -81,7 +82,7 @@ public class PCalibFragment extends Fragment {
         speedController = view.findViewById(R.id.speedController);
         tvTimer = view.findViewById(R.id.tvTimer);
 
-        calibBtn.setOnClickListener(v->{
+        calibBtn.setOnClickListener(v -> {
             calibLayout.setVisibility(View.GONE);
             saveLayout.setVisibility(View.VISIBLE);
             calibrate();
@@ -135,6 +136,9 @@ public class PCalibFragment extends Fragment {
                         slider.setDisabled(false);
                         //saveBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                         saveBtn.setText("Save");
+                        deviceRef.child("UI").child("LAST_CALIB_DATE").setValue(time);
+                        deviceRef.child("UI").child("LAST_CALIB_TIME").setValue(date);
+
                     }
                 };
                 runnable.run();
@@ -143,7 +147,6 @@ public class PCalibFragment extends Fragment {
         //deviceRef.child("UI").child("CAL").child("CAL").setValue(0);
         timer.start();
     }
-
 
 
     private void SetUpListener() {
@@ -168,9 +171,9 @@ public class PCalibFragment extends Fragment {
                 Integer dir = snapshot.getValue(Integer.class);
                 if (dir == null) return;
 
-                if (dir == 0){
+                if (dir == 0) {
                     switchClock.setChecked(true);
-                }else {
+                } else {
                     switchAntiClock.setChecked(true);
                 }
 
@@ -183,7 +186,7 @@ public class PCalibFragment extends Fragment {
         });
 
         switchClock.setOnCheckedChangeListener((v, isChecked) -> {
-            if (isChecked){
+            if (isChecked) {
                 switchAntiClock.setChecked(false);
             }
 
@@ -191,7 +194,7 @@ public class PCalibFragment extends Fragment {
         });
 
         switchAntiClock.setOnCheckedChangeListener((v, isChecked) -> {
-            if (isChecked){
+            if (isChecked) {
                 switchClock.setChecked(false);
             }
 
