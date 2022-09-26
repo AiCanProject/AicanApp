@@ -90,6 +90,7 @@ public class PumpCalibFragment extends Fragment {
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
         updateProgressBar();
 
+
         speedSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

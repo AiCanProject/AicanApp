@@ -30,4 +30,9 @@
         <attr name="suffix" format="string"/>
     </declare-styleable>
 
+    <declare-styleable name="FloatSeekBar">
+        <attr name="floatMax" format="float" />
+        <attr name="floatMin" format="float" />
+    </declare-styleable>
+
 </resources>

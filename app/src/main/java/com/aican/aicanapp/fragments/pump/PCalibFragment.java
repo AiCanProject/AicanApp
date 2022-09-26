@@ -15,12 +15,16 @@ import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.aican.aicanapp.R;
@@ -30,6 +34,7 @@ import com.aican.aicanapp.pumpController.HorizontalSlider;
 import com.aican.aicanapp.pumpController.VerticalSlider;
 import com.aican.aicanapp.specificactivities.PumpActivity;
 import com.aican.aicanapp.specificactivities.PumpCalibrateActivity;
+import com.aican.aicanapp.utils.FloatSeekBar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,12 +49,12 @@ import java.util.Locale;
 public class PCalibFragment extends Fragment {
 
     LinearLayout calibLayout;
-    Button speedSet, calibBtn, saveBtn;
+    Button speedSet, calibBtn, saveBtn, setCalVal;
     SwitchCompat switchClock, switchAntiClock;
-    HorizontalSlider slider;
-    RelativeLayout saveLayout;
-    VerticalSlider speedController;
-    TextView tvTimer;
+    SeekBar slider;
+    LinearLayout saveLayout;
+    TextView tvTimer, speedText;
+    EditText calVal;
     DatabaseReference deviceRef;
     String time, date;
 
@@ -79,8 +84,15 @@ public class PCalibFragment extends Fragment {
         speedSet = view.findViewById(R.id.speedSet);
         switchClock = view.findViewById(R.id.switch1);
         switchAntiClock = view.findViewById(R.id.switch2);
-        speedController = view.findViewById(R.id.speedController);
         tvTimer = view.findViewById(R.id.tvTimer);
+        setCalVal = view.findViewById(R.id.setCalVal);
+        calVal = view.findViewById(R.id.calVal);
+        speedText = view.findViewById(R.id.speedText);
+
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
+                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
+
+        deviceRef.child("UI").child("Mode").setValue(0);
 
         calibBtn.setOnClickListener(v -> {
             calibLayout.setVisibility(View.GONE);
@@ -90,9 +102,64 @@ public class PCalibFragment extends Fragment {
         });
 
         saveBtn.setOnClickListener(v -> {
-            int calVal = slider.getProgress();
-            deviceRef.child("UI").child("Cal").setValue(calVal);
+            float calVal1 = Float.parseFloat(calVal.getText().toString());
+            deviceRef.child("UI").child("Cal").setValue(calVal1);
+
             //onBackPressed();
+        });
+
+        deviceRef.child("UI").child("Cal").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Float data = snapshot.getValue(Float.class);
+                    calVal.setText(String.valueOf(data));
+                    float f = data;
+                    int vi = (int) f;
+                    slider.setProgress(vi);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("UI").child("Speed").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                float spd = snapshot.getValue(Float.class);
+                speedText.setText("Speed : " + spd);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        setCalVal.setOnClickListener(v -> {
+            float f = Float.parseFloat(calVal.getText().toString());
+            int vi = (int) f;
+            slider.setProgress(vi);
+        });
+
+        slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                calVal.setText(String.valueOf((float) progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
 
         SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
@@ -103,8 +170,6 @@ public class PCalibFragment extends Fragment {
 
         getTime.commit();
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
-                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
 
         SetUpListener();
     }
@@ -114,7 +179,10 @@ public class PCalibFragment extends Fragment {
         time = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(new Date());
         date = new SimpleDateFormat("hh:mm aa", Locale.getDefault()).format(new Date());
 
-        slider.setDisabled(true);
+
+        slider.setEnabled(false);
+        calVal.setEnabled(false);
+        setCalVal.setEnabled(false);
         CountDownTimer timer = new CountDownTimer(45000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -133,7 +201,9 @@ public class PCalibFragment extends Fragment {
                 runnable = new Runnable() {
                     @Override
                     public void run() {
-                        slider.setDisabled(false);
+                        slider.setEnabled(true);
+                        calVal.setEnabled(true);
+                        setCalVal.setEnabled(true);
                         //saveBtn.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                         saveBtn.setText("Save");
                         deviceRef.child("UI").child("LAST_CALIB_DATE").setValue(time);
@@ -151,18 +221,17 @@ public class PCalibFragment extends Fragment {
 
     private void SetUpListener() {
 
-        deviceRef.child("UI").child("Speed").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int spd = snapshot.getValue(Integer.class);
-                speedController.setProgress(spd);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        deviceRef.child("UI").child("Speed").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                int spd = snapshot.getValue(Integer.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
 
         deviceRef.child("UI").child("Direction").addValueEventListener(new ValueEventListener() {

@@ -177,14 +177,49 @@ public class DoseFragment extends Fragment {
         });
         */
 
-        SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
-        String shTime = sh.getString("CalibTime", "N/A");
-        String shDate = sh.getString("CalibDate", "N/A");
-        time.setText(shDate);
-        date.setText(shTime);
+//        SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
+//        String shTime = sh.getString("CalibTime", "N/A");
+//        String shDate = sh.getString("CalibDate", "N/A");
+//        time.setText(shDate);
+//        date.setText(shTime);
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
+        deviceRef.child("UI").child("LAST_CALIB_DATE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String date1 = snapshot.getValue(String.class);
+                    date.setText(date1);
+                } else {
+                    deviceRef.child("UI").child("LAST_CALIB_DATE").setValue("N/A");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        deviceRef.child("UI").child("LAST_CALIB_TIME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String time1 = snapshot.getValue(String.class);
+                    time.setText(time1);
+                } else {
+                    deviceRef.child("UI").child("LAST_CALIB_TIME").setValue("N/A");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         checkModeAndSetListeners();
     }
