@@ -102,6 +102,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     int ec;
     String nullEntry, reportDate, reportTime;
     Integer fault;
+    TextView phAfterCalib1, phAfterCalib2, phAfterCalib3, phAfterCalib4, phAfterCalib5;
+    TextView temp1, temp2, temp3, temp4, temp5;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, tvTimer, lastCalib;
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     TextView qr1, qr2, qr3, qr4, qr5;
@@ -133,6 +135,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
     String[] bufferLabelsThree = new String[]{"B_2", "B_3", "B_4"};
     String[] coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
+    String[] postCoeffLabels = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
+    String[] postCoeffLabelsThree = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
     String[] coeffLabelsThree = new String[]{"VAL_2", "VAL_3", "VAL_4"};
     int[] calValues = new int[]{10, 20, 30, 40, 50};
     int[] calValuesThree = new int[]{20, 30, 40};
@@ -1109,6 +1113,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         l4 = view.findViewById(R.id.log4);
         l5 = view.findViewById(R.id.log5);
 
+        temp1 = view.findViewById(R.id.temp1);
+        temp2 = view.findViewById(R.id.temp2);
+        temp3 = view.findViewById(R.id.temp3);
+        temp4 = view.findViewById(R.id.temp4);
+        temp5 = view.findViewById(R.id.temp5);
+
+        phAfterCalib1 = view.findViewById(R.id.phAfterCalib1);
+        phAfterCalib2 = view.findViewById(R.id.phAfterCalib2);
+        phAfterCalib3 = view.findViewById(R.id.phAfterCalib3);
+        phAfterCalib4 = view.findViewById(R.id.phAfterCalib4);
+        phAfterCalib5 = view.findViewById(R.id.phAfterCalib5);
+
         ll1 = view.findViewById(R.id.ll1);
         phEdit1 = view.findViewById(R.id.phEdit1);
         tvTimer = view.findViewById(R.id.tvTimer);
@@ -1223,6 +1239,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
                         bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
                         coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
+                        postCoeffLabels = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
                         calValues = new int[]{10, 20, 30, 40, 50};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
@@ -1265,6 +1282,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         buffers = new float[]{4.0F, 7.0F, 9.0F};
                         bufferLabels = new String[]{"B_2", "B_3", "B_4"};
                         coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
+                        postCoeffLabels = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
                         calValues = new int[]{20, 30, 40};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
@@ -1797,16 +1815,63 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
+                                int b = currentBuf < 0 ? 4 : currentBuf;
                                 if (coeff == null) return;
-                                currentBuf += 1;
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels[b]).get().addOnSuccessListener(dataSnapshot2 -> {
+                                    Float postCoeff = dataSnapshot2.getValue(Float.class);
+                                    if (b == 0) {
+                                        phAfterCalib1.setText(String.valueOf(postCoeff));
+                                        temp1.setText(tvTempCurr.getText());
+                                    } else if (b == 1) {
+                                        phAfterCalib2.setText(String.valueOf(postCoeff));
+                                        temp2.setText(tvTempCurr.getText());
+                                    } else if (b == 2) {
+                                        phAfterCalib3.setText(String.valueOf(postCoeff));
+                                        temp3.setText(tvTempCurr.getText());
+                                    } else if (b == 3) {
+                                        phAfterCalib4.setText(String.valueOf(postCoeff));
+                                        temp4.setText(tvTempCurr.getText());
+                                    } else if (b == 4) {
+                                        phAfterCalib5.setText(String.valueOf(postCoeff));
+                                        temp5.setText(tvTempCurr.getText());
+                                    }
+                                    currentBuf += 1;
+
+                                });
                             });
+
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree] + 1);
+                            Log.e("currentBufThree0", currentBufThree + "");// 2
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
+                                Log.e("currentBufThree1", currentBufThree + "");// -1
+                                int a = currentBufThree < 0 ? 2 : currentBufThree;
                                 if (coeff == null) return;
-                                currentBufThree += 1;
-                                currentBufThree = currentBufThree%3;
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabelsThree[a]).get().addOnSuccessListener(dataSnapshot2 -> {
+                                    Float postCoeff = dataSnapshot2.getValue(Float.class);
+                                    Log.e("currentBufThree2", currentBufThree + "");// crash
+                                    if (postCoeff == null) return;
+                                    if (a == 0) {
+                                        phAfterCalib1.setText(String.valueOf(postCoeff));
+                                        temp1.setText(tvTempCurr.getText());
+                                    } else if (a == 1) {
+                                        phAfterCalib2.setText(String.valueOf(postCoeff));
+                                        temp2.setText(tvTempCurr.getText());
+                                    } else if (a == 2) {
+                                        phAfterCalib3.setText(String.valueOf(postCoeff));
+                                        temp3.setText(tvTempCurr.getText());
+                                    } else if (a == 3) {
+                                        phAfterCalib4.setText(String.valueOf(postCoeff));
+                                        temp4.setText(tvTempCurr.getText());
+                                    } else if (a == 4) {
+                                        phAfterCalib5.setText(String.valueOf(postCoeff));
+                                        temp5.setText(tvTempCurr.getText());
+                                    }
+                                    currentBufThree += 1;
+                                    currentBufThree = currentBufThree % 3;
+                                });
+
                             });
                         }
 
@@ -1821,12 +1886,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         };
 
-        if(spin.getSelectedItemPosition() == 0) {
+        if (spin.getSelectedItemPosition() == 0) {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
                 timer.start();
             });
-        }else{
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree%3]).addOnSuccessListener(t -> {
+        } else {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree % 3]).addOnSuccessListener(t -> {
                 timer.start();
             });
         }

@@ -186,6 +186,9 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
                 if(Integer.parseInt(tempp)<=-127){
                     tvTempCurr.setText("NA");
+                    switchAtc.setEnabled(false);
+                }else{
+                    switchAtc.setEnabled(true);
                 }
 
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);

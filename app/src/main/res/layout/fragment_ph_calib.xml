@@ -348,10 +348,27 @@
                                 android:layout_marginStart="21dp"
                                 android:layout_marginEnd="0dp"
                                 android:layout_marginBottom="1dp"
-                                android:layout_weight="1"
+                                android:layout_weight="0.7"
                                 android:text="pH"
                                 android:textSize="22sp" />
 
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:background="#DFE6ED"
+                                android:translationX="30dp" />
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="21dp"
+                                android:layout_marginBottom="1dp"
+                                android:layout_weight="0.8"
+                                android:paddingStart="20dp"
+                                android:text="pH after calib"
+                                android:textSize="16sp" />
 
                             <View
                                 android:layout_width="2dp"
@@ -365,7 +382,24 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
                                 android:layout_marginBottom="1dp"
-                                android:layout_weight="1"
+                                android:layout_weight="0.8"
+                                android:paddingStart="20dp"
+                                android:text="Temp"
+                                android:textSize="22sp" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="5dp"
+                                android:background="#DFE6ED" />
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="21dp"
+                                android:layout_marginBottom="1dp"
+                                android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="mV"
                                 android:textSize="22sp" />
@@ -375,6 +409,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="5dp"
+                                android:translationX="-12dp"
                                 android:background="#DFE6ED" />
 
                             <TextView
@@ -382,7 +417,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
                                 android:layout_marginBottom="2dp"
-                                android:layout_weight="1"
+                                android:layout_weight="1.2"
                                 android:text="Date &amp; Time"
                                 android:textSize="22sp" />
 
@@ -391,6 +426,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="5dp"
+                                android:translationX="-5dp"
                                 android:background="#DFE6ED" />
 
                             <TextView
@@ -398,9 +434,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
                                 android:layout_marginBottom="2dp"
-                                android:layout_weight="1"
+                                android:layout_weight="0.8"
                                 android:text="Buffer Details"
-                                android:textSize="22sp" />
+                                android:textSize="18sp" />
 
                         </LinearLayout>
 
@@ -425,7 +461,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.7"
                                     android:text=""
                                     android:textSize="16sp" />
 
@@ -452,12 +488,48 @@
 
 
                                 <TextView
+                                    android:id="@+id/phAfterCalib1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="--"
+                                    android:layout_weight="0.8"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/temp1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="--"
+                                    android:layout_weight="0.8"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
                                     android:id="@+id/mv1"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:textSize="16sp" />
 
 
@@ -474,8 +546,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
-                                    android:textSize="16sp" />
+                                    android:layout_weight="1.2"
+                                    android:textSize="14sp" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -492,7 +564,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:ellipsize="marquee"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:paddingStart="15dp"
@@ -530,7 +602,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.7"
                                     android:text=""
                                     android:textSize="16sp" />
 
@@ -548,7 +620,40 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
 
+
+                                <TextView
+                                    android:id="@+id/phAfterCalib2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:text="--"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/temp2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="16sp" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -561,7 +666,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:textSize="16sp" />
 
                                 <View
@@ -576,8 +681,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
-                                    android:textSize="16sp" />
+                                    android:layout_weight="1.2"
+                                    android:textSize="14sp" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -594,7 +699,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:ellipsize="marquee"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:paddingStart="15dp"
@@ -634,7 +739,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.7"
                                     android:text=""
                                     android:textSize="16sp" />
 
@@ -652,7 +757,40 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
 
+
+                                <TextView
+                                    android:id="@+id/phAfterCalib3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="--"
+                                    android:layout_weight="0.8"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/temp3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="16sp" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -665,7 +803,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:textSize="16sp" />
 
                                 <View
@@ -680,8 +818,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
-                                    android:textSize="16sp" />
+                                    android:layout_weight="1.2"
+                                    android:textSize="14sp" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -698,7 +836,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:ellipsize="marquee"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:paddingStart="15dp"
@@ -747,7 +885,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.7"
                                     android:text=""
                                     android:textSize="16sp" />
 
@@ -765,7 +903,40 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
 
+
+                                <TextView
+                                    android:id="@+id/phAfterCalib4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/temp4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="16sp" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -778,7 +949,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:textSize="16sp" />
 
                                 <View
@@ -793,8 +964,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
-                                    android:textSize="16sp" />
+                                    android:layout_weight="1.2"
+                                    android:textSize="14sp" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -811,7 +982,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:ellipsize="marquee"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:paddingStart="15dp"
@@ -850,7 +1021,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.7"
                                     android:text=""
                                     android:textSize="16sp" />
 
@@ -868,7 +1039,40 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:background="#DFE6ED" />
 
+
+                                <TextView
+                                    android:id="@+id/phAfterCalib5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="16sp" />
+
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/temp5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="16sp" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -881,7 +1085,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:textSize="16sp" />
 
                                 <View
@@ -896,8 +1100,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
-                                    android:textSize="16sp" />
+                                    android:layout_weight="1.2"
+                                    android:textSize="14sp" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -914,7 +1118,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1"
+                                    android:layout_weight="0.8"
                                     android:ellipsize="marquee"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:paddingStart="15dp"
