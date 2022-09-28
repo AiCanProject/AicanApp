@@ -55,6 +55,7 @@ import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.AlarmConstants;
+import com.aican.aicanapp.utils.Constants;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
@@ -73,6 +74,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.api.LogDescriptor;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -117,6 +119,7 @@ public class phLogFragment extends Fragment {
     SwitchCompat switchHold, switchInterval, switchBtnClick;
     LinearLayout autoLog;
     TextView autoLogWarn;
+    Boolean isAlertShow = true;
 
 
     int timerInSec;
@@ -139,7 +142,12 @@ public class phLogFragment extends Fragment {
 
     @Override
     public void onStop() {
+
+        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
         super.onStop();
+
+
     }
 
     @Override
@@ -250,7 +258,7 @@ public class phLogFragment extends Fragment {
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
         deviceRef.child("Data").child("LOG").setValue(0);
-        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+//        deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
         enterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -383,14 +391,24 @@ public class phLogFragment extends Fragment {
             }
         });
 
-
         deviceRef.child("Data").child("AUTOLOG").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                int clicked = snapshot.getValue(Integer.class);
-                if(clicked == 1){
-                   takeLog();
-                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                int AutoLog = snapshot.getValue(Integer.class);
+
+                if(AutoLog == 1){
+                    switchHold.setChecked(true);
+                    switchInterval.setChecked(false);
+                    switchBtnClick.setChecked(false);
+                }else if(AutoLog == 2){
+                    isAlertShow = false;
+                    switchHold.setChecked(false);
+                    switchInterval.setChecked(true);
+                    switchBtnClick.setChecked(false);
+                }else if(AutoLog == 3){
+                    switchHold.setChecked(false);
+                    switchInterval.setChecked(false);
+                    switchBtnClick.setChecked(true);
                 }
             }
 
@@ -398,6 +416,22 @@ public class phLogFragment extends Fragment {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+//
+//        deviceRef.child("Data").child("AUTOLOG").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//                int clicked = snapshot.getValue(Integer.class);
+//                if(clicked == 1){
+//                   takeLog();
+//                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+//            }
+//        });
 
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -585,13 +619,22 @@ public class phLogFragment extends Fragment {
                 if(switchInterval.isChecked()){
                     switchBtnClick.setChecked(false);
                     switchHold.setChecked(false);
-                    deviceRef.child("Data").child("AUTOLOG").setValue(1);
+                    deviceRef.child("Data").child("AUTOLOG").setValue(2);
+
+                    if(Constants.timeInSec ==0)
                     openTimerDialog();
+                    else {
+                        if(handler!=null)
+                            handler.removeCallbacks(runnable);
+                        handler();
+                    }
+
                 }else{
                     isTimer = false;
+                    Constants.timeInSec =0;
+                    isAlertShow = true;
                     if(handler!=null)
                     handler.removeCallbacks(runnable);
-                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
                 }
             }
         });
@@ -600,7 +643,7 @@ public class phLogFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(switchBtnClick.isChecked()){
-                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                    deviceRef.child("Data").child("AUTOLOG").setValue(3);
 
                     if(switchInterval.isChecked()) {
                         isTimer = false;
@@ -611,6 +654,24 @@ public class phLogFragment extends Fragment {
                 }
             }
         });
+        if(deviceRef.child("Data").child("LOG_INTERVAL") != null){
+            deviceRef.child("Data").child("LOG_INTERVAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if( snapshot.getValue(Integer.class) != null) {
+                        Constants.timeInSec = snapshot.getValue(Integer.class);
+                        if (switchInterval.isChecked() && !isAlertShow) {
+                            Log.d("Timer", "onDataChange: "+Constants.timeInSec);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
 
         switchHold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -625,8 +686,6 @@ public class phLogFragment extends Fragment {
                     }
 
                     switchBtnClick.setChecked(false);
-                }else{
-                    deviceRef.child("Data").child("AUTOLOG").setValue(0);
                 }
             }
         });
@@ -688,6 +747,20 @@ public class phLogFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d("Timer", "onPause: ");
+        if(handler!=null)
+            handler.removeCallbacks(runnable);
+        super.onPause();
+    }
+
     private void openTimerDialog() {
         final Dialog dialog = new Dialog(getContext());
         dialog.setCancelable(false);
@@ -707,7 +780,8 @@ public class phLogFragment extends Fragment {
                 if(!timer.getText().toString().isEmpty()) {
                     double d = Double.parseDouble(timer.getText().toString())*60000;
                     Double db = new Double(d);
-                    timerInSec = db.intValue();
+                    Constants.timeInSec = db.intValue();
+                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
                     handler();
                     dialog.dismiss();
                 }
@@ -721,18 +795,20 @@ public class phLogFragment extends Fragment {
     }
 
     void handler(){
-        Log.d("Timer", "doInBackground: in while "+timerInSec);
-        handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                Log.d("Timer", "doInBackground: in handler");
-                takeLog();
-                handler();
-            }
-        };
-        handler.postDelayed(runnable,timerInSec);
-        Log.d("Timer", "doInBackground: out handler");
+        Log.d("Timer", "doInBackground: in while "+Constants.timeInSec);
+
+            handler = new Handler();
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("Timer", "doInBackground: in handler");
+                    takeLog();
+                    handler();
+                }
+            };
+            handler.postDelayed(runnable, Constants.timeInSec);
+            Log.d("Timer", "doInBackground: out handler");
+
 
     }
 
@@ -745,6 +821,7 @@ public class phLogFragment extends Fragment {
         if (ph == null || temp == null || mv == null) {
             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
         } else {
+            Log.d("TakeLog", "takeLog: "+date+" "+time+" "+ph+" "+ temp + " "+batchnum+" "+arnum+" "+compound_name+" "+PhActivity.DEVICE_ID);
             databaseHelper.print_insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp,batchnum, arnum, compound_name,PhActivity.DEVICE_ID);
             databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
