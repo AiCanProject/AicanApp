@@ -45,7 +45,7 @@ public class PumpCalibFragment extends Fragment {
     TextView appMode, date, time;
     DatabaseReference deviceRef;
     boolean isStarted = false;
-    int bar_progress= 0;
+    float bar_progress = 0;
 
     ProgressBar progressBar;
     EditText speed;
@@ -71,14 +71,14 @@ public class PumpCalibFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         speedSet = view.findViewById(R.id.speedSet);
-      //  speedController = view.findViewById(R.id.speedController);
+        //  speedController = view.findViewById(R.id.speedController);
         switchClock = view.findViewById(R.id.switch1);
         switchAntiClock = view.findViewById(R.id.switch2);
         appMode = view.findViewById(R.id.appMode);
         startBtn = view.findViewById(R.id.startCalib);
         date = view.findViewById(R.id.date);
         time = view.findViewById(R.id.time);
-       // seekArc = view.findViewById(R.id.seekArc);
+        // seekArc = view.findViewById(R.id.seekArc);
         //seekArcText = view.findViewById(R.id.seekArcText);
 
         progressBar = view.findViewById(R.id.progress_bar);
@@ -86,13 +86,17 @@ public class PumpCalibFragment extends Fragment {
         plus = view.findViewById(R.id.plus);
         speed = view.findViewById(R.id.speed_set);
         speedSet = view.findViewById(R.id.speedSet);
-
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
+                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
         updateProgressBar();
+
 
         speedSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deviceRef.child("UI").child("Speed").setValue(Integer.parseInt(speed.getText().toString()));
+                deviceRef.child("UI").child("Speed").setValue(Float.parseFloat(speed.getText().toString()));
+                bar_progress = Float.parseFloat(speed.getText().toString());
+                updateProgressBar();
             }
         });
 
@@ -113,7 +117,7 @@ public class PumpCalibFragment extends Fragment {
         });
 
 
-        startBtn.setOnClickListener(v->{
+        startBtn.setOnClickListener(v -> {
             isStarted = !isStarted;
             refreshStartBtnUI();
             if (isStarted) {
@@ -124,22 +128,54 @@ public class PumpCalibFragment extends Fragment {
 
         });
 
+//
+//        SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
+//        String shTime = sh.getString("CalibTime", "N/A");
+//        String shDate = sh.getString("CalibDate", "N/A");
+//        date.setText(shTime);
+//        time.setText(shDate);
 
-        SharedPreferences sh = getContext().getSharedPreferences("Pump_Calib", MODE_PRIVATE);
-        String shTime = sh.getString("CalibTime", "N/A");
-        String shDate = sh.getString("CalibDate", "N/A");
-        date.setText(shTime);
-        time.setText(shDate);
+        deviceRef.child("UI").child("LAST_CALIB_DATE").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String date1 = snapshot.getValue(String.class);
+                    date.setText(date1);
+                } else {
+                    deviceRef.child("UI").child("LAST_CALIB_DATE").setValue("N/A");
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
-                .child("P_PUMP").child(PumpActivity.DEVICE_ID);
+            }
+        });
+
+        deviceRef.child("UI").child("LAST_CALIB_TIME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String time1 = snapshot.getValue(String.class);
+                    time.setText(time1);
+                } else {
+                    deviceRef.child("UI").child("LAST_CALIB_TIME").setValue("N/A");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         SetUpListener();
     }
 
-    private void updateProgressBar(){
-        progressBar.setProgress(bar_progress);
+    private void updateProgressBar() {
+        progressBar.setProgress((int) Math.round(bar_progress));
         speed.setText(String.valueOf(bar_progress));
     }
 
@@ -148,9 +184,9 @@ public class PumpCalibFragment extends Fragment {
         deviceRef.child("UI").child("Speed").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int spd = snapshot.getValue(Integer.class);
-                //seekArc.setProgress(spd);
-                // speedController.setProgress(spd);
+                float spd = snapshot.getValue(Float.class);
+                bar_progress = spd;
+                updateProgressBar();
             }
 
             @Override
@@ -166,9 +202,9 @@ public class PumpCalibFragment extends Fragment {
                 Integer dir = snapshot.getValue(Integer.class);
                 if (dir == null) return;
 
-                if (dir == 0){
+                if (dir == 0) {
                     switchClock.setChecked(true);
-                }else {
+                } else {
                     switchAntiClock.setChecked(true);
                 }
 
@@ -181,7 +217,7 @@ public class PumpCalibFragment extends Fragment {
         });
 
         switchClock.setOnCheckedChangeListener((v, isChecked) -> {
-            if (isChecked){
+            if (isChecked) {
                 switchAntiClock.setChecked(false);
             }
 
@@ -189,7 +225,7 @@ public class PumpCalibFragment extends Fragment {
         });
 
         switchAntiClock.setOnCheckedChangeListener((v, isChecked) -> {
-            if (isChecked){
+            if (isChecked) {
                 switchClock.setChecked(false);
             }
 
@@ -200,10 +236,10 @@ public class PumpCalibFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int app = snapshot.getValue(Integer.class);
-                if (app == 0 ){
+                if (app == 0) {
                     appMode.setText("App Mode - OFF");
                     appMode.setTextColor(Color.RED);
-                }else if (app == 1 ){
+                } else if (app == 1) {
                     appMode.setText("App Mode - ON");
                     appMode.setTextColor(Color.GREEN);
                 }
@@ -216,13 +252,14 @@ public class PumpCalibFragment extends Fragment {
         });
 
     }
+
     private void refreshStartBtnUI() {
         if (isStarted) {
             startBtn.setText("STOP");
             startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red));
         } else {
             startBtn.setText("START");
-            startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary));
+            startBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.strtBtn));
         }
     }
 }

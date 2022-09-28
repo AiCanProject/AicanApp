@@ -19,6 +19,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -117,7 +118,7 @@ public class phLogFragment extends Fragment {
     Handler handler;
     Runnable runnable;
     SwitchCompat switchHold, switchInterval, switchBtnClick;
-    LinearLayout autoLog;
+    CardView autoLog;
     TextView autoLogWarn;
     Boolean isAlertShow = true;
 
@@ -158,7 +159,6 @@ public class phLogFragment extends Fragment {
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
         autoLog = view.findViewById(R.id.autoLog);
-        autoLogWarn = view.findViewById(R.id.autoLogWarn);
 
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
@@ -196,7 +196,6 @@ public class phLogFragment extends Fragment {
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         autoLog.setVisibility(View.GONE);
-        autoLogWarn.setVisibility(View.VISIBLE);
         deviceRef.child("AUTO_LOG").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -204,13 +203,10 @@ public class phLogFragment extends Fragment {
                     String autoLogVar = snapshot.getValue(String.class);
                     if (autoLogVar.equals("on")) {
                         autoLog.setVisibility(View.VISIBLE);
-                        autoLogWarn.setVisibility(View.GONE);
                     } else if (autoLogVar.equals("off")) {
                         autoLog.setVisibility(View.GONE);
-                        autoLogWarn.setVisibility(View.VISIBLE);
                     } else {
                         autoLog.setVisibility(View.GONE);
-                        autoLogWarn.setVisibility(View.VISIBLE);
                     }
                 } else {
                     deviceRef.child("AUTO_LOG").setValue("off");

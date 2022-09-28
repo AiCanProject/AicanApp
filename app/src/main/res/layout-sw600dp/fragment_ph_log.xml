@@ -297,6 +297,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/autoLog"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
@@ -304,26 +305,9 @@
                 app:cardCornerRadius="10dp">
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/autoLogWarn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="4dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/red"
-                        android:text="Automatic Log not available"
-                        android:textSize="25dp" />
 
                     <LinearLayout
-                        android:id="@+id/autoLog"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -368,7 +352,6 @@
                             android:theme="@style/Switch" />
 
                     </LinearLayout>
-                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 

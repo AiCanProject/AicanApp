@@ -277,6 +277,10 @@ class   HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, 
 
     fun getProgress() = progress
 
+    fun setProgress( s : Float){
+        progress = s.roundToInt();
+    }
+
     interface OnProgressChangeListener {
         fun onProgressChange(progress: Int)
     }

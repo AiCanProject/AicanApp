@@ -84,5 +84,6 @@
 
     <color name="internetInactive">#FE4A51</color>
     <color name="internetActive">#71ED19</color>
+    <color name="strtBtn">#9037C7</color>
 
 </resources>
