@@ -506,7 +506,7 @@ public class phLogFragment extends Fragment {
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
                     PdfSaveOptions options = new PdfSaveOptions();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
 
@@ -520,7 +520,7 @@ public class phLogFragment extends Fragment {
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/Currentlog"+currentDateandTime+"_"+(tempFilesAndFolders.length-1)+".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_"+currentDateandTime+"_"+(tempFilesAndFolders.length-1)+".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                     File root1 = new File(path1);
@@ -585,23 +585,11 @@ public class phLogFragment extends Fragment {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
-        File[] filesAndFoldersPDF =new File[1];
 
-        if (filesAndFolders == null || filesAndFolders.length == 0) {
-            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            for (int i = 0; i < filesAndFolders.length; i++) {
-                if(filesAndFolders[i].getName().endsWith(".pdf")){
-                    filesAndFoldersPDF[0] = filesAndFolders[i];
-                }
-            }
-        }
-
-//        plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
-//        csvRecyclerView.setAdapter(plAdapter);
-//        plAdapter.notifyDataSetChanged();
-//        csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+        plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFolders);
+        csvRecyclerView.setAdapter(plAdapter);
+        plAdapter.notifyDataSetChanged();
+        csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
 
         if (checkPermission()) {
             Toast.makeText(getContext().getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
