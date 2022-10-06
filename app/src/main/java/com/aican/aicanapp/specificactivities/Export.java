@@ -276,7 +276,7 @@ public class Export extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF,"PhExport");
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "PhExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -327,88 +327,87 @@ public class Export extends AppCompatActivity {
                     isSuccessful[0] = true;
                 }
 
-                if (true) {
 
-                    exportUserData();
+                exportUserData();
 
 
-                    String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-                    File root = new File(path);
-                    fileNotWrite(root);
-                    File[] filesAndFolders = root.listFiles();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                File root = new File(path);
+                fileNotWrite(root);
+                File[] filesAndFolders = root.listFiles();
 
-                    if (filesAndFolders == null || filesAndFolders.length == 0) {
+                if (filesAndFolders == null || filesAndFolders.length == 0) {
+
+                    return;
+                } else {
+                    for (int i = 0; i < filesAndFolders.length; i++) {
+                        filesAndFolders[i].getName().endsWith(".csv");
+                    }
+                }
+
+
+                try {
+                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                    File root1 = new File(path1);
+                    fileNotWrite(root1);
+                    File[] filesAndFolders1 = root1.listFiles();
+
+                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
 
                         return;
                     } else {
-                        for (int i = 0; i < filesAndFolders.length; i++) {
-                            filesAndFolders[i].getName().endsWith(".csv");
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            filesAndFolders1[i].getName().endsWith(".xlsx");
                         }
                     }
 
+                    Workbook workbook = null;
 
-                    try {
-                        String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
-                        File root1 = new File(path1);
-                        fileNotWrite(root1);
-                        File[] filesAndFolders1 = root1.listFiles();
+                    workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
 
-                        if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+                    String currentDateandTime = sdf.format(new Date());
+                    PdfSaveOptions options = new PdfSaveOptions();
+                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                    File tempRoot = new File(tempPath);
+                    fileNotWrite(tempRoot);
+                    File[] tempFilesAndFolders = tempRoot.listFiles();
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
-                            return;
-                        } else {
-                            for (int i = 0; i < filesAndFolders1.length; i++) {
-                                filesAndFolders1[i].getName().endsWith(".xlsx");
+                    String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                    File root_1 = new File(path_1);
+                    fileNotWrite(root_1);
+                    File[] filesAndFolders_1 = root_1.listFiles();
+
+                    if (filesAndFolders_1 == null || filesAndFolders_1.length == 0) {
+
+                        return;
+                    } else {
+                        for (int i = 0; i < filesAndFolders1.length; i++) {
+                            if (filesAndFolders_1[i].getName().endsWith(".csv") || filesAndFolders_1[i].getName().endsWith(".xlsx")) {
+                                filesAndFolders_1[i].delete();
                             }
                         }
-
-                        Workbook workbook = null;
-
-                        workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
-
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
-                        String currentDateandTime = sdf.format(new Date());
-                        PdfSaveOptions options = new PdfSaveOptions();
-                        options.setCompliance(PdfCompliance.PDF_A_1_B);
-                        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-                        File tempRoot = new File(tempPath);
-                        fileNotWrite(tempRoot);
-                        File[] tempFilesAndFolders = tempRoot.listFiles();
-                        workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-
-                        String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-                        File root_1 = new File(path_1);
-                        fileNotWrite(root_1);
-                        File[] filesAndFolders_1 = root_1.listFiles();
-
-                        if (filesAndFolders_1 == null || filesAndFolders_1.length == 0) {
-
-                            return;
-                        } else {
-                            for (int i = 0; i < filesAndFolders1.length; i++) {
-                                if (filesAndFolders_1[i].getName().endsWith(".csv") || filesAndFolders_1[i].getName().endsWith(".xlsx")) {
-                                    filesAndFolders_1[i].delete();
-                                }
-                            }
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
 
-                    String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
-                    File rootPDF = new File(pathPDF);
-                    fileNotWrite(root);
-                    File[] filesAndFoldersPDF = rootPDF.listFiles();
-
-
-                    uAdapter = new UserDataAdapter(Export.this, filesAndFoldersPDF);
-                    userRecyclerView.setAdapter(uAdapter);
-                    uAdapter.notifyDataSetChanged();
-                    userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
+                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                File rootPDF = new File(pathPDF);
+                fileNotWrite(root);
+                File[] filesAndFoldersPDF = rootPDF.listFiles();
+
+
+                uAdapter = new UserDataAdapter(Export.this, filesAndFoldersPDF);
+                userRecyclerView.setAdapter(uAdapter);
+                uAdapter.notifyDataSetChanged();
+                userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             }
+
+
         });
 
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
@@ -438,7 +437,7 @@ public class Export extends AppCompatActivity {
             }
         }
 
-        fAdapter = new FileAdapter(this, filesAndFolders,"PhExport");
+        fAdapter = new FileAdapter(this, filesAndFolders, "PhExport");
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
         userRecyclerView.setAdapter(uAdapter);
@@ -719,21 +718,14 @@ public class Export extends AppCompatActivity {
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + temp + "," + slope + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery);
+            printWriter.println(temp);
+            printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("DATE,TIME,ACTIVITY,pH,TEMP,mV");
+            printWriter.println();
+            printWriter.println("__DATE & TIME__,__ACTIVITY__,________pH__,__TEMP__,___mV__");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-
-//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println(offset + "," + battery + "," + slope + "," + temp);
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-//            printWriter.println("TIME,ACTIVITY,pH,TEMPERATURE,mV");
-//            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
             while (userCSV.moveToNext()) {
@@ -743,14 +735,15 @@ public class Export extends AppCompatActivity {
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
 
-                String record2 = Time + "," + Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
+                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
 
                 printWriter.println(record2);
             }
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor\nSign" + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Operator Sign");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign");
             userCSV.close();
             db.close();
 
@@ -760,7 +753,8 @@ public class Export extends AppCompatActivity {
             Workbook workbook = new Workbook(inputFile + "DataUserActivity.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
             worksheet.getCells().setColumnWidth(0, 18.5);
-            worksheet.getCells().setColumnWidth(2, 18.5);
+            worksheet.getCells().setColumnWidth(1, 20.5);
+            worksheet.getCells().setColumnWidth(2, 12.5);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {

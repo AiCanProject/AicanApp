@@ -94,7 +94,7 @@ public class LogTempFragment extends Fragment {
     TextView tvPhCurr, tvPhNext;
     String temp1, temp2, set_temp, date, time, batchnum, arnum, product_name, temp1_fetched, temp2_fetched,
             currentDate_fetched, currentTime_fetched, batchnum_fetched,
-             PRODUCT_NAME_fetched;
+            PRODUCT_NAME_fetched;
     String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     //    LineChart lineChart;
     String mode, reportDate, reportTime;
@@ -104,8 +104,7 @@ public class LogTempFragment extends Fragment {
     TempLogAdapter adapter;
     String offset, battery, slope, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
-    Button logBtn, exportBtn, printBtn, clearBtn;
-    ImageButton enterBtn, batchBtn, arBtn;
+    Button logBtn, exportBtn, printBtn, clearBtn, submit;
     PrintLogAdapter plAdapter;
     EditText PRODUCT_NAME_txt, batch_number, ar_number;
     String TABLE_NAME = "TempLogUserdetails";
@@ -148,17 +147,15 @@ public class LogTempFragment extends Fragment {
 
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
-        enterBtn = view.findViewById(R.id.enter_text);
         printBtn = view.findViewById(R.id.print);
         PRODUCT_NAME_txt = view.findViewById(R.id.product_name);
         batch_number = view.findViewById(R.id.batch_number);
         ar_number = view.findViewById(R.id.ar_number);
-        batchBtn = view.findViewById(R.id.batch_text);
-        arBtn = view.findViewById(R.id.ar_text);
         switchHold = view.findViewById(R.id.switchHold);
         switchInterval = view.findViewById(R.id.switchInterval);
         switchBtnClick = view.findViewById(R.id.switchBtnClick);
         clearBtn = view.findViewById(R.id.clear);
+        submit = view.findViewById(R.id.submit);
 
         recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
@@ -244,58 +241,15 @@ public class LogTempFragment extends Fragment {
         deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
 
-        enterBtn.setOnClickListener(new View.OnClickListener() {
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                product_name = PRODUCT_NAME_txt.getText().toString();
-                if (product_name.matches("")) {
-                    Toast.makeText(getContext(), "Enter Compound Name", Toast.LENGTH_SHORT).show();
-                } else {
-                    deviceRef.child("Data").child("PRODUCT_NAME").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            snapshot.getRef().setValue(product_name);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
+                saveDetails();
             }
         });
 
 
 
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                showChart();
-//            }
-//        }, 5000);
-
-
-        batchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                batchnum = batch_number.getText().toString();
-                if (batchnum.matches("")) {
-                    Toast.makeText(getContext(), "Enter Batch Name", Toast.LENGTH_SHORT).show();
-                } else {
-                    deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            snapshot.getRef().setValue(batchnum);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
-            }
-        });
 
         /*
 
@@ -453,8 +407,8 @@ public class LogTempFragment extends Fragment {
             if (temp1 == null || temp2 == null || set_temp == null) {
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
-                databaseHelper.print_insert_log_data_temp(date, time,set_temp, temp1, temp2, batchnum, product_name);
-                databaseHelper.insert_temp_log_data(date, time,set_temp, temp1, temp2, batchnum, product_name);
+                databaseHelper.print_insert_log_data_temp(date, time, set_temp, temp1, temp2, batchnum, product_name);
+                databaseHelper.insert_temp_log_data(date, time, set_temp, temp1, temp2, batchnum, product_name);
 //                databaseHelper.insert_action_data_temp(date, "Log button pressed by " + Source.userName, temp1, temp2, set_temp, product_name);
             }
             adapter = new TempLogAdapter(getContext(), getList());
@@ -653,8 +607,8 @@ public class LogTempFragment extends Fragment {
         if (temp1 == null || temp2 == null || set_temp == null) {
             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
         } else {
-            databaseHelper.print_insert_log_data_temp(date, time,set_temp, temp1, temp2, batchnum, product_name);
-            databaseHelper.insert_temp_log_data(date, time,set_temp, temp1, temp2, batchnum, product_name);
+            databaseHelper.print_insert_log_data_temp(date, time, set_temp, temp1, temp2, batchnum, product_name);
+            databaseHelper.insert_temp_log_data(date, time, set_temp, temp1, temp2, batchnum, product_name);
 //            databaseHelper.insert_action_data_temp(date, "Log button pressed by " + Source.userName, temp1, temp2, set_temp, product_name);
         }
         adapter = new TempLogAdapter(getContext(), getList());
@@ -787,7 +741,7 @@ public class LogTempFragment extends Fragment {
     }
 
     private List<tempData> getList() {
-        phDataModelList.add(0, new tempData(date, time,set_temp,temp1, temp2, product_name,batchnum));
+        phDataModelList.add(0, new tempData(date, time, set_temp, temp1, temp2, product_name, batchnum));
         return phDataModelList;
     }
 
@@ -931,7 +885,7 @@ public class LogTempFragment extends Fragment {
             batchnum_fetched = res.getString(6);
             if (date.equals(currentDate_fetched) && time.equals(currentTime_fetched)) {
                 phDataModelList.add(0, new tempData(currentDate_fetched,
-                        currentTime_fetched,set_temp,temp1_fetched, temp2_fetched, PRODUCT_NAME_fetched,batchnum_fetched));
+                        currentTime_fetched, set_temp, temp1_fetched, temp2_fetched, PRODUCT_NAME_fetched, batchnum_fetched));
             }
         }
         return phDataModelList;
@@ -978,4 +932,46 @@ public class LogTempFragment extends Fragment {
             }
         }
     }
+
+
+    private void saveDetails() {
+
+
+        product_name = PRODUCT_NAME_txt.getText().toString();
+        if (product_name.matches("")) {
+            Toast.makeText(getContext(), "Enter Compound Name", Toast.LENGTH_SHORT).show();
+        } else {
+            deviceRef.child("Data").child("PRODUCT_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(product_name);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+
+        batchnum = batch_number.getText().toString();
+        if (batchnum.matches("")) {
+            Toast.makeText(getContext(), "Enter Batch Name", Toast.LENGTH_SHORT).show();
+        } else {
+            deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    snapshot.getRef().setValue(batchnum);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
+
+
+    }
+
+
 }

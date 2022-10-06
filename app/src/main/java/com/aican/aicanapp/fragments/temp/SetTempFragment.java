@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -71,6 +72,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class SetTempFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
@@ -96,7 +98,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     long start = 0;
     ForegroundService myService;
     PlotGraphNotifier plotGraphNotifier;
-    int flag=0;
+    int flag = 0;
     TextView start_date, end_date, end_date_display, start_date_display;
     private final float progress = 150f;
     private LineChart lineChart;
@@ -105,11 +107,11 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     long diffTime, startTime, endTime;
     Spinner spinner_mode;
     String[] mode_array;
-    ArrayList<String> list_temp,tempval;
+    ArrayList<String> list_temp, tempval;
     Button set_btn, start_btn, stop_btn, green_btn, orange_btn;
     boolean ON_CLICKED = false;
 
-    int bar_progress= 0;
+    float bar_progress = 0;
     ProgressBar progress_bar;
 
     @Nullable
@@ -118,6 +120,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_temp_set, container, false);
     }
+
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -165,19 +168,51 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
         updateProgressBar();
         //setupListeners();
+
+        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
+                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
+
+        deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float t1 = snapshot.getValue(Float.class);
+                String t = String.format(Locale.UK, "%.2f", t1);
+                temp1.setText(t);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("TEMP2_VAL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float t1 = snapshot.getValue(Float.class);
+                String t = String.format(Locale.UK, "%.2f", t1);
+                temp2.setText(t);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
         temp_value = temp_value.child("TEMP_CONTROLLER").child(Source.deviceID);
 
         temp_value.child("Data").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list_temp.clear();
-                for(DataSnapshot data : snapshot.getChildren()){
+                for (DataSnapshot data : snapshot.getChildren()) {
                     list_temp.add(data.getValue().toString());
                 }
-                temp1.setText(list_temp.get(0));
-                temp2.setText(list_temp.get(1));
-              //  progress_bar.setProgress(Integer.parseInt(list_temp.get(0)));
-              //  temp_set.setText(Integer.parseInt(list_temp.get(0)));
+//                temp1.setText(list_temp.get(0));
+//                temp2.setText(list_temp.get(1));
+                //  progress_bar.setProgress(Integer.parseInt(list_temp.get(0)));
+                //  temp_set.setText(Integer.parseInt(list_temp.get(0)));
             }
 
             @Override
@@ -185,18 +220,19 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
+
         temp_value.child("UI").child("TEMP").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list_temp.clear();
-                for(DataSnapshot data : snapshot.getChildren()){
+                for (DataSnapshot data : snapshot.getChildren()) {
                     list_temp.add(data.getValue().toString());
                 }
                 status = list_temp.get(4);
-                if(status.equals("ON")){
+                if (status.equals("ON")) {
                     orange_btn.setVisibility(View.INVISIBLE);
                     green_btn.setVisibility(View.VISIBLE);
-                }else if(status.equals("OFF")){
+                } else if (status.equals("OFF")) {
                     orange_btn.setVisibility(View.VISIBLE);
                     green_btn.setVisibility(View.INVISIBLE);
                 }
@@ -212,10 +248,10 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String data = snapshot.getValue(String.class);
 
-                if(data.equals("ON")){
+                if (data.equals("ON")) {
                     orange_btn.setVisibility(View.INVISIBLE);
                     green_btn.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     orange_btn.setVisibility(View.VISIBLE);
                     green_btn.setVisibility(View.INVISIBLE);
                 }
@@ -233,10 +269,10 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int data = snapshot.getValue(Integer.class);
 
-                if(data == 0){
+                if (data == 0) {
                     stop_btn.setVisibility(View.INVISIBLE);
                     start_btn.setVisibility(View.VISIBLE);
-                }else if(data == 1 || data == 2){
+                } else if (data == 1 || data == 2) {
                     stop_btn.setVisibility(View.VISIBLE);
                     start_btn.setVisibility(View.INVISIBLE);
                 }
@@ -250,8 +286,6 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         });
 
 
-
-
         start_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -259,9 +293,11 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                 stop_btn.setVisibility(View.VISIBLE);
 
                 int statee = 0;
-                if(spinner_status.equals("Regular")){
+                if (spinner_status.equals("Regular")) {
                     statee = 1;
-                } else if(spinner_status.equals("Timer")){
+                } else if (spinner_status.equals("Timer")) {
+                    deviceRef.child("UI").child("TEMP").child("OFF_TIME").setValue(endTime);
+                    deviceRef.child("UI").child("TEMP").child("ON_TIME").setValue(startTime);
                     statee = 2;
                 }
 
@@ -295,7 +331,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
-        ArrayAdapter adapter = new ArrayAdapter(getContext(),R.layout.custom_spinner_mode,mode_array);
+        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.custom_spinner_mode, mode_array);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_mode.setAdapter(adapter);
 
@@ -344,7 +380,8 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         spinner_mode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mode_array[i].equals("Regular")){
+                if (mode_array[i].equals("Regular")) {
+
                     spinner_status = "Regular";
                     temp_value.child("UI").child("TEMP").child("MODE").setValue(1);
                     start_time.setEnabled(false);
@@ -355,7 +392,9 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                     end_date_display.setText("--");
                     on_time.setText("--");
                     off_time.setText("--");
-                }else if(mode_array[i].equals("Timer")){
+
+                } else if (mode_array[i].equals("Timer")) {
+
                     spinner_status = "Timer";
                     temp_value.child("UI").child("TEMP").child("MODE").setValue(0);
                     start_time.setEnabled(true);
@@ -376,7 +415,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         set_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deviceRef.child("Data").child("TEMP1_VAL").setValue(temp_set.getText().toString());
+                deviceRef.child("Data").child("TEMP1_VAL").setValue(Float.parseFloat(temp_set.getText().toString()));
             }
         });
 
@@ -396,14 +435,12 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
-        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(TemperatureActivity.DEVICE_ID)).getReference()
-                .child(TemperatureActivity.deviceType).child(TemperatureActivity.DEVICE_ID);
 
         setupListeners();
     }
 
-    private void updateProgressBar(){
-        progress_bar.setProgress(bar_progress);
+    private void updateProgressBar() {
+        progress_bar.setProgress((int) Math.round(bar_progress));
         temp_set.setText(String.valueOf(bar_progress));
     }
 
@@ -438,8 +475,8 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                         start_date_display.setText(val);
                         on_time.setText(valHour_final + ":" + valMin_final);
                         startTime = diffTime;
-                        temp_value.child("UI").child("TEMP").child("ON_TIME").setValue(on_time.getText().toString());
-                        temp_value.child("UI").child("TEMP").child("ON_DATE").setValue(start_date_display.getText().toString());
+//                        temp_value.child("UI").child("TEMP").child("ON_TIME").setValue(on_time.getText().toString());
+//                        temp_value.child("UI").child("TEMP").child("ON_DATE").setValue(start_date_display.getText().toString());
 
 
                     } else {
@@ -450,8 +487,8 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                         end_date_display.setText(val);
                         off_time.setText(valHour_final + ":" + valMin_final);
                         endTime = diffTime - startTime;
-                        temp_value.child("UI").child("TEMP").child("OFF_TIME").setValue(off_time.getText().toString());
-                        temp_value.child("UI").child("TEMP").child("OFF_DATE").setValue(end_date_display.getText().toString());
+//                        temp_value.child("UI").child("TEMP").child("OFF_TIME").setValue(off_time.getText().toString());
+//                        temp_value.child("UI").child("TEMP").child("OFF_DATE").setValue(end_date_display.getText().toString());
                     } else {
                         Toast.makeText(getContext(), "Previous time not applicable", Toast.LENGTH_SHORT).show();
                     }
@@ -466,6 +503,36 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         timePickerDialog.show();
     }
 
+    //    private boolean differFromNowTimeCalculate(int day, int month, int year, int hour, int min) {
+//        boolean bol = false;
+//        Calendar cal = Calendar.getInstance();
+//        int yearNow = cal.get(Calendar.YEAR);
+//        int monthNow = cal.get(Calendar.MONTH);
+//        monthNow++;
+//        int dayNow = cal.get(Calendar.DATE);
+//        int hourNow = cal.get(Calendar.HOUR_OF_DAY);
+//        int minNow = cal.get(Calendar.MINUTE);
+//        if (year > yearNow) {
+//            bol = true;
+//        } else if (year == yearNow) {
+//            if (month > monthNow) {
+//                bol = true;
+//
+//            } else if (month == monthNow) {
+//                if (day > dayNow) {
+//                    bol = true;
+//                } else if (day == dayNow) {
+//                    if (hour > hourNow) {
+//                        bol = true;
+//                    } else if (hour == hourNow) {
+//                        bol = min >= minNow;
+//                    }
+//                }
+//            }
+//        }
+//        diffTime = (year - yearNow) * 365 * 24 * 60 + (month - monthNow) * 30 * 24 * 60 + (day - dayNow) * 24 * 60 + (hour - hourNow) * 60 + (min - minNow);
+//        return bol;
+//    }
     private boolean differFromNowTimeCalculate(int day, int month, int year, int hour, int min) {
         boolean bol = false;
         Calendar cal = Calendar.getInstance();
@@ -493,7 +560,8 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
                 }
             }
         }
-        diffTime = (year - yearNow) * 365 * 24 * 60 + (month - monthNow) * 30 * 24 * 60 + (day - dayNow) * 24 * 60 + (hour - hourNow) * 60 + (min - minNow);
+        diffTime = (year - yearNow) * 365 * 24 * 60 + (month - monthNow) * 30 * 24 * 60 + (day - dayNow) * 24 * 60
+                + (hour - hourNow) * 60 + (min - minNow);
         return bol;
     }
 
@@ -523,9 +591,9 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
         String currentDateString = DateFormat.getDateInstance(DateFormat.DEFAULT).format(calendar.getTime());
 
-        if(flag == 1){
+        if (flag == 1) {
             start_date.setText(currentDateString);
-        }else if(flag == 2){
+        } else if (flag == 2) {
             end_date.setText(currentDateString);
         }
         flag = 0;
@@ -814,11 +882,14 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
     private void setupListeners() {
 
-        temp_value.child("data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
+        temp_value.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String temp = snapshot.getValue(String.class);
-                temp1.setText(temp);
+                float temp = snapshot.getValue(Float.class);
+//                temp1.setText(temp);
+                temp_set.setText(String.valueOf(temp));
+                bar_progress = temp;
+                updateProgressBar();
             }
 
             @Override
@@ -830,7 +901,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String temp = snapshot.getValue(String.class);
-                temp2.setText(temp);
+//                temp2.setText(temp);
 
             }
 
@@ -855,4 +926,6 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             requireActivity().getWindow().setStatusBarColor(Color.WHITE);
         }
     }
+
+
 }

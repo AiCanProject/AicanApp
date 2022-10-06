@@ -246,7 +246,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                 SharedPreferences.Editor edit = sharedPreferences.edit();
-                edit.putString("battery", batteryCurr.getText().toString() + "%");
+                edit.putString("battery", batteryCurr.getText().toString());
                 edit.commit();
                 Log.d("6516516", battery);
 

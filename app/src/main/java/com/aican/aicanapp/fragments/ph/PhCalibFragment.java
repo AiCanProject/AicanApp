@@ -113,6 +113,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     Button calibrateBtn, btnNext, printCalib, phMvTable;
     Spinner spin;
     String MV1, MV2, MV3, MV4, MV5, PH1, PH2, PH3, PH4, PH5, DT1, DT2, DT3, DT4, DT5, BFD1, BFD2, BFD3, BFD4, BFD5;
+    String t1, t2, t3, t4, t5;
+    String pHAC1, pHAC2, pHAC3, pHAC4, pHAC5;
     String mode;
     String test1, test2, test3;
     String mV1, mV2, mV3, mV4, mV5;
@@ -131,6 +133,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     LinearLayout ll1;
 
     float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
+    float[] pHAfterCalibBuffer = new float[]{0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
+    float[] pHAfterCalibBufferThree = new float[]{0.0F, 0.0F, 0.0F};
     float[] buffersThree = new float[]{4.0F, 7.0F, 9.2F};
     String[] bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
     String[] bufferLabelsThree = new String[]{"B_2", "B_3", "B_4"};
@@ -159,10 +163,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
+                pHAfterCalibBuffer[i] = snapshot.child(postCoeffLabels[i]).getValue(Float.class);
             }
             for (int i = 0; i < bufferLabelsThree.length; i++) {
                 buffersThree[i] = Float.parseFloat(snapshot.child(bufferLabelsThree[i]).getValue(String.class));
-
+                pHAfterCalibBufferThree[i] = snapshot.child(postCoeffLabelsThree[i]).getValue(Float.class);
             }
             if (spin.getSelectedItemPosition() == 0) {
 
@@ -172,10 +177,21 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 ph4.setText(String.valueOf(buffers[3]));
                 ph5.setText(String.valueOf(buffers[4]));
 
+                phAfterCalib1.setText(String.valueOf(pHAfterCalibBuffer[0]));
+                phAfterCalib2.setText(String.valueOf(pHAfterCalibBuffer[1]));
+                phAfterCalib3.setText(String.valueOf(pHAfterCalibBuffer[2]));
+                phAfterCalib4.setText(String.valueOf(pHAfterCalibBuffer[3]));
+                phAfterCalib5.setText(String.valueOf(pHAfterCalibBuffer[4]));
+
+
             } else if (spin.getSelectedItemPosition() == 1) {
                 ph1.setText(String.valueOf(buffersThree[0]));
                 ph2.setText(String.valueOf(buffersThree[1]));
                 ph3.setText(String.valueOf(buffersThree[2]));
+
+                phAfterCalib1.setText(String.valueOf(pHAfterCalibBufferThree[0]));
+                phAfterCalib2.setText(String.valueOf(pHAfterCalibBufferThree[1]));
+                phAfterCalib3.setText(String.valueOf(pHAfterCalibBufferThree[2]));
             }
         });
     }
@@ -214,6 +230,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             l4.setVisibility(View.VISIBLE);
             l5.setVisibility(View.VISIBLE);
+
+            SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+            t1 = shp.getString("tem1", "--");
+            t2 = shp.getString("tem2", "--");
+            t3 = shp.getString("tem3", "--");
+            t4 = shp.getString("tem4", "--");
+            t5 = shp.getString("tem5", "--");
+
+
+            temp1.setText(t1);
+            temp2.setText(t2);
+            temp3.setText(t3);
+            temp4.setText(t4);
+            temp5.setText(t5);
+
 
             deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -295,6 +327,103 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             });
 
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_1").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib1.setText(ecForm);
+                    pHAC1 = phAfterCalib1.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC1", pHAC1);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib2.setText(ecForm);
+                    pHAC2 = phAfterCalib2.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC2", pHAC2);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_3").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib3.setText(ecForm);
+                    pHAC3 = phAfterCalib3.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC3", pHAC3);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_4").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib4.setText(ecForm);
+                    pHAC4 = phAfterCalib4.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC4", pHAC4);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_5").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib5.setText(ecForm);
+                    pHAC5 = phAfterCalib5.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC5", pHAC5);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
             deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -573,10 +702,81 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             mv5.setText(" ");
             dt4.setText(" ");
             dt5.setText(" ");
+            SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+            t1 = shp.getString("tem1", "--");
+            t2 = shp.getString("tem2", "--");
+            t3 = shp.getString("tem3", "--");
+            t4 = shp.getString("tem4", "--");
+            t5 = shp.getString("tem5", "--");
+
+
+            temp1.setText(t1);
+            temp2.setText(t2);
+            temp3.setText(t3);
+            temp4.setText(t4);
+            temp5.setText(t5);
 
             l4.setVisibility(View.INVISIBLE);
             l5.setVisibility(View.INVISIBLE);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib1.setText(ecForm);
+                    pHAC1 = phAfterCalib1.getText().toString();
 
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC1", pHAC1);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_3").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib2.setText(ecForm);
+                    pHAC2 = phAfterCalib2.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC2", pHAC2);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_4").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float ec = snapshot.getValue(Float.class);
+                    String ecForm = String.format(Locale.UK, "%.2f", ec);
+                    phAfterCalib3.setText(ecForm);
+                    pHAC3 = phAfterCalib3.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("pHAC3", pHAC3);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
             deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -1256,11 +1456,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferD4.setText(BFD4);
                         bufferD5.setText(BFD5);
 
-                        databaseHelper.insertCalibration(PH1, MV1, DT1, BFD1);
-                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2);
-                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3);
-                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4);
-                        databaseHelper.insertCalibration(PH5, MV5, DT5, BFD5);
+                        databaseHelper.insertCalibration(PH1, MV1, DT1, BFD1, pHAC1, t1);
+                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
+                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
+                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
+                        databaseHelper.insertCalibration(PH5, MV5, DT5, BFD5, pHAC5, t5);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
@@ -1298,9 +1498,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferD4.setText(BFD4);
 
 
-                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2);
-                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3);
-                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4);
+                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
+                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
+                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
@@ -1358,6 +1558,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onClick(View view) {
                 tvPhCurr.setText("--");
+                tvTempCurr.setText("--");
                 FileOutputStream fos = null;
 
                 try {
@@ -1625,10 +1826,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery + "," + temp + "," + slope + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(offset + "," + battery);
+            printWriter.println(temp);
+            printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Callibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("pH,mV,DATE");
+            printWriter.println("Calibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("______________pH____,_____mV__,__DATE___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             while (calibCSV.moveToNext()) {
@@ -1641,8 +1844,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 printWriter.println(record1);
             }
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Operator\nSign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor\nSign" + "," + nullEntry + "," + nullEntry);
-
+            printWriter.println("Operator Sign");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign");
             calibCSV.close();
             db.close();
 
@@ -1819,20 +2022,42 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 if (coeff == null) return;
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels[b]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
+                                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
                                     if (b == 0) {
                                         phAfterCalib1.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem1", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC1", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp1.setText(tvTempCurr.getText());
                                     } else if (b == 1) {
                                         phAfterCalib2.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem2", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC2", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp2.setText(tvTempCurr.getText());
                                     } else if (b == 2) {
                                         phAfterCalib3.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem3", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC3", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp3.setText(tvTempCurr.getText());
                                     } else if (b == 3) {
                                         phAfterCalib4.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem4", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC4", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp4.setText(tvTempCurr.getText());
                                     } else if (b == 4) {
                                         phAfterCalib5.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem5", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC5", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp5.setText(tvTempCurr.getText());
                                     }
                                     currentBuf += 1;
@@ -1852,20 +2077,41 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
                                     Log.e("currentBufThree2", currentBufThree + "");// crash
                                     if (postCoeff == null) return;
+
+                                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
                                     if (a == 0) {
                                         phAfterCalib1.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem1", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC1", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp1.setText(tvTempCurr.getText());
                                     } else if (a == 1) {
                                         phAfterCalib2.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem2", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC2", String.valueOf(postCoeff));
                                         temp2.setText(tvTempCurr.getText());
                                     } else if (a == 2) {
                                         phAfterCalib3.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem3", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC3", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp3.setText(tvTempCurr.getText());
                                     } else if (a == 3) {
                                         phAfterCalib4.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem4", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC4", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp4.setText(tvTempCurr.getText());
                                     } else if (a == 4) {
                                         phAfterCalib5.setText(String.valueOf(postCoeff));
+                                        myEdit.putString("tem5", tvTempCurr.getText().toString());
+                                        myEdit.putString("pHAC5", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp5.setText(tvTempCurr.getText());
                                     }
                                     currentBufThree += 1;
@@ -1879,6 +2125,16 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             Float ph = dataSnapshot.getValue(Float.class);
                             String phForm = String.format(Locale.UK, "%.2f", ph);
                             tvPhCurr.setText(phForm);
+                        });
+
+                        deviceRef.child("Data").child("TEMP_VAL").get().addOnSuccessListener(dataSnapshot -> {
+                            Float temp = dataSnapshot.getValue(Float.class);
+                            String tempForm = String.format(Locale.UK, "%.1f", temp);
+                            tvTempCurr.setText(tempForm + "°C");
+
+                            if (temp <= -127.0) {
+                                tvTempCurr.setText("NA");
+                            }
                         });
                     }
                 };
