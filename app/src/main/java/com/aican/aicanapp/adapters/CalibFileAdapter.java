@@ -26,7 +26,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
     Context context;
     File[] files;
 
-    public CalibFileAdapter(Context context, File[] files){
+    public CalibFileAdapter(Context context, File[] files) {
         this.context = context;
         this.files = files;
     }
@@ -48,7 +48,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
             @Override
             public void onClick(View v) {
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/"+selectedFile.getName();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/" + selectedFile.getName();
                 File file = new File(path);
 
                 try {
@@ -76,12 +76,12 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
 //                    cIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    context.getApplicationContext().startActivity(cIntent);
 
-                    if(file.length()!=0) {
+                    if (file.length() != 0) {
                         Intent intent = new Intent(context.getApplicationContext(), PDFViewer.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("Path", path);
                         context.getApplicationContext().startActivity(intent);
-                    }else{
+                    } else {
                         Toast.makeText(context, "File is empty", Toast.LENGTH_SHORT).show();
                     }
 
@@ -111,7 +111,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/"+selectedFile.getName();
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/CalibrationData/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {
@@ -161,10 +161,10 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
 
     @Override
     public int getItemCount() {
-        return files.length;
+        return files == null ? 0 : files.length;
     }
 
-    public class ViewHolder extends  RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         ImageView imageView;
 
