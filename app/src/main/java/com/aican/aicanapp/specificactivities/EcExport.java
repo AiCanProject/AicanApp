@@ -273,7 +273,7 @@ public class EcExport extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF,"EcExport");
+                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "EcExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -313,7 +313,7 @@ public class EcExport extends AppCompatActivity {
                                 companyName = String.valueOf(task.getResult().getValue());
                                 isSuccessful[0] = true;
                                 Log.d("TAG", "onComplete: on success " + companyName);
-                                databaseHelper.insert_action_data("", "User data exported", "", "", "", "");
+                                databaseHelper.insert_action_data("" , "User data exported", "", "", "", "", EcActivity.DEVICE_ID);
                             } else {
                                 companyNameEditText.setError("Enter Company Name");
                             }
@@ -435,7 +435,7 @@ public class EcExport extends AppCompatActivity {
             }
         }
 
-        fAdapter = new FileAdapter(this, filesAndFolders,"EcExport");
+        fAdapter = new FileAdapter(this, filesAndFolders, "EcExport");
         uAdapter = new UserDataAdapter(this, filesAndFolders2);
         recyclerView.setAdapter(fAdapter);
         userRecyclerView.setAdapter(uAdapter);
@@ -591,8 +591,6 @@ public class EcExport extends AppCompatActivity {
             } else {
                 cursor = db.rawQuery("SELECT * FROM LogECdetails", null);
             }
-
-
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);

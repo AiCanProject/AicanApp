@@ -1838,6 +1838,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+//                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
 
                 String record1 = ph + "," + mv + "," + date;
 
@@ -1854,8 +1855,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
             Workbook workbook = new Workbook(inputFile + "CalibrationData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 18.5);
+            worksheet.getCells().setColumnWidth(0, 12.5);
             worksheet.getCells().setColumnWidth(2, 18.5);
+//            worksheet.getCells().setColumnWidth(3, 12.5);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
@@ -1980,8 +1982,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     }
 
     public void calibrate() {
-        String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(time, "Calibrated by " + Source.userName, "", "", "", "");
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        databaseHelper.insert_action_data(date + " " + time, "Calibrated by " + Source.userName, "", "", "", "", PhActivity.DEVICE_ID);
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
@@ -2061,6 +2064,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                         temp5.setText(tvTempCurr.getText());
                                     }
                                     currentBuf += 1;
+                                    calibData();
+                                    deleteAllCalibData();
+                                    databaseHelper.insertCalibration(PH1, MV1, DT1, BFD1, pHAC1, t1);
+                                    databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
+                                    databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
+                                    databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
+                                    databaseHelper.insertCalibration(PH5, MV5, DT5, BFD5, pHAC5, t5);
 
                                 });
                             });
@@ -2116,6 +2126,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     }
                                     currentBufThree += 1;
                                     currentBufThree = currentBufThree % 3;
+                                    calibDataThree();
+                                    deleteAllCalibData();
+                                    databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
+                                    databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
+                                    databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
                                 });
 
                             });
@@ -2137,7 +2152,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                             }
                         });
                     }
+
+
                 };
+
                 runnable.run();
             }
         };
@@ -2151,6 +2169,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 timer.start();
             });
         }
+
+
     }
 
 

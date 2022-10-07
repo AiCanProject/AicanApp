@@ -337,7 +337,7 @@ public class phLogFragment extends Fragment {
                             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                     }
 
@@ -366,7 +366,7 @@ public class phLogFragment extends Fragment {
                         } else {
                             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                         adapter = new LogAdapter(getContext(), getList());
                         recyclerView.setAdapter(adapter);
@@ -398,8 +398,8 @@ public class phLogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Source.status_export = true;
-                time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "");
+                time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
+                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "", PhActivity.DEVICE_ID);
 
                 SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
                 SharedPreferences.Editor roleE = sh.edit();
@@ -432,7 +432,7 @@ public class phLogFragment extends Fragment {
          */
         logBtn.setOnClickListener(v -> {
 
-            date = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).format(new Date());
+            date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             fetch_logs();
 
@@ -441,7 +441,7 @@ public class phLogFragment extends Fragment {
             } else {
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                databaseHelper.insert_action_data(date + "  " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+                databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -741,7 +741,7 @@ public class phLogFragment extends Fragment {
         } else {
             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-            databaseHelper.insert_action_data(date, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name);
+            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);

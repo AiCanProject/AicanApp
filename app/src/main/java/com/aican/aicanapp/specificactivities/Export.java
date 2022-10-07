@@ -239,7 +239,7 @@ public class Export extends AppCompatActivity {
                     }
 
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
@@ -316,7 +316,7 @@ public class Export extends AppCompatActivity {
                                 companyName = String.valueOf(task.getResult().getValue());
                                 isSuccessful[0] = true;
                                 Log.d("TAG", "onComplete: on success " + companyName);
-                                databaseHelper.insert_action_data("", "User data exported", "", "", "", "");
+                                databaseHelper.insert_action_data("", "User data exported", "", "", "", "", PhActivity.DEVICE_ID);
                             } else {
                                 companyNameEditText.setError("Enter Company Name");
                             }
@@ -365,7 +365,7 @@ public class Export extends AppCompatActivity {
 
                     workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
@@ -625,7 +625,7 @@ public class Export extends AppCompatActivity {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("_____Date______Time_____pH______Temp___Batch No___AR No___Compound___Device___");
+            printWriter.println("_____Date______Time______pH________Temp____Batch No___AR No___Compound___Device___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -666,7 +666,7 @@ public class Export extends AppCompatActivity {
             Worksheet worksheet = workbook.getWorksheets().get(0);
             worksheet.getCells().setColumnWidth(0, 10.0);
             worksheet.getCells().setColumnWidth(1, 8.0);
-            worksheet.getCells().setColumnWidth(2, 8.0);
+            worksheet.getCells().setColumnWidth(2, 9.0);
             worksheet.getCells().setColumnWidth(3, 10.0);
             worksheet.getCells().setColumnWidth(4, 10.0);
             worksheet.getCells().setColumnWidth(5, 10.0);
@@ -724,7 +724,7 @@ public class Export extends AppCompatActivity {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("User Activity Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println();
-            printWriter.println("__DATE & TIME__,__ACTIVITY__,________pH__,__TEMP__,___mV__");
+            printWriter.println("__DATE & TIME__,__ACTIVITY__,________pH__,__TEMP__,___mV__,_Device ID_");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -734,8 +734,9 @@ public class Export extends AppCompatActivity {
                 String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
+                String device = userCSV.getString(userCSV.getColumnIndex("deviceID"));
 
-                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv;
+                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv + "," + device;
 
                 printWriter.println(record2);
             }

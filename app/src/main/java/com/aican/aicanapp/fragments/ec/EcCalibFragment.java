@@ -40,6 +40,7 @@ import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.EcActivity;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
 import com.aspose.cells.PdfCompliance;
@@ -126,7 +127,6 @@ public class EcCalibFragment extends Fragment {
 
     String currentTime;
     String strDate;
-
 
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -476,9 +476,7 @@ public class EcCalibFragment extends Fragment {
                         }, 10000);   //5 seconds
 
 
-                    }
-
-                    else if (ec == 0) {
+                    } else if (ec == 0) {
                         calibrateBtn.setText("START");
                         calibrateBtn.setEnabled(true);
                     }
@@ -847,14 +845,12 @@ public class EcCalibFragment extends Fragment {
                 }
 
 
-
-
                 try {
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/CalibrationData.xlsx");
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ECCalibrationData/CalibrationData" + currentDateandTime + ".pdf", options);
 
@@ -882,8 +878,6 @@ public class EcCalibFragment extends Fragment {
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
-
-
 
 
                 calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
@@ -1076,8 +1070,10 @@ public class EcCalibFragment extends Fragment {
     }
 
     public void calibrate() {
-        String time = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(time, "Calibrated by " + Source.userName, "", "", "", "");
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        databaseHelper.insert_action_data(date + " " + time, "Calibrated by " + Source.userName, "", "", "", "", EcActivity.DEVICE_ID);
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
@@ -1102,7 +1098,7 @@ public class EcCalibFragment extends Fragment {
                     @Override
                     public void run() {
                         tvTimer.setVisibility(View.INVISIBLE);
-                        currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+                        currentTime = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
                         bufferList.add(new BufferData(null, null, currentTime));
                         deviceRef.child("UI").child("EC").child("EC_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
                         deviceRef.child("UI").child("EC").child("EC_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
