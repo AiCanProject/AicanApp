@@ -68,6 +68,8 @@
     <string name="folderLocation">AICAN Latest Apk</string>
 
     <string name="ecLogFolder">/LabApp/Currentlog/ECLog</string>
+    <string name="set_Speed">Set Speed</string>
+    <string name="set_volume">Set Volume</string>
 
 </resources>
 

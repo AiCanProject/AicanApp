@@ -45,7 +45,7 @@
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/white"
         android:padding="10dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:cardCornerRadius="22dp"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="@+id/linearLayout"
@@ -181,12 +181,11 @@
                         android:text="Clockwise      " />
 
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switch1"
+                        android:id="@+id/clockwiseSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginStart="5dp"
-                        android:enabled="false"
                         android:textColor="@color/black_force"
                         android:textStyle="bold"
                         android:thumb="@drawable/sw_thumb"
@@ -206,12 +205,11 @@
                         android:text="AntiClockwise" />
 
                     <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/switch2"
+                        android:id="@+id/antiClockwiseSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginStart="5dp"
-                        android:enabled="false"
                         android:textColor="@color/black_force"
                         android:textStyle="bold"
                         android:thumb="@drawable/sw_thumb"
@@ -246,6 +244,24 @@
                         android:textColorHint="@color/grey_light_force" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <Button
+                    android:id="@+id/startBtnRep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:backgroundTint="#9037C7"
+                    android:layout_marginTop="3sp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <Button
+                    android:id="@+id/stopBtnRep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stop"
+                    android:visibility="gone"
+                    android:layout_marginTop="3sp"
+                    android:layout_gravity="center_horizontal"/>
+
             </LinearLayout>
 
         </LinearLayout>
@@ -263,6 +279,7 @@
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/white"
         android:padding="10dp"
+        android:visibility="visible"
         app:cardCornerRadius="22dp"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="@+id/linearLayout"
@@ -284,17 +301,28 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <Button
-                    android:id="@+id/startBtn"
+                    android:id="@+id/startBtnTimer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Start" />
+                    android:text="Start"
+                    android:backgroundTint="#9037C7"
+                    android:layout_marginTop="3sp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <Button
+                    android:id="@+id/stopBtnTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stop"
+                    android:visibility="gone"
+                    android:layout_marginTop="3sp"
+                    android:layout_gravity="center_horizontal"/>
 
                 <Button
                     android:id="@+id/addBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
@@ -396,7 +424,7 @@
                         android:layout_margin="2dp">
 
                         <TextView
-                            android:id="@+id/ph1"
+                            android:id="@+id/on_time_1"
                             android:layout_width="2dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -413,7 +441,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/mv1"
+                            android:id="@+id/off_time_1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -429,7 +457,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/dt1"
+                            android:id="@+id/speed_1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -446,7 +474,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/dt"
+                            android:id="@+id/volume_1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -466,7 +494,7 @@
                         android:layout_margin="3dp">
 
                         <TextView
-                            android:id="@+id/ph2"
+                            android:id="@+id/on_time_2"
                             android:layout_width="5dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -483,7 +511,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/mv2"
+                            android:id="@+id/off_time_2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -499,7 +527,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/dt2"
+                            android:id="@+id/speed_2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -516,7 +544,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/l2"
+                            android:id="@+id/volume_2"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -536,7 +564,7 @@
                         android:layout_margin="5dp">
 
                         <TextView
-                            android:id="@+id/ph3"
+                            android:id="@+id/on_time_3"
                             android:layout_width="5dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -553,7 +581,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/mv3"
+                            android:id="@+id/off_time_3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -569,7 +597,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/dt3"
+                            android:id="@+id/speed_3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -586,7 +614,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/l3"
+                            android:id="@+id/volume_3"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -606,7 +634,7 @@
                         android:layout_margin="3dp">
 
                         <TextView
-                            android:id="@+id/ph4"
+                            android:id="@+id/on_time_4"
                             android:layout_width="5dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -623,7 +651,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/mv4"
+                            android:id="@+id/off_time_4"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -639,7 +667,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/dt4"
+                            android:id="@+id/speed_4"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -656,7 +684,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/l4"
+                            android:id="@+id/volume_4"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -676,7 +704,7 @@
                         android:layout_margin="5dp">
 
                         <TextView
-                            android:id="@+id/ph5"
+                            android:id="@+id/on_time_5"
                             android:layout_width="5dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -693,7 +721,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/mv5"
+                            android:id="@+id/off_time_5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -709,7 +737,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/dt5"
+                            android:id="@+id/speed_5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -726,7 +754,7 @@
                             android:background="#DFE6ED" />
 
                         <TextView
-                            android:id="@+id/l5"
+                            android:id="@+id/volume_5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

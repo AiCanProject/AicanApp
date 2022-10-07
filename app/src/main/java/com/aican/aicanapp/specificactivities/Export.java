@@ -239,7 +239,8 @@ public class Export extends AppCompatActivity {
                     }
 
                     Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
@@ -247,7 +248,7 @@ public class Export extends AppCompatActivity {
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
                     File root1 = new File(path1);
@@ -272,7 +273,7 @@ public class Export extends AppCompatActivity {
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
                 File rootPDF = new File(pathPDF);
-                fileNotWrite(root);
+                fileNotWrite(rootPDF);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
@@ -283,6 +284,17 @@ public class Export extends AppCompatActivity {
                 convertToXls.setVisibility(View.INVISIBLE);
             }
         });
+
+        String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+        File rootPDF = new File(pathPDF);
+        fileNotWrite(rootPDF);
+        File[] filesAndFoldersPDF = rootPDF.listFiles();
+
+
+        fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "PhExport");
+        recyclerView.setAdapter(fAdapter);
+        fAdapter.notifyDataSetChanged();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         convertToXls.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -365,7 +377,7 @@ public class Export extends AppCompatActivity {
 
                     workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
@@ -373,7 +385,7 @@ public class Export extends AppCompatActivity {
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DUA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
                     String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
                     File root_1 = new File(path_1);
@@ -409,43 +421,6 @@ public class Export extends AppCompatActivity {
 
 
         });
-
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
-        String path2 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-        File root = new File(path);
-        File root2 = new File(path2);
-        fileNotWrite(root);
-        fileNotWrite(root2);
-        File[] filesAndFolders = root.listFiles();
-        File[] filesAndFolders2 = root2.listFiles();
-
-        if (filesAndFolders == null || filesAndFolders.length == 0) {
-            Toast.makeText(this, "No Files Found", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            for (int i = 0; i < filesAndFolders.length; i++) {
-                filesAndFolders[i].getName().endsWith(".pdf");
-            }
-        }
-
-        if (filesAndFolders2 == null || filesAndFolders2.length == 0) {
-            Toast.makeText(this, "No Files Found", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            for (int j = 0; j < filesAndFolders2.length; j++) {
-                filesAndFolders2[j].getName().endsWith(".pdf");
-            }
-        }
-
-        fAdapter = new FileAdapter(this, filesAndFolders, "PhExport");
-        uAdapter = new UserDataAdapter(this, filesAndFolders2);
-        recyclerView.setAdapter(fAdapter);
-        userRecyclerView.setAdapter(uAdapter);
-        fAdapter.notifyDataSetChanged();
-        uAdapter.notifyDataSetChanged();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
         if (checkPermission()) {
             Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();

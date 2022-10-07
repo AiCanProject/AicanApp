@@ -1651,13 +1651,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 ////                            Log.d("App", "failed to create directory");
 ////                        }
 ////                    }
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
                     String currentDateandTime = sdf.format(new Date());
                     String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
                     File tempRoot = new File(tempPath);
                     fileNotWrite(tempRoot);
                     File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
 
                     String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
                     File root1 = new File(path1);
@@ -1697,31 +1697,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
-        File[] filesAndFoldersPDF = new File[1];
+//
+//        if (filesAndFolders == null || filesAndFolders.length == 0) {
+//            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
+//            return;
+//        } else {
+//            for (int i = 0; i < filesAndFolders.length; i++) {
+//                if (filesAndFolders[i].getName().endsWith(".pdf")) {
+//                    filesAndFoldersPDF[0] = filesAndFolders[i];
+//                }
+//            }
+//        }
 
-        if (filesAndFolders == null || filesAndFolders.length == 0) {
-            Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            for (int i = 0; i < filesAndFolders.length; i++) {
-                if (filesAndFolders[i].getName().endsWith(".pdf")) {
-                    filesAndFoldersPDF[0] = filesAndFolders[i];
-                }
-            }
-        }
-
-        calibFileAdapter = new
-
-                CalibFileAdapter(requireContext().
-
-                getApplicationContext(), filesAndFoldersPDF);
+        calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFolders);
         calibRecyclerView.setAdapter(calibFileAdapter);
         calibFileAdapter.notifyDataSetChanged();
-        calibRecyclerView.setLayoutManager(new
-
-                LinearLayoutManager(requireContext().
-
-                getApplicationContext()));
+        calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
 
     }
@@ -1831,7 +1822,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Calibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("______________pH____,_____mV__,__DATE___");
+            printWriter.println("________pH____,_____mV__,__DATE___TIME__");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             while (calibCSV.moveToNext()) {
@@ -2135,7 +2126,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                             });
                         }
-
                         deviceRef.child("Data").child("PH_VAL").get().addOnSuccessListener(dataSnapshot -> {
                             Float ph = dataSnapshot.getValue(Float.class);
                             String phForm = String.format(Locale.UK, "%.2f", ph);
