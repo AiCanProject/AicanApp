@@ -350,7 +350,7 @@
                                 android:layout_marginBottom="1dp"
                                 android:layout_weight="0.7"
                                 android:text="pH"
-                                android:textSize="22sp" />
+                                android:textSize="@dimen/textDim" />
 
 
                             <View
@@ -368,7 +368,7 @@
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="pH after calib"
-                                android:textSize="16sp" />
+                                android:textSize="@dimen/textDim" />
 
                             <View
                                 android:layout_width="2dp"
@@ -385,7 +385,7 @@
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="Temp"
-                                android:textSize="22sp" />
+                                android:textSize="@dimen/textDim" />
 
                             <View
                                 android:layout_width="2dp"
@@ -402,7 +402,7 @@
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="mV"
-                                android:textSize="22sp" />
+                                android:textSize="@dimen/textDim" />
 
                             <View
                                 android:layout_width="2dp"
@@ -419,7 +419,7 @@
                                 android:layout_marginBottom="2dp"
                                 android:layout_weight="1.2"
                                 android:text="Date &amp; Time"
-                                android:textSize="22sp" />
+                                android:textSize="@dimen/textDim" />
 
                             <View
                                 android:layout_width="2dp"
@@ -436,7 +436,7 @@
                                 android:layout_marginBottom="2dp"
                                 android:layout_weight="0.8"
                                 android:text="Buffer Details"
-                                android:textSize="18sp" />
+                                android:textSize="@dimen/textDim" />
 
                         </LinearLayout>
 
@@ -463,7 +463,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.7"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/phEdit1"
@@ -495,7 +495,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:text="--"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -513,7 +513,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:text="--"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -530,7 +530,7 @@
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -547,7 +547,7 @@
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="1.2"
-                                    android:textSize="14sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -571,7 +571,7 @@
                                     android:scrollHorizontally="true"
                                     android:singleLine="true"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/qr1"
@@ -604,7 +604,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.7"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/phEdit2"
@@ -635,7 +635,7 @@
                                     android:text="--"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -653,7 +653,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
                                     android:text="--"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -667,7 +667,7 @@
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -682,7 +682,7 @@
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="1.2"
-                                    android:textSize="14sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -706,7 +706,7 @@
                                     android:scrollHorizontally="true"
                                     android:singleLine="true"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/qr2"
@@ -741,7 +741,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.7"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/phEdit3"
@@ -772,7 +772,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:text="--"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -790,7 +790,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
                                     android:text="--"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -804,7 +804,7 @@
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -819,7 +819,7 @@
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="1.2"
-                                    android:textSize="14sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -843,7 +843,7 @@
                                     android:scrollHorizontally="true"
                                     android:singleLine="true"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/qr3"
@@ -887,7 +887,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.7"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/phEdit4"
@@ -918,7 +918,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
                                     android:text="--"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -936,7 +936,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
                                     android:text="--"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -950,7 +950,7 @@
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -965,7 +965,7 @@
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="1.2"
-                                    android:textSize="14sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -989,7 +989,7 @@
                                     android:scrollHorizontally="true"
                                     android:singleLine="true"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/qr4"
@@ -1023,7 +1023,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.7"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/phEdit5"
@@ -1054,7 +1054,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
                                     android:text="--"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
 
                                 <View
@@ -1072,7 +1072,7 @@
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
                                     android:text="--"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -1086,7 +1086,7 @@
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -1101,7 +1101,7 @@
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="1.2"
-                                    android:textSize="14sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -1125,7 +1125,7 @@
                                     android:scrollHorizontally="true"
                                     android:singleLine="true"
                                     android:text=""
-                                    android:textSize="16sp" />
+                                    android:textSize="@dimen/textsDim" />
 
                                 <TextView
                                     android:id="@+id/qr5"

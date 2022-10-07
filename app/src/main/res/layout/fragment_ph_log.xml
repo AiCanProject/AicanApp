@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".fragments.ph.phLogFragment">
 
     <LinearLayout
@@ -28,6 +29,7 @@
                 android:layout_width="180dp"
                 android:layout_height="130dp"
                 android:backgroundTint="@color/white"
+                app:cardBackgroundColor="@color/white"
                 android:elevation="12dp"
                 app:cardCornerRadius="6dp">
 
