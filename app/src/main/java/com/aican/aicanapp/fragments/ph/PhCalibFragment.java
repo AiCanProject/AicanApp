@@ -109,6 +109,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     TextView qr1, qr2, qr3, qr4, qr5;
     TextView bufferD1, bufferD2, bufferD3, bufferD4, bufferD5, modeText;
 
+    String companyName;
+
     DatabaseReference deviceRef;
     Button calibrateBtn, btnNext, printCalib, phMvTable;
     Spinner spin;
@@ -1356,6 +1358,22 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
 //            }
 //        });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    companyName = snapshot.getValue(String.class);
+                } else {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
+                    companyName = "Company: NA";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
@@ -1813,6 +1831,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);

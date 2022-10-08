@@ -347,7 +347,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
                                 android:layout_marginEnd="0dp"
-                                android:layout_marginBottom="1dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_weight="0.7"
                                 android:text="pH"
                                 android:textSize="@dimen/textDim" />
@@ -364,7 +365,8 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginBottom="1dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="pH after calib"
@@ -381,7 +383,8 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginBottom="1dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="Temp"
@@ -398,7 +401,8 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginBottom="1dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="mV"
@@ -416,8 +420,9 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
-                                android:layout_marginBottom="2dp"
-                                android:layout_weight="1.2"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1.5"
                                 android:text="Date &amp; Time"
                                 android:textSize="@dimen/textDim" />
 
@@ -433,7 +438,8 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
-                                android:layout_marginBottom="2dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_weight="0.8"
                                 android:text="Buffer Details"
                                 android:textSize="@dimen/textDim" />
@@ -546,7 +552,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1.2"
+                                    android:layout_weight="1.5"
                                     android:textSize="@dimen/textsDim" />
 
                                 <View
@@ -681,7 +687,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1.2"
+                                    android:layout_weight="1.5"
                                     android:textSize="@dimen/textsDim" />
 
                                 <View
@@ -818,7 +824,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1.2"
+                                    android:layout_weight="1.5"
                                     android:textSize="@dimen/textsDim" />
 
                                 <View
@@ -964,7 +970,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1.2"
+                                    android:layout_weight="1.5"
                                     android:textSize="@dimen/textsDim" />
 
                                 <View
@@ -1100,7 +1106,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="20dp"
                                     android:layout_marginBottom="1dp"
-                                    android:layout_weight="1.2"
+                                    android:layout_weight="1.5"
                                     android:textSize="@dimen/textsDim" />
 
                                 <View

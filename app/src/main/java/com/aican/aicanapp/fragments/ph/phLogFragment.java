@@ -125,6 +125,7 @@ public class phLogFragment extends Fragment {
 
     int timerInSec;
     Boolean isTimer;
+    String companyName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -194,6 +195,22 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         nullEntry = " ";
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    companyName = snapshot.getValue(String.class);
+                } else {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
+                    companyName = "Company: NA";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
 
         autoLog.setVisibility(View.GONE);
         deviceRef.child("AUTO_LOG").addValueEventListener(new ValueEventListener() {
@@ -856,6 +873,8 @@ public class phLogFragment extends Fragment {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
+            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 //            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 //            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
