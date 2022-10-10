@@ -212,6 +212,10 @@ public class Export extends AppCompatActivity {
         exportCSV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                companyName = companyNameEditText.getText().toString();
+                if (!companyName.isEmpty()) {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
+                }
 
                 exportDatabaseCsv();
 
@@ -316,27 +320,9 @@ public class Export extends AppCompatActivity {
         exportUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final Boolean[] isSuccessful = {false};
-
-                companyName = "";
-                if (companyName.isEmpty()) {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                companyName = String.valueOf(task.getResult().getValue());
-                                isSuccessful[0] = true;
-                                Log.d("TAG", "onComplete: on success " + companyName);
-                                databaseHelper.insert_action_data("", "User data exported", "", "", "", "", PhActivity.DEVICE_ID);
-                            } else {
-                                companyNameEditText.setError("Enter Company Name");
-                            }
-                        }
-                    });
-                } else {
+                 companyName = companyNameEditText.getText().toString();
+                if (!companyName.isEmpty()) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
-                    isSuccessful[0] = true;
                 }
 
 
@@ -779,6 +765,21 @@ public class Export extends AppCompatActivity {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                companyName = snapshot.getValue(String.class);
+                companyNameEditText.setText(companyName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
+
 
 }

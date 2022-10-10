@@ -11,6 +11,7 @@
         android:id="@+id/icon_view"
         android:layout_width="26dp"
         android:layout_height="26dp"
+        android:visibility="gone"
         tools:src="@drawable/ic_baseline_insert_drive_file_24" />
 
     <TextView
@@ -25,8 +26,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/file_name_text_view"
         android:layout_marginTop="2dp"
-        android:background="@color/cardview_shadow_start_color"
-        android:layout_below="@id/file_name_text_view"/>
+        android:background="@color/cardview_shadow_start_color" />
 
 </RelativeLayout>

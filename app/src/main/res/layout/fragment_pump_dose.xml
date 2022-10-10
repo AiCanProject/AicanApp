@@ -202,12 +202,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="65dp"
+                android:layout_marginStart="85dp"
+                android:layout_marginTop="55dp"
                 android:fontFamily="@font/sofia_bold"
                 android:inputType="number"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="26sp"
+                android:textStyle="bold"/>
 
             <ProgressBar
                 android:id="@+id/progress_bar"
@@ -225,13 +226,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginStart="108dp"
-                android:layout_marginTop="75dp"
+                android:layout_marginStart="85dp"
+                android:layout_marginTop="70dp"
                 android:fontFamily="@font/sofia_bold"
-                android:text=""
+                android:textSize="26sp"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                />
 
             <ImageView
                 android:id="@+id/plus"
@@ -290,7 +291,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/sofia_bold"
-                android:text="Timer"
+                android:text="Volume"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -299,12 +300,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="80dp"
-                android:layout_marginTop="65dp"
+                android:layout_marginStart="85dp"
+                android:layout_marginTop="55dp"
                 android:fontFamily="@font/sofia_bold"
                 android:inputType="number"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="26sp"
+                android:textStyle="bold"                />
+
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -323,12 +326,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="108dp"
-                android:layout_marginTop="75dp"
+                android:layout_marginStart="85dp"
+                android:layout_marginTop="70dp"
                 android:fontFamily="@font/sofia_bold"
-                android:text=""
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/pluss"
@@ -366,6 +369,56 @@
                 android:textSize="13sp" />
 
         </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Direction"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="6dp">
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rlStart"
+                    android:layout_centerHorizontal="true"
+                    android:text="Clockwise         "
+                    android:textColor="@color/blueDarkAlpha"
+                    android:theme="@style/Switch" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="6dp">
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Anti Clockwise"
+                    android:textColor="@color/blueDarkAlpha"
+                    android:theme="@style/Switch" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         </LinearLayout>
 
@@ -548,7 +601,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/direcCard"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="160dp"
         android:layout_margin="4dp"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="22dp"
@@ -561,51 +614,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:layout_gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Direction"
-                android:layout_gravity="center"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="6dp">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/rlStart"
-                    android:layout_centerHorizontal="true"
-                    android:text="Clockwise         "
-                    android:textColor="@color/blueDarkAlpha"
-                    android:theme="@style/Switch" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="6dp">
-
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="Anti Clockwise"
-                    android:textColor="@color/blueDarkAlpha"
-                    android:theme="@style/Switch" />
-
-            </LinearLayout>
-
 
             <Button
                 android:id="@+id/startBtn"
