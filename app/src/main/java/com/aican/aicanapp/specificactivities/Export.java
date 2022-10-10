@@ -284,7 +284,7 @@ public class Export extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "PhExport");
+                fAdapter = new FileAdapter(getApplicationContext(), reverseFileArray(filesAndFoldersPDF), "PhExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -298,7 +298,7 @@ public class Export extends AppCompatActivity {
         File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-        fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "PhExport");
+        fAdapter = new FileAdapter(getApplicationContext(), reverseFileArray(filesAndFoldersPDF), "PhExport");
         recyclerView.setAdapter(fAdapter);
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -402,7 +402,7 @@ public class Export extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                uAdapter = new UserDataAdapter(Export.this, filesAndFoldersPDF);
+                uAdapter = new UserDataAdapter(Export.this, reverseFileArray(filesAndFoldersPDF));
                 userRecyclerView.setAdapter(uAdapter);
                 uAdapter.notifyDataSetChanged();
                 userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -430,6 +430,16 @@ public class Export extends AppCompatActivity {
             bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
         }
         return bitmap;
+    }
+
+    File[] reverseFileArray(File[] fileArray){
+        for(int i=0;i<fileArray.length/2;i++){
+            File a = fileArray[i];
+            fileArray[i] = fileArray[fileArray.length-i-1];
+            fileArray[fileArray.length-i-1] = a;
+        }
+
+        return fileArray;
     }
 
     public void exportDatabaseCsv() {
