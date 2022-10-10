@@ -873,7 +873,8 @@ public class phLogFragment extends Fragment {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(companyName);
+            printWriter.println("Username: " + Source.logUserName);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 //            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -942,7 +943,7 @@ public class phLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 10.5);
+            worksheet.getCells().setColumnWidth(0, 12.5);
             worksheet.getCells().setColumnWidth(1, 10.5);
             worksheet.getCells().setColumnWidth(2, 18.5);
 
