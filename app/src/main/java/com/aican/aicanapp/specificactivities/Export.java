@@ -116,6 +116,9 @@ public class Export extends AppCompatActivity {
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
+        String time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
+        databaseHelper.insert_action_data(time, "Exported by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
         nullEntry = " ";
         setFirebaseListeners();
 

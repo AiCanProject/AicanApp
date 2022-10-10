@@ -363,7 +363,7 @@ public class phLogFragment extends Fragment {
                             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                     }
 
@@ -451,11 +451,11 @@ public class phLogFragment extends Fragment {
             public void onClick(View v) {
                 Source.status_export = true;
                 time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
-                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "", PhActivity.DEVICE_ID);
+//                databaseHelper.insert_action_data(time, "Exported by " + Source.logUserName, ph, temp, mv, "", PhActivity.DEVICE_ID);
 
                 SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
                 SharedPreferences.Editor roleE = sh.edit();
-                String roleSuper = Source.userName;
+                String roleSuper = Source.logUserName;
                 roleE.putString("roleSuper", roleSuper);
                 roleE.commit();
 
@@ -493,7 +493,7 @@ public class phLogFragment extends Fragment {
             } else {
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -824,7 +824,7 @@ public class phLogFragment extends Fragment {
             Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);
@@ -873,7 +873,8 @@ public class phLogFragment extends Fragment {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(companyName);
+            printWriter.println("Username: " + Source.logUserName);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 //            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -942,7 +943,7 @@ public class phLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 10.5);
+            worksheet.getCells().setColumnWidth(0, 12.5);
             worksheet.getCells().setColumnWidth(1, 10.5);
             worksheet.getCells().setColumnWidth(2, 18.5);
 

@@ -1627,9 +1627,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         });
 
 
-        test3 = mv2.getText().
-
-                toString();
+        test3 = mv2.getText().toString();
 
         phMvTable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1831,7 +1829,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(companyName);
+            printWriter.println("Username: " + Source.logUserName);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -1995,7 +1995,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public void calibrate() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(date + " " + time, "Calibrated by " + Source.userName, "", "", "", "", PhActivity.DEVICE_ID);
+        databaseHelper.insert_action_data(date + " " + time, "Calibrated by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
