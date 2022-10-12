@@ -1461,6 +1461,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calValues = new int[]{10, 20, 30, 40, 50};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+                        currentBuf = 0;
+                        currentBufThree = 0;
                         setupCoeffListener();
                         setupListeners();
                         loadBuffers();
@@ -1504,6 +1506,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calValues = new int[]{20, 30, 40};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+                        currentBuf = 0;
+                        currentBufThree = 0;
                         setupCoeffListenerThree();
                         setupListeners();
                         loadBuffers();
@@ -1618,11 +1622,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }
                 }
-                if (mode.equals(3)) {
-                    calibrate();
-                } else {
-                    calibrate();
-                }
+                calibrate();
             }
         });
 
@@ -2029,10 +2029,16 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferListThree.add(new BufferData(null, null, currentTime));
 
                         if (spin.getSelectedItemPosition() == 0) {
+
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
+                            Log.e("cValue", currentBuf + "");
+                            int b = currentBuf;
+
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
-                                int b = currentBuf < 0 ? 4 : currentBuf;
+//                                int b = currentBuf < 0 ? 4 : currentBuf;
+                                Log.e("cValue2", currentBuf + "");
+                                Log.e("bValue", b + "");
                                 if (coeff == null) return;
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels[b]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
@@ -2086,14 +2092,17 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 });
                             });
 
-                        } else {
+                        } else if (spin.getSelectedItemPosition() == 1) {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree] + 1);
+                            int a = currentBufThree;
                             Log.e("currentBufThree0", currentBufThree + "");// 2
+
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
                                 Log.e("currentBufThree1", currentBufThree + "");// -1
-                                int a = currentBufThree < 0 ? 2 : currentBufThree;
+//                                int a = currentBufThree < 0 ? 2 : currentBufThree;
                                 if (coeff == null) return;
+
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabelsThree[a]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
                                     Log.e("currentBufThree2", currentBufThree + "");// crash
@@ -2112,6 +2121,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                         phAfterCalib2.setText(String.valueOf(postCoeff));
                                         myEdit.putString("tem2", tvTempCurr.getText().toString());
                                         myEdit.putString("pHAC2", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp2.setText(tvTempCurr.getText());
                                     } else if (a == 2) {
                                         phAfterCalib3.setText(String.valueOf(postCoeff));
