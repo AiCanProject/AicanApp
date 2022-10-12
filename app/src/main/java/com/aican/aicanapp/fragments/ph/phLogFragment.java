@@ -112,7 +112,7 @@ public class phLogFragment extends Fragment {
     Button logBtn, exportBtn, printBtn, clearBtn, submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
-    EditText compound_name_txt, batch_number, ar_number;
+    EditText compound_name_txt, batch_number, ar_number,enterTime;
     String TABLE_NAME = "LogUserdetails";
     RecyclerView recyclerView;
     Handler handler;
@@ -121,6 +121,9 @@ public class phLogFragment extends Fragment {
     CardView autoLog;
     TextView autoLogWarn;
     Boolean isAlertShow = true;
+    CardView timer_cloud_layout;
+    ImageButton saveTimer;
+
 
 
     int timerInSec;
@@ -175,11 +178,12 @@ public class phLogFragment extends Fragment {
         switchBtnClick = view.findViewById(R.id.switchBtnClick);
         clearBtn = view.findViewById(R.id.clear);
         submitBtn = view.findViewById(R.id.submit);
-
+        enterTime = view.findViewById(R.id.EnterTime);
+        timer_cloud_layout = view.findViewById(R.id.timer_cloud_layout);
         recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        saveTimer = view.findViewById(R.id.sumbit_timer);
         RecyclerView csvRecyclerView = view.findViewById(R.id.recyclerViewCSVLog);
         csvRecyclerView.setHasFixedSize(true);
         csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -620,9 +624,12 @@ public class phLogFragment extends Fragment {
                     switchHold.setChecked(false);
                     deviceRef.child("Data").child("AUTOLOG").setValue(2);
 
-                    if (Constants.timeInSec == 0)
-                        openTimerDialog();
+                    if (Constants.timeInSec == 0) {
+                        timer_cloud_layout.setVisibility(View.VISIBLE);
+
+                    }
                     else {
+                        enterTime.setText(""+ Constants.timeInSec);
                         if (handler != null)
                             handler.removeCallbacks(runnable);
                         handler();
@@ -634,6 +641,22 @@ public class phLogFragment extends Fragment {
                     isAlertShow = true;
                     if (handler != null)
                         handler.removeCallbacks(runnable);
+                    timer_cloud_layout.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
+        saveTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!enterTime.getText().toString().isEmpty()) {
+                    double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
+                    Double db = new Double(d);
+                    Constants.timeInSec = db.intValue();
+                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
+                    handler();
                 }
             }
         });
