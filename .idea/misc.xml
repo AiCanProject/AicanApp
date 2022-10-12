@@ -133,7 +133,7 @@
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.18" />
         <entry key="app/src/main/res/drawable/round_button.xml" value="0.18" />
         <entry key="app/src/main/res/drawable/set_btn_layout.xml" value="0.18" />
-        <entry key="app/src/main/res/layout-sw600dp/fragment_ph_log.xml" value="0.16" />
+        <entry key="app/src/main/res/layout-sw600dp/fragment_ph_log.xml" value="0.18" />
         <entry key="app/src/main/res/layout-sw600dp/fragment_ph_main.xml" value="0.5" />
         <entry key="app/src/main/res/layout-sw600dp/item_log_ec.xml" value="0.1" />
         <entry key="app/src/main/res/layout-sw600dp/set_timer_dialog_layout.xml" value="0.2" />
