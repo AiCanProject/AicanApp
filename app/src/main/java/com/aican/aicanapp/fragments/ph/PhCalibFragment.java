@@ -1106,8 +1106,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
-                        currentBuf = -1;
-                        currentBufThree = -1;
+//                        currentBuf = -1;
+//                        currentBufThree = -1;
 
 
                         Handler handler = new Handler();
@@ -1179,8 +1179,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
-                        currentBuf = -1;
-                        currentBufThree = -1;
+//                        currentBuf = -1;
+//                        currentBufThree = -1;
 
 
                         Handler handler = new Handler();
@@ -1366,7 +1366,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     companyName = snapshot.getValue(String.class);
                 } else {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
-                    companyName = "Company: NA";
+                    companyName = "NA";
                 }
             }
 
@@ -1461,6 +1461,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calValues = new int[]{10, 20, 30, 40, 50};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+                        currentBuf = 0;
+                        currentBufThree = 0;
                         setupCoeffListener();
                         setupListeners();
                         loadBuffers();
@@ -1504,6 +1506,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         calValues = new int[]{20, 30, 40};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+                        currentBuf = 0;
+                        currentBufThree = 0;
                         setupCoeffListenerThree();
                         setupListeners();
                         loadBuffers();
@@ -1569,7 +1573,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             DialogMain dialogMain = new DialogMain();
             dialogMain.setCancelable(false);
-            Source.userTrack = "PhCalibFragment logged in by ";
+            Source.userTrack = "PhCalibPage logged : ";
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
@@ -1618,11 +1622,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }
                 }
-                if (mode.equals(3)) {
-                    calibrate();
-                } else {
-                    calibrate();
-                }
+                calibrate();
             }
         });
 
@@ -1702,7 +1702,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), filesAndFoldersPDF);
+                calibFileAdapter = new CalibFileAdapter(requireContext().getApplicationContext(), reverseFileArray(filesAndFoldersPDF));
                 calibRecyclerView.setAdapter(calibFileAdapter);
                 calibFileAdapter.notifyDataSetChanged();
                 calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
@@ -1830,7 +1830,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 //            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(companyName);
+            printWriter.println("Company: F" + companyName);
             printWriter.println("Username: " + Source.logUserName);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
@@ -1995,7 +1995,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public void calibrate() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(date + " " + time, "Calibrated by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+        databaseHelper.insert_action_data(date + " " + time, "Calibrated : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
@@ -2029,10 +2029,16 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferListThree.add(new BufferData(null, null, currentTime));
 
                         if (spin.getSelectedItemPosition() == 0) {
+
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf] + 1);
+                            Log.e("cValue", currentBuf + "");
+                            int b = currentBuf;
+
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabels[currentBuf]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
-                                int b = currentBuf < 0 ? 4 : currentBuf;
+//                                int b = currentBuf < 0 ? 4 : currentBuf;
+                                Log.e("cValue2", currentBuf + "");
+                                Log.e("bValue", b + "");
                                 if (coeff == null) return;
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels[b]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
@@ -2086,14 +2092,17 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 });
                             });
 
-                        } else {
+                        } else if (spin.getSelectedItemPosition() == 1) {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree] + 1);
+                            int a = currentBufThree;
                             Log.e("currentBufThree0", currentBufThree + "");// 2
+
                             deviceRef.child("UI").child("PH").child("PH_CAL").child(coeffLabelsThree[currentBufThree]).get().addOnSuccessListener(dataSnapshot -> {
                                 Float coeff = dataSnapshot.getValue(Float.class);
                                 Log.e("currentBufThree1", currentBufThree + "");// -1
-                                int a = currentBufThree < 0 ? 2 : currentBufThree;
+//                                int a = currentBufThree < 0 ? 2 : currentBufThree;
                                 if (coeff == null) return;
+
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabelsThree[a]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
                                     Log.e("currentBufThree2", currentBufThree + "");// crash
@@ -2112,6 +2121,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                         phAfterCalib2.setText(String.valueOf(postCoeff));
                                         myEdit.putString("tem2", tvTempCurr.getText().toString());
                                         myEdit.putString("pHAC2", String.valueOf(postCoeff));
+                                        myEdit.commit();
+
                                         temp2.setText(tvTempCurr.getText());
                                     } else if (a == 2) {
                                         phAfterCalib3.setText(String.valueOf(postCoeff));
@@ -2240,4 +2251,15 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         super.onResume();
     }
+
+    File[] reverseFileArray(File[] fileArray) {
+        for (int i = 0; i < fileArray.length / 2; i++) {
+            File a = fileArray[i];
+            fileArray[i] = fileArray[fileArray.length - i - 1];
+            fileArray[fileArray.length - i - 1] = a;
+        }
+
+        return fileArray.length > 0 ? fileArray : null;
+    }
+
 }
