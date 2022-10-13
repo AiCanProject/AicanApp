@@ -148,8 +148,8 @@ public class phLogFragment extends Fragment {
     @Override
     public void onStop() {
 
-        deviceRef.child("Data").child("AUTOLOG").setValue(0);
-        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
+//        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+//        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
         super.onStop();
 
 
@@ -623,13 +623,14 @@ public class phLogFragment extends Fragment {
                     switchBtnClick.setChecked(false);
                     switchHold.setChecked(false);
                     deviceRef.child("Data").child("AUTOLOG").setValue(2);
+                    timer_cloud_layout.setVisibility(View.VISIBLE);
 
                     if (Constants.timeInSec == 0) {
-                        timer_cloud_layout.setVisibility(View.VISIBLE);
 
                     }
                     else {
-                        enterTime.setText(""+ Constants.timeInSec);
+                        float f = (float)Constants.timeInSec/60000;
+                        enterTime.setText(""+(f));
                         if (handler != null)
                             handler.removeCallbacks(runnable);
                         handler();
@@ -680,8 +681,8 @@ public class phLogFragment extends Fragment {
             deviceRef.child("Data").child("LOG_INTERVAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Constants.timeInSec = snapshot.getValue(Integer.class);
                     if (snapshot.getValue(Integer.class) != null) {
-                        Constants.timeInSec = snapshot.getValue(Integer.class);
                         if (switchInterval.isChecked() && !isAlertShow) {
                             Log.d("Timer", "onDataChange: " + Constants.timeInSec);
                         }
