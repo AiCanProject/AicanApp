@@ -124,7 +124,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         if (Source.subscription.equals("cfr")) {
             DialogMain dialogMain = new DialogMain();
             dialogMain.setCancelable(false);
-            Source.userTrack = "PhFragment logged in by ";
+            Source.userTrack = "PhFrag logged : ";
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
 

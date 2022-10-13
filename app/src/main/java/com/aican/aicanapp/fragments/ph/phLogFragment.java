@@ -112,7 +112,7 @@ public class phLogFragment extends Fragment {
     Button logBtn, exportBtn, printBtn, clearBtn, submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
-    EditText compound_name_txt, batch_number, ar_number,enterTime;
+    EditText compound_name_txt, batch_number, ar_number, enterTime;
     String TABLE_NAME = "LogUserdetails";
     RecyclerView recyclerView;
     Handler handler;
@@ -123,7 +123,6 @@ public class phLogFragment extends Fragment {
     Boolean isAlertShow = true;
     CardView timer_cloud_layout;
     ImageButton saveTimer;
-
 
 
     int timerInSec;
@@ -207,7 +206,7 @@ public class phLogFragment extends Fragment {
                     companyName = snapshot.getValue(String.class);
                 } else {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
-                    companyName = "Company: NA";
+                    companyName = "NA";
                 }
             }
 
@@ -270,7 +269,7 @@ public class phLogFragment extends Fragment {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack = "PhLogFragment logged in by ";
+        Source.userTrack = "PhLogFrag logged : ";
         if (Source.subscription.equals("cfr")) {
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
@@ -367,7 +366,7 @@ public class phLogFragment extends Fragment {
                             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                     }
 
@@ -396,7 +395,7 @@ public class phLogFragment extends Fragment {
                         } else {
                             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                         adapter = new LogAdapter(getContext(), getList());
                         recyclerView.setAdapter(adapter);
@@ -497,7 +496,7 @@ public class phLogFragment extends Fragment {
             } else {
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -583,7 +582,7 @@ public class phLogFragment extends Fragment {
 
                 }
 
-                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
+                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), reverseFileArray(filesAndFoldersPDF));
                 csvRecyclerView.setAdapter(plAdapter);
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
@@ -627,9 +626,8 @@ public class phLogFragment extends Fragment {
                     if (Constants.timeInSec == 0) {
                         timer_cloud_layout.setVisibility(View.VISIBLE);
 
-                    }
-                    else {
-                        enterTime.setText(""+ Constants.timeInSec);
+                    } else {
+                        enterTime.setText("" + Constants.timeInSec);
                         if (handler != null)
                             handler.removeCallbacks(runnable);
                         handler();
@@ -847,7 +845,7 @@ public class phLogFragment extends Fragment {
             Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);
@@ -896,7 +894,7 @@ public class phLogFragment extends Fragment {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-            printWriter.println(companyName);
+            printWriter.println("Company: " + companyName);
             printWriter.println("Username: " + Source.logUserName);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
@@ -1193,5 +1191,15 @@ public class phLogFragment extends Fragment {
                 }
             }
         }
+    }
+
+    File[] reverseFileArray(File[] fileArray) {
+        for (int i = 0; i < fileArray.length / 2; i++) {
+            File a = fileArray[i];
+            fileArray[i] = fileArray[fileArray.length - i - 1];
+            fileArray[fileArray.length - i - 1] = a;
+        }
+
+        return fileArray.length > 0 ? fileArray : null;
     }
 }

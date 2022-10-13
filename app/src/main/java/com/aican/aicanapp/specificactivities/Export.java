@@ -117,7 +117,7 @@ public class Export extends AppCompatActivity {
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         String time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(time, "Exported by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+        databaseHelper.insert_action_data(time, "Exported : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
         nullEntry = " ";
         setFirebaseListeners();
@@ -298,7 +298,7 @@ public class Export extends AppCompatActivity {
         File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-        fAdapter = new FileAdapter(getApplicationContext(), reverseFileArray(filesAndFoldersPDF), "PhExport");
+        fAdapter = new FileAdapter(getApplicationContext(), reverseFileArray(filesAndFoldersPDF != null ? filesAndFoldersPDF : new File[0]), "PhExport");
         recyclerView.setAdapter(fAdapter);
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -323,7 +323,7 @@ public class Export extends AppCompatActivity {
         exportUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 companyName = companyNameEditText.getText().toString();
+                companyName = companyNameEditText.getText().toString();
                 if (!companyName.isEmpty()) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
                 }
@@ -432,19 +432,19 @@ public class Export extends AppCompatActivity {
         return bitmap;
     }
 
-    File[] reverseFileArray(File[] fileArray){
-        for(int i=0;i<fileArray.length/2;i++){
+    File[] reverseFileArray(File[] fileArray) {
+        for (int i = 0; i < fileArray.length / 2; i++) {
             File a = fileArray[i];
-            fileArray[i] = fileArray[fileArray.length-i-1];
-            fileArray[fileArray.length-i-1] = a;
+            fileArray[i] = fileArray[fileArray.length - i - 1];
+            fileArray[fileArray.length - i - 1] = a;
         }
 
-        return fileArray;
+        return fileArray.length > 0 ? fileArray : null;
     }
 
     public void exportDatabaseCsv() {
 
-        companyName = "Company: " + companyNameEditText.getText().toString();
+        companyName = "" + companyNameEditText.getText().toString();
         reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
@@ -687,7 +687,7 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Company: " + "," + companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
