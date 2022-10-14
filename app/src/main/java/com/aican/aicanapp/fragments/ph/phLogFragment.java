@@ -655,7 +655,9 @@ public class phLogFragment extends Fragment {
                     double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
                     Double db = new Double(d);
                     Constants.timeInSec = db.intValue();
-                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
+                    double a = (double)Constants.timeInSec/60000;
+                    Log.d("TimerVal",""+a);
+                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
                     handler();
                 }
             }
@@ -680,8 +682,9 @@ public class phLogFragment extends Fragment {
             deviceRef.child("Data").child("LOG_INTERVAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Constants.timeInSec = snapshot.getValue(Integer.class);
-                    if (snapshot.getValue(Integer.class) != null) {
+                    double a =  snapshot.getValue(Double.class)*60000;
+                    Constants.timeInSec = (int) a;
+                    if (snapshot.getValue(Double.class) != null) {
                         if (switchInterval.isChecked() && !isAlertShow) {
                             Log.d("Timer", "onDataChange: " + Constants.timeInSec);
                         }

@@ -169,7 +169,7 @@
         <entry key="app/src/main/res/layout/fragment_ph_log.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_ph_main.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_pump_dose.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_pump_job.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/fragment_pump_job.xml" value="0.6197916666666666" />
         <entry key="app/src/main/res/layout/fragment_temp_alarm.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_temp_set.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_log.xml" value="0.1" />
