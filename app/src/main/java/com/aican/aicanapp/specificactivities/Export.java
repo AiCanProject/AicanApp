@@ -566,7 +566,7 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + companyName);
+            printWriter.println("Company: "+companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
             printWriter.println(roleExport);

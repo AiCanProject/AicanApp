@@ -1830,7 +1830,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 //            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Company: F" + companyName);
+            printWriter.println("Company: " + companyName);
             printWriter.println("Username: " + Source.logUserName);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
