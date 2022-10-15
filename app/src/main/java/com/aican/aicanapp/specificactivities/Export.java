@@ -477,7 +477,9 @@ public class Export extends AppCompatActivity {
 
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Made By: " + shp2.getString("roleSuper", "");
+//            roleExport = "Made By: " + shp2.getString("roleSuper", "");
+            roleExport = "Made By: " +Source.logUserName;
+
 
             Log.d("debzdate", startDateString + "," + endDateString);
 
@@ -681,9 +683,16 @@ public class Export extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+//            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+            roleExport = "Supervisor: " + Source.logUserName;
 
             Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
+
+             if (startDateString != null) {
+
+                 userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+
+            }
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
