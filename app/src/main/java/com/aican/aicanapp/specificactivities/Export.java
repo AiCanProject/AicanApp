@@ -116,6 +116,9 @@ public class Export extends AppCompatActivity {
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
+        String time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
+        databaseHelper.insert_action_data(time, "Exported : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
         nullEntry = " ";
         setFirebaseListeners();
 
@@ -212,6 +215,10 @@ public class Export extends AppCompatActivity {
         exportCSV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                companyName = companyNameEditText.getText().toString();
+                if (!companyName.isEmpty()) {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
+                }
 
                 exportDatabaseCsv();
 
@@ -277,7 +284,7 @@ public class Export extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "PhExport");
+                fAdapter = new FileAdapter(getApplicationContext(), reverseFileArray(filesAndFoldersPDF), "PhExport");
                 recyclerView.setAdapter(fAdapter);
                 fAdapter.notifyDataSetChanged();
                 recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -291,7 +298,7 @@ public class Export extends AppCompatActivity {
         File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-        fAdapter = new FileAdapter(getApplicationContext(), filesAndFoldersPDF, "PhExport");
+        fAdapter = new FileAdapter(getApplicationContext(), reverseFileArray(filesAndFoldersPDF != null ? filesAndFoldersPDF : new File[0]), "PhExport");
         recyclerView.setAdapter(fAdapter);
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -316,27 +323,9 @@ public class Export extends AppCompatActivity {
         exportUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final Boolean[] isSuccessful = {false};
-
-                companyName = "";
-                if (companyName.isEmpty()) {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                companyName = String.valueOf(task.getResult().getValue());
-                                isSuccessful[0] = true;
-                                Log.d("TAG", "onComplete: on success " + companyName);
-                                databaseHelper.insert_action_data("", "User data exported", "", "", "", "", PhActivity.DEVICE_ID);
-                            } else {
-                                companyNameEditText.setError("Enter Company Name");
-                            }
-                        }
-                    });
-                } else {
+                companyName = companyNameEditText.getText().toString();
+                if (!companyName.isEmpty()) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
-                    isSuccessful[0] = true;
                 }
 
 
@@ -413,7 +402,7 @@ public class Export extends AppCompatActivity {
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
 
 
-                uAdapter = new UserDataAdapter(Export.this, filesAndFoldersPDF);
+                uAdapter = new UserDataAdapter(Export.this, reverseFileArray(filesAndFoldersPDF));
                 userRecyclerView.setAdapter(uAdapter);
                 uAdapter.notifyDataSetChanged();
                 userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -443,9 +432,19 @@ public class Export extends AppCompatActivity {
         return bitmap;
     }
 
+    File[] reverseFileArray(File[] fileArray) {
+        for (int i = 0; i < fileArray.length / 2; i++) {
+            File a = fileArray[i];
+            fileArray[i] = fileArray[fileArray.length - i - 1];
+            fileArray[fileArray.length - i - 1] = a;
+        }
+
+        return fileArray.length > 0 ? fileArray : null;
+    }
+
     public void exportDatabaseCsv() {
 
-        companyName = "Company: " + companyNameEditText.getText().toString();
+        companyName = "" + companyNameEditText.getText().toString();
         reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
@@ -478,7 +477,9 @@ public class Export extends AppCompatActivity {
 
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Made By: " + shp2.getString("roleSuper", "");
+//            roleExport = "Made By: " + shp2.getString("roleSuper", "");
+            roleExport = "Made By: " +Source.logUserName;
+
 
             Log.d("debzdate", startDateString + "," + endDateString);
 
@@ -567,7 +568,7 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + companyName);
+            printWriter.println("Company: "+companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
             printWriter.println(roleExport);
@@ -682,13 +683,20 @@ public class Export extends AppCompatActivity {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
-            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+//            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+            roleExport = "Supervisor: " + Source.logUserName;
 
             Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
 
+             if (startDateString != null) {
+
+                 userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+
+            }
+
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Company: " + "," + companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -779,6 +787,21 @@ public class Export extends AppCompatActivity {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                companyName = snapshot.getValue(String.class);
+                companyNameEditText.setText(companyName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
+
 
 }

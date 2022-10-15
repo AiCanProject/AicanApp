@@ -70,9 +70,9 @@ public class DialogMain extends AppCompatDialogFragment {
                 Date present = getParsedDate(presentDate);
                 for (int i = 0; i < Source.id_fetched.size(); i++) {
                     if (Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))) {
+                        Source.logUserName = Source.name_fetched.get(i);
                         if (present.compareTo(getParsedDate(Source.expiryDate_fetched.get(i))) < 0) {
                             Log.d("expiryDate", "Present date :" + presentDate + " Expiry Date: " + Source.expiryDate_fetched.get(i));
-
                             String date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                             databaseHelper.insert_action_data(date1 + " " + time, Source.userTrack + Source.name_fetched.get(i), "", "", "", "", PhActivity.DEVICE_ID);
@@ -84,6 +84,7 @@ public class DialogMain extends AppCompatDialogFragment {
                             myShared.commit();
 
                             if (Source.status_export && Source.role_fetched.get(i).equals("Supervisor")) {
+
                                 Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                                 Source.status_export = false;
                                 Intent intent = new Intent(getContext(), Export.class);

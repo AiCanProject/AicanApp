@@ -112,7 +112,7 @@ public class phLogFragment extends Fragment {
     Button logBtn, exportBtn, printBtn, clearBtn, submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
     PrintLogAdapter plAdapter;
-    EditText compound_name_txt, batch_number, ar_number;
+    EditText compound_name_txt, batch_number, ar_number, enterTime;
     String TABLE_NAME = "LogUserdetails";
     RecyclerView recyclerView;
     Handler handler;
@@ -121,10 +121,13 @@ public class phLogFragment extends Fragment {
     CardView autoLog;
     TextView autoLogWarn;
     Boolean isAlertShow = true;
+    CardView timer_cloud_layout;
+    ImageButton saveTimer;
 
 
     int timerInSec;
     Boolean isTimer;
+    String companyName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -144,8 +147,8 @@ public class phLogFragment extends Fragment {
     @Override
     public void onStop() {
 
-        deviceRef.child("Data").child("AUTOLOG").setValue(0);
-        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
+//        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+//        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
         super.onStop();
 
 
@@ -174,11 +177,12 @@ public class phLogFragment extends Fragment {
         switchBtnClick = view.findViewById(R.id.switchBtnClick);
         clearBtn = view.findViewById(R.id.clear);
         submitBtn = view.findViewById(R.id.submit);
-
+        enterTime = view.findViewById(R.id.EnterTime);
+        timer_cloud_layout = view.findViewById(R.id.timer_cloud_layout);
         recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        saveTimer = view.findViewById(R.id.sumbit_timer);
         RecyclerView csvRecyclerView = view.findViewById(R.id.recyclerViewCSVLog);
         csvRecyclerView.setHasFixedSize(true);
         csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -194,6 +198,22 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         nullEntry = " ";
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    companyName = snapshot.getValue(String.class);
+                } else {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
+                    companyName = "NA";
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
 
         autoLog.setVisibility(View.GONE);
         deviceRef.child("AUTO_LOG").addValueEventListener(new ValueEventListener() {
@@ -249,7 +269,7 @@ public class phLogFragment extends Fragment {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack = "PhLogFragment logged in by ";
+        Source.userTrack = "PhLogFrag logged : ";
         if (Source.subscription.equals("cfr")) {
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
@@ -346,7 +366,7 @@ public class phLogFragment extends Fragment {
                             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                     }
 
@@ -375,7 +395,7 @@ public class phLogFragment extends Fragment {
                         } else {
                             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                         adapter = new LogAdapter(getContext(), getList());
                         recyclerView.setAdapter(adapter);
@@ -434,11 +454,11 @@ public class phLogFragment extends Fragment {
             public void onClick(View v) {
                 Source.status_export = true;
                 time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
-                databaseHelper.insert_action_data(time, "Exported by " + Source.userName, ph, temp, mv, "", PhActivity.DEVICE_ID);
+//                databaseHelper.insert_action_data(time, "Exported by " + Source.logUserName, ph, temp, mv, "", PhActivity.DEVICE_ID);
 
                 SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
                 SharedPreferences.Editor roleE = sh.edit();
-                String roleSuper = Source.userName;
+                String roleSuper = Source.logUserName;
                 roleE.putString("roleSuper", roleSuper);
                 roleE.commit();
 
@@ -476,7 +496,7 @@ public class phLogFragment extends Fragment {
             } else {
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -562,7 +582,7 @@ public class phLogFragment extends Fragment {
 
                 }
 
-                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), filesAndFoldersPDF);
+                plAdapter = new PrintLogAdapter(getContext().getApplicationContext(), reverseFileArray(filesAndFoldersPDF));
                 csvRecyclerView.setAdapter(plAdapter);
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
@@ -602,10 +622,14 @@ public class phLogFragment extends Fragment {
                     switchBtnClick.setChecked(false);
                     switchHold.setChecked(false);
                     deviceRef.child("Data").child("AUTOLOG").setValue(2);
+                    timer_cloud_layout.setVisibility(View.VISIBLE);
 
-                    if (Constants.timeInSec == 0)
-                        openTimerDialog();
+                    if (Constants.timeInSec == 0) {
+
+                    }
                     else {
+                        float f = (float)Constants.timeInSec/60000;
+                        enterTime.setText(""+(f));
                         if (handler != null)
                             handler.removeCallbacks(runnable);
                         handler();
@@ -617,6 +641,24 @@ public class phLogFragment extends Fragment {
                     isAlertShow = true;
                     if (handler != null)
                         handler.removeCallbacks(runnable);
+                    timer_cloud_layout.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
+        saveTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!enterTime.getText().toString().isEmpty()) {
+                    double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
+                    Double db = new Double(d);
+                    Constants.timeInSec = db.intValue();
+                    double a = (double)Constants.timeInSec/60000;
+                    Log.d("TimerVal",""+a);
+                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
+                    handler();
                 }
             }
         });
@@ -640,8 +682,9 @@ public class phLogFragment extends Fragment {
             deviceRef.child("Data").child("LOG_INTERVAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.getValue(Integer.class) != null) {
-                        Constants.timeInSec = snapshot.getValue(Integer.class);
+                    double a =  snapshot.getValue(Double.class)*60000;
+                    Constants.timeInSec = (int) a;
+                    if (snapshot.getValue(Double.class) != null) {
                         if (switchInterval.isChecked() && !isAlertShow) {
                             Log.d("Timer", "onDataChange: " + Constants.timeInSec);
                         }
@@ -807,7 +850,7 @@ public class phLogFragment extends Fragment {
             Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-            databaseHelper.insert_action_data(date + " " + time, "Log button pressed by " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);
@@ -856,6 +899,9 @@ public class phLogFragment extends Fragment {
 
             Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
             Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
+            printWriter.println("Company: " + companyName);
+            printWriter.println("Username: " + Source.logUserName);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 //            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 //            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -923,7 +969,7 @@ public class phLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 10.5);
+            worksheet.getCells().setColumnWidth(0, 12.5);
             worksheet.getCells().setColumnWidth(1, 10.5);
             worksheet.getCells().setColumnWidth(2, 18.5);
 
@@ -1150,5 +1196,15 @@ public class phLogFragment extends Fragment {
                 }
             }
         }
+    }
+
+    File[] reverseFileArray(File[] fileArray) {
+        for (int i = 0; i < fileArray.length / 2; i++) {
+            File a = fileArray[i];
+            fileArray[i] = fileArray[fileArray.length - i - 1];
+            fileArray[fileArray.length - i - 1] = a;
+        }
+
+        return fileArray.length > 0 ? fileArray : null;
     }
 }

@@ -332,10 +332,11 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
+                android:layout_width="960dp"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
                 <LinearLayout
@@ -407,7 +408,19 @@
                         android:text="Volume"
                         android:textSize="22sp" />
 
+                    <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:visibility="invisible"
+                        android:src="@drawable/ic_delete"></ImageButton>
+
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center"
+                    android:background="#DFE6ED" />
 
                 <LinearLayout
                     android:id="@+id/log3point"
@@ -483,8 +496,20 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:textSize="16sp" />
+                        <ImageView
+                            android:id="@+id/clearBtn1"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_delete_black_48"></ImageView>
 
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:background="#DFE6ED" />
 
                     <LinearLayout
                         android:id="@+id/log2"
@@ -554,7 +579,20 @@
                             android:gravity="center"
                             android:textSize="16sp" />
 
+                        <ImageView
+                            android:id="@+id/clearBtn2"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_delete_black_48"></ImageView>
+
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:background="#DFE6ED" />
 
                     <LinearLayout
                         android:id="@+id/log3"
@@ -624,7 +662,20 @@
                             android:gravity="center"
                             android:textSize="16sp" />
 
+                        <ImageView
+                            android:id="@+id/clearBtn3"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_delete_black_48"></ImageView>
+
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:background="#DFE6ED" />
 
                     <LinearLayout
                         android:id="@+id/log4"
@@ -694,7 +745,20 @@
                             android:gravity="center"
                             android:textSize="16sp" />
 
+                        <ImageView
+                            android:id="@+id/clearBtn4"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_delete_black_48"></ImageView>
+
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:background="#DFE6ED" />
 
                     <LinearLayout
                         android:id="@+id/log5"
@@ -763,12 +827,19 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:textSize="16sp" />
+                        <ImageView
+                            android:id="@+id/clearBtn5"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:backgroundTint="@color/white"
+                            android:src="@drawable/baseline_delete_black_48"></ImageView>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

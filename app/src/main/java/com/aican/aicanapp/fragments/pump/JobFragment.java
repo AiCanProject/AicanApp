@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class JobFragment extends Fragment {
     private int direction = 0;
     SwitchCompat clockwiseSwitch,antiClockwiseSwitch;
     int speedVol = 0;
+    ImageView clearBtn1,clearBtn2, clearBtn3, clearBtn4, clearBtn5;
     
     public JobFragment() {
     }
@@ -112,6 +114,11 @@ public class JobFragment extends Fragment {
 
         startBtnTimer = view.findViewById(R.id.startBtnTimer);
         stopBtnTimer = view.findViewById(R.id.stopBtnTimer);
+        clearBtn1 = view.findViewById(R.id.clearBtn1);
+        clearBtn2 = view.findViewById(R.id.clearBtn2);
+        clearBtn3 = view.findViewById(R.id.clearBtn3);
+        clearBtn4 = view.findViewById(R.id.clearBtn4);
+        clearBtn5 = view.findViewById(R.id.clearBtn5);
 
 //        Current date time and mtnth
         Calendar c= Calendar.getInstance();

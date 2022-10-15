@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -45,7 +47,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     private static final String TAG = "PhFragment";
     PhView phView;
     TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, probeData;
-
+    EditText atcValue;
+    Button setATC;
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
     SwitchCompat switchAtc;
@@ -75,7 +78,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tvTempCurr = view.findViewById(R.id.tvTempCurr);
         tvTempNext = view.findViewById(R.id.tvTempNext);
 
-       switchAtc = view.findViewById(R.id.switchAtc);
+        switchAtc = view.findViewById(R.id.switchAtc);
 //        Spinner probesVal = view.findViewById(R.id.probesVal);
 
         offsetCurr = view.findViewById(R.id.offsetVal);
@@ -86,7 +89,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
         probeData = view.findViewById(R.id.probesData);
+        atcValue = view.findViewById(R.id.atcValue);
+        setATC = view.findViewById(R.id.setATC);
         entriesOriginal = new ArrayList<>();
+
 
         databaseHelper = new DatabaseHelper(requireContext());
 
@@ -118,11 +124,32 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         if (Source.subscription.equals("cfr")) {
             DialogMain dialogMain = new DialogMain();
             dialogMain.setCancelable(false);
-            Source.userTrack = "PhFragment logged in by ";
+            Source.userTrack = "PhFrag logged : ";
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+        deviceRef.child("Data").child("ATC_AT").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Float te = snapshot.getValue(Float.class);
+                if (te == null) return;
+                String teForm = String.format(Locale.UK, "%.2f", te);
+                atcValue.setText(teForm);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        setATC.setOnClickListener(v -> {
+            Float va = Float.parseFloat(atcValue.getText().toString());
+            deviceRef.child("Data").child("ATC_AT").setValue(va);
+        });
+
+
         setupListeners();
     }
 
@@ -184,10 +211,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String tempForm = String.format(Locale.UK, "%.1f", temp);
                 tvTempCurr.setText(tempForm + "°C");
 
-                if(Integer.parseInt(tempp)<=-127){
+                if (Integer.parseInt(tempp) <= -127) {
                     tvTempCurr.setText("NA");
                     switchAtc.setEnabled(false);
-                }else{
+                } else {
                     switchAtc.setEnabled(true);
                 }
 
@@ -281,17 +308,17 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         SharedPreferences sha = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
         int toggleVal = sha.getInt("toggleValue", 0);
-        if(toggleVal == 1){
+        if (toggleVal == 1) {
             switchAtc.setChecked(true);
-        } else if(toggleVal == 0){
+        } else if (toggleVal == 0) {
             switchAtc.setChecked(false);
         }
 
         switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
 
-            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1  : 0);
+            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1 : 0);
 
-            if(switchAtc.isChecked()){
+            if (switchAtc.isChecked()) {
 
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editT = togglePref.edit();
@@ -307,7 +334,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
             }
         });
-
 
 
     }

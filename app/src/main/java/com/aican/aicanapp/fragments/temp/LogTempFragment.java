@@ -233,7 +233,7 @@ public class LogTempFragment extends Fragment {
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
-        Source.userTrack = "PhLogFragment logged in by ";
+        Source.userTrack = "PhLogFrag logged : ";
         if (Source.subscription.equals("cfr")) {
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }

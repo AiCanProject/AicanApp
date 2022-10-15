@@ -44,7 +44,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 
         File selectedFile = files[position];
         holder.textView.setText(selectedFile.getName());
-        holder.imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
+//        holder.imageView.setImageResource(R.drawable.ic_baseline_insert_drive_file_24);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,12 +159,12 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
-        ImageView imageView;
+//        ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.file_name_text_view);
-            imageView = itemView.findViewById(R.id.icon_view);
+//            imageView = itemView.findViewById(R.id.icon_view);
         }
     }
 }

@@ -109,7 +109,8 @@ public class AlarmTempFragment extends Fragment {
         deviceRef.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                String tempString = snapshot.getValue(String.class);
+                Double d = snapshot.getValue(Double.class);
+                String tempString = String.valueOf(d);
                 Log.d("AlarmFragment","AlarmFragment: onDataChange  "+tempString);
                 Float temp = Float.parseFloat(tempString);
                 AlarmConstants.temperature = temp;
