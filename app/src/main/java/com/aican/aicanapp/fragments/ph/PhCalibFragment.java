@@ -1106,7 +1106,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
-//                        currentBuf = -1;
+                        currentBuf = -1;
 //                        currentBufThree = -1;
 
 
@@ -1179,7 +1179,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
-//                        currentBuf = -1;
+                        currentBuf = -1;
 //                        currentBufThree = -1;
 
 
@@ -1459,6 +1459,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
                         postCoeffLabels = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
                         calValues = new int[]{10, 20, 30, 40, 50};
+                        calValuesThree = new int[]{20, 30, 40};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
                         currentBuf = 0;
@@ -1503,7 +1504,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferLabels = new String[]{"B_2", "B_3", "B_4"};
                         coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
                         postCoeffLabels = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
-                        calValues = new int[]{20, 30, 40};
+                        calValuesThree = new int[]{20, 30, 40};
+                        calValues = new int[]{10, 20, 30, 40, 50};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
                         currentBuf = 0;
@@ -2005,7 +2007,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         } else {
             setupCoeffListenerThree();
         }
-        CountDownTimer timer = new CountDownTimer(45000, 1000) {
+        CountDownTimer timer = new CountDownTimer(2000, 1000) { //45000
             @Override
             public void onTick(long millisUntilFinished) {
                 millisUntilFinished /= 1000;
