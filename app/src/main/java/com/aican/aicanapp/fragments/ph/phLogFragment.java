@@ -182,7 +182,7 @@ public class phLogFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewLog);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        saveTimer = view.findViewById(R.id.sumbit_timer);
+        saveTimer = (ImageButton) view.findViewById(R.id.sumbit_timer);
         RecyclerView csvRecyclerView = view.findViewById(R.id.recyclerViewCSVLog);
         csvRecyclerView.setHasFixedSize(true);
         csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
