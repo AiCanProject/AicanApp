@@ -126,6 +126,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="10dp"
                                 android:padding="6dp"
+                                android:visibility="gone"
                                 android:text="00:45"
                                 android:textColor="@color/black"
                                 android:textSize="20sp" />

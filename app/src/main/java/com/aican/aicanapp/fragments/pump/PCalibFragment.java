@@ -97,6 +97,7 @@ public class PCalibFragment extends Fragment {
         calibBtn.setOnClickListener(v -> {
             calibLayout.setVisibility(View.GONE);
             saveLayout.setVisibility(View.VISIBLE);
+            tvTimer.setVisibility(View.VISIBLE);
             calibrate();
             deviceRef.child("UI").child("Start").setValue(1);
         });
@@ -208,6 +209,7 @@ public class PCalibFragment extends Fragment {
                         saveBtn.setText("Save");
                         deviceRef.child("UI").child("LAST_CALIB_DATE").setValue(time);
                         deviceRef.child("UI").child("LAST_CALIB_TIME").setValue(date);
+                        tvTimer.setVisibility(View.GONE);
 
                     }
                 };
