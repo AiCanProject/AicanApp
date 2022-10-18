@@ -129,7 +129,7 @@ public class JobFragment extends Fragment {
         Log.d("DateTime", "onViewCreated: "+cyear+" "+cmonth+" "+cday);
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
-        
+
         on_time_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -384,10 +384,12 @@ public class JobFragment extends Fragment {
                     case 0:
                         repeat.setVisibility(View.VISIBLE);
                         timer.setVisibility(View.GONE);
+                        deviceRef.child("UI").child("Mode").setValue(4);
                         break;
                     case 1:
                         timer.setVisibility(View.VISIBLE);
                         repeat.setVisibility(View.GONE);
+                        deviceRef.child("UI").child("Mode").setValue(5);
                         break;
                 }
             }
@@ -440,6 +442,91 @@ public class JobFragment extends Fragment {
                     direction = 0;
                 }
             }
+        });
+
+        clearBtn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                on_time_1.setText("");
+                off_time_1.setText("");
+                speed_1.setText("");
+                volume_1.setText("");
+
+                deviceRef.child("UI").child("SPEED_1").setValue(0);
+                deviceRef.child("UI").child("VOLUME_1").setValue(0);
+                deviceRef.child("UI").child("TIMER_ON_1").setValue(0);
+                deviceRef.child("UI").child("TIMER_OFF_1").setValue(0);
+            }
+        });
+
+
+        clearBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                on_time_2.setText("");
+                off_time_2.setText("");
+                speed_2.setText("");
+                volume_2.setText("");
+
+                deviceRef.child("UI").child("SPEED_2").setValue(0);
+                deviceRef.child("UI").child("VOLUME_2").setValue(0);
+                deviceRef.child("UI").child("TIMER_ON_2").setValue(0);
+                deviceRef.child("UI").child("TIMER_OFF_2").setValue(0);
+            }
+        });
+
+        clearBtn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                on_time_3.setText("");
+                off_time_3.setText("");
+                speed_3.setText("");
+                volume_3.setText("");
+
+                deviceRef.child("UI").child("SPEED_3").setValue(0);
+                deviceRef.child("UI").child("VOLUME_3").setValue(0);
+                deviceRef.child("UI").child("TIMER_ON_3").setValue(0);
+                deviceRef.child("UI").child("TIMER_OFF_3").setValue(0);
+            }
+        });
+
+        clearBtn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                on_time_4.setText("");
+                off_time_4.setText("");
+                speed_4.setText("");
+                volume_4.setText("");
+
+                deviceRef.child("UI").child("SPEED_4").setValue(0);
+                deviceRef.child("UI").child("VOLUME_4").setValue(0);
+                deviceRef.child("UI").child("TIMER_ON_4").setValue(0);
+                deviceRef.child("UI").child("TIMER_OFF_4").setValue(0);
+            }
+        });
+
+        clearBtn5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                on_time_5.setText("");
+                off_time_5.setText("");
+                speed_5.setText("");
+                volume_5.setText("");
+
+                deviceRef.child("UI").child("SPEED_5").setValue(0);
+                deviceRef.child("UI").child("VOLUME_5").setValue(0);
+                deviceRef.child("UI").child("TIMER_ON_5").setValue(0);
+                deviceRef.child("UI").child("TIMER_OFF_5").setValue(0);
+            }
+        });
+
+        deviceRef.child("UI").child("Direction").get().addOnSuccessListener(snapshot -> {
+            Integer dir = snapshot.getValue(Integer.class);
+            if (dir == null) return;
+            clockwiseSwitch.setChecked(dir == 0);
+            clockwiseSwitch.setChecked(dir == 1);
+
+            //switchDir.setChecked(dir == 0);
         });
     }
 
