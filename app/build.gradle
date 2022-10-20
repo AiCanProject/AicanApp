@@ -1,10 +1,12 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.firebase.crashlytics'
+
 }
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.aican.aicanapp"
@@ -74,6 +76,12 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-common-ktx:20.1.0'
 
+    implementation platform('com.google.firebase:firebase-bom:31.0.0')
+
+    // Add the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 
 
 
