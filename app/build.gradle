@@ -76,7 +76,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-common-ktx:20.1.0'
 
-    implementation platform('com.google.firebase:firebase-bom:31.0.0')
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
 
     // Add the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies

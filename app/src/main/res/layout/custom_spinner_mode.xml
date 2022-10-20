@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:maxLines="1"
-    android:fontFamily="serif-monospace"
     android:textColorHint="#000000"
-    android:textSize="24sp">
+    android:textSize="20sp">
 
 </TextView>

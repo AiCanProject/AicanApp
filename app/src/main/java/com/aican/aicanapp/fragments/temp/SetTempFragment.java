@@ -331,7 +331,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
             }
         });
 
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.custom_spinner_mode, mode_array);
+        ArrayAdapter adapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item, mode_array);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_mode.setAdapter(adapter);
 
@@ -415,7 +415,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
         set_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deviceRef.child("Data").child("TEMP1_VAL").setValue(Float.parseFloat(temp_set.getText().toString()));
+                deviceRef.child("UI").child("TEMP").child("SET_TEMP").setValue(Float.parseFloat(temp_set.getText().toString()));
             }
         });
 
@@ -882,7 +882,7 @@ public class SetTempFragment extends Fragment implements DatePickerDialog.OnDate
 
     private void setupListeners() {
 
-        temp_value.child("Data").child("TEMP1_VAL").addValueEventListener(new ValueEventListener() {
+        temp_value.child("UI").child("TEMP").child("SET_TEMP").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 float temp = snapshot.getValue(Float.class);

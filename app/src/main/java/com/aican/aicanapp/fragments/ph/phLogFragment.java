@@ -626,10 +626,9 @@ public class phLogFragment extends Fragment {
 
                     if (Constants.timeInSec == 0) {
 
-                    }
-                    else {
-                        float f = (float)Constants.timeInSec/60000;
-                        enterTime.setText(""+(f));
+                    } else {
+                        float f = (float) Constants.timeInSec / 60000;
+                        enterTime.setText("" + (f));
                         if (handler != null)
                             handler.removeCallbacks(runnable);
                         handler();
@@ -655,8 +654,8 @@ public class phLogFragment extends Fragment {
                     double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
                     Double db = new Double(d);
                     Constants.timeInSec = db.intValue();
-                    double a = (double)Constants.timeInSec/60000;
-                    Log.d("TimerVal",""+a);
+                    double a = (double) Constants.timeInSec / 60000;
+                    Log.d("TimerVal", "" + a);
                     deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
                     handler();
                 }
@@ -682,7 +681,7 @@ public class phLogFragment extends Fragment {
             deviceRef.child("Data").child("LOG_INTERVAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    double a =  snapshot.getValue(Double.class)*60000;
+                    double a = snapshot.getValue(Double.class) * 60000;
                     Constants.timeInSec = (int) a;
                     if (snapshot.getValue(Double.class) != null) {
                         if (switchInterval.isChecked() && !isAlertShow) {
@@ -914,7 +913,8 @@ public class phLogFragment extends Fragment {
             printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Calibration Table");
-            printWriter.println("_____pH___,___mV____,__DATE____TIME__");
+//            printWriter.println("_____pH___,___mV____,__DATE____TIME__");
+            printWriter.println("_____DATE___,___TIME____,___pH___,____mV__");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -925,7 +925,8 @@ public class phLogFragment extends Fragment {
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
 
 
-                String record1 = ph + "," + mv + "," + date;
+//                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(11, 19);
+                String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + mv;
 
                 printWriter.println(record1);
             }
@@ -939,7 +940,7 @@ public class phLogFragment extends Fragment {
             while (curCSV.moveToNext()) {
                 if (i == 0) {
 //                    printWriter.println("Date,Time,pH,Temp,Batch No,AR No,Compound");
-                    String record = "__Date____" + "," + "_____Time__" + "," + "_______________pH______" + "," + "___Temp" + "," + "_Batch No" + "," + "__AR No_" + "," + "Compound";
+                    String record = "__Date____" + "," + "_____Time__" + "," + "_____pH__" + "," + "_Temp_" + "," + "______Batch No______" + "," + "____AR No____" + "," + "Compound";
                     printWriter.println(record);
                     i++;
                 }
@@ -960,7 +961,7 @@ public class phLogFragment extends Fragment {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Operator Sign");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "," + nullEntry + "," + "Supervisor Sign");
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign");
             curCSV.close();
             db.close();
 
@@ -969,9 +970,12 @@ public class phLogFragment extends Fragment {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
             Workbook workbook = new Workbook(inputFile + "CurrentData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 12.5);
-            worksheet.getCells().setColumnWidth(1, 10.5);
-            worksheet.getCells().setColumnWidth(2, 18.5);
+            worksheet.getCells().setColumnWidth(0, 10);
+            worksheet.getCells().setColumnWidth(1, 9.5);
+            worksheet.getCells().setColumnWidth(2, 7.5);
+            worksheet.getCells().setColumnWidth(3, 7);
+            worksheet.getCells().setColumnWidth(4, 19);
+            worksheet.getCells().setColumnWidth(5, 16);
 
             Range rng = worksheet.getCells().createRange("B2:D7");
             Style st = worksheet.getWorkbook().createStyle();

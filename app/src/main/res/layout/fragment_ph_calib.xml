@@ -284,6 +284,26 @@
             </LinearLayout>
 
             <Button
+                android:visibility="gone"
+                android:id="@+id/threePoint"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:text="3" />
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/fivePoint"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:text="5" />
+
+            <Button
                 android:id="@+id/printCalibData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
