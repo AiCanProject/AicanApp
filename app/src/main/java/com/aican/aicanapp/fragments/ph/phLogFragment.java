@@ -989,6 +989,7 @@ public class phLogFragment extends Fragment {
             rng.applyStyle(st, flag);
 
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx", SaveFormat.XLSX);
+            temp = shp.getString("temp", "");
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
@@ -1075,7 +1076,7 @@ public class phLogFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 Float temp1 = snapshot.getValue(Float.class);
-                String tempe = temp1 < -127.0 ? "N/A" : String.format(Locale.UK, "%.2f", temp1);
+                String tempe = temp1 <= -127.0 ? "NA" : String.format(Locale.UK, "%.2f", temp1);
 
                 phLogFragment.this.temp = tempe;
             }
