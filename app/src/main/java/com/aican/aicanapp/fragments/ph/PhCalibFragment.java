@@ -1027,7 +1027,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     ec = snapshot.getValue(Integer.class);
-
+                    Log.d("ECVal", "onDataChange: "+ec);
                     if (ec == 10 || ec == 0) {
                         l1.setBackgroundColor(Color.LTGRAY);
                         l2.setBackgroundColor(Color.WHITE);
@@ -1117,7 +1117,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 calibrateBtn.setEnabled(true);
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                             }
-                        }, 10000);   //5 seconds
+                        }, 90000);   //5 seconds
 
                     } else if (ec == 0) {
                         calibrateBtn.setText("START");
@@ -2000,7 +2000,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
         isCalibrating = true;
-        if (mode.equals("5")) {
+        if (spin.getSelectedItemPosition() == 0) {
             setupCoeffListener();
         } else {
             setupCoeffListenerThree();
