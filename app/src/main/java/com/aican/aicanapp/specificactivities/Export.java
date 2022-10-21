@@ -568,7 +568,7 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Company: "+companyName);
+            printWriter.println("Company: " + companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
             printWriter.println(roleExport);
@@ -581,7 +581,7 @@ public class Export extends AppCompatActivity {
             printWriter.println();
             printWriter.println("Calibration Table");
 //            printWriter.println("pH,mV,DATE");
-            printWriter.println("____pH________mV____DATE_____TIME___");
+            printWriter.println("_____DATE___,___TIME____,___pH___,____mV__");
 
             printWriter.println();
 
@@ -591,8 +591,8 @@ public class Export extends AppCompatActivity {
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
 
+                String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + mv;
 
-                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(10, 16);
 
 //                String record1 = ph + "," + mv + "," + date;
 
@@ -601,7 +601,7 @@ public class Export extends AppCompatActivity {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("_____Date______Time______pH________Temp____Batch No___AR No___Compound___Device___");
+            printWriter.println("_____Date______Time____pH____Temp______Batch No___________AR No____Compound__Device___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -640,14 +640,14 @@ public class Export extends AppCompatActivity {
 
             Workbook workbook = new Workbook(inputFile + "DataSensorLog.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 10.0);
-            worksheet.getCells().setColumnWidth(1, 8.0);
-            worksheet.getCells().setColumnWidth(2, 9.0);
-            worksheet.getCells().setColumnWidth(3, 10.0);
-            worksheet.getCells().setColumnWidth(4, 10.0);
-            worksheet.getCells().setColumnWidth(5, 10.0);
-            worksheet.getCells().setColumnWidth(6, 10.0);
-            worksheet.getCells().setColumnWidth(7, 10.0);
+            worksheet.getCells().setColumnWidth(0, 10);
+            worksheet.getCells().setColumnWidth(1, 7.5);
+            worksheet.getCells().setColumnWidth(2, 7.5);
+            worksheet.getCells().setColumnWidth(3, 7);
+            worksheet.getCells().setColumnWidth(4, 18);
+            worksheet.getCells().setColumnWidth(5, 16);
+            worksheet.getCells().setColumnWidth(6, 6.0);
+            worksheet.getCells().setColumnWidth(7, 9.0);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
@@ -696,10 +696,10 @@ public class Export extends AppCompatActivity {
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Company: " + "," + companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(roleExport + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("Company: " + companyName);
+            printWriter.println(reportDate);
+            printWriter.println(reportTime);
+            printWriter.println(roleExport);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(offset + "," + battery);
             printWriter.println(temp);

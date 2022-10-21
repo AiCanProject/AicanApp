@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -96,6 +98,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static final String FIVE_POINT_CALIBRATION = "five";
     public static final String CALIBRATION_TYPE = "calibration_type";
     public static String PH_MODE = "both";
+
+    Button fivePoint, threePoint;
 
     LinearLayout log3, log5, calibSpinner;
 
@@ -1061,7 +1065,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         l3.setBackgroundColor(Color.WHITE);
                         l4.setBackgroundColor(Color.WHITE);
                         l5.setBackgroundColor(Color.LTGRAY);
-                    } else {
+                    } else if (ec == 51) {
                         l1.setBackgroundColor(Color.WHITE);
                         l2.setBackgroundColor(Color.WHITE);
                         l3.setBackgroundColor(Color.WHITE);
@@ -1106,7 +1110,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
-//                        currentBuf = -1;
+//                        currentBuf = 0;
 //                        currentBufThree = -1;
 
 
@@ -1179,7 +1183,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
-//                        currentBuf = -1;
+//                        currentBuf = 0;
 //                        currentBufThree = -1;
 
 
@@ -1293,6 +1297,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         phMvTable = view.findViewById(R.id.phMvTable);
         ph5 = view.findViewById(R.id.ph5);
         mv5 = view.findViewById(R.id.mv5);
+
+        fivePoint = view.findViewById(R.id.fivePoint);
+        threePoint = view.findViewById(R.id.threePoint);
 
         log3 = view.findViewById(R.id.log3point);
         log5 = view.findViewById(R.id.log5Point);
@@ -1443,6 +1450,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         }
 //        }
 
+        fivePoint.setOnClickListener(v -> {
+            spin.setSelection(0);
+        });
+
+        threePoint.setOnClickListener(v -> {
+            spin.setSelection(1);
+        });
 
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1453,14 +1467,36 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         log3.setVisibility(View.VISIBLE);
                         log5.setVisibility(View.VISIBLE);
                         mode = "5";
+                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+//                        PhCalibFragment fragment = new PhCalibFragment();
+//
+//                        Log.d("navigation", "loadFragments: Frag is loaded");
+//                        getActivity().getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.fragmentContainerView, fragment)
+//                                .addToBackStack(null)
+//                                .commit();
+
+
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+
+
+//                        Fragment fragment = new PhCalibFragment();
+//                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.replace(R.id.fragmentContainerView, fragment);
+//                        fragmentTransaction.addToBackStack(null);
+//                        fragmentTransaction.commit();
+
 
                         buffers = new float[]{2.0F, 4.0F, 7.0F, 9.0F, 11.0F};
                         bufferLabels = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
                         coeffLabels = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
                         postCoeffLabels = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
                         calValues = new int[]{10, 20, 30, 40, 50};
+                        calValuesThree = new int[]{20, 30, 40};
 
-                        deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
                         currentBuf = 0;
                         currentBufThree = 0;
                         setupCoeffListener();
@@ -1499,13 +1535,36 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         log3.setVisibility(View.VISIBLE);
                         log5.setVisibility(View.GONE);
 
+
+//                        Fragment fragment1 = new PhCalibFragment();
+//                        FragmentManager fragmentManager1 = getActivity().getSupportFragmentManager();
+//                        FragmentTransaction fragmentTransaction1 = fragmentManager1.beginTransaction();
+//                        fragmentTransaction1.replace(R.id.fragmentContainerView, fragment1);
+//                        fragmentTransaction1.addToBackStack(null);
+//                        fragmentTransaction1.commit();
+
                         buffers = new float[]{4.0F, 7.0F, 9.0F};
                         bufferLabels = new String[]{"B_2", "B_3", "B_4"};
                         coeffLabels = new String[]{"VAL_2", "VAL_3", "VAL_4"};
                         postCoeffLabels = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
-                        calValues = new int[]{20, 30, 40};
+                        calValuesThree = new int[]{20, 30, 40};
+                        calValues = new int[]{10, 20, 30, 40, 50};
 
                         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+
+//                        PhCalibFragment fragment1 = new PhCalibFragment();
+//
+//                        Log.d("navigation", "loadFragments: Frag is loaded");
+//                        getActivity().getSupportFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.fragmentContainerView, fragment1)
+//                                .addToBackStack(null)
+//                                .commit();
+
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+
+
                         currentBuf = 0;
                         currentBufThree = 0;
                         setupCoeffListenerThree();
@@ -2005,7 +2064,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         } else {
             setupCoeffListenerThree();
         }
-        CountDownTimer timer = new CountDownTimer(45000, 1000) {
+        CountDownTimer timer = new CountDownTimer(45000, 1000) { //45000
             @Override
             public void onTick(long millisUntilFinished) {
                 millisUntilFinished /= 1000;
@@ -2153,6 +2212,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
                                     databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
                                     databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
+
                                 });
 
                             });
@@ -2185,7 +2245,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValues[currentBuf]).addOnSuccessListener(t -> {
                 timer.start();
             });
-        } else {
+        } else if (spin.getSelectedItemPosition() == 1) {
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(calValuesThree[currentBufThree % 3]).addOnSuccessListener(t -> {
                 timer.start();
             });

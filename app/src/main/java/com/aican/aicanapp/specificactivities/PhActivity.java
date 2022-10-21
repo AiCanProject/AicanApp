@@ -147,7 +147,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             tabItemPh.animate().x(size).setDuration(100);
         } else if (view.getId() == R.id.cLProbes) {
             Intent intent = new Intent(PhActivity.this, ProbeScanner.class);
-            intent.putExtra("activity","PhFragment");
+            intent.putExtra("activity", "PhFragment");
 //            intent.addFlags()
             startActivity(intent);
         }
