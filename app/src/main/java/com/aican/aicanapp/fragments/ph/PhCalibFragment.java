@@ -127,6 +127,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String tm1, tm2, tm3, tm4, tm5;
     RecyclerView calibRecyclerView;
     String offset, battery, slope, temp;
+    String calib_stat="incomplete";
 
     PhView phView;
     TextView title;
@@ -1349,6 +1350,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibRecyclerView = view.findViewById(R.id.rvCalibFileView);
         nullEntry = "";
 
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 //        deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -1366,7 +1368,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //            }
 //        });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+                deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
+
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -1789,6 +1794,19 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibFileAdapter.notifyDataSetChanged();
         calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
+        if(deviceRef.child("Data").child("CALIBRATION_STAT") != null)
+        deviceRef.child("Data").child("CALIBRATION_STAT").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                calib_stat = snapshot.getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 
@@ -1914,7 +1932,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
                 printWriter.println(record1);
             }
+
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            if(spin.getSelectedItemPosition() == 0) {
+                printWriter.println("Calibration: " + calib_stat);
+                printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+                printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+                printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            }
             printWriter.println("Operator Sign");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign");
             calibCSV.close();
@@ -2108,6 +2133,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                         myEdit.putString("tem1", tvTempCurr.getText().toString());
                                         myEdit.putString("pHAC1", String.valueOf(postCoeff));
                                         myEdit.commit();
+                                        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
 
                                         temp1.setText(tvTempCurr.getText());
                                     } else if (b == 1) {
@@ -2136,6 +2162,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                         myEdit.putString("tem5", tvTempCurr.getText().toString());
                                         myEdit.putString("pHAC5", String.valueOf(postCoeff));
                                         myEdit.commit();
+                                        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
 
                                         temp5.setText(tvTempCurr.getText());
                                     }
