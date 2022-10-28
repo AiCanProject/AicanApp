@@ -601,7 +601,8 @@ public class Export extends AppCompatActivity {
             calibCSV.close();
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("_____Date______Time____pH____Temp______Batch No___________AR No____Compound__Device___");
+            printWriter.println("_____Date______Time____pH____Temp______Batch No___________AR No_______Compound______");
+//            printWriter.println("_____Date______Time____pH____Temp______Batch No___________AR No____Compound__Device___");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -617,7 +618,8 @@ public class Export extends AppCompatActivity {
                 String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 //                String record = date + "   " + time +  "     " + pH + "       " + temp + "       " + batchnum + "       " + arnum + "       " + comp + "      " + device;
 
-                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp + "," + device;
+//                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp + "," + device;
+                String record = date + "," + time + "," + pH + "," + temp + "," + batchnum + "," + arnum + "," + comp;
 
                 printWriter.println(record);
             }
@@ -646,8 +648,8 @@ public class Export extends AppCompatActivity {
             worksheet.getCells().setColumnWidth(3, 7);
             worksheet.getCells().setColumnWidth(4, 18);
             worksheet.getCells().setColumnWidth(5, 16);
-            worksheet.getCells().setColumnWidth(6, 6.0);
-            worksheet.getCells().setColumnWidth(7, 9.0);
+            worksheet.getCells().setColumnWidth(6, 12.0);
+//            worksheet.getCells().setColumnWidth(7, 9.0);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
