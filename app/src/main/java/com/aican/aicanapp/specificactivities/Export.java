@@ -573,6 +573,7 @@ public class Export extends AppCompatActivity {
             printWriter.println("Company: " + companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
+            printWriter.println("DeviceID: "+deviceId.getText().toString());
             printWriter.println(roleExport);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 //            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
@@ -700,10 +701,12 @@ public class Export extends AppCompatActivity {
             }
 
 
+
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Company: " + companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
+            printWriter.println("DeviceID: "+deviceId.getText().toString());
             printWriter.println(roleExport);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(offset + "," + battery);
