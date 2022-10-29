@@ -116,8 +116,10 @@ public class Export extends AppCompatActivity {
 
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
-        String time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(time, "Exported : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        String date  = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        databaseHelper.insert_action_data(time,date, "Exported : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
         nullEntry = " ";
         setFirebaseListeners();
@@ -144,8 +146,8 @@ public class Export extends AppCompatActivity {
                 Long endDate = selection.second;
                 startDateString = DateFormat.format("yyyy-MM-dd", new Date(startDate)).toString();
                 endDateString = DateFormat.format("yyyy-MM-dd", new Date(endDate)).toString();
-                String date = "Start: " + startDateString + " End: " + endDateString;
-                Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
+                String date1 = "Start: " + startDateString + " End: " + endDateString;
+                Toast.makeText(this, date1, Toast.LENGTH_SHORT).show();
 
                 MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
                         .setTimeFormat(TimeFormat.CLOCK_24H)
@@ -690,7 +692,8 @@ public class Export extends AppCompatActivity {
 
             Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
 
-             if (startDateString != null) {
+
+            if (startDateString != null) {
 
                  userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
 
@@ -715,13 +718,14 @@ public class Export extends AppCompatActivity {
 
             while (userCSV.moveToNext()) {
                 String Time = userCSV.getString(userCSV.getColumnIndex("time"));
+                String Date = userCSV.getString(userCSV.getColumnIndex("date"));
                 String Activity = userCSV.getString(userCSV.getColumnIndex("useraction"));
                 String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
                 String device = userCSV.getString(userCSV.getColumnIndex("deviceID"));
-
-                String record2 = Time + "," + Activity + "," + Ph + "," + Temp + "," + Mv + "," + device;
+                Date = Date +" "+Time;
+                String record2 = Date + "," + Activity + "," + Ph + "," + Temp + "," + Mv + "," + device;
 
                 printWriter.println(record2);
             }

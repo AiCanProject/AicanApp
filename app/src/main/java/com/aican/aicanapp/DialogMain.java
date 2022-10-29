@@ -75,7 +75,7 @@ public class DialogMain extends AppCompatDialogFragment {
                             Log.d("expiryDate", "Present date :" + presentDate + " Expiry Date: " + Source.expiryDate_fetched.get(i));
                             String date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                            databaseHelper.insert_action_data(date1 + " " + time, Source.userTrack + Source.name_fetched.get(i), "", "", "", "", PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(time, date1, Source.userTrack + Source.name_fetched.get(i), "", "", "", "", PhActivity.DEVICE_ID);
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE);
                             SharedPreferences.Editor myShared = sharedPreferences.edit();

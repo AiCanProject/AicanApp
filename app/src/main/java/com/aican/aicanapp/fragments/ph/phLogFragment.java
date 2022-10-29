@@ -366,7 +366,7 @@ public class phLogFragment extends Fragment {
                             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                     }
 
@@ -395,7 +395,7 @@ public class phLogFragment extends Fragment {
                         } else {
                             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(time,date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                         adapter = new LogAdapter(getContext(), getList());
                         recyclerView.setAdapter(adapter);
@@ -496,7 +496,7 @@ public class phLogFragment extends Fragment {
             } else {
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data( time,date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -849,7 +849,7 @@ public class phLogFragment extends Fragment {
             Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-            databaseHelper.insert_action_data(date + " " + time, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+            databaseHelper.insert_action_data(time,date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);

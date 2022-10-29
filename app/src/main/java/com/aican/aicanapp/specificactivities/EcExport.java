@@ -313,7 +313,7 @@ public class EcExport extends AppCompatActivity {
                                 companyName = String.valueOf(task.getResult().getValue());
                                 isSuccessful[0] = true;
                                 Log.d("TAG", "onComplete: on success " + companyName);
-                                databaseHelper.insert_action_data("" , "Userdata exported", "", "", "", "", EcActivity.DEVICE_ID);
+                                databaseHelper.insert_action_data("","" , "Userdata exported", "", "", "", "", EcActivity.DEVICE_ID);
                             } else {
                                 companyNameEditText.setError("Enter Company Name");
                             }

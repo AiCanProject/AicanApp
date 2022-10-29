@@ -2079,7 +2079,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public void calibrate() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(date + " " + time, "Calibrated : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+        databaseHelper.insert_action_data(time,date, "Calibrated : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);

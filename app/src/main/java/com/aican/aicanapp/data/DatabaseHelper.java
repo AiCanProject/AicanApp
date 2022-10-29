@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table PrintTempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
-        sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
+        sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT,date TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
@@ -297,10 +297,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // for pH log
-    public Boolean insert_action_data(String time, String useraction, String ph, String temperature, String mv, String compound, String deviceID) {
+    public Boolean insert_action_data(String time,String date, String useraction, String ph, String temperature, String mv, String compound, String deviceID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
+        contentValues.put("date", date);
         contentValues.put("useraction", useraction);
         contentValues.put("ph", ph);
         contentValues.put("temperature", temperature);
