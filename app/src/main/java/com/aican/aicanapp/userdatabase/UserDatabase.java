@@ -175,18 +175,20 @@ public class UserDatabase extends AppCompatActivity {
 
             Cursor curCSV = db.rawQuery("SELECT * FROM UserDataDetails", null);
 
-            printWriter.println(nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry+","+nullEntry+"," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry+","+nullEntry+"," + nullEntry);
             printWriter.println("UserData Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
-            printWriter.println("UserName,UserRole");
-            printWriter.println(nullEntry + "," + nullEntry);
+            printWriter.println("UserName,UserRole,DateCreated,ExpiryDate");
+            printWriter.println(nullEntry + "," + nullEntry+","+nullEntry+"," + nullEntry);
 
             while (curCSV.moveToNext()) {
 
                 String userName = curCSV.getString(curCSV.getColumnIndex("Username"));
                 String userRole = curCSV.getString(curCSV.getColumnIndex("Role"));
+                String dateCreated = curCSV.getString(curCSV.getColumnIndex("dateCreated"));
+                String expiryDate = curCSV.getString(curCSV.getColumnIndex("expiryDate"));
 
-                String record = userName + "," + userRole;
+                String record = userName + "," + userRole + "," + dateCreated + "," + expiryDate;
 
                 printWriter.println(record);
             }
@@ -203,8 +205,8 @@ public class UserDatabase extends AppCompatActivity {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData/";
             Workbook workbook = new Workbook(inputFile + "UserData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0,18.5);
-            worksheet.getCells().setColumnWidth(2,18.5);
+            worksheet.getCells().setColumnWidth(0,10.5);
+            worksheet.getCells().setColumnWidth(2,10.5);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData/UserData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {

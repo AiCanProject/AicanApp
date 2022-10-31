@@ -42,6 +42,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.ProbeScan.ProbeScanner;
 import com.aican.aicanapp.adapters.CalibFileAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
@@ -138,6 +139,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     String[] lines, liness;
     LinearLayout ll1;
+    String deviceID="";
 
     float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
     float[] pHAfterCalibBuffer = new float[]{0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
@@ -1351,6 +1353,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         nullEntry = "";
 
 
+        getFirebaseValue();
+
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 //        deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -1416,6 +1420,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             }
         }
+
+
 
         title.setText("Do not exit/change fragments \nwhile calibrating");
 //        if (liness != null) {
@@ -1810,7 +1816,20 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     }
 
+    public void getFirebaseValue(){
+        DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child(Dashboard.DEVICE_TYPE_PH).child(PhActivity.DEVICE_ID);
+        dataRef.child("ID").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                String p = snapshot.getValue(String.class);
+                deviceID = p;
+            }
 
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
+    }
     public void fileNotWrite(File file) {
         file.setWritable(false);
         if (file.canWrite()) {
@@ -1909,6 +1928,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Company: " + companyName);
             printWriter.println("Username: " + Source.logUserName);
+            printWriter.println("DeviceID: " + deviceID);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);

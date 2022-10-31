@@ -42,6 +42,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.FileAdapter;
 import com.aican.aicanapp.adapters.PrintLogAdapter;
@@ -123,6 +124,7 @@ public class phLogFragment extends Fragment {
     Boolean isAlertShow = true;
     CardView timer_cloud_layout;
     ImageButton saveTimer;
+    String deviceID = "";
 
 
     int timerInSec;
@@ -240,7 +242,7 @@ public class phLogFragment extends Fragment {
         });
 
         fetch_logs();
-
+        getFirebaseValue();
         if (checkPermission()) {
             Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
@@ -587,13 +589,13 @@ public class phLogFragment extends Fragment {
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
 
-                SQLiteDatabase db = databaseHelper.getWritableDatabase();
-                Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-                if (curCSV != null && curCSV.getCount() > 0) {
-                    deleteAllLogs();
-                } else {
-                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
-                }
+//                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+//                Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
+//                if (curCSV != null && curCSV.getCount() > 0) {
+////                    deleteAllLogs();
+//                } else {
+//                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
 
@@ -774,6 +776,7 @@ public class phLogFragment extends Fragment {
     @Override
     public void onDestroy() {
         deviceRef.child("Data").child("AUTOLOG").setValue(0);
+        deleteAllLogs();
         super.onDestroy();
     }
 
@@ -836,6 +839,20 @@ public class phLogFragment extends Fragment {
 
     }
 
+    public void getFirebaseValue(){
+        DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child(Dashboard.DEVICE_TYPE_PH).child(PhActivity.DEVICE_ID);
+        dataRef.child("ID").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                String p = snapshot.getValue(String.class);
+                deviceID = p;
+            }
+
+            @Override
+            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+            }
+        });
+    }
 
     void takeLog() {
 
@@ -906,6 +923,7 @@ public class phLogFragment extends Fragment {
 //            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
+            printWriter.println("DeviceID: "+deviceID);
 //            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(offset + "," + battery);
