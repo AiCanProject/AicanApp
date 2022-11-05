@@ -56,6 +56,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="" />
+
+            <TextView
+                android:id="@+id/select5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
         </LinearLayout>
 
         <LinearLayout
@@ -107,6 +114,18 @@
                 android:fontFamily="@font/montserrat_medium"
                 android:gravity="center"
                 android:text="@string/alarm"
+                android:textColor="@color/btnColor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/item5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="center"
+                android:text="Job"
                 android:textColor="@color/btnColor"
                 android:textSize="18sp"
                 android:textStyle="bold" />

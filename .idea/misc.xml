@@ -159,6 +159,7 @@
         <entry key="app/src/main/res/layout/activity_detailed.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_edit_user_database.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_export.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_job_temp_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_pdfviewer.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_ph.xml" value="0.17135416666666667" />
@@ -179,12 +180,14 @@
         <entry key="app/src/main/res/layout/fragment_pump_dose.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_pump_job.xml" value="0.15" />
         <entry key="app/src/main/res/layout/fragment_temp_alarm.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_temp_job.xml" value="0.18" />
         <entry key="app/src/main/res/layout/fragment_temp_set.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_log.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_log_ec.xml" value="0.1" />
         <entry key="app/src/main/res/layout/round_button.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/set_speed_volume_dialog_layout.xml" value="0.15" />
         <entry key="app/src/main/res/layout/tablelayout.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/temp_activity.xml" value="0.15" />
       </map>
     </option>
   </component>
