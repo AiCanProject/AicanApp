@@ -128,7 +128,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String tm1, tm2, tm3, tm4, tm5;
     RecyclerView calibRecyclerView;
     String offset, battery, slope, temp;
-    String calib_stat="incomplete";
+    String calib_stat = "incomplete";
 
     PhView phView;
     TextView title;
@@ -139,7 +139,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     String[] lines, liness;
     LinearLayout ll1;
-    String deviceID="";
+    String deviceID = "";
 
     float[] buffers = new float[]{1.0F, 4.0F, 7.0F, 9.2F, 12.0F};
     float[] pHAfterCalibBuffer = new float[]{0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
@@ -1034,7 +1034,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     ec = snapshot.getValue(Integer.class);
-                    Log.d("ECVal", "onDataChange: "+ec);
+                    Log.d("ECVal", "onDataChange: " + ec);
                     if (ec == 10 || ec == 0) {
                         l1.setBackgroundColor(Color.LTGRAY);
                         l2.setBackgroundColor(Color.WHITE);
@@ -1372,10 +1372,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //            }
 //        });
 
-                deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
+        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
 
 
-                deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -1420,7 +1420,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             }
         }
-
 
 
         title.setText("Do not exit/change fragments \nwhile calibrating");
@@ -1800,23 +1799,23 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibFileAdapter.notifyDataSetChanged();
         calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
-        if(deviceRef.child("Data").child("CALIBRATION_STAT") != null)
-        deviceRef.child("Data").child("CALIBRATION_STAT").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                calib_stat = snapshot.getValue(String.class);
-            }
+        if (deviceRef.child("Data").child("CALIBRATION_STAT") != null)
+            deviceRef.child("Data").child("CALIBRATION_STAT").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    calib_stat = snapshot.getValue(String.class);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
 
     }
 
-    public void getFirebaseValue(){
+    public void getFirebaseValue() {
         DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child(Dashboard.DEVICE_TYPE_PH).child(PhActivity.DEVICE_ID);
         dataRef.child("ID").addValueEventListener(new ValueEventListener() {
             @Override
@@ -1830,6 +1829,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         });
     }
+
     public void fileNotWrite(File file) {
         file.setWritable(false);
         if (file.canWrite()) {
@@ -1954,7 +1954,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            if(spin.getSelectedItemPosition() == 0) {
+            if (spin.getSelectedItemPosition() == 0) {
                 printWriter.println("Calibration: " + calib_stat);
                 printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
                 printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
@@ -2099,7 +2099,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public void calibrate() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        databaseHelper.insert_action_data(time,date, "Calibrated : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+        databaseHelper.insert_action_data(time, date, "Calibrated : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);

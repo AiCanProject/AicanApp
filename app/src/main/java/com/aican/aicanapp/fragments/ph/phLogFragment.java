@@ -108,7 +108,7 @@ public class phLogFragment extends Fragment {
     DatabaseReference deviceRef;
     ArrayList<phData> phDataModelList = new ArrayList<>();
     LogAdapter adapter;
-    String offset, battery, slope, temperature, roleExport, nullEntry;
+    String offset, battery, slope, tempe, temperature, roleExport, nullEntry;
     DatabaseHelper databaseHelper;
     Button logBtn, exportBtn, printBtn, clearBtn, submitBtn;
     ImageButton enterBtn, batchBtn, arBtn;
@@ -278,27 +278,6 @@ public class phLogFragment extends Fragment {
         deviceRef.child("Data").child("LOG").setValue(0);
 //        deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
-        enterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                compound_name = compound_name_txt.getText().toString();
-                if (compound_name.matches("")) {
-                    Toast.makeText(getContext(), "Enter Compound Name", Toast.LENGTH_SHORT).show();
-                } else {
-                    deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            snapshot.getRef().setValue(compound_name);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
-            }
-        });
-
 //        Handler handler = new Handler();
 //        handler.postDelayed(new Runnable() {
 //            @Override
@@ -307,47 +286,6 @@ public class phLogFragment extends Fragment {
 //            }
 //        }, 5000);
 
-        batchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                batchnum = batch_number.getText().toString();
-                if (batchnum.matches("")) {
-                    Toast.makeText(getContext(), "Enter Batch Name", Toast.LENGTH_SHORT).show();
-                } else {
-                    deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            snapshot.getRef().setValue(batchnum);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
-            }
-        });
-
-        arBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                arnum = ar_number.getText().toString();
-                if (arnum.matches("")) {
-                    Toast.makeText(getContext(), "Enter AR Name", Toast.LENGTH_SHORT).show();
-                } else {
-                    deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            snapshot.getRef().setValue(arnum);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                        }
-                    });
-                }
-            }
-        });
 
         submitBtn.setOnClickListener(view1 -> {
             saveDetails();
@@ -397,7 +335,7 @@ public class phLogFragment extends Fragment {
                         } else {
                             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(time,date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
                         adapter = new LogAdapter(getContext(), getList());
                         recyclerView.setAdapter(adapter);
@@ -498,7 +436,7 @@ public class phLogFragment extends Fragment {
             } else {
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                databaseHelper.insert_action_data( time,date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
             }
             adapter = new LogAdapter(getContext(), getList());
             recyclerView.setAdapter(adapter);
@@ -729,48 +667,55 @@ public class phLogFragment extends Fragment {
     }
 
     private void saveDetails() {
-        compound_name = compound_name_txt.getText().toString();
-        if (!compound_name.isEmpty()) {
-            deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    snapshot.getRef().setValue(compound_name);
+        deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (!compound_name_txt.getText().toString().isEmpty()) {
+                    compound_name = compound_name_txt.getText().toString();
+                } else {
+                    compound_name = "NA";
                 }
+                snapshot.getRef().setValue(compound_name);
+            }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
 
         //saving batch number
-        batchnum = batch_number.getText().toString();
-        if (!batchnum.isEmpty()) {
-            deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    snapshot.getRef().setValue(batchnum);
+        deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (!batch_number.getText().toString().isEmpty()) {
+                    batchnum = batch_number.getText().toString();
+                } else {
+                    batchnum = "NA";
                 }
+                snapshot.getRef().setValue(batchnum);
+            }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
 
-        arnum = ar_number.getText().toString();
-        if (!arnum.isEmpty()) {
-            deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    snapshot.getRef().setValue(arnum);
+        deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (!ar_number.getText().toString().isEmpty()) {
+                    arnum = ar_number.getText().toString();
+                } else {
+                    arnum = "NA";
                 }
+                snapshot.getRef().setValue(arnum);
+            }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
     }
 
     @Override
@@ -839,7 +784,7 @@ public class phLogFragment extends Fragment {
 
     }
 
-    public void getFirebaseValue(){
+    public void getFirebaseValue() {
         DatabaseReference dataRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child(Dashboard.DEVICE_TYPE_PH).child(PhActivity.DEVICE_ID);
         dataRef.child("ID").addValueEventListener(new ValueEventListener() {
             @Override
@@ -866,7 +811,7 @@ public class phLogFragment extends Fragment {
             Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-            databaseHelper.insert_action_data(time,date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+            databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
         }
         adapter = new LogAdapter(getContext(), getList());
         recyclerView.setAdapter(adapter);
@@ -909,7 +854,7 @@ public class phLogFragment extends Fragment {
             offset = "Offset: " + shp.getString("offset", "");
             battery = "Battery: " + shp.getString("battery", "");
             slope = "Slope: " + shp.getString("slope", "");
-            temp = "Temperature: " + shp.getString("temp", "");
+            tempe = "Temperature: " + shp.getString("temp", "");
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
@@ -923,11 +868,11 @@ public class phLogFragment extends Fragment {
 //            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
-            printWriter.println("DeviceID: "+deviceID);
+            printWriter.println("DeviceID: " + deviceID);
 //            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(offset + "," + battery);
-            printWriter.println(temp);
+            printWriter.println(tempe);
             printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Calibration Table");
@@ -1007,7 +952,6 @@ public class phLogFragment extends Fragment {
             rng.applyStyle(st, flag);
 
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx", SaveFormat.XLSX);
-            temp = shp.getString("temp", "");
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
