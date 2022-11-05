@@ -17,13 +17,14 @@ import com.aican.aicanapp.fragments.temp.AlarmTempFragment;
 import com.aican.aicanapp.fragments.temp.LogTempFragment;
 import com.aican.aicanapp.fragments.temp.SetTempFragment;
 import com.aican.aicanapp.fragments.temp.TempFragment;
+import com.aican.aicanapp.fragments.temp.TempJobFragment;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class TemperatureActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView ph, calibrate, log, alarm, tabItemPh, tabItemCalib;
+    TextView ph, calibrate, log, alarm, tabItemPh, tabItemCalib,job;
 
     public static final String DEVICE_TYPE_KEY = "device_type";
     public static String DEVICE_ID = null;
@@ -36,6 +37,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
     SetTempFragment setTempFragment = new SetTempFragment();
     LogTempFragment logTempFragment = new LogTempFragment();
     AlarmTempFragment alarmTempFragment = new AlarmTempFragment();
+    TempJobFragment tempJobFragment = new TempJobFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
         calibrate = findViewById(R.id.item2);
         log = findViewById(R.id.item3);
         alarm = findViewById(R.id.item4);
+        job = findViewById(R.id.item5);
         tabItemPh = findViewById(R.id.tabItemP);
         tabItemCalib = findViewById(R.id.select2);
 
@@ -72,6 +75,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
         calibrate.setOnClickListener(this);
         log.setOnClickListener(this);
         alarm.setOnClickListener(this);
+        job.setOnClickListener(this);
     }
 
     @Override
@@ -84,6 +88,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
+            job.setTextColor(Color.parseColor("#FF24003A"));
         } else if (view.getId() == R.id.item2) {
             deviceRef.child("UI").child("TEMP").child("MODE").setValue(1);
             loadFragments(tempFragment);
@@ -91,6 +96,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             ph.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
+            job.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth();
             tabItemPh.animate().x(size).setDuration(100);
 
@@ -101,6 +107,7 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             alarm.setTextColor(Color.parseColor("#FF24003A"));
+            job.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 2;
             tabItemPh.animate().x(size).setDuration(100);
 
@@ -112,8 +119,22 @@ public class TemperatureActivity extends AppCompatActivity implements View.OnCli
             ph.setTextColor(Color.parseColor("#FF24003A"));
             calibrate.setTextColor(Color.parseColor("#FF24003A"));
             log.setTextColor(Color.parseColor("#FF24003A"));
+            job.setTextColor(Color.parseColor("#FF24003A"));
             int size = calibrate.getWidth() * 3;
             tabItemPh.animate().x(size).setDuration(100);
+        }else if (view.getId() == R.id.item5){
+
+            deviceRef.child("UI").child("TEMP").child("MODE").setValue(4);
+            loadFragments(tempJobFragment);
+
+            job.setTextColor(Color.WHITE);
+            ph.setTextColor(Color.parseColor("#FF24003A"));
+            calibrate.setTextColor(Color.parseColor("#FF24003A"));
+            log.setTextColor(Color.parseColor("#FF24003A"));
+            alarm.setTextColor(Color.parseColor("#FF24003A"));
+            int size = calibrate.getWidth() * 4;
+            tabItemPh.animate().x(size).setDuration(100);
+
         }
     }
 

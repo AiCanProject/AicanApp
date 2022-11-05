@@ -582,6 +582,11 @@ public class phLogFragment extends Fragment {
                         handler.removeCallbacks(runnable);
                     timer_cloud_layout.setVisibility(View.GONE);
 
+                    if(!switchHold.isChecked() && !switchBtnClick.isChecked()){
+                        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+
+                    }
+
                 }
             }
         });
@@ -614,6 +619,11 @@ public class phLogFragment extends Fragment {
                         switchInterval.setChecked(false);
                     }
                     switchHold.setChecked(false);
+                }else{
+                    if(!switchInterval.isChecked() && !switchHold.isChecked()){
+                        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+
+                    }
                 }
             }
         });
@@ -650,6 +660,11 @@ public class phLogFragment extends Fragment {
                     }
 
                     switchBtnClick.setChecked(false);
+                }else{
+                    if(!switchInterval.isChecked() && !switchBtnClick.isChecked()){
+                        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+
+                    }
                 }
             }
         });
