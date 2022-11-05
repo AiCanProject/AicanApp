@@ -248,7 +248,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             t4 = shp.getString("tem4", "--");
             t5 = shp.getString("tem5", "--");
 
-//hhhh
+//hhhhhh
             temp1.setText(t1);
             temp2.setText(t2);
             temp3.setText(t3);
