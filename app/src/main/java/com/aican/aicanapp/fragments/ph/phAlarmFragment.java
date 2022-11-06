@@ -132,10 +132,10 @@ public class phAlarmFragment extends Fragment {
         stopAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(AlarmConstants.ringtone.isPlaying()) {
-                    AlarmConstants.isServiceAvailable = false;
+                if(AlarmConstants.ringtone.isPlaying() || AlarmConstants.ringtone != null) {
                     AlarmConstants.ringtone.stop();
                 }
+                AlarmConstants.isServiceAvailable = false;
 
                 stopAlarm.setEnabled(false);
                 alarm.setEnabled(true);
@@ -160,6 +160,7 @@ public class phAlarmFragment extends Fragment {
 
                 }
 
+            Log.d("AlarmFragment","AlarmFragment: Service stopped "+AlarmConstants.PH);
             return null;
         }
     }

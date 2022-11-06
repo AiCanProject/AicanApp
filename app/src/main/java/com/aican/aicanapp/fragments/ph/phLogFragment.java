@@ -626,6 +626,7 @@ public class phLogFragment extends Fragment {
                 }else{
                     if(!switchInterval.isChecked() && !switchHold.isChecked()){
                         deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                        deviceRef.child("Data").child("LOG").setValue(0);
 
                     }
                 }
