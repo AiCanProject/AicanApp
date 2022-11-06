@@ -531,13 +531,13 @@ public class phLogFragment extends Fragment {
                 plAdapter.notifyDataSetChanged();
                 csvRecyclerView.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
 
-//                SQLiteDatabase db = databaseHelper.getWritableDatabase();
-//                Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-//                if (curCSV != null && curCSV.getCount() > 0) {
-////                    deleteAllLogs();
-//                } else {
-//                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
-//                }
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
+                if (curCSV != null && curCSV.getCount() > 0) {
+                    deleteAllLogs();
+                } else {
+                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -681,6 +681,7 @@ public class phLogFragment extends Fragment {
                 ArrayList<phData> ar = new ArrayList<>();
                 adapter = new LogAdapter(getContext(), ar);
                 recyclerView.setAdapter(adapter);
+                deleteAll();
 
             }
         });
