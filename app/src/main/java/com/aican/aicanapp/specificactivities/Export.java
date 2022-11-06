@@ -117,9 +117,9 @@ public class Export extends AppCompatActivity {
         companyNameEditText = findViewById(R.id.companyName);
         databaseHelper = new DatabaseHelper(this);
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        String date  = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        databaseHelper.insert_action_data(time,date, "Exported : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+        databaseHelper.insert_action_data(time, date, "Exported : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
         nullEntry = " ";
         setFirebaseListeners();
@@ -480,7 +480,7 @@ public class Export extends AppCompatActivity {
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
 //            roleExport = "Made By: " + shp2.getString("roleSuper", "");
-            roleExport = "Made By: " +Source.logUserName;
+            roleExport = "Made By: " + Source.logUserName;
 
 
             Log.d("debzdate", startDateString + "," + endDateString);
@@ -573,7 +573,7 @@ public class Export extends AppCompatActivity {
             printWriter.println("Company: " + companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
-            printWriter.println("DeviceID: "+deviceId.getText().toString());
+            printWriter.println("DeviceID: " + deviceId.getText().toString());
             printWriter.println(roleExport);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 //            printWriter.println(offset + "," + battery + "," + temp + "," + slope+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
@@ -584,7 +584,7 @@ public class Export extends AppCompatActivity {
             printWriter.println();
             printWriter.println("Calibration Table");
 //            printWriter.println("pH,mV,DATE");
-            printWriter.println("_____DATE___,___TIME____,___pH___,____mV__");
+            printWriter.println("_____DATE___,___TIME____,___pH___,pHAfterCalib,____________mV__,Temperature");
 
             printWriter.println();
 
@@ -593,8 +593,10 @@ public class Export extends AppCompatActivity {
                 String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 
-                String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + mv;
+                String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + pHAC + "," + mv + "," + temperature1;
 
 
 //                String record1 = ph + "," + mv + "," + date;
@@ -696,17 +698,16 @@ public class Export extends AppCompatActivity {
 
             if (startDateString != null) {
 
-                 userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+                userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
 
             }
-
 
 
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Company: " + companyName);
             printWriter.println(reportDate);
             printWriter.println(reportTime);
-            printWriter.println("DeviceID: "+deviceId.getText().toString());
+            printWriter.println("DeviceID: " + deviceId.getText().toString());
             printWriter.println(roleExport);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(offset + "," + battery);
@@ -727,7 +728,7 @@ public class Export extends AppCompatActivity {
                 String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
                 String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
                 String device = userCSV.getString(userCSV.getColumnIndex("deviceID"));
-                Date = Date +" "+Time;
+                Date = Date + " " + Time;
                 String record2 = Date + "," + Activity + "," + Ph + "," + Temp + "," + Mv + "," + device;
 
                 printWriter.println(record2);
