@@ -169,6 +169,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String strDate;
 
     private void loadBuffers() {
+        //////////////////////////////////////////////////////
         deviceRef.child("UI").child("PH").child("PH_CAL").get().addOnSuccessListener(snapshot -> {
             for (int i = 0; i < bufferLabels.length; ++i) {
                 buffers[i] = Float.parseFloat(snapshot.child(bufferLabels[i]).getValue(String.class));
@@ -192,6 +193,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 phAfterCalib4.setText(String.valueOf(pHAfterCalibBuffer[3]));
                 phAfterCalib5.setText(String.valueOf(pHAfterCalibBuffer[4]));
 
+                pHAC1 = String.valueOf(pHAfterCalibBuffer[0]);
+                pHAC2 = String.valueOf(pHAfterCalibBuffer[1]);
+                pHAC3 = String.valueOf(pHAfterCalibBuffer[2]);
+                pHAC4 = String.valueOf(pHAfterCalibBuffer[3]);
+                pHAC5 = String.valueOf(pHAfterCalibBuffer[4]);
+
 
             } else if (spin.getSelectedItemPosition() == 1) {
                 ph1.setText(String.valueOf(buffersThree[0]));
@@ -201,6 +208,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 phAfterCalib1.setText(String.valueOf(pHAfterCalibBufferThree[0]));
                 phAfterCalib2.setText(String.valueOf(pHAfterCalibBufferThree[1]));
                 phAfterCalib3.setText(String.valueOf(pHAfterCalibBufferThree[2]));
+
+                pHAC1 = String.valueOf(pHAfterCalibBufferThree[0]);
+                pHAC2 = String.valueOf(pHAfterCalibBufferThree[1]);
+                pHAC3 = String.valueOf(pHAfterCalibBufferThree[2]);
+
             }
         });
     }
@@ -248,7 +260,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             t4 = shp.getString("tem4", "--");
             t5 = shp.getString("tem5", "--");
 
-//hhhhhh
             temp1.setText(t1);
             temp2.setText(t2);
             temp3.setText(t3);
@@ -343,6 +354,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     String ecForm = String.format(Locale.UK, "%.2f", ec);
                     phAfterCalib1.setText(ecForm);
                     pHAC1 = phAfterCalib1.getText().toString();
+
 
                     SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -1939,16 +1951,18 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             printWriter.println(slope);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Calibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("________pH____,_____mV__,__DATE___TIME__");
+            printWriter.println("________pH____,pH After Calib,_____mV__,__DATE___TIME__,Temperature");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             while (calibCSV.moveToNext()) {
                 String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 //                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
 
-                String record1 = ph + "," + mv + "," + date;
+                String record1 = ph + "," + pHAC + "," + mv + "," + date + "," + temperature1;
 
                 printWriter.println(record1);
             }
@@ -1971,7 +1985,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             Workbook workbook = new Workbook(inputFile + "CalibrationData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
             worksheet.getCells().setColumnWidth(0, 12.5);
-            worksheet.getCells().setColumnWidth(2, 18.5);
+            worksheet.getCells().setColumnWidth(1, 12.5);
+            worksheet.getCells().setColumnWidth(2, 12.5);
+            worksheet.getCells().setColumnWidth(3, 18.5);
 //            worksheet.getCells().setColumnWidth(3, 12.5);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx", SaveFormat.XLSX);
 

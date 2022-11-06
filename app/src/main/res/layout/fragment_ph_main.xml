@@ -251,7 +251,7 @@
                             android:text="Set"
                             android:textAllCaps="false"
                             android:textSize="15sp"
-                            android:visibility="visible" />
+                            android:visibility="invisible" />
 
 
                     </LinearLayout>

@@ -582,7 +582,7 @@ public class phLogFragment extends Fragment {
                         handler.removeCallbacks(runnable);
                     timer_cloud_layout.setVisibility(View.GONE);
 
-                    if(!switchHold.isChecked() && !switchBtnClick.isChecked()){
+                    if (!switchHold.isChecked() && !switchBtnClick.isChecked()) {
                         deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
                     }
@@ -619,8 +619,8 @@ public class phLogFragment extends Fragment {
                         switchInterval.setChecked(false);
                     }
                     switchHold.setChecked(false);
-                }else{
-                    if(!switchInterval.isChecked() && !switchHold.isChecked()){
+                } else {
+                    if (!switchInterval.isChecked() && !switchHold.isChecked()) {
                         deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
                     }
@@ -660,8 +660,8 @@ public class phLogFragment extends Fragment {
                     }
 
                     switchBtnClick.setChecked(false);
-                }else{
-                    if(!switchInterval.isChecked() && !switchBtnClick.isChecked()){
+                } else {
+                    if (!switchInterval.isChecked() && !switchBtnClick.isChecked()) {
                         deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
                     }
@@ -892,7 +892,7 @@ public class phLogFragment extends Fragment {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("Calibration Table");
 //            printWriter.println("_____pH___,___mV____,__DATE____TIME__");
-            printWriter.println("_____DATE___,___TIME____,___pH___,____mV__");
+            printWriter.println("_____DATE___,___TIME____,___pH___,pHAfterCalib,__________mV_____,Temperature");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
 
@@ -901,10 +901,12 @@ public class phLogFragment extends Fragment {
                 String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
                 String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 
 
 //                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(11, 19);
-                String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + mv;
+                String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + pHAC + "," + mv + "," + temperature1;
 
                 printWriter.println(record1);
             }
