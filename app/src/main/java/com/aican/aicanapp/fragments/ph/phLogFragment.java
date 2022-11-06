@@ -298,7 +298,6 @@ public class phLogFragment extends Fragment {
                     int log = snapshot.getValue(Integer.class);
 
                     if (log == 1) {
-                        deviceRef.child("Data").child("LOG").setValue(0);
                         date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                         time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                         fetch_logs();
@@ -308,6 +307,11 @@ public class phLogFragment extends Fragment {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
+                        if(switchBtnClick.isChecked()){
+                            takeLog();
+                        }
+                        deviceRef.child("Data").child("LOG").setValue(0);
+
                     }
 
                 }
