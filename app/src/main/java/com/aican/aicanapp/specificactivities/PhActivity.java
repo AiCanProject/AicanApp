@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.ProbeScan.ProbeScanner;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
@@ -95,61 +96,65 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.item1) {
-            tabItemPh.animate().x(0).setDuration(100);
-            loadFragments(phFragment);
-            ph.setTextColor(Color.WHITE);
-            calibrate.setTextColor(Color.parseColor("#FF24003A"));
-            log.setTextColor(Color.parseColor("#FF24003A"));
-            graph.setTextColor(Color.parseColor("#FF24003A"));
-            alarm.setTextColor(Color.parseColor("#FF24003A"));
-        } else if (view.getId() == R.id.item2) {
+        if (Source.auto_log == 0) {
+            if (view.getId() == R.id.item1) {
+                tabItemPh.animate().x(0).setDuration(100);
+                loadFragments(phFragment);
+                ph.setTextColor(Color.WHITE);
+                calibrate.setTextColor(Color.parseColor("#FF24003A"));
+                log.setTextColor(Color.parseColor("#FF24003A"));
+                graph.setTextColor(Color.parseColor("#FF24003A"));
+                alarm.setTextColor(Color.parseColor("#FF24003A"));
+            } else if (view.getId() == R.id.item2) {
 
-            loadFragments(phCalibFragment);
-            calibrate.setTextColor(Color.WHITE);
-            ph.setTextColor(Color.parseColor("#FF24003A"));
-            log.setTextColor(Color.parseColor("#FF24003A"));
-            graph.setTextColor(Color.parseColor("#FF24003A"));
-            alarm.setTextColor(Color.parseColor("#FF24003A"));
-            int size = calibrate.getWidth();
-            tabItemPh.animate().x(size).setDuration(100);
+                loadFragments(phCalibFragment);
+                calibrate.setTextColor(Color.WHITE);
+                ph.setTextColor(Color.parseColor("#FF24003A"));
+                log.setTextColor(Color.parseColor("#FF24003A"));
+                graph.setTextColor(Color.parseColor("#FF24003A"));
+                alarm.setTextColor(Color.parseColor("#FF24003A"));
+                int size = calibrate.getWidth();
+                tabItemPh.animate().x(size).setDuration(100);
 
-        } else if (view.getId() == R.id.item3) {
-            loadFragments(phLogFragment);
-            log.setTextColor(Color.WHITE);
-            ph.setTextColor(Color.parseColor("#FF24003A"));
-            calibrate.setTextColor(Color.parseColor("#FF24003A"));
-            graph.setTextColor(Color.parseColor("#FF24003A"));
-            alarm.setTextColor(Color.parseColor("#FF24003A"));
-            int size = calibrate.getWidth() * 2;
-            tabItemPh.animate().x(size).setDuration(100);
+            } else if (view.getId() == R.id.item3) {
+                loadFragments(phLogFragment);
+                log.setTextColor(Color.WHITE);
+                ph.setTextColor(Color.parseColor("#FF24003A"));
+                calibrate.setTextColor(Color.parseColor("#FF24003A"));
+                graph.setTextColor(Color.parseColor("#FF24003A"));
+                alarm.setTextColor(Color.parseColor("#FF24003A"));
+                int size = calibrate.getWidth() * 2;
+                tabItemPh.animate().x(size).setDuration(100);
 
-        } else if (view.getId() == R.id.item4) {
-            loadFragments(phGraphFragment);
+            } else if (view.getId() == R.id.item4) {
+                loadFragments(phGraphFragment);
 
-            graph.setTextColor(Color.WHITE);
-            ph.setTextColor(Color.parseColor("#FF24003A"));
-            calibrate.setTextColor(Color.parseColor("#FF24003A"));
-            log.setTextColor(Color.parseColor("#FF24003A"));
-            alarm.setTextColor(Color.parseColor("#FF24003A"));
-            int size = calibrate.getWidth() * 3;
-            tabItemPh.animate().x(size).setDuration(100);
+                graph.setTextColor(Color.WHITE);
+                ph.setTextColor(Color.parseColor("#FF24003A"));
+                calibrate.setTextColor(Color.parseColor("#FF24003A"));
+                log.setTextColor(Color.parseColor("#FF24003A"));
+                alarm.setTextColor(Color.parseColor("#FF24003A"));
+                int size = calibrate.getWidth() * 3;
+                tabItemPh.animate().x(size).setDuration(100);
 
-        } else if (view.getId() == R.id.item5) {
-            loadFragments(phAlarmFragment);
+            } else if (view.getId() == R.id.item5) {
+                loadFragments(phAlarmFragment);
 
-            alarm.setTextColor(Color.WHITE);
-            ph.setTextColor(Color.parseColor("#FF24003A"));
-            calibrate.setTextColor(Color.parseColor("#FF24003A"));
-            graph.setTextColor(Color.parseColor("#FF24003A"));
-            log.setTextColor(Color.parseColor("#FF24003A"));
-            int size = calibrate.getWidth() * 4;
-            tabItemPh.animate().x(size).setDuration(100);
-        } else if (view.getId() == R.id.cLProbes) {
-            Intent intent = new Intent(PhActivity.this, ProbeScanner.class);
-            intent.putExtra("activity", "PhFragment");
+                alarm.setTextColor(Color.WHITE);
+                ph.setTextColor(Color.parseColor("#FF24003A"));
+                calibrate.setTextColor(Color.parseColor("#FF24003A"));
+                graph.setTextColor(Color.parseColor("#FF24003A"));
+                log.setTextColor(Color.parseColor("#FF24003A"));
+                int size = calibrate.getWidth() * 4;
+                tabItemPh.animate().x(size).setDuration(100);
+            } else if (view.getId() == R.id.cLProbes) {
+                Intent intent = new Intent(PhActivity.this, ProbeScanner.class);
+                intent.putExtra("activity", "PhFragment");
 //            intent.addFlags()
-            startActivity(intent);
+                startActivity(intent);
+            }
+        }else {
+            Toast.makeText(this, "You cannot change fragment while logging", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -169,7 +174,6 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                     .replace(R.id.fragmentContainerView, fragment)
                     .addToBackStack(null)
                     .commit();
-
 
             deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
 

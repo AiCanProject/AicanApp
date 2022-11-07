@@ -10,5 +10,6 @@ public class Source {
     public static String subscription;
     public static String scannerData;
     public static String logUserName;
+    public static int auto_log = 0;
 }
 

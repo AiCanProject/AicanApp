@@ -319,7 +319,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             deviceRef.child("Data").child("ATC").setValue(isChecked ? 1 : 0);
 
             if (switchAtc.isChecked()) {
-
+                deviceRef.child("Data").child("ATC_AT").setValue(Float.parseFloat(atcValue.getText().toString()));
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editT = togglePref.edit();
                 editT.putInt("toggleValue", 1);

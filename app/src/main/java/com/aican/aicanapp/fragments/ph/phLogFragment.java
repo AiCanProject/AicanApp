@@ -355,7 +355,7 @@ public class phLogFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int AutoLog = snapshot.getValue(Integer.class);
-
+                Source.auto_log = AutoLog;
                 if (AutoLog == 1) {
                     switchHold.setChecked(true);
                     switchInterval.setChecked(false);
@@ -449,6 +449,7 @@ public class phLogFragment extends Fragment {
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                printBtn.setB
                 exportSensorCsv();
 
                 String startsWith = "CurrentData";
