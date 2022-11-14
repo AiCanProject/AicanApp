@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.pdf.PdfDocument;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;

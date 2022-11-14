@@ -53,6 +53,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
+import com.google.common.base.Splitter;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,10 +61,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -222,62 +231,68 @@ public class Export extends AppCompatActivity {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
                 }
 
-                exportDatabaseCsv();
-
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
-                File root = new File(path);
-                fileNotWrite(root);
-                File[] filesAndFolders = root.listFiles();
-
-                if (filesAndFolders == null || filesAndFolders.length == 0) {
-
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(".xlsx");
-                    }
-                }
                 try {
-                    Bitmap sign = getSign();
-                    if (sign != null) {
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-                        sign.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                        byte[] bitmapData = stream.toByteArray();
-                    }
-
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-                    String currentDateandTime = sdf.format(new Date());
-                    PdfSaveOptions options = new PdfSaveOptions();
-                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
-                    File tempRoot = new File(tempPath);
-                    fileNotWrite(tempRoot);
-                    File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-
-                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
-                    File root1 = new File(path1);
-                    fileNotWrite(root1);
-                    File[] filesAndFolders1 = root1.listFiles();
-
-                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                        return;
-                    } else {
-                        for (int i = 0; i < filesAndFolders1.length; i++) {
-                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
-                                filesAndFolders1[i].delete();
-                            }
-                        }
-                    }
-
-                } catch (Exception e) {
+                    generatePDF1();
+                } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+
+//                exportDatabaseCsv();
+
+//                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
+//                File root = new File(path);
+//                fileNotWrite(root);
+//                File[] filesAndFolders = root.listFiles();
+//
+//                if (filesAndFolders == null || filesAndFolders.length == 0) {
+//
+//                    return;
+//                } else {
+//                    for (int i = 0; i < filesAndFolders.length; i++) {
+//                        filesAndFolders[i].getName().endsWith(".xlsx");
+//                    }
+//                }
+//                try {
+//                    Bitmap sign = getSign();
+//                    if (sign != null) {
+//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//
+//                        sign.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//
+//                        byte[] bitmapData = stream.toByteArray();
+//                    }
+//
+//                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
+//
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+//                    String currentDateandTime = sdf.format(new Date());
+//                    PdfSaveOptions options = new PdfSaveOptions();
+//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+//                    File tempRoot = new File(tempPath);
+//                    fileNotWrite(tempRoot);
+//                    File[] tempFilesAndFolders = tempRoot.listFiles();
+//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+//
+//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+//                    File root1 = new File(path1);
+//                    fileNotWrite(root1);
+//                    File[] filesAndFolders1 = root1.listFiles();
+//
+//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+//
+//                        return;
+//                    } else {
+//                        for (int i = 0; i < filesAndFolders1.length; i++) {
+//                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
+//                                filesAndFolders1[i].delete();
+//                            }
+//                        }
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
@@ -330,73 +345,78 @@ public class Export extends AppCompatActivity {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
                 }
 
+                try {
+                    generatePDF2();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                exportUserData();
+//                exportUserData();
 
 
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
                 File root = new File(path);
-                fileNotWrite(root);
-                File[] filesAndFolders = root.listFiles();
+//                fileNotWrite(root);
+//                File[] filesAndFolders = root.listFiles();
+//
+//                if (filesAndFolders == null || filesAndFolders.length == 0) {
+//
+//                    return;
+//                } else {
+//                    for (int i = 0; i < filesAndFolders.length; i++) {
+//                        filesAndFolders[i].getName().endsWith(".csv");
+//                    }
+//                }
 
-                if (filesAndFolders == null || filesAndFolders.length == 0) {
 
-                    return;
-                } else {
-                    for (int i = 0; i < filesAndFolders.length; i++) {
-                        filesAndFolders[i].getName().endsWith(".csv");
-                    }
-                }
-
-
-                try {
-                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
-                    File root1 = new File(path1);
-                    fileNotWrite(root1);
-                    File[] filesAndFolders1 = root1.listFiles();
-
-                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                        return;
-                    } else {
-                        for (int i = 0; i < filesAndFolders1.length; i++) {
-                            filesAndFolders1[i].getName().endsWith(".xlsx");
-                        }
-                    }
-
-                    Workbook workbook = null;
-
-                    workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-                    String currentDateandTime = sdf.format(new Date());
-                    PdfSaveOptions options = new PdfSaveOptions();
-                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-                    File tempRoot = new File(tempPath);
-                    fileNotWrite(tempRoot);
-                    File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DUA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-
-                    String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-                    File root_1 = new File(path_1);
-                    fileNotWrite(root_1);
-                    File[] filesAndFolders_1 = root_1.listFiles();
-
-                    if (filesAndFolders_1 == null || filesAndFolders_1.length == 0) {
-
-                        return;
-                    } else {
-                        for (int i = 0; i < filesAndFolders1.length; i++) {
-                            if (filesAndFolders_1[i].getName().endsWith(".csv") || filesAndFolders_1[i].getName().endsWith(".xlsx")) {
-                                filesAndFolders_1[i].delete();
-                            }
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+//                    File root1 = new File(path1);
+//                    fileNotWrite(root1);
+//                    File[] filesAndFolders1 = root1.listFiles();
+//
+//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+//
+//                        return;
+//                    } else {
+//                        for (int i = 0; i < filesAndFolders1.length; i++) {
+//                            filesAndFolders1[i].getName().endsWith(".xlsx");
+//                        }
+//                    }
+//
+//                    Workbook workbook = null;
+//
+//                    workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
+//
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+//                    String currentDateandTime = sdf.format(new Date());
+//                    PdfSaveOptions options = new PdfSaveOptions();
+//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+//                    File tempRoot = new File(tempPath);
+//                    fileNotWrite(tempRoot);
+//                    File[] tempFilesAndFolders = tempRoot.listFiles();
+//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DUA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+//
+//                    String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+//                    File root_1 = new File(path_1);
+//                    fileNotWrite(root_1);
+//                    File[] filesAndFolders_1 = root_1.listFiles();
+//
+//                    if (filesAndFolders_1 == null || filesAndFolders_1.length == 0) {
+//
+//                        return;
+//                    } else {
+//                        for (int i = 0; i < filesAndFolders1.length; i++) {
+//                            if (filesAndFolders_1[i].getName().endsWith(".csv") || filesAndFolders_1[i].getName().endsWith(".xlsx")) {
+//                                filesAndFolders_1[i].delete();
+//                            }
+//                        }
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
                 File rootPDF = new File(pathPDF);
@@ -444,6 +464,212 @@ public class Export extends AppCompatActivity {
         return fileArray.length > 0 ? fileArray : null;
     }
 
+    private String stringSplitter(String str) {
+        String newText = "";
+        Iterable<String> strings = Splitter.fixedLength(8).split(str);
+        for (String temp : strings) {
+            newText = newText + " " + temp;
+        }
+        return newText.trim();
+    }
+
+
+    public void generatePDF1() throws FileNotFoundException {
+
+        String device_id = "DeviceID: " + deviceID;
+
+        companyName = "" + companyNameEditText.getText().toString();
+        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
+        offset = "Offset: " + shp.getString("offset", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        slope = "Slope: " + shp.getString("slope", "");
+        temp = "Temperature: " + shp.getString("temp", "");
+
+        roleExport = "Made By: " + Source.logUserName;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+        File tempRoot = new File(tempPath);
+        fileNotWrite(tempRoot);
+        File[] tempFilesAndFolders = tempRoot.listFiles();
+
+
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        OutputStream outputStream = new FileOutputStream(file);
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document document = new Document(pdfDocument);
+
+        document.add(new Paragraph(companyName + "\n" + roleExport + "\n" + device_id));
+        document.add(new Paragraph(""));
+        document.add(new Paragraph(reportDate
+                + "  |  " + reportTime + "\n" +
+                offset + "  |  " + battery + "\n" + slope + "  |  " + temp
+        ));
+        document.add(new Paragraph(""));
+        document.add(new Paragraph("Calibration Table"));
+
+        float[] columnWidth = {200f, 210f, 170f, 340f, 170f};
+        Table table = new Table(columnWidth);
+        table.addCell("pH");
+        table.addCell("pH After Calib");
+        table.addCell("mV");
+        table.addCell("Date & Time");
+        table.addCell("Temperature");
+
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+
+
+        while (calibCSV.moveToNext()) {
+            String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+            String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+            String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+            String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
+            table.addCell(ph);
+            table.addCell(pHAC + "");
+            table.addCell(mv);
+            table.addCell(date);
+            table.addCell(temperature1);
+
+        }
+        document.add(table);
+
+        document.add(new Paragraph(""));
+        document.add(new Paragraph("Log Table"));
+
+        float[] columnWidth1 = {210f, 120f, 170f, 150f, 350f, 350f, 250f};
+        Table table1 = new Table(columnWidth1);
+        table1.addCell("Date");
+        table1.addCell("Time");
+        table1.addCell("pH");
+        table1.addCell("Temp");
+        table1.addCell("Batch No");
+        table1.addCell("AR No");
+        table1.addCell("Compound");
+
+
+        Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+//            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')')", null);
+
+        if (arNumEditText.getText().toString().isEmpty()) {
+            arNumString = null;
+        }
+
+        if (compoundNameEditText.getText().toString().isEmpty()) {
+            compoundName = null;
+        }
+
+        if (batchNumEditText.getText().toString().isEmpty()) {
+            batchNumString = null;
+        }
+
+        //Setting sql query according to filer
+        if (startDateString != null && compoundName != null && batchNumString != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (startDateString != null && compoundName != null && batchNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
+
+        } else if (startDateString != null && compoundName != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (startDateString != null && batchNumString != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (compoundName != null && batchNumString != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (startDateString != null && compoundName != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "')", null);
+
+        } else if (startDateString != null && batchNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (batchnum = '" + batchNumString + "')", null);
+
+        } else if (startDateString != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (compoundName != null && batchNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "')", null);
+
+        } else if (compoundName != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (batchNumString != null && arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+
+        } else if (startDateString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+
+        } else if (compoundName != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (arnum = '" + compoundName + "')", null);
+
+        } else if (batchNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (batchnum = '" + batchNumString + "') ", null);
+
+        } else if (arNumString != null) {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE  (compound = '" + arNumString + "')", null);
+
+        } else {
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
+        }
+
+
+        while (curCSV.moveToNext()) {
+
+            String date = curCSV.getString(curCSV.getColumnIndex("date"));
+            String time = curCSV.getString(curCSV.getColumnIndex("time"));
+            String device = curCSV.getString(curCSV.getColumnIndex("deviceID"));
+            String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
+            String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+            String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
+            String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
+            String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
+
+
+            table1.addCell(date);
+            table1.addCell(time);
+            table1.addCell(pH);
+            table1.addCell(temp);
+            table1.addCell(stringSplitter(batchnum));
+            table1.addCell(stringSplitter(arnum));
+            table1.addCell(stringSplitter(comp));
+
+        }
+
+        document.add(table1);
+
+        document.add(new Paragraph(""));
+        document.add(new Paragraph("Operator Sign                                                                                          Supervisor Sign"));
+
+
+        document.close();
+
+        Toast.makeText(Export.this, "Pdf generated", Toast.LENGTH_SHORT).show();
+    }
+
     public void exportDatabaseCsv() {
 
         companyName = "" + companyNameEditText.getText().toString();
@@ -476,7 +702,6 @@ public class Export extends AppCompatActivity {
             temp = "Temperature: " + shp.getString("temp", "");
 
             setFirebaseListeners();
-
 
             SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
 //            roleExport = "Made By: " + shp2.getString("roleSuper", "");
@@ -669,6 +894,102 @@ public class Export extends AppCompatActivity {
         } else {
             Log.d("csvnw", "Party Bhaiiiii");
         }
+    }
+
+    public void generatePDF2() throws FileNotFoundException {
+        String company_name = "Company: " + companyName;
+        String user_name = "Supervisor: " + Source.logUserName;
+        String device_id = "DeviceID: " + deviceID;
+
+        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+
+        SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
+        offset = "Offset: " + shp.getString("offset", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        slope = "Slope: " + shp.getString("slope", "");
+        String tempe = "Temperature: " + shp.getString("temp", "");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+        File tempRoot = new File(tempPath);
+        fileNotWrite(tempRoot);
+        File[] tempFilesAndFolders = tempRoot.listFiles();
+
+
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/UA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        OutputStream outputStream = new FileOutputStream(file);
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document document = new Document(pdfDocument);
+
+        document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
+        document.add(new Paragraph(""));
+        document.add(new Paragraph(reportDate
+                + "  |  " + reportTime + "\n" +
+                offset + "  |  " + battery + "\n" + slope + "  |  " + tempe
+        ));
+        document.add(new Paragraph(""));
+
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        SharedPreferences shp2 = getSharedPreferences("RolePref", MODE_PRIVATE);
+//            roleExport = "Supervisor: " + shp2.getString("roleSuper", "");
+        roleExport = "Supervisor: " + Source.logUserName;
+
+        Cursor userCSV = db.rawQuery("SELECT * FROM UserActiondetails", null);
+
+
+        if (startDateString != null) {
+
+            userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+
+        }
+
+        document.add(new Paragraph("User Activity Data Table"));
+
+        float[] columnWidth1 = {300f, 350f, 150f, 150f, 170f, 200f};
+        Table table1 = new Table(columnWidth1);
+        table1.addCell("Date & Time");
+        table1.addCell("Activity");
+        table1.addCell("pH");
+        table1.addCell("Temp");
+        table1.addCell("mV");
+        table1.addCell("Device ID");
+
+
+        while (userCSV.moveToNext()) {
+            String Time = userCSV.getString(userCSV.getColumnIndex("time"));
+            String Date = userCSV.getString(userCSV.getColumnIndex("date"));
+            String activity = userCSV.getString(userCSV.getColumnIndex("useraction"));
+            String Ph = userCSV.getString(userCSV.getColumnIndex("ph"));
+            String Temp = userCSV.getString(userCSV.getColumnIndex("temperature"));
+            String Mv = userCSV.getString(userCSV.getColumnIndex("mv"));
+            String device = userCSV.getString(userCSV.getColumnIndex("deviceID"));
+            Date = Date + " " + Time;
+//            String record2 = Date + "," + Activity + "," + Ph + "," + Temp + "," + Mv + "," + device;
+
+            table1.addCell(Date + "");
+            table1.addCell(activity + "");
+            table1.addCell(Ph + "");
+            table1.addCell(Temp + "");
+            table1.addCell(Mv + "");
+            table1.addCell(device + "");
+
+
+        }
+
+        document.add(table1);
+
+
+        document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+
+
+        document.close();
+
+        Toast.makeText(Export.this, "Pdf generated", Toast.LENGTH_SHORT).show();
     }
 
     public void exportUserData() {
