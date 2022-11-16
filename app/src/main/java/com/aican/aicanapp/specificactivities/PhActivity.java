@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 public class PhActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
-
     DatabaseReference deviceRef;
 
     PhFragment phFragment = new PhFragment();
@@ -151,6 +149,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 //            intent.addFlags()
             startActivity(intent);
         }
+
     }
 
     @Override
@@ -177,4 +176,5 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         }
         return false;
     }
+
 }
