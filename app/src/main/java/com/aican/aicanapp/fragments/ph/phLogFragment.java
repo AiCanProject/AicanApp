@@ -6,14 +6,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,18 +31,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.Source;
-import com.aican.aicanapp.adapters.FileAdapter;
 import com.aican.aicanapp.adapters.PrintLogAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
@@ -56,13 +51,9 @@ import com.aican.aicanapp.dataClasses.phData;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.Constants;
-import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
-import com.aspose.cells.PdfCompliance;
-import com.aspose.cells.PdfSaveOptions;
 import com.aspose.cells.Range;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Style;
@@ -70,13 +61,7 @@ import com.aspose.cells.StyleFlag;
 import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.google.api.LogDescriptor;
+import com.google.common.base.Splitter;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -84,9 +69,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -307,7 +300,7 @@ public class phLogFragment extends Fragment {
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                         }
-                        if(switchBtnClick.isChecked()){
+                        if (switchBtnClick.isChecked()) {
                             takeLog();
                         }
                         deviceRef.child("Data").child("LOG").setValue(0);
@@ -355,7 +348,7 @@ public class phLogFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int AutoLog = snapshot.getValue(Integer.class);
-
+                Source.auto_log = AutoLog;
                 if (AutoLog == 1) {
                     switchHold.setChecked(true);
                     switchInterval.setChecked(false);
@@ -449,7 +442,14 @@ public class phLogFragment extends Fragment {
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exportSensorCsv();
+//                printBtn.setB
+
+                try {
+                    generatePDF();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+//                exportSensorCsv();
 
                 String startsWith = "CurrentData";
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
@@ -467,44 +467,44 @@ public class phLogFragment extends Fragment {
                 }
 
 
-                try {
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
-                    PdfSaveOptions options = new PdfSaveOptions();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-                    String currentDateandTime = sdf.format(new Date());
-                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-
-//                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/LogPdf");
-//                    if (!Pdfdir.exists()) {
-//                        if (!Pdfdir.mkdirs()) {
-//                            Log.d("App", "failed to create directory");
+//                try {
+//                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CurrentData.xlsx");
+//                    PdfSaveOptions options = new PdfSaveOptions();
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+//                    String currentDateandTime = sdf.format(new Date());
+//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+//
+////                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/LogPdf");
+////                    if (!Pdfdir.exists()) {
+////                        if (!Pdfdir.mkdirs()) {
+////                            Log.d("App", "failed to create directory");
+////                        }
+////                    }
+//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+//                    File tempRoot = new File(tempPath);
+//                    fileNotWrite(tempRoot);
+//                    File[] tempFilesAndFolders = tempRoot.listFiles();
+//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+//
+//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+//                    File root1 = new File(path1);
+//                    fileNotWrite(root1);
+//                    File[] filesAndFolders1 = root1.listFiles();
+//
+//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+//
+//                        return;
+//                    } else {
+//                        for (int i = 0; i < filesAndFolders1.length; i++) {
+//                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
+//                                filesAndFolders1[i].delete();
+//                            }
 //                        }
 //                    }
-                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
-                    File tempRoot = new File(tempPath);
-                    fileNotWrite(tempRoot);
-                    File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-
-                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
-                    File root1 = new File(path1);
-                    fileNotWrite(root1);
-                    File[] filesAndFolders1 = root1.listFiles();
-
-                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                        return;
-                    } else {
-                        for (int i = 0; i < filesAndFolders1.length; i++) {
-                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
-                                filesAndFolders1[i].delete();
-                            }
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
@@ -683,6 +683,132 @@ public class phLogFragment extends Fragment {
 
             }
         });
+    }
+
+    private void generatePDF() throws FileNotFoundException {
+
+        String company_name = "Company: " + companyName;
+        String user_name = "Username: " + Source.logUserName;
+        String device_id = "DeviceID: " + deviceID;
+
+        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+
+        SharedPreferences shp = requireContext().getSharedPreferences("Extras", MODE_PRIVATE);
+        offset = "Offset: " + shp.getString("offset", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        slope = "Slope: " + shp.getString("slope", "");
+        tempe = "Temperature: " + shp.getString("temp", "");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+        File tempRoot = new File(tempPath);
+        fileNotWrite(tempRoot);
+        File[] tempFilesAndFolders = tempRoot.listFiles();
+
+
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        OutputStream outputStream = new FileOutputStream(file);
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document document = new Document(pdfDocument);
+
+        document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
+        document.add(new Paragraph(""));
+        document.add(new Paragraph(reportDate
+                + "  |  " + reportTime + "\n" +
+                offset + "  |  " + battery + "\n" + slope + "  |  " + tempe
+        ));
+        document.add(new Paragraph(""));
+        document.add(new Paragraph("Calibration Table"));
+
+        float[] columnWidth = {200f, 210f, 170f, 340f, 170f};
+        Table table = new Table(columnWidth);
+        table.addCell("pH");
+        table.addCell("pH After Calib");
+        table.addCell("mV");
+        table.addCell("Date & Time");
+        table.addCell("Temperature");
+
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+
+
+        while (calibCSV.moveToNext()) {
+            String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+            String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+            String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+            String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
+            table.addCell(ph);
+            table.addCell(pHAC + "");
+            table.addCell(mv);
+            table.addCell(date);
+            table.addCell(temperature1);
+
+        }
+        document.add(table);
+
+        document.add(new Paragraph(""));
+        document.add(new Paragraph("Log Table"));
+
+        float[] columnWidth1 = {240f, 120f, 150f, 150f, 270f, 270f, 270f};
+        Table table1 = new Table(columnWidth1);
+        table1.addCell("Date");
+        table1.addCell("Time");
+        table1.addCell("pH");
+        table1.addCell("Temp");
+        table1.addCell("Batch No");
+        table1.addCell("AR No");
+        table1.addCell("Compound");
+
+        Cursor curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
+
+        while (curCSV.moveToNext()) {
+
+            String date = curCSV.getString(curCSV.getColumnIndex("date"));
+            String time = curCSV.getString(curCSV.getColumnIndex("time"));
+            String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
+            String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+            String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
+            String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
+            String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
+
+            String newBatchNum = stringSplitter(batchnum);
+            String newArum = stringSplitter(arnum);
+            String newComp = stringSplitter(comp);
+
+            table1.addCell(date);
+            table1.addCell(time);
+            table1.addCell(pH);
+            table1.addCell(temp);
+            table1.addCell(newBatchNum);
+            table1.addCell(newArum);
+            table1.addCell(newComp);
+
+        }
+
+        document.add(table1);
+
+        document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+
+
+        document.close();
+
+        Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();
+    }
+
+    private String stringSplitter(String str) {
+        String newText = "";
+        Iterable<String> strings = Splitter.fixedLength(8).split(str);
+        for (String temp : strings) {
+            newText = newText + " " + temp;
+        }
+        return newText.trim();
     }
 
     private void saveDetails() {
@@ -908,7 +1034,6 @@ public class phLogFragment extends Fragment {
                 String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
                 String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
                 String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
-
 
 //                String record1 = ph + "," + mv + "," + date.substring(0, 10) + "," + date.substring(11, 19);
                 String record1 = date.substring(0, 10) + "," + date.substring(11, 19) + "," + ph + "," + pHAC + "," + mv + "," + temperature1;

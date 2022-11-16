@@ -118,7 +118,7 @@ dependencies {
     implementation 'com.github.Triggertrap:SeekArc:v1.1'
 
     // iTextPdf
-    implementation 'com.itextpdf:itextg:5.5.10'
+//    implementation 'com.itextpdf:itextg:5.5.10'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
@@ -127,7 +127,9 @@ dependencies {
 
     // pr downloader
     implementation 'com.mindorks.android:prdownloader:0.6.0'
+    implementation 'com.itextpdf:itext7-core:7.1.10'
 
+//    implementation 'com.itextpdf:itext7-core:7.1.3'
 }
 repositories {
     mavenCentral()

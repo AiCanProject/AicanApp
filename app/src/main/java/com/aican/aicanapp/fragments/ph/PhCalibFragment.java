@@ -4,6 +4,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 import static java.lang.Integer.parseInt;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,7 +14,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+//import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -73,16 +81,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,6 +114,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static final String FIVE_POINT_CALIBRATION = "five";
     public static final String CALIBRATION_TYPE = "calibration_type";
     public static String PH_MODE = "both";
+
+    int pageHeight = 1120;
+    int pagewidth = 792;
+    Bitmap bmp, scaledbmp;
 
     Button fivePoint, threePoint;
 
@@ -1722,7 +1741,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         printCalib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exportCalibData();
+                try {
+                    generatePDF();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+//                exportCalibData();
 
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
                 File root = new File(path);
@@ -1738,44 +1762,44 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
 
 
-                try {
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx");
-
-                    PdfSaveOptions options = new PdfSaveOptions();
-                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-//                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/CalibPdf");
-////                    if (!Pdfdir.exists()) {
-////                        if (!Pdfdir.mkdirs()) {
-////                            Log.d("App", "failed to create directory");
-////                        }
-////                    }
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-                    String currentDateandTime = sdf.format(new Date());
-                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
-                    File tempRoot = new File(tempPath);
-                    fileNotWrite(tempRoot);
-                    File[] tempFilesAndFolders = tempRoot.listFiles();
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-
-                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
-                    File root1 = new File(path1);
-                    fileNotWrite(root1);
-                    File[] filesAndFolders1 = root1.listFiles();
-
-                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-
-                        return;
-                    } else {
-                        for (int i = 0; i < filesAndFolders1.length; i++) {
-                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
-                                filesAndFolders1[i].delete();
-                            }
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx");
+//
+//                    PdfSaveOptions options = new PdfSaveOptions();
+//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
+////                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/CalibPdf");
+//////                    if (!Pdfdir.exists()) {
+//////                        if (!Pdfdir.mkdirs()) {
+//////                            Log.d("App", "failed to create directory");
+//////                        }
+//////                    }
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+//                    String currentDateandTime = sdf.format(new Date());
+//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+//                    File tempRoot = new File(tempPath);
+//                    fileNotWrite(tempRoot);
+//                    File[] tempFilesAndFolders = tempRoot.listFiles();
+//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
+//
+//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+//                    File root1 = new File(path1);
+//                    fileNotWrite(root1);
+//                    File[] filesAndFolders1 = root1.listFiles();
+//
+//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
+//
+//                        return;
+//                    } else {
+//                        for (int i = 0; i < filesAndFolders1.length; i++) {
+//                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
+//                                filesAndFolders1[i].delete();
+//                            }
+//                        }
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
@@ -1998,6 +2022,200 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     }
 
+    private void generatePDF() throws FileNotFoundException {
+
+        String company_name = "Company: " + companyName;
+        String user_name = "Username: " + Source.logUserName;
+        String device_id = "DeviceID: " + deviceID;
+
+        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
+        offset = "Offset: " + shp.getString("offset", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        slope = "Slope: " + shp.getString("slope", "");
+        temp = "Temperature: " + shp.getString("temp", "");
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+        File tempRoot = new File(tempPath);
+        fileNotWrite(tempRoot);
+        File[] tempFilesAndFolders = tempRoot.listFiles();
+
+
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        OutputStream outputStream = new FileOutputStream(file);
+        PdfWriter writer = new PdfWriter(file);
+        PdfDocument pdfDocument = new PdfDocument(writer);
+        Document document = new Document(pdfDocument);
+
+
+//        Text text = new Text(company_name);
+//        Text text1 = new Text(user_name);
+//        Text text2 = new Text(device_id);
+//
+//
+//
+//        document.add(new Paragraph(text).add(text1).add(text2));
+        document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
+        document.add(new Paragraph(""));
+        document.add(new Paragraph(reportDate
+                + "  |  " + reportTime + "\n" +
+                offset + "  |  " + battery + "\n" + slope + "  |  " + temp
+        ));
+
+        document.add(new Paragraph(""));
+        document.add(new Paragraph("Calibration Table"));
+
+        float columnWidth[] = {200f, 210f, 170f, 340f, 170f};
+        Table table = new Table(columnWidth);
+        table.addCell("pH");
+        table.addCell("pH After Calib");
+        table.addCell("mV");
+        table.addCell("Date & Time");
+        table.addCell("Temperature");
+
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+
+
+        while (calibCSV.moveToNext()) {
+            String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+            String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+            String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+            String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
+            table.addCell(ph);
+            table.addCell(pHAC + "");
+            table.addCell(mv);
+            table.addCell(date);
+            table.addCell(temperature1);
+
+        }
+        document.add(table);
+
+        if (spin.getSelectedItemPosition() == 0) {
+            document.add(new Paragraph("Calibration : " + calib_stat));
+        }
+
+        document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+
+
+        document.close();
+
+        Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();
+
+    }
+
+//    private void generatePDF1() {
+//
+//        String company_name = "Company: " + companyName;
+//        String user_name = "Username: " + Source.logUserName;
+//        String device_id = "DeviceID: " + deviceID;
+//
+//        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+//
+//        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
+//        offset = "Offset: " + shp.getString("offset", "");
+//        battery = "Battery: " + shp.getString("battery", "");
+//        slope = "Slope: " + shp.getString("slope", "");
+//        temp = "Temperature: " + shp.getString("temp", "");
+//
+//        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wifi_router);
+//        scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false);
+//
+//        PdfDocument pdfDocument = new PdfDocument();
+//        Paint paint = new Paint();
+//
+//        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+//        PdfDocument.Page myPage = pdfDocument.startPage(myPageInfo);
+//        Canvas canvas = myPage.getCanvas();
+//
+//        paint.setTextAlign(Paint.Align.LEFT);
+//        paint.setTextSize(12.0f);
+//        canvas.drawText(company_name, 30, 70, paint);
+//        canvas.drawText(user_name, 30, 85, paint);
+//        canvas.drawText(device_id, 30, 100, paint);
+//        canvas.drawText(reportDate, 30, 115, paint);
+//
+//
+//        pdfDocument.finishPage(myPage);
+//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/", "AICAN" + Math.random() + ".pdf");
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(file));
+//
+//            Toast.makeText(getContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//        }
+//
+//        pdfDocument.close();
+//    }
+
+
+//    private void generatePDF2() {
+//
+//        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+//
+//        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
+//        offset = "Offset: " + shp.getString("offset", "");
+//        battery = "Battery: " + shp.getString("battery", "");
+//        slope = "Slope: " + shp.getString("slope", "");
+//        temp = "Temperature: " + shp.getString("temp", "");
+//
+//        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wifi_router);
+//        scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false);
+//
+//        PdfDocument pdfDocument = new PdfDocument();
+//        Paint paint = new Paint();
+//        Paint title = new Paint();
+//        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
+//
+//        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
+//        Canvas canvas = myPage.getCanvas();
+//
+//
+//        canvas.drawBitmap(scaledbmp, 56, 40, paint);
+//
+//        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+//        title.setTextSize(15);
+//
+//        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
+//
+//        canvas.drawText("A portal for IT professionals.", 209, 100, title);
+//        canvas.drawText("Geeks for Geeks", 209, 80, title);
+//
+//        title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+//        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
+//        title.setTextSize(15);
+//
+//        title.setTextAlign(Paint.Align.CENTER);
+//        canvas.drawText("This is sample document which we have created.", 396, 560, title);
+//
+//
+//        pdfDocument.finishPage(myPage);
+//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/", "AICAN" + Math.random() + ".pdf");
+//
+//        try {
+//            pdfDocument.writeTo(new FileOutputStream(file));
+//
+//            Toast.makeText(getContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//        }
+//
+//        pdfDocument.close();
+//    }
 
     private void onClick(View v) {
 
