@@ -11,16 +11,23 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Base64;
 import android.util.Log;
@@ -28,6 +35,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,9 +69,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 
@@ -72,8 +86,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,7 +97,11 @@ import java.util.Locale;
 
 public class Export extends AppCompatActivity {
 
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int CAMERA_REQUEST = 1888;
 
+    Button selectCompanyLogo;
+    ImageView companyLogo;
     //    String ph1, mv1, ph2, mv2, ph3, mv3, ph4, mv4, ph5, mv5, dt1, dt2, dt3, dt4, dt5;
     Button mDateBtn, exportUserData, exportCSV, convertToXls;
     ImageButton arNumBtn, batchNumBtn, compoundBtn;
@@ -109,6 +129,11 @@ public class Export extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerViewCSV);
         RecyclerView userRecyclerView = findViewById(R.id.recyclerViewUserData);
 //        TextView noFilesText = findViewById(R.id.nofiles_textview);
+        selectCompanyLogo = findViewById(R.id.selectCompanyLogo);
+        selectCompanyLogo.setOnClickListener(v -> {
+            showOptionDialog();
+        });
+        companyLogo = findViewById(R.id.companyLogo);
         deviceId = findViewById(R.id.DeviceId);
         exportCSV = findViewById(R.id.exportCSV);
         mDateBtn = findViewById(R.id.materialDateBtn);
@@ -132,6 +157,7 @@ public class Export extends AppCompatActivity {
 
         nullEntry = " ";
         setFirebaseListeners();
+
 
         convertToXls.setVisibility(View.INVISIBLE);
 
@@ -356,67 +382,6 @@ public class Export extends AppCompatActivity {
 
                 String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
                 File root = new File(path);
-//                fileNotWrite(root);
-//                File[] filesAndFolders = root.listFiles();
-//
-//                if (filesAndFolders == null || filesAndFolders.length == 0) {
-//
-//                    return;
-//                } else {
-//                    for (int i = 0; i < filesAndFolders.length; i++) {
-//                        filesAndFolders[i].getName().endsWith(".csv");
-//                    }
-//                }
-
-
-//                try {
-//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
-//                    File root1 = new File(path1);
-//                    fileNotWrite(root1);
-//                    File[] filesAndFolders1 = root1.listFiles();
-//
-//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-//
-//                        return;
-//                    } else {
-//                        for (int i = 0; i < filesAndFolders1.length; i++) {
-//                            filesAndFolders1[i].getName().endsWith(".xlsx");
-//                        }
-//                    }
-//
-//                    Workbook workbook = null;
-//
-//                    workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx");
-//
-//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-//                    String currentDateandTime = sdf.format(new Date());
-//                    PdfSaveOptions options = new PdfSaveOptions();
-//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-//                    File tempRoot = new File(tempPath);
-//                    fileNotWrite(tempRoot);
-//                    File[] tempFilesAndFolders = tempRoot.listFiles();
-//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DUA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-//
-//                    String path_1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
-//                    File root_1 = new File(path_1);
-//                    fileNotWrite(root_1);
-//                    File[] filesAndFolders_1 = root_1.listFiles();
-//
-//                    if (filesAndFolders_1 == null || filesAndFolders_1.length == 0) {
-//
-//                        return;
-//                    } else {
-//                        for (int i = 0; i < filesAndFolders1.length; i++) {
-//                            if (filesAndFolders_1[i].getName().endsWith(".csv") || filesAndFolders_1[i].getName().endsWith(".xlsx")) {
-//                                filesAndFolders_1[i].delete();
-//                            }
-//                        }
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
                 File rootPDF = new File(pathPDF);
@@ -439,10 +404,106 @@ public class Export extends AppCompatActivity {
             requestPermission();
         }
 
+        Bitmap comLo = getCompanyLogo();
+        if (comLo != null) {
+            companyLogo.setImageBitmap(comLo);
+        }
 
     }
 
-    private Bitmap getSign() {
+    public static int PICK_IMAGE = 1;
+
+    private void showOptionDialog() {
+        Dialog dialog = new Dialog(Export.this);
+        dialog.setContentView(R.layout.img_options_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            saveImage(photo);
+            companyLogo.setImageBitmap(photo);
+            companyLogo.setVisibility(View.VISIBLE);
+//            selectCompanyLogo.setText("Ok!");
+//            selectCompanyLogo.setEnabled(false);
+        }
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri picUri = data.getData();//<- get Uri here from data intent
+                if (picUri != null) {
+//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    Bitmap photo = null;
+
+                    try {
+                        photo = android.provider.MediaStore.Images.Media.getBitmap(
+                                this.getContentResolver(),
+                                picUri);
+                        saveImage(photo);
+                        companyLogo.setImageBitmap(photo);
+                        companyLogo.setVisibility(View.VISIBLE);
+//                        selectCompanyLogo.setText("Ok!");
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                }
+            }
+        }
+    }
+
+    private void saveImage(Bitmap realImage) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        realImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        SharedPreferences shre = getSharedPreferences("logo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = shre.edit();
+        edit.putString("logo_data", encodedImage);
+        edit.commit();
+    }
+
+    private Bitmap getCompanyLogo() {
+        SharedPreferences sh = getSharedPreferences("logo", Context.MODE_PRIVATE);
+        String photo = sh.getString("logo_data", "");
+        Bitmap bitmap = null;
+
+        if (!photo.equalsIgnoreCase("")) {
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        return bitmap;
+    }
+
+    private Bitmap getSignImage() {
         SharedPreferences sh = getSharedPreferences("signature", Context.MODE_PRIVATE);
         String photo = sh.getString("signature_data", "");
         Bitmap bitmap = null;
@@ -473,6 +534,13 @@ public class Export extends AppCompatActivity {
         return newText.trim();
     }
 
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
     public void generatePDF1() throws FileNotFoundException {
 
@@ -490,6 +558,11 @@ public class Export extends AppCompatActivity {
 
         roleExport = "Made By: " + Source.logUserName;
 
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
         String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
@@ -498,12 +571,35 @@ public class Export extends AppCompatActivity {
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
+//        float[] columnWidth12 = {150, 400, 400};
+//        Table table12 = new Table(columnWidth12);
+
+        Bitmap imgBit = getCompanyLogo();
+        if (imgBit != null) {
+            Uri uri = getImageUri(Export.this, imgBit);
+
+            try {
+                String add = getPath(uri);
+                ImageData imageData = ImageDataFactory.create(add);
+                Image image = new Image(imageData).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+//
+//        table12.addCell(new Paragraph(companyName));
+//        table12.setBorder(Border.NO_BORDER);
+//
+//        document.add(table12);
         document.add(new Paragraph(companyName + "\n" + roleExport + "\n" + device_id));
         document.add(new Paragraph(""));
         document.add(new Paragraph(reportDate
@@ -664,10 +760,32 @@ public class Export extends AppCompatActivity {
         document.add(new Paragraph(""));
         document.add(new Paragraph("Operator Sign                                                                                          Supervisor Sign"));
 
+        Bitmap imgBit1 = getSignImage();
+        if (imgBit1 != null) {
+            Uri uri1 = getImageUri(Export.this, imgBit1);
+
+            try {
+                String add = getPath(uri1);
+                ImageData imageData1 = ImageDataFactory.create(add);
+                Image image1 = new Image(imageData1).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image1);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
 
         document.close();
 
         Toast.makeText(Export.this, "Pdf generated", Toast.LENGTH_SHORT).show();
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     public void exportDatabaseCsv() {
@@ -911,6 +1029,11 @@ public class Export extends AppCompatActivity {
         slope = "Slope: " + shp.getString("slope", "");
         String tempe = "Temperature: " + shp.getString("temp", "");
 
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
         String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
@@ -924,6 +1047,22 @@ public class Export extends AppCompatActivity {
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
+
+        Bitmap imgBit = getCompanyLogo();
+        if (imgBit != null) {
+            Uri uri = getImageUri(Export.this, imgBit);
+
+            try {
+                String add = getPath(uri);
+                ImageData imageData = ImageDataFactory.create(add);
+                Image image = new Image(imageData).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
 
         document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
         document.add(new Paragraph(""));
@@ -986,6 +1125,21 @@ public class Export extends AppCompatActivity {
 
         document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
 
+        Bitmap imgBit1 = getSignImage();
+        if (imgBit1 != null) {
+            Uri uri1 = getImageUri(Export.this, imgBit1);
+
+            try {
+                String add = getPath(uri1);
+                ImageData imageData1 = ImageDataFactory.create(add);
+                Image image1 = new Image(imageData1).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image1);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
 
         document.close();
 
@@ -1089,7 +1243,8 @@ public class Export extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0) {
                 boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;

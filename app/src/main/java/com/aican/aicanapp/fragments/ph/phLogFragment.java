@@ -7,11 +7,15 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Environment;
 import android.os.Handler;
 
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,18 +75,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -703,6 +714,11 @@ public class phLogFragment extends Fragment {
         slope = "Slope: " + shp.getString("slope", "");
         tempe = "Temperature: " + shp.getString("temp", "");
 
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
         String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
@@ -711,7 +727,7 @@ public class phLogFragment extends Fragment {
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -798,11 +814,55 @@ public class phLogFragment extends Fragment {
 
         document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
 
+        Bitmap imgBit1 = getSignImage();
+        if (imgBit1 != null) {
+            Uri uri1 = getImageUri(getContext(), imgBit1);
+
+            try {
+                String add = getPath(uri1);
+                ImageData imageData1 = ImageDataFactory.create(add);
+                Image image1 = new Image(imageData1).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image1);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
 
         document.close();
 
         Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();
     }
+
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = requireActivity().managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private Bitmap getSignImage() {
+        SharedPreferences sh = getContext().getSharedPreferences("signature", Context.MODE_PRIVATE);
+        String photo = sh.getString("signature_data", "");
+        Bitmap bitmap = null;
+
+        if (!photo.equalsIgnoreCase("")) {
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        return bitmap;
+    }
+
 
     private String stringSplitter(String str) {
         String newText = "";

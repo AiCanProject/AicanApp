@@ -4,6 +4,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 import static java.lang.Integer.parseInt;
 
+import com.aican.aicanapp.specificactivities.Export;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 
 import android.annotation.SuppressLint;
@@ -21,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 //import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,6 +40,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +89,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
@@ -90,6 +97,7 @@ import com.itextpdf.layout.element.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -99,6 +107,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1403,7 +1412,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //            }
 //        });
 
-        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
 
 
         deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
@@ -1722,6 +1730,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         }
                     }
                 }
+                deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
                 calibrate();
             }
         });
@@ -2036,6 +2045,10 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         slope = "Slope: " + shp.getString("slope", "");
         temp = "Temperature: " + shp.getString("temp", "");
 
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
@@ -2045,7 +2058,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -2104,6 +2117,21 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
 
+        Bitmap imgBit1 = getSignImage();
+        if (imgBit1 != null) {
+            Uri uri1 = getImageUri(getContext(), imgBit1);
+
+            try {
+                String add = getPath(uri1);
+                ImageData imageData1 = ImageDataFactory.create(add);
+                Image image1 = new Image(imageData1).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image1);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
 
         document.close();
 
@@ -2111,110 +2139,34 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     }
 
-//    private void generatePDF1() {
-//
-//        String company_name = "Company: " + companyName;
-//        String user_name = "Username: " + Source.logUserName;
-//        String device_id = "DeviceID: " + deviceID;
-//
-//        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-//        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-//
-//        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
-//        offset = "Offset: " + shp.getString("offset", "");
-//        battery = "Battery: " + shp.getString("battery", "");
-//        slope = "Slope: " + shp.getString("slope", "");
-//        temp = "Temperature: " + shp.getString("temp", "");
-//
-//        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wifi_router);
-//        scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false);
-//
-//        PdfDocument pdfDocument = new PdfDocument();
-//        Paint paint = new Paint();
-//
-//        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-//        PdfDocument.Page myPage = pdfDocument.startPage(myPageInfo);
-//        Canvas canvas = myPage.getCanvas();
-//
-//        paint.setTextAlign(Paint.Align.LEFT);
-//        paint.setTextSize(12.0f);
-//        canvas.drawText(company_name, 30, 70, paint);
-//        canvas.drawText(user_name, 30, 85, paint);
-//        canvas.drawText(device_id, 30, 100, paint);
-//        canvas.drawText(reportDate, 30, 115, paint);
-//
-//
-//        pdfDocument.finishPage(myPage);
-//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/", "AICAN" + Math.random() + ".pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(file));
-//
-//            Toast.makeText(getContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//        }
-//
-//        pdfDocument.close();
-//    }
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = requireActivity().managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
 
 
-//    private void generatePDF2() {
-//
-//        reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-//        reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-//
-//        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
-//        offset = "Offset: " + shp.getString("offset", "");
-//        battery = "Battery: " + shp.getString("battery", "");
-//        slope = "Slope: " + shp.getString("slope", "");
-//        temp = "Temperature: " + shp.getString("temp", "");
-//
-//        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.wifi_router);
-//        scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false);
-//
-//        PdfDocument pdfDocument = new PdfDocument();
-//        Paint paint = new Paint();
-//        Paint title = new Paint();
-//        PdfDocument.PageInfo mypageInfo = new PdfDocument.PageInfo.Builder(pagewidth, pageHeight, 1).create();
-//
-//        PdfDocument.Page myPage = pdfDocument.startPage(mypageInfo);
-//        Canvas canvas = myPage.getCanvas();
-//
-//
-//        canvas.drawBitmap(scaledbmp, 56, 40, paint);
-//
-//        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
-//        title.setTextSize(15);
-//
-//        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
-//
-//        canvas.drawText("A portal for IT professionals.", 209, 100, title);
-//        canvas.drawText("Geeks for Geeks", 209, 80, title);
-//
-//        title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-//        title.setColor(ContextCompat.getColor(getContext(), R.color.purple_200));
-//        title.setTextSize(15);
-//
-//        title.setTextAlign(Paint.Align.CENTER);
-//        canvas.drawText("This is sample document which we have created.", 396, 560, title);
-//
-//
-//        pdfDocument.finishPage(myPage);
-//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/", "AICAN" + Math.random() + ".pdf");
-//
-//        try {
-//            pdfDocument.writeTo(new FileOutputStream(file));
-//
-//            Toast.makeText(getContext(), "PDF file generated successfully.", Toast.LENGTH_SHORT).show();
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//        }
-//
-//        pdfDocument.close();
-//    }
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private Bitmap getSignImage() {
+        SharedPreferences sh = getContext().getSharedPreferences("signature", Context.MODE_PRIVATE);
+        String photo = sh.getString("signature_data", "");
+        Bitmap bitmap = null;
+
+        if (!photo.equalsIgnoreCase("")) {
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        return bitmap;
+    }
+
 
     private void onClick(View v) {
 

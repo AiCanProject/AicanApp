@@ -4,11 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -25,10 +30,12 @@ import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
+import com.aican.aicanapp.specificactivities.Export;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -73,8 +80,9 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         addSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+//                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                showOptionDialog();
             }
         });
 
@@ -103,9 +111,9 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 Source.userPasscode = passcode.getText().toString();
                 Source.expiryDate = getExpiryDate();
                 Source.dateCreated = getPresentDate();
-                Log.d("expiryDate", "onCreate: "+Source.expiryDate);
-                databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode,Source.expiryDate,Source.dateCreated);
-                databaseHelper.insertUserData(Source.userName,Source.userRole,Source.expiryDate,Source.dateCreated);
+                Log.d("expiryDate", "onCreate: " + Source.expiryDate);
+                databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode, Source.expiryDate, Source.dateCreated);
+                databaseHelper.insertUserData(Source.userName, Source.userRole, Source.expiryDate, Source.dateCreated);
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
 
                 FileOutputStream fos = null;
@@ -125,12 +133,59 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                         }
                     }
                 }
-            }
-            else{
+            } else {
                 Toast.makeText(this, "Role Not Assigned", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Bitmap comLo = getSignImage();
+        if (comLo != null) {
+            imageView.setImageBitmap(comLo);
+        }
+
     }
+
+    private Bitmap getSignImage() {
+        SharedPreferences sh = getSharedPreferences("signature", Context.MODE_PRIVATE);
+        String photo = sh.getString("signature_data", "");
+        Bitmap bitmap = null;
+
+        if (!photo.equalsIgnoreCase("")) {
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        return bitmap;
+    }
+
+    public static int PICK_IMAGE = 1;
+
+    private void showOptionDialog() {
+        Dialog dialog = new Dialog(SettingActivity.this);
+        dialog.setContentView(R.layout.img_options_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -187,8 +242,33 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             saveImage(photo);
             imageView.setImageBitmap(photo);
             imageView.setVisibility(View.VISIBLE);
-            addSign.setText("Ok!");
-            addSign.setEnabled(false);
+//            addSign.setText("Ok!");
+//            addSign.setEnabled(false);
+        }
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri picUri = data.getData();//<- get Uri here from data intent
+                if (picUri != null) {
+//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    Bitmap photo = null;
+
+                    try {
+                        photo = android.provider.MediaStore.Images.Media.getBitmap(
+                                this.getContentResolver(),
+                                picUri);
+                        saveImage(photo);
+                        imageView.setImageBitmap(photo);
+                        imageView.setVisibility(View.VISIBLE);
+//                        selectCompanyLogo.setText("Ok!");
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                }
+            }
         }
     }
 
@@ -200,21 +280,21 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
         SharedPreferences shre = getSharedPreferences("signature", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit=shre.edit();
-        edit.putString("signature_data",encodedImage);
+        SharedPreferences.Editor edit = shre.edit();
+        edit.putString("signature_data", encodedImage);
         edit.commit();
     }
 
-    private String getExpiryDate(){
+    private String getExpiryDate() {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = dateFormat.format(date);
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try{
+        try {
             cal.setTime(sdf.parse(presentDate));
-        }catch(ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
@@ -225,7 +305,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         return expiryDate;
     }
 
-    private String getPresentDate(){
+    private String getPresentDate() {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String presentDate = dateFormat.format(date);
