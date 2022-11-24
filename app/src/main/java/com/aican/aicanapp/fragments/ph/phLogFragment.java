@@ -571,7 +571,6 @@ public class phLogFragment extends Fragment {
                     switchBtnClick.setChecked(false);
                     switchHold.setChecked(false);
                     deviceRef.child("Data").child("AUTOLOG").setValue(2);
-                    timer_cloud_layout.setVisibility(View.VISIBLE);
 
                     if (Constants.timeInSec == 0) {
 
@@ -589,7 +588,6 @@ public class phLogFragment extends Fragment {
                     isAlertShow = true;
                     if (handler != null)
                         handler.removeCallbacks(runnable);
-                    timer_cloud_layout.setVisibility(View.GONE);
 
                     if (!switchHold.isChecked() && !switchBtnClick.isChecked()) {
                         deviceRef.child("Data").child("AUTOLOG").setValue(0);
@@ -604,7 +602,7 @@ public class phLogFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (!enterTime.getText().toString().isEmpty()) {
+                if (!enterTime.getText().toString().isEmpty() && switchInterval.isChecked()) {
                     double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
                     Double db = new Double(d);
                     Constants.timeInSec = db.intValue();
@@ -976,6 +974,7 @@ public class phLogFragment extends Fragment {
     void handler() {
         Log.d("Timer", "doInBackground: in while " + Constants.timeInSec);
 
+        Toast.makeText(getContext(),"Background service running ",Toast.LENGTH_SHORT).show();
         handler = new Handler();
         runnable = new Runnable() {
             @Override

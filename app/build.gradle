@@ -40,6 +40,8 @@ android {
 dependencies {
 
     implementation "io.grpc:grpc-okhttp:1.32.2"
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
 
 
     //pdfviewer

@@ -32,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 public class PhActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
-
     DatabaseReference deviceRef;
 
     PhFragment phFragment = new PhFragment();
@@ -156,6 +155,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         }else {
             Toast.makeText(this, "You cannot change fragment while logging", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -181,4 +181,5 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         }
         return false;
     }
+
 }
