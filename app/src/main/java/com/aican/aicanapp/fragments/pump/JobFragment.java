@@ -43,24 +43,24 @@ public class JobFragment extends Fragment {
     Spinner spin;
     CardView repeat, timer;
     TextView on_time_1, on_time_2, on_time_3, on_time_4, on_time_5;
-    TextView off_time_1,off_time_2,off_time_3,off_time_4,off_time_5;
-    TextView speed_1,speed_2,speed_3,speed_4,speed_5;
-    TextView volume_1, volume_2,volume_3,volume_4,volume_5;
-    int togTime = 1,speedTextNumber=0,volumeTextNumber=0;
+    TextView off_time_1, off_time_2, off_time_3, off_time_4, off_time_5;
+    TextView speed_1, speed_2, speed_3, speed_4, speed_5;
+    TextView volume_1, volume_2, volume_3, volume_4, volume_5;
+    int togTime = 1, speedTextNumber = 0, volumeTextNumber = 0;
     long diffTime, startTime, endTime;
     boolean ON_CLICKED = false;
     String valMin_final = "", valHour_final = "";
     DatePickerDialog datePickerDialog;
     TimePickerDialog timePickerDialog;
     DatabaseReference deviceRef = null;
-    EditText etSpeed,etVol, etTime, etName;
+    EditText etSpeed, etVol, etTime, etName;
     int on_flag = 0, off_flag = 0;
-    Button startBtnRep,stopBtnRep,startBtnTimer,stopBtnTimer;
+    Button startBtnRep, stopBtnRep, startBtnTimer, stopBtnTimer;
     private int direction = 0;
-    SwitchCompat clockwiseSwitch,antiClockwiseSwitch;
+    SwitchCompat clockwiseSwitch, antiClockwiseSwitch;
     int speedVol = 0;
-    ImageView clearBtn1,clearBtn2, clearBtn3, clearBtn4, clearBtn5;
-    
+    ImageView clearBtn1, clearBtn2, clearBtn3, clearBtn4, clearBtn5;
+
     public JobFragment() {
     }
 
@@ -121,12 +121,12 @@ public class JobFragment extends Fragment {
         clearBtn5 = view.findViewById(R.id.clearBtn5);
 
 //        Current date time and mtnth
-        Calendar c= Calendar.getInstance();
+        Calendar c = Calendar.getInstance();
         int cyear = c.get(Calendar.YEAR);
-        int cmonth = c.get(Calendar.MONTH)+1;
+        int cmonth = c.get(Calendar.MONTH) + 1;
         int cday = c.get(Calendar.DAY_OF_MONTH);
 
-        Log.d("DateTime", "onViewCreated: "+cyear+" "+cmonth+" "+cday);
+        Log.d("DateTime", "onViewCreated: " + cyear + " " + cmonth + " " + cday);
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PumpActivity.DEVICE_ID)).getReference()
                 .child("P_PUMP").child(PumpActivity.DEVICE_ID);
 
@@ -370,7 +370,7 @@ public class JobFragment extends Fragment {
             }
         });
 
-        String[] spinselect = {"Repeatation","Timer"};
+        String[] spinselect = {"Repeatation", "Timer"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, spinselect);
 
@@ -417,12 +417,12 @@ public class JobFragment extends Fragment {
         clockwiseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (clockwiseSwitch.isChecked()){
+                if (clockwiseSwitch.isChecked()) {
                     direction = 0;
-                    if(antiClockwiseSwitch.isChecked()){
+                    if (antiClockwiseSwitch.isChecked()) {
                         antiClockwiseSwitch.setChecked(false);
                     }
-                }else{
+                } else {
                     antiClockwiseSwitch.setChecked(true);
                     direction = 1;
                 }
@@ -432,12 +432,12 @@ public class JobFragment extends Fragment {
         antiClockwiseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(antiClockwiseSwitch.isChecked()){
+                if (antiClockwiseSwitch.isChecked()) {
                     direction = 1;
-                    if(clockwiseSwitch.isChecked()){
+                    if (clockwiseSwitch.isChecked()) {
                         clockwiseSwitch.setChecked(false);
                     }
-                }else{
+                } else {
                     clockwiseSwitch.setChecked(true);
                     direction = 0;
                 }
@@ -530,7 +530,7 @@ public class JobFragment extends Fragment {
         });
     }
 
-    private void selectSpeedVolumeDialog(){
+    private void selectSpeedVolumeDialog() {
         final Dialog dialog = new Dialog(getContext());
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.set_speed_volume_dialog_layout);
@@ -545,10 +545,10 @@ public class JobFragment extends Fragment {
         value = dialog.findViewById(R.id.setSpeedVol);
         setSpeedVolText = (TextView) dialog.findViewById(R.id.setSpeedVolText);
 
-        if(speedVol ==1){
+        if (speedVol == 1) {
             setSpeedVolText.setText(R.string.set_Speed);
             speedVolSetBtn.setText(R.string.set_Speed);
-        }else if(speedVol == 2){
+        } else if (speedVol == 2) {
             setSpeedVolText.setText(R.string.set_volume);
             speedVolSetBtn.setText(R.string.set_volume);
         }
@@ -563,49 +563,49 @@ public class JobFragment extends Fragment {
         speedVolSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!value.getText().toString().isEmpty()) {
+                if (!value.getText().toString().isEmpty()) {
                     if (speedVol == 1) {
                         int speed = Integer.parseInt(value.getText().toString());
 
                         if (speedTextNumber == 1) {
-                            speed_1.setText(""+speed);
+                            speed_1.setText("" + speed);
                             deviceRef.child("UI").child("SPEED_1").setValue(speed);
-                        }else if(speedTextNumber == 2){
-                            speed_2.setText(""+speed);
+                        } else if (speedTextNumber == 2) {
+                            speed_2.setText("" + speed);
                             deviceRef.child("UI").child("SPEED_2").setValue(speed);
-                        }else if(speedTextNumber == 3){
-                            speed_3.setText(""+speed);
+                        } else if (speedTextNumber == 3) {
+                            speed_3.setText("" + speed);
                             deviceRef.child("UI").child("SPEED_3").setValue(speed);
-                        }else if(speedTextNumber == 4){
-                            speed_4.setText(""+speed);
+                        } else if (speedTextNumber == 4) {
+                            speed_4.setText("" + speed);
                             deviceRef.child("UI").child("SPEED_4").setValue(speed);
-                        }else if(speedTextNumber == 5){
-                            speed_5.setText(""+speed);
+                        } else if (speedTextNumber == 5) {
+                            speed_5.setText("" + speed);
                             deviceRef.child("UI").child("SPEED_5").setValue(speed);
                         }
-                    }else if(speedVol == 2){
+                    } else if (speedVol == 2) {
                         int volume = Integer.parseInt(value.getText().toString());
 
                         if (volumeTextNumber == 1) {
-                            volume_1.setText(""+volume);
+                            volume_1.setText("" + volume);
                             deviceRef.child("UI").child("VOLUME_1").setValue(volume);
-                        }else if(volumeTextNumber == 2){
-                            volume_2.setText(""+volume);
+                        } else if (volumeTextNumber == 2) {
+                            volume_2.setText("" + volume);
                             deviceRef.child("UI").child("VOLUME_2").setValue(volume);
-                        }else if(volumeTextNumber == 3){
-                            volume_3.setText(""+volume);
+                        } else if (volumeTextNumber == 3) {
+                            volume_3.setText("" + volume);
                             deviceRef.child("UI").child("VOLUME_3").setValue(volume);
-                        }else if(volumeTextNumber == 4){
-                            volume_4.setText(""+volume);
+                        } else if (volumeTextNumber == 4) {
+                            volume_4.setText("" + volume);
                             deviceRef.child("UI").child("VOLUME_4").setValue(volume);
-                        }else if(volumeTextNumber == 5){
-                            volume_5.setText(""+volume);
+                        } else if (volumeTextNumber == 5) {
+                            volume_5.setText("" + volume);
                             deviceRef.child("UI").child("VOLUME_5").setValue(volume);
                         }
                     }
                     dialog.dismiss();
-                }else{
-                    Toast.makeText(getContext(),"Please Enter value",Toast.LENGTH_SHORT);
+                } else {
+                    Toast.makeText(getContext(), "Please Enter value", Toast.LENGTH_SHORT);
                 }
             }
         });
@@ -623,9 +623,9 @@ public class JobFragment extends Fragment {
     }
 
     private void updateValuesOnFirebase() {
-        if(etVol.getText().toString().isEmpty() || etTime.getText().toString().isEmpty() || etSpeed.getText().toString().isEmpty() || etName.getText().toString().isEmpty()){
+        if (etVol.getText().toString().isEmpty() || etTime.getText().toString().isEmpty() || etSpeed.getText().toString().isEmpty() || etName.getText().toString().isEmpty()) {
             Toast.makeText(getContext(), "Please enter all values", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             deviceRef.child("UI").child("Speed").setValue(Integer.parseInt(etSpeed.getText().toString()));
             deviceRef.child("UI").child("Volume").setValue(Integer.parseInt(etVol.getText().toString()));
             deviceRef.child("UI").child("interval").setValue(Integer.parseInt(etTime.getText().toString()));
@@ -645,42 +645,42 @@ public class JobFragment extends Fragment {
                 String val = makeDateString(day, month, year, hour, min);
                 if (togTime == 1) {
                     if (differFromNowTimeCalculate(day, month, year, hour, min)) {
-                        if(on_flag == 1){
+                        if (on_flag == 1) {
                             on_time_1.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_ON_1").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 2){
+                        } else if (on_flag == 2) {
                             on_time_2.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_ON_2").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 3){
+                        } else if (on_flag == 3) {
                             on_time_3.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_ON_3").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 4){
+                        } else if (on_flag == 4) {
                             on_time_4.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_ON_4").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 5){
+                        } else if (on_flag == 5) {
                             on_time_5.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_ON_5").setValue(valHour_final + ":" + valMin_final);
                         }
-                        
+
                         startTime = diffTime;
                     } else {
                         Toast.makeText(getContext(), "Previous time not applicable", Toast.LENGTH_SHORT).show();
                     }
                 } else if (togTime == 2) {
                     if (differFromNowTimeCalculate(day, month, year, hour, min)) {
-                        if(on_flag == 1){
+                        if (on_flag == 1) {
                             off_time_1.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_OFF_1").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 2){
+                        } else if (on_flag == 2) {
                             off_time_2.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_OFF_2").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 3){
+                        } else if (on_flag == 3) {
                             off_time_3.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_OFF_3").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 4){
+                        } else if (on_flag == 4) {
                             off_time_4.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_OFF_4").setValue(valHour_final + ":" + valMin_final);
-                        } else if (on_flag == 5){
+                        } else if (on_flag == 5) {
                             off_time_5.setText(valHour_final + ":" + valMin_final);
                             deviceRef.child("UI").child("TIMER_OFF_5").setValue(valHour_final + ":" + valMin_final);
                         }

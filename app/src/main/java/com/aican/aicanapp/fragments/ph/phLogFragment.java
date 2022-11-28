@@ -576,15 +576,18 @@ public class phLogFragment extends Fragment {
 
                     } else {
                         float f = (float) Constants.timeInSec / 60000;
-                        enterTime.setText("" + (f));
+                        enterTime.setText("" + f);
                         if (handler != null)
                             handler.removeCallbacks(runnable);
+                        takeLog();
                         handler();
                     }
 
                 } else {
                     isTimer = false;
                     Constants.timeInSec = 0;
+                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
+
                     isAlertShow = true;
                     if (handler != null)
                         handler.removeCallbacks(runnable);
@@ -609,6 +612,7 @@ public class phLogFragment extends Fragment {
                     double a = (double) Constants.timeInSec / 60000;
                     Log.d("TimerVal", "" + a);
                     deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
+                    takeLog();
                     handler();
                 }
             }
@@ -959,6 +963,7 @@ public class phLogFragment extends Fragment {
                     Double db = new Double(d);
                     Constants.timeInSec = db.intValue();
                     deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
+                    takeLog();
                     handler();
                     dialog.dismiss();
                 }
@@ -974,7 +979,7 @@ public class phLogFragment extends Fragment {
     void handler() {
         Log.d("Timer", "doInBackground: in while " + Constants.timeInSec);
 
-        Toast.makeText(getContext(),"Background service running ",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Background service running ", Toast.LENGTH_SHORT).show();
         handler = new Handler();
         runnable = new Runnable() {
             @Override

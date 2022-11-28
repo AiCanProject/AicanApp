@@ -1150,7 +1150,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     } else if (ec == 51) {
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
                         strDate = simpleDateFormat.format(new Date());
-                        Log.d("EC", "onDataChange: "+ec);
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
                         calibrateBtn.setText("DONE");
                         calibrateBtn.setEnabled(false);
@@ -1165,7 +1164,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                 calibrateBtn.setEnabled(true);
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                             }
-                        }, 10000);   //5 seconds
+                        }, 90000);   //5 seconds
 
                     } else if (ec == 0) {
                         calibrateBtn.setText("START");
@@ -2268,6 +2267,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             }
         }
 
+        setupListeners();
     }
 
     private void openQRActivity(String view) {
