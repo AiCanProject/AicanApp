@@ -75,7 +75,7 @@ public class UserDatabase extends AppCompatActivity {
                 String currentDateandTime = sdf.format(new Date());
                 options.setCompliance(PdfCompliance.PDF_A_1_B);
 
-                workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData/UserData"+currentDateandTime+".pdf", options);
+                workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData/UserData" + currentDateandTime + ".pdf", options);
 
                 String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData";
                 File root1 = new File(path1);
@@ -87,7 +87,7 @@ public class UserDatabase extends AppCompatActivity {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFolders1.length; i++) {
-                        if(filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")  ){
+                        if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
                             filesAndFolders1[i].delete();
                         }
                     }
@@ -104,13 +104,13 @@ public class UserDatabase extends AppCompatActivity {
                     return;
                 } else {
                     for (int i = 0; i < filesAndFoldersPDF.length; i++) {
-                        if(filesAndFoldersPDF[i].getName().endsWith(".pdf")){
-                            filesAndFoldersNewPDF[0]=filesAndFoldersPDF[i];
+                        if (filesAndFoldersPDF[i].getName().endsWith(".pdf")) {
+                            filesAndFoldersNewPDF[0] = filesAndFoldersPDF[i];
                         }
                     }
                 }
 
-                RecyclerView pdfRecyclerView= findViewById(R.id.userDataPDF);
+                RecyclerView pdfRecyclerView = findViewById(R.id.userDataPDF);
                 UserAdapter plAdapter = new UserAdapter(this, filesAndFoldersPDF);
                 pdfRecyclerView.setAdapter(plAdapter);
                 plAdapter.notifyDataSetChanged();
@@ -123,33 +123,30 @@ public class UserDatabase extends AppCompatActivity {
         });
 
 
-
-
     }
 
-    public void fileNotWrite(File file){
+    public void fileNotWrite(File file) {
         file.setWritable(false);
-        if(file.canWrite()){
-            Log.d("csv","Not Working");
+        if (file.canWrite()) {
+            Log.d("csv", "Not Working");
         } else {
-            Log.d("csvnw","Working");
+            Log.d("csvnw", "Working");
         }
     }
 
-    private List<UserDatabaseModel> getList(){
+    private List<UserDatabaseModel> getList() {
         Cursor res = databaseHelper.get_data();
-        if(res.getCount()==0){
+        if (res.getCount() == 0) {
             Toast.makeText(UserDatabase.this, "No entry", Toast.LENGTH_SHORT).show();
         }
-        while(res.moveToNext()){
-            userDatabaseModelList.add(new UserDatabaseModel(res.getString(0),res.getString(1),res.getString(4),res.getString(5)));
+        while (res.moveToNext()) {
+            userDatabaseModelList.add(new UserDatabaseModel(res.getString(0), res.getString(3), res.getString(2), res.getString(1), res.getString(4), res.getString(5)));
         }
         return userDatabaseModelList;
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(UserDatabase.this, Dashboard.class));
         finish();
@@ -170,16 +167,16 @@ public class UserDatabase extends AppCompatActivity {
             file = new File(exportDir, "UserData.csv");
             file.createNewFile();
             printWriter = new PrintWriter(new FileWriter(file), true);
-            String nullEntry=" ";
+            String nullEntry = " ";
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor curCSV = db.rawQuery("SELECT * FROM UserDataDetails", null);
 
-            printWriter.println(nullEntry + "," + nullEntry+","+nullEntry+"," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry+","+nullEntry+"," + nullEntry);
-            printWriter.println("UserData Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + nullEntry+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
+            printWriter.println("UserData Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("UserName,UserRole,DateCreated,ExpiryDate");
-            printWriter.println(nullEntry + "," + nullEntry+","+nullEntry+"," + nullEntry);
+            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             while (curCSV.moveToNext()) {
 
@@ -196,7 +193,7 @@ public class UserDatabase extends AppCompatActivity {
             printWriter.println(nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry);
-            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry+ "," + "Supervisor Sign"+ "," + nullEntry+ "," + nullEntry);
+            printWriter.println("Operator Sign" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign" + "," + nullEntry + "," + nullEntry);
             curCSV.close();
             db.close();
 
@@ -205,8 +202,8 @@ public class UserDatabase extends AppCompatActivity {
             String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData/";
             Workbook workbook = new Workbook(inputFile + "UserData.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0,10.5);
-            worksheet.getCells().setColumnWidth(2,10.5);
+            worksheet.getCells().setColumnWidth(0, 10.5);
+            worksheet.getCells().setColumnWidth(2, 10.5);
             workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/UserData/UserData.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {

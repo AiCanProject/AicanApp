@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.specificactivities.PhActivity;
@@ -23,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class PhMvTable extends AppCompatActivity {
@@ -95,6 +98,10 @@ public class PhMvTable extends AppCompatActivity {
 
 
         databaseHelper = new DatabaseHelper(PhMvTable.this);
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        databaseHelper.insert_action_data(time, date, "pHMvTable : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
         insertIntoDB();
 

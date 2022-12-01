@@ -113,7 +113,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 Source.dateCreated = getPresentDate();
                 Log.d("expiryDate", "onCreate: " + Source.expiryDate);
                 databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode, Source.expiryDate, Source.dateCreated);
-                databaseHelper.insertUserData(Source.userName, Source.userRole, Source.expiryDate, Source.dateCreated);
+                databaseHelper.insertUserData(Source.userName, Source.userId, Source.userRole, Source.expiryDate, Source.dateCreated);
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
 
                 FileOutputStream fos = null;

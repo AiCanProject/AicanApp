@@ -5,8 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -26,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT,date TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
-        sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
+        sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,id TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table PHBuffer(ID INTEGER PRIMARY KEY AUTOINCREMENT,PH_BUFF TEXT, minMV TEXT, maxMV TEXT)");
@@ -54,10 +61,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public boolean insertUserData(String userName, String role, String expiryDate, String dateCreated) {
+    public boolean insertUserData(String userName, String id, String role, String expiryDate, String dateCreated) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Username", userName);
+        contentValues.put("id", id);
         contentValues.put("Role", role);
         contentValues.put("expiryDate", expiryDate);
         contentValues.put("dateCreated", dateCreated);
@@ -297,7 +305,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // for pH log
-    public Boolean insert_action_data(String time,String date, String useraction, String ph, String temperature, String mv, String compound, String deviceID) {
+    public Boolean insert_action_data(String time, String date, String useraction, String ph, String temperature, String mv, String compound, String deviceID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("time", time);
@@ -395,33 +403,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public boolean updateUserDetails(String name, String newName, String role, String password) {
+
+    public boolean updateUserDetails(String name, String uid, String newName, String role, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
+//        Cursor cursor = db.rawQuery("Select * from UserDataDetails", null);
 
-        if (cursor.getCount() > 0) {
-            ContentValues dataToInsert = new ContentValues();
-            dataToInsert.put("id", newName);
-            dataToInsert.put("role", role);
+//        if (cursor.getCount() > 0) {
+        ContentValues dataToInsert = new ContentValues();
+        dataToInsert.put("name", newName);
+        dataToInsert.put("role", role);
+        dataToInsert.put("passcode", password);
+        dataToInsert.put("expiryDate", getExpiryDate());
+        dataToInsert.put("dateCreated", getPresentDate());
 
-            ContentValues dataToInsertUserData = new ContentValues();
-            dataToInsertUserData.put("Username", newName);
-            dataToInsertUserData.put("Role", role);
+        ContentValues dataToInsertUserData = new ContentValues();
+        dataToInsertUserData.put("Username", newName);
+        dataToInsertUserData.put("Role", role);
+        dataToInsertUserData.put("expiryDate", getExpiryDate());
+        dataToInsertUserData.put("dateCreated", getPresentDate());
 
-            if (!password.isEmpty())
-                dataToInsert.put("passcode", password);
 
-            long result = db.update("Userdetails", dataToInsert, "id=?", new String[]{name});
-            long result2 = db.update("UserDataDetails", dataToInsertUserData, "Username=?", new String[]{name});
-            if (result == -1 || result2 == -1) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
+        long result = db.update("Userdetails", dataToInsert, "id=?", new String[]{uid});
+        long result2 = db.update("UserDataDetails", dataToInsertUserData, "id=?", new String[]{uid});
+        Log.e("ResultCode021", result + " , " + result2);
+        if (result == -1 || result2 == -1) {
             return false;
+        } else {
+            return true;
         }
+//        } else {
+//            return false;
+//        }
 
 
     }
+
+    private String getExpiryDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            cal.setTime(sdf.parse(presentDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // use add() method to add the days to the given date
+        cal.add(Calendar.DAY_OF_MONTH, 90);
+        String expiryDate = sdf.format(cal.getTime());
+
+        return expiryDate;
+    }
+
+    private String getPresentDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+        return presentDate;
+    }
+
+
 }

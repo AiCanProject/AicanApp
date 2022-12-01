@@ -17,6 +17,7 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.ProbeScan.ProbeScanner;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
@@ -29,6 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class PhActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
@@ -39,6 +44,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     phLogFragment phLogFragment = new phLogFragment();
     phGraphFragment phGraphFragment = new phGraphFragment();
     phAlarmFragment phAlarmFragment = new phAlarmFragment();
+    DatabaseHelper databaseHelper;
 
     public static String DEVICE_ID = null;
 
@@ -59,6 +65,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         }
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+        databaseHelper = new DatabaseHelper(PhActivity.this);
 
         loadFragments(phFragment);
         ph = findViewById(R.id.item1);
@@ -147,6 +154,11 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 int size = calibrate.getWidth() * 4;
                 tabItemPh.animate().x(size).setDuration(100);
             } else if (view.getId() == R.id.cLProbes) {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Probe Scanner : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 Intent intent = new Intent(PhActivity.this, ProbeScanner.class);
                 intent.putExtra("activity", "PhFragment");
 //            intent.addFlags()

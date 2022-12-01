@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 
@@ -52,6 +53,7 @@ import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 
 import com.aican.aicanapp.adapters.LogAdapter;
+import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.dataClasses.phData;
 
 import com.aican.aicanapp.ph.PhView;
@@ -100,6 +102,10 @@ import java.util.Locale;
 
 public class phLogFragment extends Fragment {
 
+    private static float LOG_INTERVAL = 0;
+    Handler handler1;
+    Runnable runnable1;
+
     PhView phView;
     TextView tvPhCurr, tvPhNext;
     String ph, temp, mv, date, time, batchnum, arnum, compound_name, ph_fetched, m_fetched,
@@ -129,7 +135,7 @@ public class phLogFragment extends Fragment {
     CardView timer_cloud_layout;
     ImageButton saveTimer;
     String deviceID = "";
-
+    TextView log_interval_text;
 
     int timerInSec;
     Boolean isTimer;
@@ -168,6 +174,7 @@ public class phLogFragment extends Fragment {
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
         autoLog = view.findViewById(R.id.autoLog);
+        log_interval_text = view.findViewById(R.id.log_interval_text);
 
         logBtn = view.findViewById(R.id.logBtn);
         exportBtn = view.findViewById(R.id.export);
@@ -401,8 +408,10 @@ public class phLogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Source.status_export = true;
-                time = new SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault()).format(new Date());
-//                databaseHelper.insert_action_data(time, "Exported by " + Source.logUserName, ph, temp, mv, "", PhActivity.DEVICE_ID);
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time,date, "Exported by " + Source.logUserName, ph, temp, mv, "", PhActivity.DEVICE_ID);
 
                 SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
                 SharedPreferences.Editor roleE = sh.edit();
@@ -612,6 +621,11 @@ public class phLogFragment extends Fragment {
                     double a = (double) Constants.timeInSec / 60000;
                     Log.d("TimerVal", "" + a);
                     deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
+                    LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
+                    log_interval_text.setText(String.valueOf(LOG_INTERVAL));
+
+//                    startTimer();
+
                     takeLog();
                     handler();
                 }
@@ -698,6 +712,38 @@ public class phLogFragment extends Fragment {
 
             }
         });
+
+        if (enterTime.getText().toString().equals("")) {
+            LOG_INTERVAL = 0 * 60;
+
+        } else {
+            LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
+        }
+        log_interval_text.setText(String.valueOf(LOG_INTERVAL));
+    }
+
+    private void startTimer() {
+
+        LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
+        log_interval_text.setText(String.valueOf(LOG_INTERVAL));
+        handler1 = new Handler();
+        runnable1 = new Runnable() {
+            public void run() {
+                Log.d("Runnable", "Handler is working");
+                if (LOG_INTERVAL == 0) { // just remove call backs
+
+                    log_interval_text.setText(String.valueOf(LOG_INTERVAL));
+                    handler1.removeCallbacks(this);
+                    Log.d("Runnable", "ok");
+                } else { // post again
+                    --LOG_INTERVAL;
+                    log_interval_text.setText(String.valueOf(LOG_INTERVAL));
+                    handler1.postDelayed(this, 1000);
+                }
+            }
+        };
+
+        runnable1.run();
     }
 
     private void generatePDF() throws FileNotFoundException {
@@ -881,8 +927,18 @@ public class phLogFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (!compound_name_txt.getText().toString().isEmpty()) {
                     compound_name = compound_name_txt.getText().toString();
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 } else {
                     compound_name = "NA";
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 }
                 snapshot.getRef().setValue(compound_name);
             }
@@ -898,8 +954,20 @@ public class phLogFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (!batch_number.getText().toString().isEmpty()) {
                     batchnum = batch_number.getText().toString();
+
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+
                 } else {
                     batchnum = "NA";
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 }
                 snapshot.getRef().setValue(batchnum);
             }
@@ -914,8 +982,18 @@ public class phLogFragment extends Fragment {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 if (!ar_number.getText().toString().isEmpty()) {
                     arnum = ar_number.getText().toString();
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 } else {
                     arnum = "NA";
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 }
                 snapshot.getRef().setValue(arnum);
             }
@@ -963,6 +1041,8 @@ public class phLogFragment extends Fragment {
                     Double db = new Double(d);
                     Constants.timeInSec = db.intValue();
                     deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
+                    LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
+                    log_interval_text.setText(String.valueOf(LOG_INTERVAL));
                     takeLog();
                     handler();
                     dialog.dismiss();
@@ -979,7 +1059,16 @@ public class phLogFragment extends Fragment {
     void handler() {
         Log.d("Timer", "doInBackground: in while " + Constants.timeInSec);
 
+
         Toast.makeText(getContext(), "Background service running ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), Constants.timeInSec + "", Toast.LENGTH_SHORT).show();
+
+        if (handler1 != null) {
+            handler1.removeCallbacks(runnable1);
+        }
+        startTimer();
+
+
         handler = new Handler();
         runnable = new Runnable() {
             @Override
