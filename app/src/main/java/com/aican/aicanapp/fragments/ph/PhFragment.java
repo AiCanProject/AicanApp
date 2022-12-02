@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.Constants;
 import com.github.mikephil.charting.data.Entry;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -40,9 +42,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "PhFragment";
@@ -53,13 +63,15 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
     SwitchCompat switchAtc;
+    private WebSocket webSocket;
+    private String SERVER_PATH = "ws://192.168.4.1:81";
 
     BatteryDialog batteryDialog;
     String probeInfo = "-";
     float ph = 0;
     int skipPoints = 0;
     String[] probe = {"Unbreakable", "Glass", "Others"};
-
+    JSONObject jsonData;
     ArrayList<Entry> entriesOriginal;
 
     @Nullable
@@ -113,7 +125,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         probeData.setSelected(true);
 
-
 //        BatteryManager bm = (BatteryManager) getContext().getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
 //            int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
@@ -134,10 +145,12 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         deviceRef.child("Data").child("ATC_AT").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float te = snapshot.getValue(Float.class);
-                if (te == null) return;
-                String teForm = String.format(Locale.UK, "%.2f", te);
-                atcValue.setText(teForm);
+                if(!Constants.OFFLINE_MODE) {
+                    Float te = snapshot.getValue(Float.class);
+                    if (te == null) return;
+                    String teForm = String.format(Locale.UK, "%.2f", te);
+                    atcValue.setText(teForm);
+                }
             }
 
             @Override
@@ -146,14 +159,157 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         });
 
         setATC.setOnClickListener(v -> {
-            Float va = Float.parseFloat(atcValue.getText().toString());
-            deviceRef.child("Data").child("ATC_AT").setValue(va);
+            if(!Constants.OFFLINE_MODE) {
+                Float va = Float.parseFloat(atcValue.getText().toString());
+                deviceRef.child("Data").child("ATC_AT").setValue(va);
+            }else {
+                try {
+                    jsonData.put("ATC_AT", atcValue.getText().toString());
+                    webSocket.send(jsonData.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
         });
 
+        if(!Constants.OFFLINE_MODE){
+            setupListeners();
+        }else{
+            tvPhCurr.setText("");
+            tvTempCurr.setText("");
+            tvEcCurr.setText("");
+            offsetCurr.setText("");
+            batteryCurr.setText("");
+            slopeCurr.setText("");
 
-        setupListeners();
+            initiateSocketConnection();
+
+        }
     }
 
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(SERVER_PATH).build();
+        webSocket = client.newWebSocket(request, new SocketListener());
+
+    }
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
+
+           getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(),
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+            });
+
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+          getActivity().runOnUiThread(() -> {
+
+                try {
+                    jsonData = new JSONObject(text);
+                    Log.d("JSONReceived:PHFragment", "onMessage: "+text);
+                    if(jsonData.has("PH_VAL")) {
+                        String val = jsonData.getString("PH_VAL");
+                        tvPhCurr.setText(val);
+                    }
+
+                    if(jsonData.has("ATC")){
+                        if(jsonData.getString("ATC") == "1") {
+                            switchAtc.setChecked(true);
+                            SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editT = togglePref.edit();
+                            editT.putInt("toggleValue", 1);
+                            editT.commit();
+                        }else{
+                            switchAtc.setChecked(false);
+                            SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editT = togglePref.edit();
+                            editT.putInt("toggleValue", 0);
+                            editT.commit();
+                        }
+                    }
+
+                    if(jsonData.has("ATC_AT")){
+                        String val = jsonData.getString("ATC_AT");
+                        atcValue.setText(val);
+                    }
+
+                    if(jsonData.has("TEMP_VAL")){
+                        String temp =  jsonData.getString("TEMP_VAL");
+                        tvTempCurr.setText(temp + "°C");
+
+                        if (Integer.parseInt(temp) <= -127) {
+                            tvTempCurr.setText("NA");
+                            switchAtc.setEnabled(false);
+                        } else {
+                            switchAtc.setEnabled(true);
+                        }
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
+                        edit.putString("temp", tvTempCurr.getText().toString());
+                        edit.commit();
+                    }
+
+                    if(jsonData.has("BATTERY")){
+
+                        String battery = jsonData.getString("BATTERY");
+
+                        batteryCurr.setText(battery + " %");
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
+                        edit.putString("battery", batteryCurr.getText().toString());
+                        edit.commit();
+                        Log.d("6516516", battery);
+                    }
+
+                    if(jsonData.has("SLOPE")){
+                        String slope = jsonData.getString("SLOPE");
+                        slopeCurr.setText(slope + " %");
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
+                        edit.putString("slope", slopeCurr.getText().toString());
+                        edit.commit();
+                    }
+
+                    if(jsonData.has("OFFSET")){
+                        String offSet =jsonData.getString("OFFSET");
+//                        String offsetForm = String.format(Locale.UK, "%.2f", offSet);
+                        offsetCurr.setText(offSet);
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
+                        edit.putString("offset", offsetCurr.getText().toString());
+                        edit.commit();
+                    }
+
+                    if(jsonData.has("EC_VAL")){
+                        String ec = jsonData.getString("EC_VAL");
+//                        String ecForm = String.format(Locale.UK, "%.1f", ec);
+                        tvEcCurr.setText(ec);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            });
+
+        }
+    }
     private void rescaleGraph() {
         ArrayList<Entry> entries = new ArrayList<>();
         int count = 0;
@@ -167,6 +323,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }
         }
     }
+
+
 
     private void setupListeners() {
         deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {

@@ -22,8 +22,10 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,7 @@ import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
+import com.aican.aicanapp.utils.Constants;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -113,6 +116,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     DatabaseReference databaseReference;
     String mUid;
     Button setting, export;
+    Switch offlineMode;
     private TextView internetStatus, locationD, weather, batteryPercentage;
 
     ArrayList<String> deviceIds;
@@ -179,6 +183,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
         setting = findViewById(R.id.settings);
+        offlineMode = findViewById(R.id.offlineMode);
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("USERS").child(mUid);
         deviceIds = new ArrayList<>();
@@ -369,6 +374,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             startActivity(new Intent(this, AvailableWifiDevices.class));
         });
 
+        offlineMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(offlineMode.isChecked()){
+                    Constants.OFFLINE_MODE = true;
+                }else{
+                    Constants.OFFLINE_MODE = false;
+                }
+            }
+        });
+
         // battery percentage
         BatteryManager bm = (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -471,6 +487,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         NewAsyncTask newAsyncTask = new NewAsyncTask(this);
         newAsyncTask.execute(Dashboard.this);
         refresh();
+        offlineModeCheck();
     }
 
     //Toolbar------------------------------------------------------------------------------------------------------
@@ -529,6 +546,14 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds.clear();
         ecDevices.clear();
         getDeviceIds();
+    }
+
+    private void offlineModeCheck(){
+        if(Constants.OFFLINE_MODE){
+            offlineMode.setChecked(true);
+        }else{
+            offlineMode.setChecked(false);
+        }
     }
 
     /**

@@ -28,6 +28,7 @@
             android:textAlignment="center"
             app:title="->"
             app:titleTextColor="@color/white">
+
             <LinearLayout
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
@@ -151,6 +152,31 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="end"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_bold"
+                    android:text="Offline Mode - "
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <Switch
+                    android:id="@+id/offlineMode"
+                    android:layout_marginEnd="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"></Switch>
+
             <Button
                 android:id="@+id/settings"
                 android:layout_width="wrap_content"
@@ -161,6 +187,8 @@
                 android:text="@string/add_user"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
+
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
