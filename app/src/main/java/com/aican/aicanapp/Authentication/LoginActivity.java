@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -29,8 +32,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class LoginActivity extends AppCompatActivity {
 
+    DatabaseHelper databaseHelper;
     DatabaseReference database;
     ProgressDialog dialog;
     Button btn;
@@ -42,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         database = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference();
+        databaseHelper = new DatabaseHelper(this);
 
         EditText etEmail = findViewById(R.id.etEmail);
         EditText etPassword = findViewById(R.id.etPassword);
@@ -86,6 +97,17 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences = getSharedPreferences("loginprefs", MODE_PRIVATE);
 
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                Source.userRole = "Supervisor";
+                Source.userId = etEmail.getText().toString();
+                Source.userName = "Manager";
+                Source.userPasscode = etPassword.getText().toString();
+                Source.expiryDate = getExpiryDate();
+                Source.dateCreated = getPresentDate();
+                Log.d("expiryDate", "onCreate: " + Source.expiryDate);
+                databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode, Source.expiryDate, Source.dateCreated);
+                databaseHelper.insertUserData(Source.userName,Source.userId, Source.userRole, Source.expiryDate, Source.dateCreated);
+
 
                 myEdit.putString("email", etEmail.getText().toString());
                 myEdit.commit();
@@ -136,6 +158,34 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    private String getExpiryDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            cal.setTime(sdf.parse(presentDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // use add() method to add the days to the given date
+        cal.add(Calendar.DAY_OF_MONTH, 90);
+        String expiryDate = sdf.format(cal.getTime());
+
+        return expiryDate;
+    }
+
+    private String getPresentDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+        return presentDate;
     }
 
 

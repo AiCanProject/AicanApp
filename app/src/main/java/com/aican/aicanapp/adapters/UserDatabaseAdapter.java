@@ -87,6 +87,8 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
                 Intent intent = new Intent(context,EditUserDatabase.class);
                 intent.putExtra("username",users_list.get(position).getUser_name());
                 intent.putExtra("userrole",users_list.get(position).getUser_role());
+                intent.putExtra("passcode",users_list.get(position).getPasscode());
+                intent.putExtra("uid",users_list.get(position).getId());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.getApplicationContext().startActivity(intent);
             }

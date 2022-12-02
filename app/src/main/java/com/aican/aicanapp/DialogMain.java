@@ -21,6 +21,7 @@ import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.specificactivities.PhMvTable;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -97,6 +98,24 @@ public class DialogMain extends AppCompatDialogFragment {
                                 Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                             }
                             Source.status_export = false;
+
+
+                            if (Source.status_phMvTable && Source.role_fetched.get(i).equals("Supervisor")) {
+
+                                Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
+                                Source.status_phMvTable = false;
+                                Intent intent = new Intent(getContext(), PhMvTable.class);
+                                startActivity(intent);
+                            } else if (Source.status_phMvTable) {
+                                Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
+                            if (!Source.status_phMvTable) {
+                                Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
+                            }
+                            Source.status_phMvTable = false;
 
                             dismiss();
                             return;

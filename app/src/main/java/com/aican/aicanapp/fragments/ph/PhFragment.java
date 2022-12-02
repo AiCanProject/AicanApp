@@ -45,7 +45,9 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import okhttp3.OkHttpClient;
@@ -478,6 +480,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             deviceRef.child("Data").child("ATC").setValue(isChecked ? 1 : 0);
 
             if (switchAtc.isChecked()) {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "ATC toggle on : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
                 deviceRef.child("Data").child("ATC_AT").setValue(Float.parseFloat(atcValue.getText().toString()));
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editT = togglePref.edit();
@@ -485,6 +492,10 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 editT.commit();
 
             } else {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "ATC toggle off : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editT = togglePref.edit();

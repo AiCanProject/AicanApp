@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import static java.lang.Integer.parseInt;
 
+import com.aican.aicanapp.specificactivities.EcActivity;
 import com.aican.aicanapp.specificactivities.Export;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -1413,7 +1414,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 //        });
 
 
-
         deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
@@ -1676,12 +1676,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             qr2.setOnClickListener(this::onClick);
             qr3.setOnClickListener(this::onClick);
         }
-
+        DialogMain dialogMain = new DialogMain();
+        dialogMain.setCancelable(false);
+        Source.userTrack = "PhCalibPage logged : ";
         if (Source.subscription.equals("cfr")) {
 
-            DialogMain dialogMain = new DialogMain();
-            dialogMain.setCancelable(false);
-            Source.userTrack = "PhCalibPage logged : ";
+
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
@@ -1741,8 +1741,25 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         phMvTable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), PhMvTable.class);
-                startActivity(intent);
+                Source.status_phMvTable = true;
+
+                SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
+                SharedPreferences.Editor roleE = sh.edit();
+                String roleSuper = Source.logUserName;
+                roleE.putString("roleSuper", roleSuper);
+                roleE.commit();
+
+
+                if (Source.subscription.equals("cfr")) {
+//                    DialogMain dialogMain = new DialogMain();
+//                    dialogMain.setCancelable(false);
+//                    Source.userTrack = "PhLogFragment logged in by ";
+                    dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
+                } else {
+                    Intent intent = new Intent(getContext(), PhMvTable.class);
+                    startActivity(intent);
+                }
+
             }
         });
 
