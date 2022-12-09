@@ -790,10 +790,11 @@ public class phLogFragment extends Fragment {
         document.add(new Paragraph(""));
         document.add(new Paragraph("Calibration Table"));
 
-        float[] columnWidth = {200f, 210f, 170f, 340f, 170f};
+        float columnWidth[] = {200f, 210f, 190f, 170f, 340f, 170f};
         Table table = new Table(columnWidth);
         table.addCell("pH");
-        table.addCell("pH After Calib");
+        table.addCell("pH Aft Calib");
+        table.addCell("Slope");
         table.addCell("mV");
         table.addCell("Date & Time");
         table.addCell("Temperature");
@@ -807,11 +808,13 @@ public class phLogFragment extends Fragment {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
             String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
             String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
             String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
             String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 
             table.addCell(ph);
             table.addCell(pHAC + "");
+            table.addCell(slope + "");
             table.addCell(mv);
             table.addCell(date);
             table.addCell(temperature1);
@@ -1475,4 +1478,8 @@ public class phLogFragment extends Fragment {
 
         return fileArray.length > 0 ? fileArray : null;
     }
+
+
+
+
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".specificactivities.PHCalibGraph">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+<!--            <com.github.mikephil.charting.charts.LineChart-->
+<!--                android:id="@+id/graph"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="500dp" />-->
+
+            <com.jjoe64.graphview.GraphView
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:id="@+id/graph" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

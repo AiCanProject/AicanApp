@@ -6,6 +6,7 @@ import static java.lang.Integer.parseInt;
 
 import com.aican.aicanapp.specificactivities.EcActivity;
 import com.aican.aicanapp.specificactivities.Export;
+import com.aican.aicanapp.specificactivities.PHCalibGraph;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -129,7 +130,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     int pagewidth = 792;
     Bitmap bmp, scaledbmp;
 
-    Button fivePoint, threePoint;
+    Button fivePoint, threePoint, phGraph;
 
     LinearLayout log3, log5, calibSpinner;
 
@@ -142,12 +143,14 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     TextView ph1, mv1, phEdit1, ph2, mv2, phEdit2, ph3, mv3, phEdit3, ph4, mv4, phEdit4, ph5, mv5, phEdit5, dt1, dt2, dt3, dt4, dt5;
     TextView qr1, qr2, qr3, qr4, qr5;
     TextView bufferD1, bufferD2, bufferD3, bufferD4, bufferD5, modeText;
+    TextView slope1, slope2, slope3, slope4, slope5;
 
     String companyName;
 
     DatabaseReference deviceRef;
     Button calibrateBtn, btnNext, printCalib, phMvTable;
     Spinner spin;
+    String SLOPE1, SLOPE2, SLOPE3, SLOPE4, SLOPE5;
     String MV1, MV2, MV3, MV4, MV5, PH1, PH2, PH3, PH4, PH5, DT1, DT2, DT3, DT4, DT5, BFD1, BFD2, BFD3, BFD4, BFD5;
     String t1, t2, t3, t4, t5;
     String pHAC1, pHAC2, pHAC3, pHAC4, pHAC5;
@@ -368,6 +371,90 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                     myEdit.putString("MV1", mV1);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            // for slope 2
+            deviceRef.child("Data").child("SLOPE_1").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float slopes = snapshot.getValue(Float.class);
+                    String sl = String.format(Locale.UK, "%.2f", slopes);
+                    slope2.setText(sl);
+                    SLOPE2 = slope2.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("SLOPE2", SLOPE2);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            // for slope 3
+            deviceRef.child("Data").child("SLOPE_2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float slopes = snapshot.getValue(Float.class);
+                    String sl = String.format(Locale.UK, "%.2f", slopes);
+                    slope3.setText(sl);
+                    SLOPE3 = slope3.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("SLOPE3", SLOPE3);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            // for slope 4
+            deviceRef.child("Data").child("SLOPE_3").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float slopes = snapshot.getValue(Float.class);
+                    String sl = String.format(Locale.UK, "%.2f", slopes);
+                    slope4.setText(sl);
+                    SLOPE4 = slope4.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("SLOPE4", SLOPE4);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            // for slope 5
+            deviceRef.child("Data").child("SLOPE_4").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float slopes = snapshot.getValue(Float.class);
+                    String sl = String.format(Locale.UK, "%.2f", slopes);
+                    slope5.setText(sl);
+                    SLOPE5 = slope5.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("SLOPE5", SLOPE5);
                     myEdit.commit();
                 }
 
@@ -933,6 +1020,51 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 }
             });
 
+            // for slope 1
+
+            // for slope 2
+            deviceRef.child("Data").child("SLOPE_2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float slopes = snapshot.getValue(Float.class);
+                    String sl = String.format(Locale.UK, "%.2f", slopes);
+                    slope2.setText(sl);
+                    SLOPE2 = slope2.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("SLOPE2", SLOPE2);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+            // for slope 3
+            deviceRef.child("Data").child("SLOPE_3").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float slopes = snapshot.getValue(Float.class);
+                    String sl = String.format(Locale.UK, "%.2f", slopes);
+                    slope3.setText(sl);
+                    SLOPE3 = slope3.getText().toString();
+
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                    myEdit.putString("SLOPE3", SLOPE3);
+                    myEdit.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+
+
             deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -1328,6 +1460,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         bufferD4 = view.findViewById(R.id.bufferD4);
         bufferD5 = view.findViewById(R.id.bufferD5);
 
+
+        slope1 = view.findViewById(R.id.slope1);
+        slope2 = view.findViewById(R.id.slope2);
+        slope3 = view.findViewById(R.id.slope3);
+        slope4 = view.findViewById(R.id.slope4);
+        slope5 = view.findViewById(R.id.slope5);
+
         bufferD1.setSelected(true);
         bufferD2.setSelected(true);
         bufferD3.setSelected(true);
@@ -1344,6 +1483,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
 
         fivePoint = view.findViewById(R.id.fivePoint);
         threePoint = view.findViewById(R.id.threePoint);
+        phGraph = view.findViewById(R.id.phGraph);
 
         log3 = view.findViewById(R.id.log3point);
         log5 = view.findViewById(R.id.log5Point);
@@ -1393,6 +1533,30 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibRecyclerView = view.findViewById(R.id.rvCalibFileView);
         nullEntry = "";
 
+        phGraph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!PH1.equals("") || !PH2.equals("") || !PH3.equals("") || !PH4.equals("") || !PH5.equals("")
+                || !MV1.equals("") || !MV2.equals("") || !MV3.equals("") || !MV4.equals("") || !MV5.equals("")
+                ) {
+                    Intent i = new Intent(getContext(), PHCalibGraph.class);
+                    i.putExtra("PH1", PH1);
+                    i.putExtra("PH2", PH2);
+                    i.putExtra("PH3", PH3);
+                    i.putExtra("PH4", PH4);
+                    i.putExtra("PH5", PH5);
+
+                    i.putExtra("MV1", MV1);
+                    i.putExtra("MV2", MV2);
+                    i.putExtra("MV3", MV3);
+                    i.putExtra("MV4", MV4);
+                    i.putExtra("MV5", MV5);
+                    startActivity(i);
+                }else{
+                    Toast.makeText(getContext(), "Not allow to move further because some values are null, and null values cannot plot the graph", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         getFirebaseValue();
 
@@ -1561,11 +1725,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferD4.setText(BFD4);
                         bufferD5.setText(BFD5);
 
-                        databaseHelper.insertCalibration(PH1, MV1, DT1, BFD1, pHAC1, t1);
-                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
-                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
-                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
-                        databaseHelper.insertCalibration(PH5, MV5, DT5, BFD5, pHAC5, t5);
+                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
+                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
@@ -1628,9 +1792,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferD4.setText(BFD4);
 
 
-                        databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
-                        databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
-                        databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
@@ -1928,6 +2092,12 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         BFD4 = shp.getString("BFD4", "");
         BFD5 = shp.getString("BFD5", "");
 
+        SLOPE1 = shp.getString("SLOPE1", "--");
+        SLOPE2 = shp.getString("SLOPE2", "--");
+        SLOPE3 = shp.getString("SLOPE3", "--");
+        SLOPE4 = shp.getString("SLOPE4", "--");
+        SLOPE5 = shp.getString("SLOPE5", "--");
+
     }
 
     public void calibDataThree() {
@@ -1949,6 +2119,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         BFD2 = shp.getString("BFD2", "");
         BFD3 = shp.getString("BFD3", "");
         BFD4 = shp.getString("BFD4", "");
+
+        SLOPE2 = shp.getString("SLOPE2", "--");
+        SLOPE3 = shp.getString("SLOPE3", "--");
+        SLOPE4 = shp.getString("SLOPE4", "--");
+
     }
 
 
@@ -1958,94 +2133,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         db.close();
     }
 
-    public void exportCalibData() {
-
-
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
-
-        File file;
-        PrintWriter printWriter = null;
-
-        try {
-
-            reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-            reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-            file = new File(exportDir, "CalibrationData.csv");
-            file.createNewFile();
-            printWriter = new PrintWriter(new FileWriter(file), true);
-            SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
-            offset = "Offset: " + shp.getString("offset", "");
-            battery = "Battery: " + shp.getString("battery", "");
-            slope = "Slope: " + shp.getString("slope", "");
-            temp = "Temperature: " + shp.getString("temp", "");
-
-
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
-
-            Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
-//            printWriter.println(companyName + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Company: " + companyName);
-            printWriter.println("Username: " + Source.logUserName);
-            printWriter.println("DeviceID: " + deviceID);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-
-            printWriter.println(reportDate + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(reportTime + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println(offset + "," + battery);
-            printWriter.println(temp);
-            printWriter.println(slope);
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("Calibration Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("________pH____,pH After Calib,_____mV__,__DATE___TIME__,Temperature");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-
-            while (calibCSV.moveToNext()) {
-                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
-//                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-
-                String record1 = ph + "," + pHAC + "," + mv + "," + date + "," + temperature1;
-
-                printWriter.println(record1);
-            }
-
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            if (spin.getSelectedItemPosition() == 0) {
-                printWriter.println("Calibration: " + calib_stat);
-                printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-                printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-                printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            }
-            printWriter.println("Operator Sign");
-            printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + "Supervisor Sign");
-            calibCSV.close();
-            db.close();
-
-            LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
-
-            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
-            Workbook workbook = new Workbook(inputFile + "CalibrationData.csv", loadOptions);
-            Worksheet worksheet = workbook.getWorksheets().get(0);
-            worksheet.getCells().setColumnWidth(0, 12.5);
-            worksheet.getCells().setColumnWidth(1, 12.5);
-            worksheet.getCells().setColumnWidth(2, 12.5);
-            worksheet.getCells().setColumnWidth(3, 18.5);
-//            worksheet.getCells().setColumnWidth(3, 12.5);
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx", SaveFormat.XLSX);
-
-        } catch (Exception e) {
-            Log.d("csvexception", String.valueOf(e));
-        }
-
-    }
 
     private void generatePDF() throws FileNotFoundException {
 
@@ -2099,10 +2186,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         document.add(new Paragraph(""));
         document.add(new Paragraph("Calibration Table"));
 
-        float columnWidth[] = {200f, 210f, 170f, 340f, 170f};
+        float columnWidth[] = {200f, 210f, 190f, 170f, 340f, 170f};
         Table table = new Table(columnWidth);
         table.addCell("pH");
-        table.addCell("pH After Calib");
+        table.addCell("pH Aft Calib");
+        table.addCell("Slope");
         table.addCell("mV");
         table.addCell("Date & Time");
         table.addCell("Temperature");
@@ -2116,11 +2204,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
             String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
             String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
             String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
             String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 
             table.addCell(ph);
             table.addCell(pHAC + "");
+            table.addCell(slope + "");
             table.addCell(mv);
             table.addCell(date);
             table.addCell(temperature1);
@@ -2392,11 +2482,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     currentBuf += 1;
                                     calibData();
                                     deleteAllCalibData();
-                                    databaseHelper.insertCalibration(PH1, MV1, DT1, BFD1, pHAC1, t1);
-                                    databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
-                                    databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
-                                    databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
-                                    databaseHelper.insertCalibration(PH5, MV5, DT5, BFD5, pHAC5, t5);
+                                    databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
+                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
+                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
+                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
+                                    databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
 
                                 });
                             });
@@ -2459,9 +2549,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     currentBufThree = currentBufThree % 3;
                                     calibDataThree();
                                     deleteAllCalibData();
-                                    databaseHelper.insertCalibration(PH2, MV2, DT2, BFD2, pHAC2, t2);
-                                    databaseHelper.insertCalibration(PH3, MV3, DT3, BFD3, pHAC3, t3);
-                                    databaseHelper.insertCalibration(PH4, MV4, DT4, BFD4, pHAC4, t4);
+                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
+                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
+                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
 
                                 });
 

@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,6 +66,21 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         }
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+
+        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+
+        deviceRef.child("Data").child("AUTOLOG").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Source.auto_log = snapshot.getValue(Integer.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+
         databaseHelper = new DatabaseHelper(PhActivity.this);
 
         loadFragments(phFragment);
@@ -164,7 +180,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 //            intent.addFlags()
                 startActivity(intent);
             }
-        }else {
+        } else {
             Toast.makeText(this, "You cannot change fragment while logging", Toast.LENGTH_SHORT).show();
         }
 
@@ -173,9 +189,12 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
-
-        Intent intent = new Intent(PhActivity.this, Dashboard.class);
-        startActivity(intent);
+        if (Source.auto_log == 0) {
+            Intent intent = new Intent(PhActivity.this, Dashboard.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "You cannot change fragment while logging", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean loadFragments(Fragment fragment) {

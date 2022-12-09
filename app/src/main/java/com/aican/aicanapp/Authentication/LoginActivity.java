@@ -98,9 +98,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-                Source.userRole = "Supervisor";
+                Source.userRole = "Admin";
                 Source.userId = etEmail.getText().toString();
-                Source.userName = "Manager";
+                Source.userName = "Admin";
                 Source.userPasscode = etPassword.getText().toString();
                 Source.expiryDate = getExpiryDate();
                 Source.dateCreated = getPresentDate();

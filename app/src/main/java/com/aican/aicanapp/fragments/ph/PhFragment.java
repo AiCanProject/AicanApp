@@ -107,6 +107,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Source.userPasscode = res.getString(3);
         }
 
+
+
         Cursor p = databaseHelper.get_probe();
         while (p.moveToNext()) {
             probeInfo = p.getString(0);

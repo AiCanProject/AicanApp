@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="12dp"
-                            android:text="Oil Bath Controller"
+                            android:text="pH"
                             android:textAlignment="center"
                             android:textColor="@color/white"
                             android:textSize="24sp" />

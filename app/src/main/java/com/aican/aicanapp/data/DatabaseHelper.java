@@ -32,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT,date TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
-        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
+        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,id TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
@@ -117,11 +117,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Boolean insertCalibration(String PH, String MV, String DT, String BFD, String pHAC, String temperature) {
+    public Boolean insertCalibration(String PH, String MV, String slope ,String DT, String BFD, String pHAC, String temperature) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PH", PH);
         contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
         contentValues.put("DT", DT);
         contentValues.put("BFD", BFD);
         contentValues.put("pHAC", pHAC);
@@ -375,6 +376,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor get_data() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from Userdetails", null);
+        return cursor;
+    }
+
+    public Cursor get_userActivity_data() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from UserActiondetails", null);
         return cursor;
     }
 

@@ -61,6 +61,7 @@ import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
 import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -75,6 +76,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -111,6 +113,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     File fileDestination;
     DatabaseReference primaryDatabase;
     DatabaseReference databaseReference;
+    DatabaseReference deviceRef;
+
     String mUid;
     Button setting, export;
     private TextView internetStatus, locationD, weather, batteryPercentage;
@@ -190,6 +194,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceIdIds = new HashMap<>();
         deviceNames = new HashMap<>();
         ecDevices = new ArrayList<>();
+
+
+
 
 
         // subscription checking

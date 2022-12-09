@@ -84,7 +84,7 @@ public class DialogMain extends AppCompatDialogFragment {
                             myShared.putString("userid", Source.userId);
                             myShared.commit();
 
-                            if (Source.status_export && Source.role_fetched.get(i).equals("Supervisor")) {
+                            if (Source.status_export && (Source.role_fetched.get(i).equals("Supervisor") || Source.role_fetched.get(i).equals("Admin"))) {
 
                                 Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                                 Source.status_export = false;
@@ -100,7 +100,7 @@ public class DialogMain extends AppCompatDialogFragment {
                             Source.status_export = false;
 
 
-                            if (Source.status_phMvTable && Source.role_fetched.get(i).equals("Supervisor")) {
+                            if (Source.status_phMvTable && (Source.role_fetched.get(i).equals("Supervisor") || Source.role_fetched.get(i).equals("Admin"))) {
 
                                 Toast.makeText(getContext(), "Access Granted", Toast.LENGTH_SHORT).show();
                                 Source.status_phMvTable = false;
@@ -109,7 +109,6 @@ public class DialogMain extends AppCompatDialogFragment {
                             } else if (Source.status_phMvTable) {
                                 Toast.makeText(getContext(), "Access Not Granted", Toast.LENGTH_SHORT).show();
                             }
-
 
 
                             if (!Source.status_phMvTable) {

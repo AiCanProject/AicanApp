@@ -284,24 +284,24 @@
             </LinearLayout>
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/threePoint"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:text="3" />
+                android:text="3"
+                android:visibility="gone" />
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/fivePoint"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
-                android:text="5" />
+                android:layout_marginEnd="5dp"
+                android:text="5"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/printCalibData"
@@ -317,6 +317,15 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"
                 android:text="pH mV Table"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/phGraph"
+                android:layout_width="127dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#9037C7"
+                android:text="Graph"
                 android:textAllCaps="false" />
 
             <!--            <TextView-->
@@ -366,9 +375,9 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_marginEnd="0dp"
                                 android:layout_marginBottom="5dp"
-                                android:layout_marginTop="10dp"
                                 android:layout_weight="0.7"
                                 android:text="pH"
                                 android:textSize="@dimen/textDim" />
@@ -385,11 +394,11 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginBottom="5dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
-                                android:text="pH after calib"
+                                android:text="pHAftCalib"
                                 android:textSize="@dimen/textDim" />
 
                             <View
@@ -403,8 +412,26 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginBottom="5dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_weight="0.8"
+                                android:paddingStart="20dp"
+                                android:text="Slope"
+                                android:textSize="@dimen/textDim" />
+
+                            <View
+                                android:layout_width="2dp"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:background="#DFE6ED"
+                                android:translationX="20dp" />
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="21dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="Temp"
@@ -421,8 +448,8 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="21dp"
-                                android:layout_marginBottom="5dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
                                 android:text="mV"
@@ -433,15 +460,15 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="5dp"
-                                android:translationX="-12dp"
-                                android:background="#DFE6ED" />
+                                android:background="#DFE6ED"
+                                android:translationX="-12dp" />
 
                             <TextView
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
-                                android:layout_marginBottom="5dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="1.5"
                                 android:text="Date &amp; Time"
                                 android:textSize="@dimen/textDim" />
@@ -451,15 +478,15 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="5dp"
-                                android:translationX="-5dp"
-                                android:background="#DFE6ED" />
+                                android:background="#DFE6ED"
+                                android:translationX="-5dp" />
 
                             <TextView
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="23dp"
-                                android:layout_marginBottom="5dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="0.8"
                                 android:text="Buffer Details"
                                 android:textSize="@dimen/textDim" />
@@ -519,10 +546,27 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:text="--"
                                     android:layout_weight="0.8"
+                                    android:text="--"
                                     android:textSize="@dimen/textsDim" />
 
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/slope1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -537,8 +581,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:text="--"
                                     android:layout_weight="0.8"
+                                    android:text="--"
                                     android:textSize="@dimen/textsDim" />
 
 
@@ -646,6 +690,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -658,11 +703,28 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
-                                    android:text="--"
                                     android:layout_marginBottom="1dp"
                                     android:layout_weight="0.8"
+                                    android:text="--"
                                     android:textSize="@dimen/textsDim" />
 
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/slope2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -680,6 +742,7 @@
                                     android:layout_weight="0.8"
                                     android:text="--"
                                     android:textSize="@dimen/textsDim" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -783,6 +846,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -796,10 +860,27 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="22dp"
                                     android:layout_marginBottom="1dp"
-                                    android:text="--"
                                     android:layout_weight="0.8"
+                                    android:text="--"
                                     android:textSize="@dimen/textsDim" />
 
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
+                                    android:id="@+id/slope3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="@dimen/textsDim" />
 
                                 <View
                                     android:layout_width="2dp"
@@ -817,6 +898,7 @@
                                     android:layout_weight="0.8"
                                     android:text="--"
                                     android:textSize="@dimen/textsDim" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -929,6 +1011,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -955,6 +1038,23 @@
                                     android:background="#DFE6ED" />
 
                                 <TextView
+                                    android:id="@+id/slope4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="@dimen/textsDim" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
                                     android:id="@+id/temp4"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -963,6 +1063,7 @@
                                     android:layout_weight="0.8"
                                     android:text="--"
                                     android:textSize="@dimen/textsDim" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -1065,6 +1166,7 @@
                                     android:textSize="14sp"
                                     app:drawableStartCompat="@drawable/ic_edit"
                                     app:drawableTint="@color/blueDark" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"
@@ -1091,6 +1193,23 @@
                                     android:background="#DFE6ED" />
 
                                 <TextView
+                                    android:id="@+id/slope5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="22dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:layout_weight="0.8"
+                                    android:text="--"
+                                    android:textSize="@dimen/textsDim" />
+
+                                <View
+                                    android:layout_width="2dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:background="#DFE6ED" />
+
+                                <TextView
                                     android:id="@+id/temp5"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -1099,6 +1218,7 @@
                                     android:layout_weight="0.8"
                                     android:text="--"
                                     android:textSize="@dimen/textsDim" />
+
                                 <View
                                     android:layout_width="2dp"
                                     android:layout_height="match_parent"

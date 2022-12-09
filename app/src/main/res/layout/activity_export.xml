@@ -70,6 +70,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/companyLogoLayout" />
 
+    <TextView
+        android:id="@+id/dateA"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="10dp"
+        android:text="2022"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toStartOf="@+id/convertToXls"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DeviceId" />
+
+
     <Button
         android:id="@+id/convertToXls"
         android:layout_width="wrap_content"

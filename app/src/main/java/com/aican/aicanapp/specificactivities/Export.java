@@ -57,6 +57,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -94,6 +95,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class Export extends AppCompatActivity {
 
@@ -106,7 +108,7 @@ public class Export extends AppCompatActivity {
     Button mDateBtn, exportUserData, exportCSV, convertToXls;
     ImageButton arNumBtn, batchNumBtn, compoundBtn;
     TextView tvStartDate, tvEndDate, tvUserLog;
-    TextView deviceId;
+    TextView deviceId, dateA;
     String deviceID;
     String user, roleExport, reportDate, reportTime;
     String startDateString, endDateString, startTimeString, endTimeString, arNumString, batchNumString, compoundName;
@@ -120,6 +122,7 @@ public class Export extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     private DatabaseReference deviceRef;
     private static final int PERMISSION_REQUEST_CODE = 200;
+    String month, year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +138,7 @@ public class Export extends AppCompatActivity {
         });
         companyLogo = findViewById(R.id.companyLogo);
         deviceId = findViewById(R.id.DeviceId);
+        dateA = findViewById(R.id.dateA);
         exportCSV = findViewById(R.id.exportCSV);
         mDateBtn = findViewById(R.id.materialDateBtn);
         arNumEditText = findViewById(R.id.ar_num_sort);
@@ -158,6 +162,21 @@ public class Export extends AppCompatActivity {
         nullEntry = " ";
         setFirebaseListeners();
 
+        Cursor res = databaseHelper.get_userActivity_data();
+        if (res != null) {
+            if (res.moveToFirst()) {
+
+                year = res.getString(1).substring(0, 4);
+                month = res.getString(1).substring(5, 7);
+
+                dateA.setText("Data available from " + res.getString(1));
+
+            }
+        } else {
+            dateA.setText("No data available");
+            month = "01";
+            year = String.valueOf(Calendar.YEAR);
+        }
 
         convertToXls.setVisibility(View.INVISIBLE);
 
@@ -168,11 +187,71 @@ public class Export extends AppCompatActivity {
         }
 
         mDateBtn.setOnClickListener(v -> {
+
+            Calendar calendar1 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+            // now set the starting bound from current month to
+            // previous MARCH
+            if (month.equals("01")) {
+                calendar1.set(Calendar.MONTH, Calendar.JANUARY);
+
+            } else if (month.equals("02")) {
+                calendar1.set(Calendar.MONTH, Calendar.FEBRUARY);
+
+            } else if (month.equals("03")) {
+                calendar1.set(Calendar.MONTH, Calendar.MARCH);
+
+            } else if (month.equals("04")) {
+                calendar1.set(Calendar.MONTH, Calendar.APRIL);
+
+            } else if (month.equals("05")) {
+                calendar1.set(Calendar.MONTH, Calendar.MAY);
+
+            } else if (month.equals("06")) {
+                calendar1.set(Calendar.MONTH, Calendar.JUNE);
+
+            } else if (month.equals("07")) {
+                calendar1.set(Calendar.MONTH, Calendar.JULY);
+
+            } else if (month.equals("08")) {
+                calendar1.set(Calendar.MONTH, Calendar.AUGUST);
+
+            } else if (month.equals("09")) {
+                calendar1.set(Calendar.MONTH, Calendar.SEPTEMBER);
+
+            } else if (month.equals("10")) {
+                calendar1.set(Calendar.MONTH, Calendar.OCTOBER);
+
+            } else if (month.equals("11")) {
+                calendar1.set(Calendar.MONTH, Calendar.NOVEMBER);
+
+            } else if (month.equals("12")) {
+                calendar1.set(Calendar.MONTH, Calendar.DECEMBER);
+
+            } else {
+                calendar1.set(Calendar.MONTH, Calendar.JANUARY);
+
+            }
+//            calendar1.set(Calendar.DATE, 7);
+
+            long start = calendar1.getTimeInMillis();
+
+            // now set the ending bound from current month to
+            // DECEMBER
+            calendar1.set(Calendar.MONTH, Calendar.DECEMBER);
+            long end = calendar1.getTimeInMillis();
+
+            CalendarConstraints.Builder calendarConstraintBuilder = new CalendarConstraints.Builder();
+            calendarConstraintBuilder.setStart(start);
+            calendarConstraintBuilder.setEnd(end);
+
+
             MaterialDatePicker datePicker =
                     MaterialDatePicker.Builder.dateRangePicker()
                             .setSelection(new Pair(MaterialDatePicker.thisMonthInUtcMilliseconds(),
                                     MaterialDatePicker.todayInUtcMilliseconds()))
                             .setTitleText("Select dates")
+                            .setCalendarConstraints(calendarConstraintBuilder.build())
                             .build();
             datePicker.show(getSupportFragmentManager(), "date");
 
@@ -262,63 +341,6 @@ public class Export extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-
-//                exportDatabaseCsv();
-
-//                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/";
-//                File root = new File(path);
-//                fileNotWrite(root);
-//                File[] filesAndFolders = root.listFiles();
-//
-//                if (filesAndFolders == null || filesAndFolders.length == 0) {
-//
-//                    return;
-//                } else {
-//                    for (int i = 0; i < filesAndFolders.length; i++) {
-//                        filesAndFolders[i].getName().endsWith(".xlsx");
-//                    }
-//                }
-//                try {
-//                    Bitmap sign = getSign();
-//                    if (sign != null) {
-//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//
-//                        sign.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//
-//                        byte[] bitmapData = stream.toByteArray();
-//                    }
-//
-//                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
-//
-//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-//                    String currentDateandTime = sdf.format(new Date());
-//                    PdfSaveOptions options = new PdfSaveOptions();
-//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
-//                    File tempRoot = new File(tempPath);
-//                    fileNotWrite(tempRoot);
-//                    File[] tempFilesAndFolders = tempRoot.listFiles();
-//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-//
-//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
-//                    File root1 = new File(path1);
-//                    fileNotWrite(root1);
-//                    File[] filesAndFolders1 = root1.listFiles();
-//
-//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-//
-//                        return;
-//                    } else {
-//                        for (int i = 0; i < filesAndFolders1.length; i++) {
-//                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
-//                                filesAndFolders1[i].delete();
-//                            }
-//                        }
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
 
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
@@ -609,10 +631,11 @@ public class Export extends AppCompatActivity {
         document.add(new Paragraph(""));
         document.add(new Paragraph("Calibration Table"));
 
-        float[] columnWidth = {200f, 210f, 170f, 340f, 170f};
+        float columnWidth[] = {200f, 210f, 190f, 170f, 340f, 170f};
         Table table = new Table(columnWidth);
         table.addCell("pH");
-        table.addCell("pH After Calib");
+        table.addCell("pH Aft Calib");
+        table.addCell("Slope");
         table.addCell("mV");
         table.addCell("Date & Time");
         table.addCell("Temperature");
@@ -626,11 +649,13 @@ public class Export extends AppCompatActivity {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
             String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
             String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
             String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
             String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 
             table.addCell(ph);
             table.addCell(pHAC + "");
+            table.addCell(slope + "");
             table.addCell(mv);
             table.addCell(date);
             table.addCell(temperature1);
@@ -715,6 +740,7 @@ public class Export extends AppCompatActivity {
         } else if (startDateString != null) {
 
             curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+//            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "')", null);
 
         } else if (compoundName != null) {
 
@@ -1084,6 +1110,7 @@ public class Export extends AppCompatActivity {
         if (startDateString != null) {
 
             userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+//            userCSV = db.rawQuery("SELECT * FROM UserActiondetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "')", null);
 
         }
 

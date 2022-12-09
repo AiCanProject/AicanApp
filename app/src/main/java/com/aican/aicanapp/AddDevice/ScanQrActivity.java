@@ -28,11 +28,13 @@ import androidx.core.content.ContextCompat;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -68,6 +70,7 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
     ImageView iv;
     private ExecutorService cameraExecutor;
     EditText etId;
+    DatabaseReference databaseReference;
 
     //private final FirebaseFirestore db = FirebaseFirestore.getInstance(PrimaryAccount.getInstance(this));
 
@@ -209,6 +212,8 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
                                     deviceIDs.put("UID", uid);
                                     FirebaseFirestore.getInstance(PrimaryAccount.getInstance(getApplicationContext())).collection("Devices Registered").document(deviceId).set(deviceIDs);
                                     Toast.makeText(ScanQrActivity.this, "Linked Successfully", Toast.LENGTH_SHORT).show();
+                                    databaseReference = FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference().child("PHMETER").child(deviceId);
+
                                     Intent intent = new Intent(ScanQrActivity.this, Dashboard.class);
                                     startActivity(intent);
                                 })
