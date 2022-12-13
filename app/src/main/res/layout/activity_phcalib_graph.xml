@@ -15,20 +15,48 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:gravity="center"
-            android:layout_gravity="center"
             android:orientation="vertical">
 
-<!--            <com.github.mikephil.charting.charts.LineChart-->
-<!--                android:id="@+id/graph"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="500dp" />-->
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/takeScreenshot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="left"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:text="Save Screenshot"
+                    android:textSize="11dp" />
+
+                <Button
+                    android:id="@+id/viewScreenshot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="left"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:text="View Screenshot"
+                    android:textSize="11dp" />
+            </LinearLayout>
 
             <com.jjoe64.graphview.GraphView
+                android:id="@+id/graph"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:id="@+id/graph" />
+                android:layout_height="500dp" />
 
         </LinearLayout>
     </ScrollView>

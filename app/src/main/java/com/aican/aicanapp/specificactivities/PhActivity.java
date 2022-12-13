@@ -19,6 +19,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.fragments.ph.PhCalibFragment;
+import com.aican.aicanapp.fragments.ph.PhCalibFragmentNew;
 import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
 import com.aican.aicanapp.fragments.ph.phGraphFragment;
@@ -45,6 +46,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     phLogFragment phLogFragment = new phLogFragment();
     phGraphFragment phGraphFragment = new phGraphFragment();
     phAlarmFragment phAlarmFragment = new phAlarmFragment();
+    PhCalibFragmentNew phCalibFragmentNew = new PhCalibFragmentNew();
     DatabaseHelper databaseHelper;
 
     public static String DEVICE_ID = null;
@@ -129,7 +131,9 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 alarm.setTextColor(Color.parseColor("#FF24003A"));
             } else if (view.getId() == R.id.item2) {
 
-                loadFragments(phCalibFragment);
+//                loadFragments(phCalibFragment);
+                loadFragments(phCalibFragmentNew);
+
                 calibrate.setTextColor(Color.WHITE);
                 ph.setTextColor(Color.parseColor("#FF24003A"));
                 log.setTextColor(Color.parseColor("#FF24003A"));

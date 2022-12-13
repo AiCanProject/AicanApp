@@ -1537,7 +1537,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             @Override
             public void onClick(View v) {
                 if (!PH1.equals("") || !PH2.equals("") || !PH3.equals("") || !PH4.equals("") || !PH5.equals("")
-                || !MV1.equals("") || !MV2.equals("") || !MV3.equals("") || !MV4.equals("") || !MV5.equals("")
+                        || !MV1.equals("") || !MV2.equals("") || !MV3.equals("") || !MV4.equals("") || !MV5.equals("")
                 ) {
                     Intent i = new Intent(getContext(), PHCalibGraph.class);
                     i.putExtra("PH1", PH1);
@@ -1552,7 +1552,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                     i.putExtra("MV4", MV4);
                     i.putExtra("MV5", MV5);
                     startActivity(i);
-                }else{
+                } else {
                     Toast.makeText(getContext(), "Not allow to move further because some values are null, and null values cannot plot the graph", Toast.LENGTH_LONG).show();
                 }
             }
@@ -1949,47 +1949,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         filesAndFolders[i].getName().endsWith(".pdf");
                     }
                 }
-
-
-//                try {
-//                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CalibrationData.xlsx");
-//
-//                    PdfSaveOptions options = new PdfSaveOptions();
-//                    options.setCompliance(PdfCompliance.PDF_A_1_B);
-////                    File Pdfdir = new File(Environment.getExternalStorageDirectory()+"/LabApp/Currentlog/CalibPdf");
-//////                    if (!Pdfdir.exists()) {
-//////                        if (!Pdfdir.mkdirs()) {
-//////                            Log.d("App", "failed to create directory");
-//////                        }
-//////                    }
-//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
-//                    String currentDateandTime = sdf.format(new Date());
-//                    String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
-//                    File tempRoot = new File(tempPath);
-//                    fileNotWrite(tempRoot);
-//                    File[] tempFilesAndFolders = tempRoot.listFiles();
-//                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf", options);
-//
-//                    String path1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
-//                    File root1 = new File(path1);
-//                    fileNotWrite(root1);
-//                    File[] filesAndFolders1 = root1.listFiles();
-//
-//                    if (filesAndFolders1 == null || filesAndFolders1.length == 0) {
-//
-//                        return;
-//                    } else {
-//                        for (int i = 0; i < filesAndFolders1.length; i++) {
-//                            if (filesAndFolders1[i].getName().endsWith(".csv") || filesAndFolders1[i].getName().endsWith(".xlsx")) {
-//                                filesAndFolders1[i].delete();
-//                            }
-//                        }
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-
 
                 String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
                 File rootPDF = new File(pathPDF);
@@ -2393,6 +2352,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
         databaseHelper.insert_action_data(time, date, "Calibrated : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
         calibrateBtn.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryAlpha));
         calibrateBtn.setEnabled(false);
         tvTimer.setVisibility(View.VISIBLE);
