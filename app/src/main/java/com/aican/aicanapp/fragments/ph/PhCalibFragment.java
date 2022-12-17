@@ -2,10 +2,13 @@ package com.aican.aicanapp.fragments.ph;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.aican.aicanapp.utils.Constants.OFFLINE_MODE;
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 import static java.lang.Integer.parseInt;
 
 import com.aican.aicanapp.specificactivities.EcActivity;
 import com.aican.aicanapp.specificactivities.Export;
+import com.aican.aicanapp.utils.Constants;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -96,6 +99,8 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -115,6 +120,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+
 public class PhCalibFragment extends Fragment implements OnBackPressed {
 
     private static final String FILE_NAME = "user_info.txt";
@@ -124,6 +135,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static final String FIVE_POINT_CALIBRATION = "five";
     public static final String CALIBRATION_TYPE = "calibration_type";
     public static String PH_MODE = "both";
+    private WebSocket webSocket;
 
     int pageHeight = 1120;
     int pagewidth = 792;
@@ -196,6 +208,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     String coef;
     String currentTime;
     String strDate;
+    JSONObject jsonData;
 
     private void loadBuffers() {
         //////////////////////////////////////////////////////
@@ -273,782 +286,1270 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         coeffRefThree.addValueEventListener(coeffListener);
     }
 
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(SERVER_PATH).build();
+        webSocket = client.newWebSocket(request, new SocketListener());
+    }
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
+
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(),
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+            });
+
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+            getActivity().runOnUiThread(() -> {
+                try {
+                    if(spin.getSelectedItemPosition() == 0) {
+                        jsonData = new JSONObject(text);
+                        Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+                        if (jsonData.has("PH_VAL")) {
+                            String val = jsonData.getString("PH_VAL");
+                            tvPhCurr.setText(val);
+                        }
+
+                        if (jsonData.has("TEMP_VAL")) {
+                            String val = jsonData.getString("TEMP_VAL");
+                            tvTempCurr.setText(val);
+                        }
+
+                        if (jsonData.has("EC_VAL")) {
+                            String val = jsonData.getString("EC_VAL");
+                            tvEcCurr.setText(val);
+                        }
+
+                        if (jsonData.has("MV_1")) {
+                            String val = jsonData.getString("MV_1");
+                            mv1.setText(val);
+                            mV1 = mv1.getText().toString();
+                            Log.d("test1", mV1);
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("MV1", mV1);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("POST_VAL_1")) {
+                            String val = jsonData.getString("POST_VAL_1");
+                            phAfterCalib1.setText(val);
+                            pHAC1 = phAfterCalib1.getText().toString();
+
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC1", pHAC1);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("POST_VAL_2")) {
+                            String val = jsonData.getString("POST_VAL_2");
+                            phAfterCalib2.setText(val);
+                            pHAC2 = phAfterCalib2.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC2", pHAC2);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("POST_VAL_3")) {
+                            String val = jsonData.getString("POST_VAL_3");
+                            phAfterCalib3.setText(val);
+                            pHAC3 = phAfterCalib3.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC3", pHAC3);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("POST_VAL_4")) {
+                            String val = jsonData.getString("POST_VAL_4");
+                            phAfterCalib4.setText(val);
+                            pHAC4 = phAfterCalib4.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC4", pHAC4);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("POST_VAL_5")) {
+                            String val = jsonData.getString("POST_VAL_5");
+                            phAfterCalib5.setText(val);
+                            pHAC5 = phAfterCalib5.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC5", pHAC5);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("MV_2")) {
+                            String val = jsonData.getString("MV_2");
+                            mv2.setText(val);
+                            mV2 = mv2.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("MV2", mV2);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("MV_3")) {
+                            String val = jsonData.getString("MV_3");
+                            mv3.setText(val);
+                            mV3 = mv3.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("MV3", mV3);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("MV_4")) {
+                            String val = jsonData.getString("MV_4");
+                            mv4.setText(val);
+                            mV4 = mv4.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("MV4", mV4);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("MV_5")) {
+                            String val = jsonData.getString("MV_5");
+                            mv5.setText(val);
+                            mV5 = mv5.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("MV5", mV5);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("DT_1")) {
+                            String val = jsonData.getString("DT_1");
+                            dt1.setText(val);
+                            tm1 = dt1.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("DT1", tm1);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("DT_2")) {
+                            String val = jsonData.getString("DT_2");
+                            dt2.setText(val);
+                            tm2 = dt2.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("DT2", tm2);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("DT_3")) {
+                            String val = jsonData.getString("DT_3");
+                            dt3.setText(val);
+                            tm3 = dt3.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("DT3", tm3);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("DT_4")) {
+                            String val = jsonData.getString("DT_4");
+                            dt4.setText(val);
+                            tm4 = dt4.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("DT4", tm4);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("DT_5")) {
+                            String val = jsonData.getString("DT_5");
+                            dt5.setText(val);
+                            tm5 = dt5.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("DT5", tm5);
+                            myEdit.commit();
+                        }
+
+
+                        if (jsonData.has("B_1")) {
+                            String val = jsonData.getString("B_1");
+                            ph1.setText(val);
+                            PH1 = ph1.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH1", PH1);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_2")) {
+                            String val = jsonData.getString("B_2");
+                            ph2.setText(val);
+                            PH2 = ph2.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH2", PH2);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_3")) {
+                            String val = jsonData.getString("B_3");
+                            ph3.setText(val);
+                            PH3 = ph3.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH3", PH3);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_4")) {
+                            String val = jsonData.getString("B_4");
+                            ph4.setText(val);
+                            PH4 = ph4.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH4", PH4);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_5")) {
+                            String val = jsonData.getString("B_5");
+                            ph5.setText(val);
+                            PH5 = ph5.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH5", PH5);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("CAL")) {
+                            String val = jsonData.getString("CAL");
+                            ec = Integer.parseInt(val);
+                            Log.d("ECVal", "onDataChange: " + ec);
+                            stateChangeModeFive();
+
+                        }
+
+                    } else if(spin.getSelectedItemPosition() == 1){
+
+                        if (jsonData.has("POST_VAL_2")) {
+                            String val = jsonData.getString("POST_VAL_2");
+                            phAfterCalib1.setText(val);
+                            pHAC1 = phAfterCalib1.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC1", pHAC1);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("POST_VAL_3")) {
+                            String val = jsonData.getString("POST_VAL_3");
+                            phAfterCalib2.setText(val);
+                            pHAC2 = phAfterCalib2.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("pHAC2", pHAC2);
+                            myEdit.commit();
+                        }
+                         if (jsonData.has("POST_VAL_4")) {
+                            String val = jsonData.getString("POST_VAL_4");
+                             phAfterCalib3.setText(val);
+                             pHAC3 = phAfterCalib3.getText().toString();
+
+                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                             myEdit.putString("pHAC3", pHAC3);
+                             myEdit.commit();
+                        }
+                         if (jsonData.has("PH_VAL")) {
+                             Float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                             if (ph == null) return;
+                            String val = jsonData.getString("PH_VAL");
+                             tvPhCurr.setText(val);
+                             phView.moveTo(ph);
+                        }
+
+                         if (jsonData.has("TEMP_VAL")) {
+                             Float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                             String tempForm = String.format(Locale.UK, "%.1f", ph);
+                             tvTempCurr.setText(tempForm + "°C");
+
+                             if (ph <= -127.0) {
+                                 tvTempCurr.setText("NA");
+                             }
+                        }
+
+                         if (jsonData.has("EC_VAL")) {
+                             String ph =jsonData.getString("EC_VAL");
+                             tvEcCurr.setText(ph);
+
+                         }
+
+                         if (jsonData.has("MV_2")) {
+                             String val =jsonData.getString("MV_2");
+                             mv1.setText(val);
+                             mV1 = mv1.getText().toString();
+
+                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                             myEdit.putString("MV2", mV1);
+                             myEdit.commit();
+                         }
+
+                         if (jsonData.has("MV_3")) {
+                             String val =jsonData.getString("MV_3");
+                             mv2.setText(val);
+                             mV2 = mv2.getText().toString();
+
+                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                             myEdit.putString("MV3", mV2);
+                             myEdit.commit();
+                         }
+                         if (jsonData.has("MV_4")) {
+                             String val =jsonData.getString("MV_4");
+                             mv3.setText(val);
+                             mV3 = mv3.getText().toString();
+
+                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                             myEdit.putString("MV4", mV3);
+                             myEdit.commit();
+                         }
+
+                          if (jsonData.has("DT_2")) {
+                             String val =jsonData.getString("DT_2");
+                              dt1.setText(val);
+                              tm1 = dt1.getText().toString();
+
+                              SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                              SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                              myEdit.putString("DT2", tm1);
+                              myEdit.commit();
+                         }
+
+                          if (jsonData.has("DT_3")) {
+                             String val =jsonData.getString("DT_3");
+                              dt2.setText(val);
+                              tm2 = dt2.getText().toString();
+
+                              SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                              SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                              myEdit.putString("DT3", tm2);
+                              myEdit.commit();
+                         }
+
+                          if (jsonData.has("DT_4")) {
+                             String val =jsonData.getString("DT_4");
+                              dt3.setText(val);
+                              tm3 = dt3.getText().toString();
+
+                              SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                              SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                              myEdit.putString("DT4", tm3);
+                              myEdit.commit();
+                         }
+
+                          if (jsonData.has("B_2")) {
+                             String val =jsonData.getString("B_2");
+                              ph1.setText(val);
+                              PH2 = ph1.getText().toString();
+
+                              SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                              SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                              myEdit.putString("PH2", PH2);
+                              myEdit.commit();
+                         }
+
+                          if (jsonData.has("B_3")) {
+                             String val =jsonData.getString("B_3");
+                              ph2.setText(val);
+                              PH3 = ph2.getText().toString();
+
+                              SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                              SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                              myEdit.putString("PH3", PH3);
+                              myEdit.commit();
+                         }
+                         if (jsonData.has("B_4")) {
+                             String val =jsonData.getString("B_4");
+                             ph3.setText(val);
+                             PH4 = ph3.getText().toString();
+
+                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                             myEdit.putString("PH4", PH4);
+                             myEdit.commit();
+                         }
+
+                         if (jsonData.has("CAL")) {
+                             String val = jsonData.getString("CAL");
+                             ec = Integer.parseInt(val);
+                             stateChangeModeThree();
+                         }
+
+                    }
+
+                    if (jsonData.has("FAULT")) {
+                        String val = jsonData.getString("FAULT");
+                        fault = Integer.parseInt(val);
+                        if (fault != null)
+                        if (fault == 1) {
+                            showAlertDialogButtonClicked();
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            });
+
+        }
+    }
 
     private void setupListeners() {
 
-        if (spin.getSelectedItemPosition() == 0) {
+        if (!OFFLINE_MODE){
+            if (spin.getSelectedItemPosition() == 0) {
 
-            l4.setVisibility(View.VISIBLE);
-            l5.setVisibility(View.VISIBLE);
+                l4.setVisibility(View.VISIBLE);
+                l5.setVisibility(View.VISIBLE);
 
-            SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
-            t1 = shp.getString("tem1", "--");
-            t2 = shp.getString("tem2", "--");
-            t3 = shp.getString("tem3", "--");
-            t4 = shp.getString("tem4", "--");
-            t5 = shp.getString("tem5", "--");
+                t1 = shp.getString("tem1", "--");
+                t2 = shp.getString("tem2", "--");
+                t3 = shp.getString("tem3", "--");
+                t4 = shp.getString("tem4", "--");
+                t5 = shp.getString("tem5", "--");
 
-            temp1.setText(t1);
-            temp2.setText(t2);
-            temp3.setText(t3);
-            temp4.setText(t4);
-            temp5.setText(t5);
+                temp1.setText(t1);
+                temp2.setText(t2);
+                temp3.setText(t3);
+                temp4.setText(t4);
+                temp5.setText(t5);
 
 
-            deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ph = snapshot.getValue(Float.class);
-                    if (ph == null) return;
-                    String phForm = String.format(Locale.UK, "%.2f", ph);
-                    tvPhCurr.setText(phForm);
-                    phView.moveTo(ph);
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float temp = snapshot.getValue(Float.class);
-                    String tempForm = String.format(Locale.UK, "%.1f", temp);
-                    tvTempCurr.setText(tempForm + "°C");
-
-                    if (temp <= -127.0) {
-                        tvTempCurr.setText("NA");
+                deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ph = snapshot.getValue(Float.class);
+                        if (ph == null) return;
+                        String phForm = String.format(Locale.UK, "%.2f", ph);
+                        tvPhCurr.setText(phForm);
+                        phView.moveTo(ph);
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.1f", ec);
-                    tvEcCurr.setText(ecForm);
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.1f", ec);
-                    tvEcCurr.setText(ecForm);
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv1.setText(ecForm);
-                    mV1 = mv1.getText().toString();
-                    Log.d("test1", mV1);
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV1", mV1);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_1").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib1.setText(ecForm);
-                    pHAC1 = phAfterCalib1.getText().toString();
-
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC1", pHAC1);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib2.setText(ecForm);
-                    pHAC2 = phAfterCalib2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC2", pHAC2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib3.setText(ecForm);
-                    pHAC3 = phAfterCalib3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC3", pHAC3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib4.setText(ecForm);
-                    pHAC4 = phAfterCalib4.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC4", pHAC4);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_5").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib5.setText(ecForm);
-                    pHAC5 = phAfterCalib5.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC5", pHAC5);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv2.setText(ecForm);
-                    mV2 = mv2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV2", mV2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv3.setText(ecForm);
-                    mV3 = mv3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV3", mV3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv4.setText(ecForm);
-                    mV4 = mv4.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV4", mV4);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_5").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv5.setText(ecForm);
-                    mV5 = mv5.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV5", mV5);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt1.setText(time);
-                    tm1 = dt1.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT1", tm1);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt2.setText(time);
-                    tm2 = dt2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT2", tm2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt3.setText(time);
-                    tm3 = dt3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT3", tm3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt4.setText(time);
-                    tm4 = dt4.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT4", tm4);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt5.setText(time);
-                    tm5 = dt5.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT5", tm5);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph1.setText(phVal);
-                    PH1 = ph1.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH1", PH1);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph2.setText(phVal);
-                    PH2 = ph2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH2", PH2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph3.setText(phVal);
-                    PH3 = ph3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH3", PH3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph4.setText(phVal);
-                    PH4 = ph4.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH4", PH4);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph5.setText(phVal);
-                    PH5 = ph5.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH5", PH5);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-        } else if (spin.getSelectedItemPosition() == 1) {
-
-            mv4.setText(" ");
-            mv5.setText(" ");
-            dt4.setText(" ");
-            dt5.setText(" ");
-            SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-
-            t1 = shp.getString("tem1", "--");
-            t2 = shp.getString("tem2", "--");
-            t3 = shp.getString("tem3", "--");
-            t4 = shp.getString("tem4", "--");
-            t5 = shp.getString("tem5", "--");
-
-
-            temp1.setText(t1);
-            temp2.setText(t2);
-            temp3.setText(t3);
-            temp4.setText(t4);
-            temp5.setText(t5);
-
-            l4.setVisibility(View.INVISIBLE);
-            l5.setVisibility(View.INVISIBLE);
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib1.setText(ecForm);
-                    pHAC1 = phAfterCalib1.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC1", pHAC1);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib2.setText(ecForm);
-                    pHAC2 = phAfterCalib2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC2", pHAC2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    phAfterCalib3.setText(ecForm);
-                    pHAC3 = phAfterCalib3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("pHAC3", pHAC3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-            deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ph = snapshot.getValue(Float.class);
-                    if (ph == null) return;
-                    String phForm = String.format(Locale.UK, "%.2f", ph);
-                    tvPhCurr.setText(phForm);
-                    phView.moveTo(ph);
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float temp = snapshot.getValue(Float.class);
-                    String tempForm = String.format(Locale.UK, "%.1f", temp);
-                    tvTempCurr.setText(tempForm + "°C");
-
-                    if (temp <= -127.0) {
-                        tvTempCurr.setText("NA");
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
                     }
-                }
+                });
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
+                deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float temp = snapshot.getValue(Float.class);
+                        String tempForm = String.format(Locale.UK, "%.1f", temp);
+                        tvTempCurr.setText(tempForm + "°C");
 
-            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.1f", ec);
-                    tvEcCurr.setText(ecForm);
-                }
+                        if (temp <= -127.0) {
+                            tvTempCurr.setText("NA");
+                        }
+                    }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
 
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv1.setText(ecForm);
-                    mV1 = mv1.getText().toString();
+                deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.1f", ec);
+                        tvEcCurr.setText(ecForm);
+                    }
 
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
 
-                    myEdit.putString("MV2", mV1);
-                    myEdit.commit();
-                }
+                deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.1f", ec);
+                        tvEcCurr.setText(ecForm);
+                    }
 
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv2.setText(ecForm);
-                    mV2 = mv2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV3", mV2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    Float ec = snapshot.getValue(Float.class);
-                    String ecForm = String.format(Locale.UK, "%.2f", ec);
-                    mv3.setText(ecForm);
-                    mV3 = mv3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("MV4", mV3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt1.setText(time);
-                    tm1 = dt1.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT2", tm1);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt2.setText(time);
-                    tm2 = dt2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT3", tm2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String time = snapshot.getValue(String.class);
-                    dt3.setText(time);
-                    tm3 = dt3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("DT4", tm3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph1.setText(phVal);
-                    PH2 = ph1.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH2", PH2);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph2.setText(phVal);
-                    PH3 = ph2.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH3", PH3);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
-
-            deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    String phVal = snapshot.getValue(String.class);
-                    ph3.setText(phVal);
-                    PH4 = ph3.getText().toString();
-
-                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-
-                    myEdit.putString("PH4", PH4);
-                    myEdit.commit();
-                }
-
-                @Override
-                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
 
 
-        }
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv1.setText(ecForm);
+                        mV1 = mv1.getText().toString();
+                        Log.d("test1", mV1);
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV1", mV1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_1").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib1.setText(ecForm);
+                        pHAC1 = phAfterCalib1.getText().toString();
+
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC1", pHAC1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib2.setText(ecForm);
+                        pHAC2 = phAfterCalib2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC2", pHAC2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib3.setText(ecForm);
+                        pHAC3 = phAfterCalib3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC3", pHAC3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib4.setText(ecForm);
+                        pHAC4 = phAfterCalib4.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC4", pHAC4);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_5").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib5.setText(ecForm);
+                        pHAC5 = phAfterCalib5.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC5", pHAC5);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv2.setText(ecForm);
+                        mV2 = mv2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV2", mV2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv3.setText(ecForm);
+                        mV3 = mv3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV3", mV3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv4.setText(ecForm);
+                        mV4 = mv4.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV4", mV4);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_5").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv5.setText(ecForm);
+                        mV5 = mv5.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV5", mV5);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt1.setText(time);
+                        tm1 = dt1.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT1", tm1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt2.setText(time);
+                        tm2 = dt2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT2", tm2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt3.setText(time);
+                        tm3 = dt3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT3", tm3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt4.setText(time);
+                        tm4 = dt4.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT4", tm4);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt5.setText(time);
+                        tm5 = dt5.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT5", tm5);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph1.setText(phVal);
+                        PH1 = ph1.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH1", PH1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph2.setText(phVal);
+                        PH2 = ph2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH2", PH2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph3.setText(phVal);
+                        PH3 = ph3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH3", PH3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph4.setText(phVal);
+                        PH4 = ph4.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH4", PH4);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph5.setText(phVal);
+                        PH5 = ph5.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH5", PH5);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+            } else if (spin.getSelectedItemPosition() == 1) {
+
+                mv4.setText(" ");
+                mv5.setText(" ");
+                dt4.setText(" ");
+                dt5.setText(" ");
+                SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+
+                t1 = shp.getString("tem1", "--");
+                t2 = shp.getString("tem2", "--");
+                t3 = shp.getString("tem3", "--");
+                t4 = shp.getString("tem4", "--");
+                t5 = shp.getString("tem5", "--");
+
+
+                temp1.setText(t1);
+                temp2.setText(t2);
+                temp3.setText(t3);
+                temp4.setText(t4);
+                temp5.setText(t5);
+
+                l4.setVisibility(View.INVISIBLE);
+                l5.setVisibility(View.INVISIBLE);
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib1.setText(ecForm);
+                        pHAC1 = phAfterCalib1.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC1", pHAC1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib2.setText(ecForm);
+                        pHAC2 = phAfterCalib2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC2", pHAC2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("POST_VAL_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        phAfterCalib3.setText(ecForm);
+                        pHAC3 = phAfterCalib3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("pHAC3", pHAC3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+                deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ph = snapshot.getValue(Float.class);
+                        if (ph == null) return;
+                        String phForm = String.format(Locale.UK, "%.2f", ph);
+                        tvPhCurr.setText(phForm);
+                        phView.moveTo(ph);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float temp = snapshot.getValue(Float.class);
+                        String tempForm = String.format(Locale.UK, "%.1f", temp);
+                        tvTempCurr.setText(tempForm + "°C");
+
+                        if (temp <= -127.0) {
+                            tvTempCurr.setText("NA");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.1f", ec);
+                        tvEcCurr.setText(ecForm);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv1.setText(ecForm);
+                        mV1 = mv1.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV2", mV1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv2.setText(ecForm);
+                        mV2 = mv2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV3", mV2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        Float ec = snapshot.getValue(Float.class);
+                        String ecForm = String.format(Locale.UK, "%.2f", ec);
+                        mv3.setText(ecForm);
+                        mV3 = mv3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("MV4", mV3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt1.setText(time);
+                        tm1 = dt1.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT2", tm1);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt2.setText(time);
+                        tm2 = dt2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT3", tm2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String time = snapshot.getValue(String.class);
+                        dt3.setText(time);
+                        tm3 = dt3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("DT4", tm3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph1.setText(phVal);
+                        PH2 = ph1.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH2", PH2);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph2.setText(phVal);
+                        PH3 = ph2.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH3", PH3);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        String phVal = snapshot.getValue(String.class);
+                        ph3.setText(phVal);
+                        PH4 = ph3.getText().toString();
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                        myEdit.putString("PH4", PH4);
+                        myEdit.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                    }
+                });
+
+
+            }
+    }
 
 
         deviceRef.child("Data").child("FAULT").addValueEventListener(new ValueEventListener() {
@@ -1076,101 +1577,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     ec = snapshot.getValue(Integer.class);
                     Log.d("ECVal", "onDataChange: " + ec);
-                    if (ec == 10 || ec == 0) {
-                        l1.setBackgroundColor(Color.LTGRAY);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.WHITE);
-                        l4.setBackgroundColor(Color.WHITE);
-                        l5.setBackgroundColor(Color.WHITE);
-                    } else if (ec == 20 || ec == 11) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.LTGRAY);
-                        l3.setBackgroundColor(Color.WHITE);
-                        l4.setBackgroundColor(Color.WHITE);
-                        l5.setBackgroundColor(Color.WHITE);
-
-                    } else if (ec == 30 || ec == 21) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.LTGRAY);
-                        l4.setBackgroundColor(Color.WHITE);
-                        l5.setBackgroundColor(Color.WHITE);
-
-                    } else if (ec == 40 || ec == 31) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.WHITE);
-                        l4.setBackgroundColor(Color.LTGRAY);
-                        l5.setBackgroundColor(Color.WHITE);
-
-                    } else if (ec == 50 || ec == 41) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.WHITE);
-                        l4.setBackgroundColor(Color.WHITE);
-                        l5.setBackgroundColor(Color.LTGRAY);
-                    } else if (ec == 51) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.WHITE);
-                        l4.setBackgroundColor(Color.WHITE);
-                        l5.setBackgroundColor(Color.WHITE);
-                    }
-                    if (ec == 11) {
-                        Date date = new Date();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
-                        calibrateBtn.setEnabled(true);
-
-
-                    } else if (ec == 21) {
-                        Date date = new Date();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
-                        calibrateBtn.setEnabled(true);
-
-
-                    } else if (ec == 31) {
-                        Date date = new Date();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
-                        calibrateBtn.setEnabled(true);
-
-
-                    } else if (ec == 41) {
-                        Date date = new Date();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
-                        calibrateBtn.setEnabled(true);
-
-
-                    } else if (ec == 51) {
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(new Date());
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
-                        calibrateBtn.setText("DONE");
-                        calibrateBtn.setEnabled(false);
-//                        currentBuf = 0;
-//                        currentBufThree = -1;
-
-
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                calibrateBtn.setText("START");
-                                calibrateBtn.setEnabled(true);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                            }
-                        }, 90000);   //5 seconds
-
-                    } else if (ec == 0) {
-                        calibrateBtn.setText("START");
-                        calibrateBtn.setEnabled(true);
-                    }
+                    stateChangeModeFive();
                 }
 
                 @Override
@@ -1182,68 +1589,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     ec = snapshot.getValue(Integer.class);
-
-                    if (ec == 20 || ec == 0) {
-                        l1.setBackgroundColor(Color.LTGRAY);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.WHITE);
-                    } else if (ec == 30 || ec == 21) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.LTGRAY);
-                        l3.setBackgroundColor(Color.WHITE);
-
-                    } else if (ec == 40 || ec == 31) {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.LTGRAY);
-
-                    } else {
-                        l1.setBackgroundColor(Color.WHITE);
-                        l2.setBackgroundColor(Color.WHITE);
-                        l3.setBackgroundColor(Color.WHITE);
-                        l4.setBackgroundColor(Color.WHITE);
-                        l5.setBackgroundColor(Color.WHITE);
-                    }
-
-                    if (ec == 21) {
-                        Date date = new Date();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
-                        calibrateBtn.setEnabled(true);
-
-
-                    } else if (ec == 31) {
-                        Date date = new Date();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(date);
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
-                        calibrateBtn.setEnabled(true);
-
-
-                    } else if (ec == 41) {
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                        strDate = simpleDateFormat.format(new Date());
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
-                        calibrateBtn.setText("DONE");
-                        calibrateBtn.setEnabled(false);
-//                        currentBuf = 0;
-//                        currentBufThree = -1;
-
-
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                calibrateBtn.setText("START");
-                                calibrateBtn.setEnabled(true);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                            }
-                        }, 10000);   //5 seconds
-
-                    } else if (ec == 0) {
-                        calibrateBtn.setText("START");
-                        calibrateBtn.setEnabled(true);
-                    }
+                    stateChangeModeThree();
                 }
 
                 @Override
@@ -1253,6 +1599,170 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         }
 
     }
+
+    private void stateChangeModeThree(){
+        if (ec == 20 || ec == 0) {
+            l1.setBackgroundColor(Color.LTGRAY);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.WHITE);
+        } else if (ec == 30 || ec == 21) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.LTGRAY);
+            l3.setBackgroundColor(Color.WHITE);
+
+        } else if (ec == 40 || ec == 31) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.LTGRAY);
+
+        } else {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.WHITE);
+            l4.setBackgroundColor(Color.WHITE);
+            l5.setBackgroundColor(Color.WHITE);
+        }
+
+        if (ec == 21) {
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(date);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+            calibrateBtn.setEnabled(true);
+
+
+        } else if (ec == 31) {
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(date);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+            calibrateBtn.setEnabled(true);
+
+
+        } else if (ec == 41) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(new Date());
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+            calibrateBtn.setText("DONE");
+            calibrateBtn.setEnabled(false);
+//                        currentBuf = 0;
+//                        currentBufThree = -1;
+
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    calibrateBtn.setText("START");
+                    calibrateBtn.setEnabled(true);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                }
+            }, 10000);   //5 seconds
+
+        } else if (ec == 0) {
+            calibrateBtn.setText("START");
+            calibrateBtn.setEnabled(true);
+        }
+    }
+
+    private void stateChangeModeFive(){
+        if (ec == 10 || ec == 0) {
+            l1.setBackgroundColor(Color.LTGRAY);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.WHITE);
+            l4.setBackgroundColor(Color.WHITE);
+            l5.setBackgroundColor(Color.WHITE);
+        } else if (ec == 20 || ec == 11) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.LTGRAY);
+            l3.setBackgroundColor(Color.WHITE);
+            l4.setBackgroundColor(Color.WHITE);
+            l5.setBackgroundColor(Color.WHITE);
+
+        } else if (ec == 30 || ec == 21) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.LTGRAY);
+            l4.setBackgroundColor(Color.WHITE);
+            l5.setBackgroundColor(Color.WHITE);
+
+        } else if (ec == 40 || ec == 31) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.WHITE);
+            l4.setBackgroundColor(Color.LTGRAY);
+            l5.setBackgroundColor(Color.WHITE);
+
+        } else if (ec == 50 || ec == 41) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.WHITE);
+            l4.setBackgroundColor(Color.WHITE);
+            l5.setBackgroundColor(Color.LTGRAY);
+        } else if (ec == 51) {
+            l1.setBackgroundColor(Color.WHITE);
+            l2.setBackgroundColor(Color.WHITE);
+            l3.setBackgroundColor(Color.WHITE);
+            l4.setBackgroundColor(Color.WHITE);
+            l5.setBackgroundColor(Color.WHITE);
+        }
+        if (ec == 11) {
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(date);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+            calibrateBtn.setEnabled(true);
+
+
+        } else if (ec == 21) {
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(date);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+            calibrateBtn.setEnabled(true);
+
+
+        } else if (ec == 31) {
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(date);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+            calibrateBtn.setEnabled(true);
+
+
+        } else if (ec == 41) {
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(date);
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+            calibrateBtn.setEnabled(true);
+
+
+        } else if (ec == 51) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            strDate = simpleDateFormat.format(new Date());
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+            calibrateBtn.setText("DONE");
+            calibrateBtn.setEnabled(false);
+//                        currentBuf = 0;
+//                        currentBufThree = -1;
+
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    calibrateBtn.setText("START");
+                    calibrateBtn.setEnabled(true);
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                }
+            }, 90000);   //5 seconds
+
+        } else if (ec == 0) {
+            calibrateBtn.setText("START");
+            calibrateBtn.setEnabled(true);
+        }
+    }
+
+    private void backgroundCheckForFive(){}
 
     public void showAlertDialogButtonClicked() {
 
@@ -1392,6 +1902,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         calibSpinner = view.findViewById(R.id.calibSpinner);
         calibRecyclerView = view.findViewById(R.id.rvCalibFileView);
         nullEntry = "";
+        jsonData = new JSONObject();
 
 
         getFirebaseValue();
@@ -1498,7 +2009,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 break;
         }
 //        }
-
+        if(OFFLINE_MODE){
+            initiateSocketConnection();
+        }
         fivePoint.setOnClickListener(v -> {
             spin.setSelection(0);
         });
@@ -1734,6 +2247,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                 calibrate();
             }
         });
+
 
 
         test3 = mv2.getText().toString();

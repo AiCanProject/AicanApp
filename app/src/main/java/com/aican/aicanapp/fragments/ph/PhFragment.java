@@ -1,5 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -66,7 +68,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     DatabaseReference deviceRef;
     SwitchCompat switchAtc;
     private WebSocket webSocket;
-    private String SERVER_PATH = "ws://192.168.4.1:81";
+
 
     BatteryDialog batteryDialog;
     String probeInfo = "-";
@@ -107,6 +109,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         atcValue = view.findViewById(R.id.atcValue);
         setATC = view.findViewById(R.id.setATC);
         entriesOriginal = new ArrayList<>();
+        jsonData = new JSONObject();
 
 
         databaseHelper = new DatabaseHelper(requireContext());
@@ -167,6 +170,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }else {
                 try {
                     jsonData.put("ATC_AT", atcValue.getText().toString());
+                    Log.d("JSONReceived:PHFragment", "onViewCreated: "+jsonData);
                     webSocket.send(jsonData.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -195,7 +199,51 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(SERVER_PATH).build();
         webSocket = client.newWebSocket(request, new SocketListener());
+        turnAtcSwitch();
+    }
 
+    private void turnAtcSwitch(){
+        switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
+
+            if (switchAtc.isChecked()) {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "ATC toggle on : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                try {
+                    jsonData.put("ATC","1");
+                    jsonData.put("ATC_AT",atcValue.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editT = togglePref.edit();
+                editT.putInt("toggleValue", 1);
+                editT.commit();
+                setATC.setVisibility(View.VISIBLE);
+                webSocket.send(jsonData.toString());
+
+            } else {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                try {
+                    jsonData.put("ATC","0");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                databaseHelper.insert_action_data(time, date, "ATC toggle off : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editT = togglePref.edit();
+                editT.putInt("toggleValue", 0);
+                editT.commit();
+                setATC.setVisibility(View.INVISIBLE);
+
+
+            }
+        });
     }
 
     private class SocketListener extends WebSocketListener {
@@ -304,6 +352,9 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 //                        String ecForm = String.format(Locale.UK, "%.1f", ec);
                         tvEcCurr.setText(ec);
                     }
+
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -490,6 +541,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 SharedPreferences.Editor editT = togglePref.edit();
                 editT.putInt("toggleValue", 1);
                 editT.commit();
+                setATC.setVisibility(View.VISIBLE);
 
             } else {
                 String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -501,6 +553,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 SharedPreferences.Editor editT = togglePref.edit();
                 editT.putInt("toggleValue", 0);
                 editT.commit();
+                setATC.setVisibility(View.INVISIBLE);
+
 
             }
         });

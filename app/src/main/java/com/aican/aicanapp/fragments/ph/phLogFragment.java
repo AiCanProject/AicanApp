@@ -4,6 +4,9 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.aican.aicanapp.utils.Constants.OFFLINE_MODE;
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
+
 import android.app.Activity;
 
 import android.app.Dialog;
@@ -86,6 +89,9 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -99,6 +105,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 public class phLogFragment extends Fragment {
 
@@ -136,6 +148,8 @@ public class phLogFragment extends Fragment {
     ImageButton saveTimer;
     String deviceID = "";
     TextView log_interval_text;
+    JSONObject jsonData;
+    private WebSocket webSocket;
 
     int timerInSec;
     Boolean isTimer;
@@ -212,14 +226,17 @@ public class phLogFragment extends Fragment {
         nullEntry = " ";
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
+        jsonData = new JSONObject();
         deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    companyName = snapshot.getValue(String.class);
-                } else {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
-                    companyName = "NA";
+                if(OFFLINE_MODE) {
+                    if (snapshot.exists()) {
+                        companyName = snapshot.getValue(String.class);
+                    } else {
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
+                        companyName = "NA";
+                    }
                 }
             }
 
@@ -232,18 +249,20 @@ public class phLogFragment extends Fragment {
         deviceRef.child("AUTO_LOG").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String autoLogVar = snapshot.getValue(String.class);
-                    if (autoLogVar.equals("on")) {
-                        autoLog.setVisibility(View.VISIBLE);
-                    } else if (autoLogVar.equals("off")) {
-                        autoLog.setVisibility(View.GONE);
+                if(OFFLINE_MODE) {
+                    if (snapshot.exists()) {
+                        String autoLogVar = snapshot.getValue(String.class);
+                        if (autoLogVar.equals("on")) {
+                            autoLog.setVisibility(View.VISIBLE);
+                        } else if (autoLogVar.equals("off")) {
+                            autoLog.setVisibility(View.GONE);
+                        } else {
+                            autoLog.setVisibility(View.GONE);
+                        }
                     } else {
-                        autoLog.setVisibility(View.GONE);
-                    }
-                } else {
-                    deviceRef.child("AUTO_LOG").setValue("off");
+                        deviceRef.child("AUTO_LOG").setValue("off");
 
+                    }
                 }
             }
 
@@ -286,7 +305,11 @@ public class phLogFragment extends Fragment {
         if (Source.subscription.equals("cfr")) {
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
         }
-        deviceRef.child("Data").child("LOG").setValue(0);
+        if(OFFLINE_MODE) {
+            deviceRef.child("Data").child("LOG").setValue(0);
+        }else{
+            sendJsonData("LOG","0");
+        }
 //        deviceRef.child("Data").child("AUTOLOG").setValue(0);
 
 //        Handler handler = new Handler();
@@ -301,28 +324,31 @@ public class phLogFragment extends Fragment {
         submitBtn.setOnClickListener(view1 -> {
             saveDetails();
         });
+        initiateSocketConnection();
 
         if (deviceRef.child("Data").child("LOG") != null)
             deviceRef.child("Data").child("LOG").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int log = snapshot.getValue(Integer.class);
+                    if(OFFLINE_MODE) {
+                        int log = snapshot.getValue(Integer.class);
 
-                    if (log == 1) {
-                        date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                        time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                        fetch_logs();
-                        if (ph == null || temp == null || mv == null) {
-                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-                        } else {
-                            databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
-                        }
-                        if (switchBtnClick.isChecked()) {
-                            takeLog();
-                        }
-                        deviceRef.child("Data").child("LOG").setValue(0);
+                        if (log == 1) {
+                            date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                            time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                            fetch_logs();
+                            if (ph == null || temp == null || mv == null) {
+                                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                            } else {
+                                databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            }
+                            if (switchBtnClick.isChecked()) {
+                                takeLog();
+                            }
+                            deviceRef.child("Data").child("LOG").setValue(0);
 
+                        }
                     }
 
                 }
@@ -336,25 +362,27 @@ public class phLogFragment extends Fragment {
         deviceRef.child("Data").child("HOLD").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                int hold = snapshot.getValue(Integer.class);
+                if(OFFLINE_MODE) {
+                    int hold = snapshot.getValue(Integer.class);
 
-                if (switchHold.isChecked())
-                    if (hold == 1) {
-                        date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                        time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                        fetch_logs();
-                        deviceRef.child("Data").child("HOLD").setValue(0);
+                    if (switchHold.isChecked())
+                        if (hold == 1) {
+                            date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                            time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                            fetch_logs();
+                            deviceRef.child("Data").child("HOLD").setValue(0);
 
-                        if (ph == null || temp == null || mv == null) {
-                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-                        } else {
-                            databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                            databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            if (ph == null || temp == null || mv == null) {
+                                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                            } else {
+                                databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                            }
+                            adapter = new LogAdapter(getContext(), getList());
+                            recyclerView.setAdapter(adapter);
                         }
-                        adapter = new LogAdapter(getContext(), getList());
-                        recyclerView.setAdapter(adapter);
-                    }
+                }
             }
 
             @Override
@@ -365,21 +393,23 @@ public class phLogFragment extends Fragment {
         deviceRef.child("Data").child("AUTOLOG").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                int AutoLog = snapshot.getValue(Integer.class);
-                Source.auto_log = AutoLog;
-                if (AutoLog == 1) {
-                    switchHold.setChecked(true);
-                    switchInterval.setChecked(false);
-                    switchBtnClick.setChecked(false);
-                } else if (AutoLog == 2) {
-                    isAlertShow = false;
-                    switchHold.setChecked(false);
-                    switchInterval.setChecked(true);
-                    switchBtnClick.setChecked(false);
-                } else if (AutoLog == 3) {
-                    switchHold.setChecked(false);
-                    switchInterval.setChecked(false);
-                    switchBtnClick.setChecked(true);
+                if(OFFLINE_MODE) {
+                    int AutoLog = snapshot.getValue(Integer.class);
+                    Source.auto_log = AutoLog;
+                    if (AutoLog == 1) {
+                        switchHold.setChecked(true);
+                        switchInterval.setChecked(false);
+                        switchBtnClick.setChecked(false);
+                    } else if (AutoLog == 2) {
+                        isAlertShow = false;
+                        switchHold.setChecked(false);
+                        switchInterval.setChecked(true);
+                        switchBtnClick.setChecked(false);
+                    } else if (AutoLog == 3) {
+                        switchHold.setChecked(false);
+                        switchInterval.setChecked(false);
+                        switchBtnClick.setChecked(true);
+                    }
                 }
             }
 
@@ -579,7 +609,11 @@ public class phLogFragment extends Fragment {
                 if (switchInterval.isChecked()) {
                     switchBtnClick.setChecked(false);
                     switchHold.setChecked(false);
-                    deviceRef.child("Data").child("AUTOLOG").setValue(2);
+                    if(OFFLINE_MODE) {
+                        deviceRef.child("Data").child("AUTOLOG").setValue(2);
+                    }else{
+                        sendJsonData("AUTOLOG","2");
+                    }
 
                     if (Constants.timeInSec == 0) {
 
@@ -595,14 +629,22 @@ public class phLogFragment extends Fragment {
                 } else {
                     isTimer = false;
                     Constants.timeInSec = 0;
-                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
+                    if(OFFLINE_MODE) {
+                        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
+                    }else{
+                        sendJsonData("Data","LOG_INTERVAL");
+                    }
 
                     isAlertShow = true;
                     if (handler != null)
                         handler.removeCallbacks(runnable);
 
                     if (!switchHold.isChecked() && !switchBtnClick.isChecked()) {
-                        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                        if(OFFLINE_MODE) {
+                            deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                        }else{
+                            sendJsonData("AUTOLOG","0");
+                        }
 
                     }
 
@@ -620,7 +662,11 @@ public class phLogFragment extends Fragment {
                     Constants.timeInSec = db.intValue();
                     double a = (double) Constants.timeInSec / 60000;
                     Log.d("TimerVal", "" + a);
-                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
+                    if(OFFLINE_MODE) {
+                        deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
+                    }else{
+                        sendJsonData("LOG_INTERVAL",Double.toString(a));
+                    }
                     LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
                     log_interval_text.setText(String.valueOf(LOG_INTERVAL));
 
@@ -636,7 +682,12 @@ public class phLogFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (switchBtnClick.isChecked()) {
-                    deviceRef.child("Data").child("AUTOLOG").setValue(3);
+
+                    if(OFFLINE_MODE) {
+                        deviceRef.child("Data").child("AUTOLOG").setValue(3);
+                    }else{
+                        sendJsonData("AUTOLOG","3");
+                    }
 
                     if (switchInterval.isChecked()) {
                         isTimer = false;
@@ -646,8 +697,13 @@ public class phLogFragment extends Fragment {
                     switchHold.setChecked(false);
                 } else {
                     if (!switchInterval.isChecked() && !switchHold.isChecked()) {
-                        deviceRef.child("Data").child("AUTOLOG").setValue(0);
-                        deviceRef.child("Data").child("LOG").setValue(0);
+                        if(OFFLINE_MODE) {
+                            deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                            deviceRef.child("Data").child("LOG").setValue(0);
+                        }else{
+                            sendJsonData("AUTOLOG","0");
+                            sendJsonData("LOG","0");
+                        }
 
                     }
                 }
@@ -657,11 +713,13 @@ public class phLogFragment extends Fragment {
             deviceRef.child("Data").child("LOG_INTERVAL").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    double a = snapshot.getValue(Double.class) * 60000;
-                    Constants.timeInSec = (int) a;
-                    if (snapshot.getValue(Double.class) != null) {
-                        if (switchInterval.isChecked() && !isAlertShow) {
-                            Log.d("Timer", "onDataChange: " + Constants.timeInSec);
+                    if(OFFLINE_MODE) {
+                        double a = snapshot.getValue(Double.class) * 60000;
+                        Constants.timeInSec = (int) a;
+                        if (snapshot.getValue(Double.class) != null) {
+                            if (switchInterval.isChecked() && !isAlertShow) {
+                                Log.d("Timer", "onDataChange: " + Constants.timeInSec);
+                            }
                         }
                     }
                 }
@@ -677,8 +735,13 @@ public class phLogFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (switchHold.isChecked()) {
-                    deviceRef.child("Data").child("HOLD").setValue(0);
-                    deviceRef.child("Data").child("AUTOLOG").setValue(1);
+                    if(OFFLINE_MODE) {
+                        deviceRef.child("Data").child("HOLD").setValue(0);
+                        deviceRef.child("Data").child("AUTOLOG").setValue(1);
+                    }else{
+                        sendJsonData("HOLD","0");
+                        sendJsonData("AUTOLOG","1");
+                    }
                     if (switchInterval.isChecked()) {
                         isTimer = false;
                         handler.removeCallbacks(runnable);
@@ -688,7 +751,11 @@ public class phLogFragment extends Fragment {
                     switchBtnClick.setChecked(false);
                 } else {
                     if (!switchInterval.isChecked() && !switchBtnClick.isChecked()) {
-                        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                        if(OFFLINE_MODE) {
+                            deviceRef.child("Data").child("AUTOLOG").setValue(0);
+                        }else{
+                            sendJsonData("AUTOLOG","0");
+                        }
 
                     }
                 }
@@ -722,7 +789,237 @@ public class phLogFragment extends Fragment {
         log_interval_text.setText(String.valueOf(LOG_INTERVAL));
     }
 
-    private void startTimer() {
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(SERVER_PATH).build();
+        webSocket = client.newWebSocket(request, new SocketListener());
+    }
+
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
+
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(),
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+            });
+
+        }
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+            getActivity().runOnUiThread(() -> {
+                try{
+                    jsonData = new JSONObject(text);
+                    if(jsonData.has("LOG")) {
+                    int log = Integer.parseInt(jsonData.getString("LOG"));
+                    if (log == 1) {
+                        date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                        fetch_logs();
+                        if (ph == null || temp == null || mv == null) {
+                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                        } else {
+                            databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                            databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                        }
+                        if (switchBtnClick.isChecked()) {
+                            takeLog();
+                        }
+                        sendJsonData("LOG","0");
+
+                    }
+                }
+
+                if(jsonData.has("AUTOLOG")) {
+                    int AutoLog = Integer.parseInt(jsonData.getString("AUTOLOG"));
+                    Source.auto_log = AutoLog;
+                    if (AutoLog == 1) {
+                        switchHold.setChecked(true);
+                        switchInterval.setChecked(false);
+                        switchBtnClick.setChecked(false);
+                    } else if (AutoLog == 2) {
+                        isAlertShow = false;
+                        switchHold.setChecked(false);
+                        switchInterval.setChecked(true);
+                        switchBtnClick.setChecked(false);
+                    } else if (AutoLog == 3) {
+                        switchHold.setChecked(false);
+                        switchInterval.setChecked(false);
+                        switchBtnClick.setChecked(true);
+                    }
+                }
+
+                if(jsonData.has("COMPOUND_NAME")) {
+                    if (!compound_name_txt.getText().toString().isEmpty()) {
+                        compound_name = compound_name_txt.getText().toString();
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                        databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                    } else {
+                        compound_name = "NA";
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                        databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                    }
+                    sendJsonData("COMPOUND_NAME",companyName);
+
+                }
+                     if(jsonData.has("BATCH_NUMBER")) {
+                         if (!batch_number.getText().toString().isEmpty()) {
+                             batchnum = batch_number.getText().toString();
+
+                             String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                             databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+
+                         } else {
+                             batchnum = "NA";
+                             String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                             databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                         }
+                         sendJsonData("BATCH_NUMBER",batchnum);
+
+                }
+
+                     if(jsonData.has("AR_NUMBER")) {
+                         if (!ar_number.getText().toString().isEmpty()) {
+                             arnum = ar_number.getText().toString();
+                             String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                             databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                         } else {
+                             arnum = "NA";
+                             String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                             databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                         }
+                         sendJsonData("AR_NUMBER",arnum);
+
+
+
+                     }
+
+                     if(jsonData.has("LOG")){
+                         int log = Integer.parseInt(jsonData.getString("LOG"));
+
+                         if (log == 1) {
+                             date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                             time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                             fetch_logs();
+                             if (ph == null || temp == null || mv == null) {
+                                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                             } else {
+                                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                 databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                             }
+                             if (switchBtnClick.isChecked()) {
+                                 takeLog();
+                             }
+                             sendJsonData("LOG","0");
+
+                         }
+                     }
+
+                     if(jsonData.has("HOLD")){
+                         int hold = Integer.parseInt(jsonData.getString("HOLD"));
+
+                         if (switchHold.isChecked())
+                             if (hold == 1) {
+                                 date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                 time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                                 fetch_logs();
+                                 deviceRef.child("Data").child("HOLD").setValue(0);
+
+                                 if (ph == null || temp == null || mv == null) {
+                                     Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+                                 } else {
+                                     databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                     databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                     databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
+                                 }
+                                 adapter = new LogAdapter(getContext(), getList());
+                                 recyclerView.setAdapter(adapter);
+                             }
+                     }
+
+                     if(jsonData.has("AUTO_LOG")){
+                             String autoLogVar = jsonData.getString(jsonData.getString("AUTO_LOG"));
+                             if (autoLogVar.equals("on")) {
+                                 autoLog.setVisibility(View.VISIBLE);
+                             } else if (autoLogVar.equals("off")) {
+                                 autoLog.setVisibility(View.GONE);
+                             } else {
+                                 autoLog.setVisibility(View.GONE);
+                             }
+                         } else {
+                             sendJsonData("AUTO_LOG","off");
+
+                         }
+
+                     if(jsonData.has("LOG_INTERVAL")){
+                         double a = Double.parseDouble(jsonData.getString("LOG_INTERVAL")) * 60000;
+                         Constants.timeInSec = (int) a;
+                             if (switchInterval.isChecked() && !isAlertShow) {
+                                 Log.d("Timer", "onDataChange: " + Constants.timeInSec);
+                             }
+                     }
+
+                     if(jsonData.has("PH_VAL")){
+                         Float p = Float.parseFloat(jsonData.getString("PH_VAL"));
+                         ph = String.format(Locale.UK, "%.2f", p);
+                         tvPhCurr.setText(ph);
+                     }
+
+                     if(jsonData.has("TEMP_VAL")){
+                         Float temp1 = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                         String tempe = temp1 <= -127.0 ? "NA" : String.format(Locale.UK, "%.2f", temp1);
+
+                         phLogFragment.this.temp = tempe;
+                     }
+                     if(jsonData.has("EC_VAL")){
+                         Float p =Float.parseFloat(jsonData.getString("EC_VAL"));
+                         mv = String.format(Locale.UK, "%.2f", p);
+                     }
+
+
+                }catch (JSONException e){
+
+                }
+            });
+
+        }
+    }
+
+    private void sendJsonData(String key,String val){
+        try {
+            jsonData.put(key, val);
+            webSocket.send(jsonData.toString());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+        private void startTimer() {
 
         LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
         log_interval_text.setText(String.valueOf(LOG_INTERVAL));
@@ -922,92 +1219,96 @@ public class phLogFragment extends Fragment {
     }
 
     private void saveDetails() {
-        deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (!compound_name_txt.getText().toString().isEmpty()) {
-                    compound_name = compound_name_txt.getText().toString();
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        if(OFFLINE_MODE) {
+            deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    if (!compound_name_txt.getText().toString().isEmpty()) {
+                        compound_name = compound_name_txt.getText().toString();
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                    databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                        databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
-                } else {
-                    compound_name = "NA";
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                    } else {
+                        compound_name = "NA";
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                    databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                        databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
+                    }
+                    snapshot.getRef().setValue(compound_name);
                 }
-                snapshot.getRef().setValue(compound_name);
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
-
-        //saving batch number
-        deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (!batch_number.getText().toString().isEmpty()) {
-                    batchnum = batch_number.getText().toString();
-
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-                    databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
-
-
-                } else {
-                    batchnum = "NA";
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-                    databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
-
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 }
-                snapshot.getRef().setValue(batchnum);
-            }
+            });
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+            //saving batch number
+            deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    if (!batch_number.getText().toString().isEmpty()) {
+                        batchnum = batch_number.getText().toString();
 
-        deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if (!ar_number.getText().toString().isEmpty()) {
-                    arnum = ar_number.getText().toString();
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                    databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                        databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
-                } else {
-                    arnum = "NA";
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                    String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                    databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                    } else {
+                        batchnum = "NA";
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
+                        databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                    }
+                    snapshot.getRef().setValue(batchnum);
                 }
-                snapshot.getRef().setValue(arnum);
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
+            deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    if (!ar_number.getText().toString().isEmpty()) {
+                        arnum = ar_number.getText().toString();
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                        databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                    } else {
+                        arnum = "NA";
+                        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                        databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+                    }
+                    snapshot.getRef().setValue(arnum);
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
     }
 
     @Override
     public void onDestroy() {
-        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+        if(OFFLINE_MODE) {
+            deviceRef.child("Data").child("AUTOLOG").setValue(0);
+        }
+        sendJsonData("AUTOLOG","0");
         deleteAllLogs();
         super.onDestroy();
     }
@@ -1040,7 +1341,11 @@ public class phLogFragment extends Fragment {
                     double d = Double.parseDouble(timer.getText().toString()) * 60000;
                     Double db = new Double(d);
                     Constants.timeInSec = db.intValue();
-                    deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
+                    if(OFFLINE_MODE) {
+                        deviceRef.child("Data").child("LOG_INTERVAL").setValue(Constants.timeInSec);
+                    }else{
+                        sendJsonData("LOG_INTERVAL",Integer.toString(Constants.timeInSec));
+                    }
                     LOG_INTERVAL = Float.parseFloat(enterTime.getText().toString()) * 60;
                     log_interval_text.setText(String.valueOf(LOG_INTERVAL));
                     takeLog();
@@ -1321,79 +1626,81 @@ public class phLogFragment extends Fragment {
      * Fetching the values from firebase
      */
     private void fetch_logs() {
-        deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float p = snapshot.getValue(Float.class);
-                ph = String.format(Locale.UK, "%.2f", p);
+        if(OFFLINE_MODE) {
+            deviceRef.child("Data").child("PH_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float p = snapshot.getValue(Float.class);
+                    ph = String.format(Locale.UK, "%.2f", p);
 
-                tvPhCurr.setText(ph);
-            }
+                    tvPhCurr.setText(ph);
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
-        deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float temp1 = snapshot.getValue(Float.class);
-                String tempe = temp1 <= -127.0 ? "NA" : String.format(Locale.UK, "%.2f", temp1);
+            deviceRef.child("Data").child("TEMP_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float temp1 = snapshot.getValue(Float.class);
+                    String tempe = temp1 <= -127.0 ? "NA" : String.format(Locale.UK, "%.2f", temp1);
 
-                phLogFragment.this.temp = tempe;
-            }
+                    phLogFragment.this.temp = tempe;
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
-        deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                compound_name = (String) snapshot.getValue();
-            }
+            deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    compound_name = (String) snapshot.getValue();
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
-        deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                batchnum = (String) snapshot.getValue();
-            }
+            deviceRef.child("Data").child("BATCH_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    batchnum = (String) snapshot.getValue();
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
-        deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                arnum = (String) snapshot.getValue();
-            }
+            deviceRef.child("Data").child("AR_NUMBER").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    arnum = (String) snapshot.getValue();
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
 
 
-        deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                Float p = snapshot.getValue(Float.class);
-                mv = String.format(Locale.UK, "%.2f", p);
-            }
+            deviceRef.child("Data").child("EC_VAL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    Float p = snapshot.getValue(Float.class);
+                    mv = String.format(Locale.UK, "%.2f", p);
+                }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            });
+        }
     }
 
     /**
