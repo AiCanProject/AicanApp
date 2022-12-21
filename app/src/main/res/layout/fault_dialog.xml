@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="18sp"
-                android:text="Wrong pH Buffer used!"
+                android:text="pH mV is not in range - \n change its value"
                 android:textColor="#FFF"
                 android:textSize="20sp" />
 

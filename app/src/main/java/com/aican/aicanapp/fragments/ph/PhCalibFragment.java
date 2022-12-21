@@ -127,8 +127,8 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
     public static String PH_MODE = "both";
 
     int pageHeight = 1120;
-    int pagewidth = 792;
-    Bitmap bmp, scaledbmp;
+    int pageWidth = 792;
+    Bitmap bmp, scaledBmp;
 
     Button fivePoint, threePoint, phGraph;
 
@@ -1403,7 +1403,6 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
         builder.setPositiveButton(
                 "OK",
                 new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(
                             DialogInterface dialog,

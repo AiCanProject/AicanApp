@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT,date TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
+        sqLiteDatabase.execSQL("create Table CalibAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,id TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
@@ -52,6 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS TempUserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibAllData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserDataDetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ProbeDetail");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ECProbeDetail");
@@ -128,6 +130,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("pHAC", pHAC);
         contentValues.put("temperature", temperature);
         long result = db.insert("CalibData", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean insertCalibrationAllData(String PH, String MV, String slope ,String DT, String BFD, String pHAC, String temperature) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
+        contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
+        contentValues.put("pHAC", pHAC);
+        contentValues.put("temperature", temperature);
+        long result = db.insert("CalibAllData", null, contentValues);
         if (result == -1) {
             return false;
         } else {

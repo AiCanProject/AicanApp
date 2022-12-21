@@ -352,6 +352,16 @@
                 android:layout_gravity="center"
                 android:text="Print" />
 
+
+            <Button
+                android:id="@+id/printAllCalibData"
+                android:layout_width="127dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#9037C7"
+                android:text="Print All"
+                android:textAllCaps="true" />
+
             <Button
                 android:id="@+id/phMvTable"
                 android:layout_width="127dp"
@@ -441,7 +451,7 @@
                                 android:layout_marginBottom="5dp"
                                 android:layout_weight="0.8"
                                 android:paddingStart="20dp"
-                                android:text="pHAftCalib"
+                                android:text="pHAftCal"
                                 android:textSize="@dimen/textDim" />
 
                             <View

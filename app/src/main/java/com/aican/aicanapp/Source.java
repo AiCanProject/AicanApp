@@ -12,5 +12,6 @@ public class Source {
     public static String scannerData;
     public static String logUserName;
     public static int auto_log = 0;
+    public static String calib_completed_by;
 }
 
