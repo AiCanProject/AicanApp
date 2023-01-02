@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dateAndTime">12dp</dimen>
-    <dimen name="textDim">12dp</dimen>
-    <dimen name="textsDim">12dp</dimen>
+    <dimen name="dateAndTime">10.5dp</dimen>
+    <dimen name="textDim">10.5dp</dimen>
+    <dimen name="textsDim">10.5dp</dimen>
 </resources>

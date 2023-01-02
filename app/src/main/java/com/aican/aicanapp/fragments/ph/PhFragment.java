@@ -49,12 +49,21 @@ import java.util.Locale;
 public class PhFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "PhFragment";
     PhView phView;
-    TextView tvPhCurr, tvPhNext, tvTempCurr, tvTempNext, tvEcCurr, slopeCurr, offsetCurr, batteryCurr, probeData;
-    EditText atcValue;
+    static TextView forSuperAdmin;
+    TextView tvPhCurr;
+    TextView tvPhNext;
+    TextView tvTempCurr;
+    TextView tvTempNext;
+    TextView tvEcCurr;
+    TextView slopeCurr;
+    TextView offsetCurr;
+    TextView batteryCurr;
+    TextView probeData;
+    static EditText atcValue;
     Button setATC;
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
-    SwitchCompat switchAtc;
+    static SwitchCompat switchAtc;
 
     BatteryDialog batteryDialog;
     String probeInfo = "-";
@@ -89,6 +98,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         slopeCurr = view.findViewById(R.id.slopeVal);
 
         phView = view.findViewById(R.id.phView);
+        forSuperAdmin = view.findViewById(R.id.forSuperAdmin);
         tvPhCurr = view.findViewById(R.id.tvPhCurr);
         tvPhNext = view.findViewById(R.id.tvPhNext);
         probeData = view.findViewById(R.id.probesData);
@@ -106,7 +116,6 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Source.userId = res.getString(2);
             Source.userPasscode = res.getString(3);
         }
-
 
 
         Cursor p = databaseHelper.get_probe();
@@ -310,6 +319,25 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             }
         });
 
+        deviceRef.child("Data").child("ATC").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                Integer slope = snapshot.getValue(Integer.class);
+
+                switchAtc.setChecked(slope == 1);
+
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = sharedPreferences.edit();
+                edit.putInt("toggleValue", slope);
+                edit.commit();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
 
         SharedPreferences sha = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
         int toggleVal = sha.getInt("toggleValue", 0);
@@ -319,15 +347,23 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             switchAtc.setChecked(false);
         }
 
+
+
+
         switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
 
-            deviceRef.child("Data").child("ATC").setValue(isChecked ? 1 : 0);
+            Source.toggle_is_checked = switchAtc.isChecked();
+            if (isChecked) {
 
-            if (switchAtc.isChecked()) {
+
+                atcValue.setEnabled(true);
+                switchAtc.setEnabled(true);
+                deviceRef.child("Data").child("ATC").setValue(switchAtc.isChecked() ? 1 : 0);
+
                 String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                databaseHelper.insert_action_data(time, date, "ATC toggle on : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(time, date,  Source.logUserName + " sets Extrapolate(ATC temp) at: " + atcValue.getText(), "", "", "", "", PhActivity.DEVICE_ID);
 
                 deviceRef.child("Data").child("ATC_AT").setValue(Float.parseFloat(atcValue.getText().toString()));
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
@@ -339,7 +375,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                databaseHelper.insert_action_data(time, date, "ATC toggle off : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(time, date, "Extrapolate(ATC temp) toggle off at : " + atcValue.getText() + " by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editT = togglePref.edit();
@@ -347,9 +383,25 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 editT.commit();
 
             }
+
+
         });
 
 
+    }
+
+    public static void checking() {
+        if (Source.subscription.equals("cfr")) {
+            if (Source.loginUserRole.equals("Supervisor") || Source.loginUserRole.equals("Admin")) {
+                forSuperAdmin.setVisibility(View.GONE);
+                atcValue.setEnabled(true);
+                switchAtc.setEnabled(true);
+            } else {
+                forSuperAdmin.setVisibility(View.VISIBLE);
+                atcValue.setEnabled(false);
+                switchAtc.setEnabled(false);
+            }
+        }
     }
 
     @Override

@@ -126,6 +126,8 @@ dependencies {
     implementation 'com.mindorks.android:prdownloader:0.6.0'
     implementation 'com.itextpdf:itext7-core:7.1.10'
 
+    implementation 'com.kyanogen.signatureview:signature-view:1.2'
+
 //    implementation 'com.jjoe64:graphview:4.2.2'
 
 }

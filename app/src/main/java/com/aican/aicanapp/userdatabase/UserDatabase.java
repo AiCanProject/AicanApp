@@ -175,7 +175,7 @@ public class UserDatabase extends AppCompatActivity {
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
             printWriter.println("UserData Table" + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
-            printWriter.println("UserName,UserRole,DateCreated,ExpiryDate");
+            printWriter.println("UserName, UserRole, DateCreated, ExpiryDate");
             printWriter.println(nullEntry + "," + nullEntry + "," + nullEntry + "," + nullEntry);
 
             while (curCSV.moveToNext()) {
@@ -183,7 +183,12 @@ public class UserDatabase extends AppCompatActivity {
                 String userName = curCSV.getString(curCSV.getColumnIndex("Username"));
                 String userRole = curCSV.getString(curCSV.getColumnIndex("Role"));
                 String dateCreated = curCSV.getString(curCSV.getColumnIndex("dateCreated"));
-                String expiryDate = curCSV.getString(curCSV.getColumnIndex("expiryDate"));
+                String expiryDate = "";
+                if (userRole.equals("Admin")) {
+                    expiryDate = "No expiry";
+                } else {
+                    expiryDate = curCSV.getString(curCSV.getColumnIndex("expiryDate"));
+                }
 
                 String record = userName + "," + userRole + "," + dateCreated + "," + expiryDate;
 

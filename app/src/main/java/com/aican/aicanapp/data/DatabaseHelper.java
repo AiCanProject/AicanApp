@@ -32,8 +32,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT,date TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
-        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
-        sqLiteDatabase.execSQL("create Table CalibAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT)");
+        sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
+        sqLiteDatabase.execSQL("create Table CalibAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,id TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
@@ -119,7 +119,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public Boolean insertCalibration(String PH, String MV, String slope ,String DT, String BFD, String pHAC, String temperature) {
+    public Boolean insertCalibration(String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PH", PH);
@@ -129,6 +129,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("BFD", BFD);
         contentValues.put("pHAC", pHAC);
         contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
         long result = db.insert("CalibData", null, contentValues);
         if (result == -1) {
             return false;
@@ -137,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insertCalibrationAllData(String PH, String MV, String slope ,String DT, String BFD, String pHAC, String temperature) {
+    public Boolean insertCalibrationAllData(String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PH", PH);
@@ -147,6 +149,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("BFD", BFD);
         contentValues.put("pHAC", pHAC);
         contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
         long result = db.insert("CalibAllData", null, contentValues);
         if (result == -1) {
             return false;

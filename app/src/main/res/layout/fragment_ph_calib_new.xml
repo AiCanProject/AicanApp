@@ -241,7 +241,7 @@
 
                 <Button
                     android:id="@+id/startBtn"
-                    android:layout_width="127dp"
+                    android:layout_width="95dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:backgroundTint="#9037C7"
@@ -347,7 +347,7 @@
 
             <Button
                 android:id="@+id/printCalibData"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Print" />
@@ -355,11 +355,12 @@
 
             <Button
                 android:id="@+id/printAllCalibData"
-                android:layout_width="127dp"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"
                 android:text="Print All"
+                android:visibility="gone"
                 android:textAllCaps="true" />
 
             <Button
@@ -373,7 +374,7 @@
 
             <Button
                 android:id="@+id/phGraph"
-                android:layout_width="127dp"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"

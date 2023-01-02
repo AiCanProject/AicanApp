@@ -320,12 +320,12 @@ public class PhCalibFragmentNew extends Fragment {
                         fetchAllData5Point();
                         deleteAllCalibData();
                         calibData();
-                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
-                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
-                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
 
+                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
 
                         break;
 
@@ -356,9 +356,13 @@ public class PhCalibFragmentNew extends Fragment {
                         fetchAllData3Point();
                         deleteAllCalibData();
                         calibData3();
-                        databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3);
-                        databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3);
-                        databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3);
+
+
+                        databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16)  : "--");
+                        databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16)  : "--");
+                        databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16)  : "--");
+
+
 
                         break;
 
@@ -370,6 +374,12 @@ public class PhCalibFragmentNew extends Fragment {
                 Toast.makeText(requireContext(), "Select a mode of Calibration", Toast.LENGTH_SHORT).show();
             }
         });
+
+        phGraph.setEnabled(true);
+        phMvTable.setEnabled(true);
+        printCalibData.setEnabled(true);
+        calibSpinner.setEnabled(true);
+        spin.setEnabled(true);
 
         DialogMain dialogMain = new DialogMain();
         dialogMain.setCancelable(false);
@@ -562,6 +572,8 @@ public class PhCalibFragmentNew extends Fragment {
                 Float phVal = snapshot.getValue(Float.class);
 //                String ecForm = String.format(Locale.UK, "%.1f", phVal);
                 minMV1 = phVal;
+
+
             }
 
             @Override
@@ -820,6 +832,7 @@ public class PhCalibFragmentNew extends Fragment {
         Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();
 
     }
+
     private void generateAllPDF() throws FileNotFoundException {
 
         String company_name = "Company: " + companyName;
@@ -998,12 +1011,19 @@ public class PhCalibFragmentNew extends Fragment {
             @Override
             public void onTick(long millisUntilFinished) {
                 calibrateBtnThree.setEnabled(false);
+                phGraph.setEnabled(false);
+                phMvTable.setEnabled(false);
+                printCalibData.setEnabled(false);
+                calibSpinner.setEnabled(false);
+                spin.setEnabled(false);
+
                 millisUntilFinished /= 1000;
                 int min = (int) millisUntilFinished / 60;
                 int sec = (int) millisUntilFinished % 60;
                 String time = String.format(Locale.UK, "%02d:%02d", min, sec);
                 tvTimerThree.setText(time);
                 Log.e("lineNThree", line + "");
+                Source.calibratingNow = true;
                 if (line_3 == -1) {
                     log1_3.setBackgroundColor(Color.WHITE);
                     log2_3.setBackgroundColor(Color.WHITE);
@@ -1014,7 +1034,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log1_3.setBackgroundColor(Color.GRAY);
                     log2_3.setBackgroundColor(Color.WHITE);
                     log3_3.setBackgroundColor(Color.WHITE);
-                    if (Float.parseFloat(MV1_3) <= maxMV1_3 && Float.parseFloat(MV1_3) >= minMV1_3) {
+                    if (Float.parseFloat(String.valueOf(mV1_3)) <= maxMV1_3 && Float.parseFloat(String.valueOf(mV1_3)) >= minMV1_3) {
                         wrong_3 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1031,7 +1051,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log1_3.setBackgroundColor(Color.WHITE);
                     log2_3.setBackgroundColor(Color.GRAY);
                     log3_3.setBackgroundColor(Color.WHITE);
-                    if (Float.parseFloat(MV2_3) <= maxMV2_3 && Float.parseFloat(MV2_3) >= minMV2_3) {
+                    if (Float.parseFloat(String.valueOf(mV2_3)) <= maxMV2_3 && Float.parseFloat(String.valueOf(mV2_3)) >= minMV2_3) {
                         wrong_3 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1049,7 +1069,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log1_3.setBackgroundColor(Color.WHITE);
                     log2_3.setBackgroundColor(Color.WHITE);
                     log3_3.setBackgroundColor(Color.GRAY);
-                    if (Float.parseFloat(MV3_3) <= maxMV3_3 && Float.parseFloat(MV3_3) >= minMV3_3) {
+                    if (Float.parseFloat(String.valueOf(mV3_3)) <= maxMV3_3 && Float.parseFloat(String.valueOf(mV3_3)) >= minMV3_3) {
                         wrong_3 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1080,6 +1100,14 @@ public class PhCalibFragmentNew extends Fragment {
                 runnable33 = new Runnable() {
                     @Override
                     public void run() {
+                        Source.calibratingNow = false;
+
+                        phGraph.setEnabled(true);
+                        phMvTable.setEnabled(true);
+                        printCalibData.setEnabled(true);
+                        calibSpinner.setEnabled(true);
+                        spin.setEnabled(true);
+
                         if (!wrong_3) {
 
                             wrong_3 = false;
@@ -1087,10 +1115,10 @@ public class PhCalibFragmentNew extends Fragment {
                             line_3 = currentBufThree + 1;
 
                             if (currentBufThree == 2) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(date123 + " " + time123);
                                 calibrateBtnThree.setEnabled(false);
                                 Source.calib_completed_by = Source.logUserName;
                                 calibrateBtnThree.setText("DONE");
@@ -1099,20 +1127,20 @@ public class PhCalibFragmentNew extends Fragment {
                             }
 
                             if (currentBufThree == 0) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(date123 + " " + time123);
                                 log1_3.setBackgroundColor(Color.WHITE);
                                 log2_3.setBackgroundColor(Color.GRAY);
                                 log3_3.setBackgroundColor(Color.WHITE);
 
                             }
                             if (currentBufThree == 1) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(date123 + " " + time123);
                                 log1_3.setBackgroundColor(Color.WHITE);
                                 log2_3.setBackgroundColor(Color.WHITE);
                                 log3_3.setBackgroundColor(Color.GRAY);
@@ -1122,7 +1150,7 @@ public class PhCalibFragmentNew extends Fragment {
                             calibrateBtnThree.setEnabled(true);
 
                             tvTimerThree.setVisibility(View.INVISIBLE);
-                            String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+                            String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
                             bufferListThree.add(new BufferData(null, null, currentTime));
 //                        bufferListThree.add(new BufferData(null, null, currentTime));
 
@@ -1162,19 +1190,26 @@ public class PhCalibFragmentNew extends Fragment {
                                         myEdit.putString("tem3_3", tvTempCurr.getText().toString());
                                         myEdit.putString("pHAC3_3", String.valueOf(postCoeff));
                                         myEdit.commit();
-                                        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
-                                        databaseHelper.insertCalibrationAllData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3);
-                                        databaseHelper.insertCalibrationAllData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3);
-                                        databaseHelper.insertCalibrationAllData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3);
-
                                         temp3_3.setText(tvTempCurr.getText());
+
+                                        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
+                                        calibData3();
+
+                                        databaseHelper.insertCalibrationAllData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16)  : "--");
+                                        databaseHelper.insertCalibrationAllData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16)  : "--");
+                                        databaseHelper.insertCalibrationAllData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16)  : "--");
+
+
                                     }
                                     currentBufThree += 1;
                                     calibData3();
                                     deleteAllCalibData();
-                                    databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3);
-                                    databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3);
-                                    databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3);
+
+                                    databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16)  : "--");
+                                    databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16)  : "--");
+                                    databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16)  : "--");
+
+
 
 
                                 });
@@ -1236,6 +1271,15 @@ public class PhCalibFragmentNew extends Fragment {
                 String time = String.format(Locale.UK, "%02d:%02d", min, sec);
                 tvTimer.setText(time);
                 Log.e("lineN", line + "");
+                Source.calibratingNow = true;
+
+                phGraph.setEnabled(false);
+                phMvTable.setEnabled(false);
+                printCalibData.setEnabled(false);
+                calibSpinner.setEnabled(false);
+                spin.setEnabled(false);
+
+
                 if (line == -1) {
                     log1.setBackgroundColor(Color.WHITE);
                     log2.setBackgroundColor(Color.WHITE);
@@ -1249,7 +1293,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
-                    if (Float.parseFloat(MV1) <= maxMV1 && Float.parseFloat(MV1) >= minMV1) {
+                    if (Float.parseFloat(String.valueOf(mV1)) <= maxMV1 && Float.parseFloat(String.valueOf(mV1)) >= minMV1) {
                         wrong_5 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1269,7 +1313,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
-                    if (Float.parseFloat(MV2) <= maxMV2 && Float.parseFloat(MV2) >= minMV2) {
+                    if (Float.parseFloat(String.valueOf(mV2)) <= maxMV2 && Float.parseFloat(String.valueOf(mV2)) >= minMV2) {
                         wrong_5 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1289,7 +1333,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log3.setBackgroundColor(Color.GRAY);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
-                    if (Float.parseFloat(MV3) <= maxMV3 && Float.parseFloat(MV3) >= minMV3) {
+                    if (Float.parseFloat(String.valueOf(mV3)) <= maxMV3 && Float.parseFloat(String.valueOf(mV3)) >= minMV3) {
                         wrong_5 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1310,7 +1354,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log4.setBackgroundColor(Color.GRAY);
                     log5.setBackgroundColor(Color.WHITE);
 
-                    if (Float.parseFloat(MV4) <= maxMV4 && Float.parseFloat(MV4) >= minMV4) {
+                    if (Float.parseFloat(String.valueOf(mV4)) <= maxMV4 && Float.parseFloat(String.valueOf(mV4)) >= minMV4) {
                         wrong_5 = false;
 //                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
                     } else {
@@ -1331,7 +1375,7 @@ public class PhCalibFragmentNew extends Fragment {
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.GRAY);
-                    if (Float.parseFloat(MV5) <= maxMV5 && Float.parseFloat(MV5) >= minMV5) {
+                    if (Float.parseFloat(String.valueOf(mV5)) <= maxMV5 && Float.parseFloat(String.valueOf(mV5)) >= minMV5) {
                         wrong_5 = false;
                     } else {
                         wrong_5 = true;
@@ -1363,15 +1407,23 @@ public class PhCalibFragmentNew extends Fragment {
                 runnable55 = new Runnable() {
                     @Override
                     public void run() {
+                        Source.calibratingNow = false;
+
+                        phGraph.setEnabled(true);
+                        phMvTable.setEnabled(true);
+                        printCalibData.setEnabled(true);
+                        calibSpinner.setEnabled(true);
+                        spin.setEnabled(true);
+
                         if (!wrong_5) {
                             wrong_5 = false;
                             line = currentBuf + 1;
 
                             if (currentBuf == 4) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(date123 + " " + time123);
                                 calibrateBtn.setEnabled(false);
                                 Source.calib_completed_by = Source.logUserName;
                                 calibrateBtn.setText("DONE");
@@ -1380,10 +1432,10 @@ public class PhCalibFragmentNew extends Fragment {
                             }
 
                             if (currentBuf == 0) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(date123 + " " + time123);
                                 log1.setBackgroundColor(Color.WHITE);
                                 log2.setBackgroundColor(Color.GRAY);
                                 log3.setBackgroundColor(Color.WHITE);
@@ -1391,10 +1443,10 @@ public class PhCalibFragmentNew extends Fragment {
                                 log5.setBackgroundColor(Color.WHITE);
                             }
                             if (currentBuf == 1) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(date123 + " " + time123);
                                 log1.setBackgroundColor(Color.WHITE);
                                 log2.setBackgroundColor(Color.WHITE);
                                 log3.setBackgroundColor(Color.GRAY);
@@ -1402,10 +1454,12 @@ public class PhCalibFragmentNew extends Fragment {
                                 log5.setBackgroundColor(Color.WHITE);
                             }
                             if (currentBuf == 2) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(strDate);
+
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(date123 + " " + time123);
+
                                 log1.setBackgroundColor(Color.WHITE);
                                 log2.setBackgroundColor(Color.WHITE);
                                 log3.setBackgroundColor(Color.WHITE);
@@ -1413,10 +1467,10 @@ public class PhCalibFragmentNew extends Fragment {
                                 log5.setBackgroundColor(Color.WHITE);
                             }
                             if (currentBuf == 3) {
-                                Date date = new Date();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-                                String strDate = simpleDateFormat.format(date);
-                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(strDate);
+                                String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                String time123 = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                                deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(date123 + " " + time123);
                                 log1.setBackgroundColor(Color.WHITE);
                                 log2.setBackgroundColor(Color.WHITE);
                                 log3.setBackgroundColor(Color.WHITE);
@@ -1428,7 +1482,7 @@ public class PhCalibFragmentNew extends Fragment {
                             calibrateBtn.setEnabled(true);
 
                             tvTimer.setVisibility(View.INVISIBLE);
-                            String currentTime = new SimpleDateFormat("yyyy.MM.dd  HH:mm", Locale.getDefault()).format(new Date());
+                            String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
                             bufferList.add(new BufferData(null, null, currentTime));
 //                        bufferListThree.add(new BufferData(null, null, currentTime));
 
@@ -1482,24 +1536,31 @@ public class PhCalibFragmentNew extends Fragment {
                                         myEdit.putString("tem5", tvTempCurr.getText().toString());
                                         myEdit.putString("pHAC5", String.valueOf(postCoeff));
                                         myEdit.commit();
-                                        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
-
-                                        databaseHelper.insertCalibrationAllData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
-                                        databaseHelper.insertCalibrationAllData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                                        databaseHelper.insertCalibrationAllData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                                        databaseHelper.insertCalibrationAllData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
-                                        databaseHelper.insertCalibrationAllData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
-
                                         temp5.setText(tvTempCurr.getText());
+                                        deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
+                                        calibData();
+
+                                        databaseHelper.insertCalibrationAllData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                                        databaseHelper.insertCalibrationAllData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                                        databaseHelper.insertCalibrationAllData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                                        databaseHelper.insertCalibrationAllData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                                        databaseHelper.insertCalibrationAllData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
+
+
                                     }
                                     currentBuf += 1;
                                     calibData();
                                     deleteAllCalibData();
-                                    databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
-                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
-                                    databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
+
+
+
+                                    databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                                    databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
+
+
 
                                 });
                             });

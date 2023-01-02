@@ -39,7 +39,7 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.tablelayout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.tablelayout, parent, false);
         return new ViewHolder(view);
     }
 
@@ -48,14 +48,17 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
 
         databaseHelper = new DatabaseHelper(context.getApplicationContext());
 
-        if(users_list != null && users_list.size() > 0){
+        if (users_list != null && users_list.size() > 0) {
             UserDatabaseModel model = users_list.get(position);
             holder.user_role.setText(model.getUser_role());
             holder.user_name.setText(model.getUser_name());
-            holder.expiry_date.setText(model.getExpiry_date());
+            if (model.getUser_role().equals("Admin")) {
+                holder.expiry_date.setText("No expiry");
+            } else {
+                holder.expiry_date.setText(model.getExpiry_date());
+            }
             holder.dateCreated.setText(model.getDateCreated());
-        }
-        else{
+        } else {
             return;
         }
 
@@ -84,11 +87,11 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
         holder.editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context,EditUserDatabase.class);
-                intent.putExtra("username",users_list.get(position).getUser_name());
-                intent.putExtra("userrole",users_list.get(position).getUser_role());
-                intent.putExtra("passcode",users_list.get(position).getPasscode());
-                intent.putExtra("uid",users_list.get(position).getId());
+                Intent intent = new Intent(context, EditUserDatabase.class);
+                intent.putExtra("username", users_list.get(position).getUser_name());
+                intent.putExtra("userrole", users_list.get(position).getUser_role());
+                intent.putExtra("passcode", users_list.get(position).getPasscode());
+                intent.putExtra("uid", users_list.get(position).getId());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.getApplicationContext().startActivity(intent);
             }
@@ -114,8 +117,9 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView user_role, user_name,expiry_date,dateCreated;
-        ImageButton editBtn,deleteBtn;
+        TextView user_role, user_name, expiry_date, dateCreated;
+        ImageButton editBtn, deleteBtn;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             user_role = itemView.findViewById(R.id.user_role);

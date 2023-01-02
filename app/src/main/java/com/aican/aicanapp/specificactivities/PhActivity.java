@@ -120,7 +120,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if (Source.auto_log == 0) {
+        if (Source.auto_log == 0 && !Source.calibratingNow) {
             if (view.getId() == R.id.item1) {
                 tabItemPh.animate().x(0).setDuration(100);
                 loadFragments(phFragment);
@@ -185,7 +185,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 startActivity(intent);
             }
         } else {
-            Toast.makeText(this, "You cannot change fragment while logging", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You cannot change fragment while calibrating / logging", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -193,11 +193,11 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
-        if (Source.auto_log == 0) {
+        if (Source.auto_log == 0 && !Source.calibratingNow) {
             Intent intent = new Intent(PhActivity.this, Dashboard.class);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "You cannot change fragment while logging", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "You cannot change fragment while logging / calibrating", Toast.LENGTH_SHORT).show();
         }
     }
 

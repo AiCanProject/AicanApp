@@ -362,24 +362,40 @@ public class phLogFragment extends Fragment {
             }
         });
 
+        exportBtn.setEnabled(true);
+        printBtn.setEnabled(true);
+
         deviceRef.child("Data").child("AUTOLOG").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 int AutoLog = snapshot.getValue(Integer.class);
                 Source.auto_log = AutoLog;
-                if (AutoLog == 1) {
+                if (AutoLog == 0) {
+                    exportBtn.setEnabled(true);
+                    printBtn.setEnabled(true);
+
+                } else if (AutoLog == 1) {
+                    exportBtn.setEnabled(false);
+                    printBtn.setEnabled(false);
                     switchHold.setChecked(true);
                     switchInterval.setChecked(false);
                     switchBtnClick.setChecked(false);
                 } else if (AutoLog == 2) {
+                    exportBtn.setEnabled(false);
+                    printBtn.setEnabled(false);
                     isAlertShow = false;
                     switchHold.setChecked(false);
                     switchInterval.setChecked(true);
                     switchBtnClick.setChecked(false);
                 } else if (AutoLog == 3) {
+                    exportBtn.setEnabled(false);
+                    printBtn.setEnabled(false);
                     switchHold.setChecked(false);
                     switchInterval.setChecked(false);
                     switchBtnClick.setChecked(true);
+                }else{
+                    exportBtn.setEnabled(true);
+                    printBtn.setEnabled(true);
                 }
             }
 
@@ -411,7 +427,7 @@ public class phLogFragment extends Fragment {
                 String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                 String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-                databaseHelper.insert_action_data(time,date, "Exported by " + Source.logUserName, ph, temp, mv, "", PhActivity.DEVICE_ID);
+                databaseHelper.insert_action_data(time, date, "Exported by " + Source.logUserName, ph, temp, mv, "", PhActivity.DEVICE_ID);
 
                 SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
                 SharedPreferences.Editor roleE = sh.edit();
@@ -1478,8 +1494,6 @@ public class phLogFragment extends Fragment {
 
         return fileArray.length > 0 ? fileArray : null;
     }
-
-
 
 
 }

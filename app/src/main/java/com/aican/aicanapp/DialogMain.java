@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhMvTable;
@@ -72,6 +73,7 @@ public class DialogMain extends AppCompatDialogFragment {
                 for (int i = 0; i < Source.id_fetched.size(); i++) {
                     if (Source.userId.equals(Source.id_fetched.get(i)) && Source.userPasscode.equals(Source.passcode_fetched.get(i))) {
                         Source.logUserName = Source.name_fetched.get(i);
+                        Source.loginUserRole = Source.role_fetched.get(i);
                         if (present.compareTo(getParsedDate(Source.expiryDate_fetched.get(i))) < 0) {
                             Log.d("expiryDate", "Present date :" + presentDate + " Expiry Date: " + Source.expiryDate_fetched.get(i));
                             String date1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -117,6 +119,7 @@ public class DialogMain extends AppCompatDialogFragment {
                             Source.status_phMvTable = false;
 
                             dismiss();
+                            PhFragment.checking();
                             return;
                         } else {
                             Toast.makeText(getContext(), "Password expired, please change it", Toast.LENGTH_SHORT).show();

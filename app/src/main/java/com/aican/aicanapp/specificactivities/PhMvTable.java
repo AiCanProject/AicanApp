@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,8 @@ public class PhMvTable extends AppCompatActivity {
             PH1, PH2, PH3, PH4, PH5;
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
+    EditText tempValue;
+    Button setATC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,9 @@ public class PhMvTable extends AppCompatActivity {
         maxMVEdit3 = findViewById(R.id.maxMVEdit3);
         maxMVEdit4 = findViewById(R.id.maxMVEdit4);
         maxMVEdit5 = findViewById(R.id.maxMVEdit5);
+
+        setATC = findViewById(R.id.setATC);
+        tempValue = findViewById(R.id.tempValue);
 
         minMVEdit1 = findViewById(R.id.minMVEdit1);
         minMVEdit2 = findViewById(R.id.minMVEdit2);
@@ -77,6 +84,8 @@ public class PhMvTable extends AppCompatActivity {
         ph3 = findViewById(R.id.ph3);
         ph4 = findViewById(R.id.ph4);
         ph5 = findViewById(R.id.ph5);
+
+        tempValue = findViewById(R.id.tempValue);
 
         phEdit1.setOnClickListener(this::onClick);
         phEdit2.setOnClickListener(this::onClick);
@@ -350,7 +359,6 @@ public class PhMvTable extends AppCompatActivity {
             }
         });
 
-
         deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -432,6 +440,35 @@ public class PhMvTable extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+        deviceRef.child("Data").child("T_SET").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    deviceRef.child("Data").child("T_SET").setValue(0);
+                } else {
+                    Float phVal = snapshot.getValue(Float.class);
+                    if (phVal != null) {
+                        tempValue.setText(phVal.toString());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        });
+
+
+        setATC.setOnClickListener(v -> {
+            if (!tempValue.getText().toString().equals("")) {
+                Float va = Float.parseFloat(tempValue.getText().toString());
+                deviceRef.child("Data").child("T_SET").setValue(va);
+                databaseHelper.insert_action_data(time, date,  "Temperature offset at: " + tempValue.getText() + " set by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
             }
         });
 

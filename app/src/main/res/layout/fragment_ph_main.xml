@@ -163,17 +163,17 @@
                                 android:textColor="@color/black"
                                 android:textSize="40sp" />
 
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchAtc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="0dp"
-                                android:layout_marginBottom="5dp"
-                                android:text="ATC  "
-                                android:textColor="@color/blue_dark"
-                                android:textSize="25sp"
-                                android:layout_gravity="center"
-                                android:theme="@style/Switch" />
+<!--                            <androidx.appcompat.widget.SwitchCompat-->
+<!--                                android:id="@+id/switchAtc"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="0dp"-->
+<!--                                android:layout_marginBottom="5dp"-->
+<!--                                android:text="ATC  "-->
+<!--                                android:textColor="@color/blue_dark"-->
+<!--                                android:textSize="25sp"-->
+<!--                                android:layout_gravity="center"-->
+<!--                                android:theme="@style/Switch" />-->
 
                         </LinearLayout>
 
@@ -222,9 +222,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ATC at : "
+                            android:text="Extrapolate at : "
                             android:textColor="@color/black"
-                            android:textSize="20dp" />
+                            android:textSize="18dp" />
 
                         <EditText
                             android:id="@+id/atcValue"
@@ -234,7 +234,7 @@
                             android:textColor="@color/black"
                             android:padding="4dp"
                             android:textColorHint="@color/colorPrimary"
-                            android:textSize="20dp" />
+                            android:textSize="18dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -251,10 +251,31 @@
                             android:text="Set"
                             android:textAllCaps="false"
                             android:textSize="15sp"
-                            android:visibility="invisible" />
+                            android:visibility="gone" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchAtc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:text="   "
+                            android:textColor="@color/blue_dark"
+                            android:textSize="23sp"
+                            android:theme="@style/Switch" />
 
 
                     </LinearLayout>
+                    <TextView
+                        android:id="@+id/forSuperAdmin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="For Supervisor and Admin only"
+                        android:textColor="@color/red"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone"
+                        android:textSize="10dp" />
 
                 </LinearLayout>
 

@@ -33,6 +33,7 @@ import com.aican.aicanapp.Source;
 import com.aican.aicanapp.specificactivities.Export;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kyanogen.signatureview.SignatureView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -82,7 +83,8 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             public void onClick(View view) {
 //                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 //                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                showOptionDialog();
+//                showOptionDialog();
+                showSignatureDialog();
             }
         });
 
@@ -145,6 +147,35 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
+    private void showSignatureDialog() {
+        Dialog dialog = new Dialog(SettingActivity.this);
+        dialog.setContentView(R.layout.signature_layout);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        SignatureView signatureView = dialog.findViewById(R.id.signature_view);
+
+        dialog.findViewById(R.id.signClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signatureView.clearCanvas();
+            }
+        });
+        dialog.findViewById(R.id.signSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                dialog.dismiss();
+                Bitmap signBitmap = signatureView.getSignatureBitmap();
+                if (signBitmap != null){
+                    imageView.setImageBitmap(signBitmap);
+                    saveImage(signBitmap);
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+    }
+
     private Bitmap getSignImage() {
         SharedPreferences sh = getSharedPreferences("signature", Context.MODE_PRIVATE);
         String photo = sh.getString("signature_data", "");
@@ -155,6 +186,19 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
         }
         return bitmap;
+    }
+
+    private void saveImage(Bitmap realImage) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        realImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+
+        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+        SharedPreferences shre = getSharedPreferences("signature", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = shre.edit();
+        edit.putString("signature_data", encodedImage);
+        edit.commit();
     }
 
     public static int PICK_IMAGE = 1;
@@ -272,18 +316,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-    private void saveImage(Bitmap realImage) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        realImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] b = baos.toByteArray();
 
-        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-        SharedPreferences shre = getSharedPreferences("signature", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = shre.edit();
-        edit.putString("signature_data", encodedImage);
-        edit.commit();
-    }
 
     private String getExpiryDate() {
         Date date = Calendar.getInstance().getTime();

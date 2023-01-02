@@ -1724,11 +1724,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferD4.setText(BFD4);
                         bufferD5.setText(BFD5);
 
-                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
-                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
-                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
+                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.substring(0,10), DT1.substring(11,19));
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.substring(0,10), DT2.substring(11,19));
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.substring(0,10), DT3.substring(11,19));
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.substring(0,10), DT4.substring(11,19));
+                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.substring(0,10), DT5.substring(11,19));
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(2);
 
@@ -1791,9 +1791,9 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                         bufferD4.setText(BFD4);
 
 
-                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.substring(0,10), DT2.substring(11,19));
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.substring(0,10), DT3.substring(11,19));
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.substring(0,10), DT4.substring(11,19));
 
                         deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL_MODE").setValue(1);
 
@@ -2441,11 +2441,13 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     currentBuf += 1;
                                     calibData();
                                     deleteAllCalibData();
-                                    databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1);
-                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
-                                    databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5);
+
+                                    databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.substring(0,10), DT1.substring(11,19));
+                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.substring(0,10), DT2.substring(11,19));
+                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.substring(0,10), DT3.substring(11,19));
+                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.substring(0,10), DT4.substring(11,19));
+                                    databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.substring(0,10), DT5.substring(11,19));
+
 
                                 });
                             });
@@ -2508,9 +2510,11 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
                                     currentBufThree = currentBufThree % 3;
                                     calibDataThree();
                                     deleteAllCalibData();
-                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2);
-                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3);
-                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4);
+
+                                    databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.substring(0,10), DT2.substring(11,19));
+                                    databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.substring(0,10), DT3.substring(11,19));
+                                    databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.substring(0,10), DT4.substring(11,19));
+
 
                                 });
 
