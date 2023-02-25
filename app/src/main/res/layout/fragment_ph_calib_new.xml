@@ -197,6 +197,21 @@
                 app:strokeColor="@color/red"
                 app:strokeWidth="2dp">
 
+                <Button
+                    android:id="@+id/syncOfflineData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="#018F08"
+                    android:drawableStart="@drawable/sync_data"
+                    android:text="Sync offline data"
+                    android:textAllCaps="true"
+                    android:textSize="12dp" />
+
                 <TextView
                     android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
@@ -205,7 +220,8 @@
                     android:padding="10dp"
                     android:text="Do not Exit/Change \n while calibrating."
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone" />
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
@@ -360,8 +376,8 @@
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"
                 android:text="Print All"
-                android:visibility="gone"
-                android:textAllCaps="true" />
+                android:textAllCaps="true"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/phMvTable"

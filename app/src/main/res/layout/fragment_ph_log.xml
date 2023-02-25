@@ -338,6 +338,8 @@
                         android:textSize="25sp"
                         android:theme="@style/Switch" />
 
+
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switchBtnClick"
                         android:layout_width="match_parent"

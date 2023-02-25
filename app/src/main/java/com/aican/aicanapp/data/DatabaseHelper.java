@@ -26,14 +26,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("create Table Userdetails(name TEXT,role TEXT,id TEXT,passcode TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table LogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT,deviceID TEXT)");
+        sqLiteDatabase.execSQL("create Table LogUserdetailsOffline(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT,deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
         sqLiteDatabase.execSQL("create Table PrintLogUserdetails(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT, deviceID TEXT)");
+        sqLiteDatabase.execSQL("create Table PrintLogUserdetailsOffline(date TEXT, time TEXT, ph TEXT, temperature TEXT, batchnum TEXT, arnum TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table PrintTempLogUserdetails(date TEXT, time TEXT, set_temp TEXT, temp1 TEXT, temp2 TEXT, batchnum TEXT, product TEXT)");
         sqLiteDatabase.execSQL("create Table Calibdetails(pH TEXT, mV TEXT, date TEXT)");
         sqLiteDatabase.execSQL("create Table UserActiondetails(time TEXT,date TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT, deviceID TEXT)");
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
+        sqLiteDatabase.execSQL("create Table CalibOfflineData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
+        sqLiteDatabase.execSQL("create Table CalibOfflineAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,id TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
         sqLiteDatabase.execSQL("create Table ECProbeDetail(ecProbeInfo TEXT)");
@@ -46,14 +50,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Userdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetailsOffline");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS TempLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetailsOffline");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintTempLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS TempUserActiondetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibAllData");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibOfflineData");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibOfflineAllData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserDataDetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ProbeDetail");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ECProbeDetail");
@@ -132,6 +140,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("date", date);
         contentValues.put("time", time);
         long result = db.insert("CalibData", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean insertCalibrationOfflineAllData(String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
+        contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
+        contentValues.put("pHAC", pHAC);
+        contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        long result = db.insert("CalibOfflineAllData", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean insertCalibrationOfflineData(String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
+        contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
+        contentValues.put("pHAC", pHAC);
+        contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        long result = db.insert("CalibOfflineData", null, contentValues);
         if (result == -1) {
             return false;
         } else {
@@ -270,6 +318,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean insert_log_data_Offline(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("ph", ph);
+        contentValues.put("temperature", temperature);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("arnum", arnum);
+        contentValues.put("compound", compound);
+        contentValues.put("deviceID", deviceID);
+        long result = db.insert("LogUserdetailsOffline", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     // for temp log
     public Boolean insert_temp_log_data(String date, String time, String set_temp, String temp1, String temp2, String batchnum, String product) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -303,6 +370,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("compound", compound);
         contentValues.put("deviceID", deviceID);
         long result = db.insert("PrintLogUserdetails", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean print_insert_log_data_Offline(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("ph", ph);
+        contentValues.put("temperature", temperature);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("arnum", arnum);
+        contentValues.put("compound", compound);
+        contentValues.put("deviceID", deviceID);
+        long result = db.insert("PrintLogUserdetailsOffline", null, contentValues);
         if (result == -1) {
             return false;
         } else {

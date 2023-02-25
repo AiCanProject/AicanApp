@@ -50,6 +50,7 @@ import com.aican.aicanapp.adapters.CalibFileAdapter;
 import com.aican.aicanapp.adapters.FileAdapter;
 import com.aican.aicanapp.adapters.UserDataAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.aican.aicanapp.utils.Constants;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
 import com.aspose.cells.PdfCompliance;
@@ -344,7 +345,14 @@ public class Export extends AppCompatActivity {
             public void onClick(View v) {
                 companyName = companyNameEditText.getText().toString();
                 if (!companyName.isEmpty()) {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
+                    if (Constants.OFFLINE_MODE) {
+                        SharedPreferences company_name = getSharedPreferences("COMPANY_NAME", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editT = company_name.edit();
+                        editT.putString("COMPANY_NAME", companyName);
+                        editT.commit();
+                    } else {
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue(companyName);
+                    }
                 }
 
                 try {
@@ -435,6 +443,11 @@ public class Export extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
             requestPermission();
+        }
+
+        if (Constants.OFFLINE_MODE) {
+            SharedPreferences company_name = getSharedPreferences("COMPANY_NAME", Context.MODE_PRIVATE);
+            companyNameEditText.setText(company_name.getString("COMPANY_NAME", "N/A"));
         }
 
         Bitmap comLo = getCompanyLogo();
@@ -796,6 +809,9 @@ public class Export extends AppCompatActivity {
 //        table12.setBorder(Border.NO_BORDER);
 //
 //        document.add(table12);
+        if (Constants.OFFLINE_MODE) {
+            document.add(new Paragraph("Offline Mode"));
+        }
         document.add(new Paragraph(companyName + "\n" + roleExport + "\n" + device_id));
         document.add(new Paragraph(""));
         document.add(new Paragraph(reportDate
@@ -815,9 +831,14 @@ public class Export extends AppCompatActivity {
         table.addCell("Temperature");
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Cursor calibCSV;
+        if (Constants.OFFLINE_MODE) {
+            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
 
-        Cursor calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+        } else {
+            calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 
+        }
 
         while (calibCSV.moveToNext()) {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
@@ -850,10 +871,15 @@ public class Export extends AppCompatActivity {
         table1.addCell("AR No");
         table1.addCell("Compound");
 
+        Cursor curCSV;
+        if (Constants.OFFLINE_MODE) {
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 
-        Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
+        } else {
+
+            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
 //            Cursor curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')')", null);
-
+        }
         if (arNumEditText.getText().toString().isEmpty()) {
             arNumString = null;
         }
@@ -867,6 +893,8 @@ public class Export extends AppCompatActivity {
         }
 
         //Setting sql query according to filer
+
+
         if (startDateString != null && compoundName != null && batchNumString != null && arNumString != null) {
 
             curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "') AND (arnum = '" + compoundName + "') AND (batchnum = '" + batchNumString + "') AND (compound = '" + arNumString + "')", null);
@@ -932,7 +960,6 @@ public class Export extends AppCompatActivity {
             curCSV = db.rawQuery("SELECT * FROM LogUserdetails", null);
         }
 
-
         while (curCSV.moveToNext()) {
 
             String date = curCSV.getString(curCSV.getColumnIndex("date"));
@@ -947,11 +974,11 @@ public class Export extends AppCompatActivity {
 
             table1.addCell(date);
             table1.addCell(time);
-            table1.addCell(pH);
-            table1.addCell(temp);
-            table1.addCell(stringSplitter(batchnum));
-            table1.addCell(stringSplitter(arnum));
-            table1.addCell(stringSplitter(comp));
+            table1.addCell(pH != null ? pH : "--");
+            table1.addCell(temp != null ? temp : "--");
+            table1.addCell(batchnum != null && batchnum.length() >= 8 ? stringSplitter(batchnum) : batchnum);
+            table1.addCell(arnum != null && arnum.length() >= 8 ? stringSplitter(arnum) : batchnum);
+            table1.addCell(comp != null && comp.length() >= 8 ? stringSplitter(comp) : batchnum);
 
         }
 
@@ -1525,6 +1552,10 @@ public class Export extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 companyName = snapshot.getValue(String.class);
                 companyNameEditText.setText(companyName);
+                SharedPreferences company_name = getSharedPreferences("COMPANY_NAME", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editT = company_name.edit();
+                editT.putString("COMPANY_NAME", companyName);
+                editT.commit();
             }
 
             @Override

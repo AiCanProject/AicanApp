@@ -32,9 +32,16 @@
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/fragment_temp_set.xml" value="0.15" />
         <entry key="..\:/Users/FARHAN KHAN/AndroidStudioProjects/AicanProject1/app/src/main/res/layout/temp_activity.xml" value="0.15" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/background_selector.xml" value="0.219" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/circle.xml" value="0.2025" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/device_button.xml" value="0.23" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/green_circle.xml" value="0.2155" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/notice.xml" value="0.2155" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/red_circle.xml" value="0.2155" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/drawable/sync_data.xml" value="0.2115" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_authenticate_role_dialog.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_dashboard.xml" value="0.2" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_edit_user_database.xml" value="0.21927083333333333" />
-        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_export.xml" value="0.4" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_export.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_login.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_ph_mv_table.xml" value="0.264" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/activity_setting.xml" value="0.4" />
@@ -45,17 +52,22 @@
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/dialog_select_calib_points.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/file_item.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_p_calib.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_alarm.xml" value="0.4" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_calib.xml" value="0.536" />
-        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_calib_new.xml" value="0.536" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_calib_new.xml" value="0.6" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_ec.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_graph.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_log.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_ph_main.xml" value="0.6" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_pump_job.xml" value="0.4" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/fragment_temp_job.xml" value="0.536" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/img_options_dialog.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/no_subscription.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/ph_item.xml" value="0.4" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/set_timer_dialog_layout.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/signature_layout.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/temp_activity.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/tempo.xml" value="0.4" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/BNKTT/AicanApp/app/src/main/res/layout/update_ui.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/drawable/att.xml" value="0.205" />
         <entry key="..\:/Users/Vishal Anand/Desktop/AI Can Code New and Updated/New Vishal/AicanApp/app/src/main/res/drawable/circle.xml" value="0.1695" />

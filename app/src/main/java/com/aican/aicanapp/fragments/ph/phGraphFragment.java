@@ -1,5 +1,9 @@
 package com.aican.aicanapp.fragments.ph;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
+
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -30,6 +34,7 @@ import com.aican.aicanapp.fragments.ec.EcGraphFragment;
 import com.aican.aicanapp.specificactivities.EcActivity;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.AlarmConstants;
+import com.aican.aicanapp.utils.Constants;
 import com.aican.aicanapp.utils.MyXAxisValueFormatter;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -58,9 +63,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.OkHttpClient;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
-public class phGraphFragment  extends Fragment {
 
+public class phGraphFragment extends Fragment {
+
+    WebSocket webSocket1;
+    JSONObject jsonData;
     DatabaseHelper databaseHelper;
     LineChart lineChart;
     DatabaseReference deviceRef;
@@ -73,6 +84,7 @@ public class phGraphFragment  extends Fragment {
     Spinner graphInterval;
     CountDownTimer countDownTimer;
     public static String intervalSelected = "5 sec";
+    boolean loadGraph = false;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -122,7 +134,7 @@ public class phGraphFragment  extends Fragment {
         graphInterval = view.findViewById(R.id.graphInterval);
         btnGraphCancel.setEnabled(false);
         spinnerAction();
-
+        jsonData = new JSONObject();
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
@@ -133,7 +145,11 @@ public class phGraphFragment  extends Fragment {
                 if (ph == null) return;
                 //phView.moveTo(ph);
                 String phForm = String.format(Locale.UK, "%.2f", ph);
-                tvGraphPH.setText(phForm);
+                if (!Constants.OFFLINE_MODE) {
+                    tvGraphPH.setText(phForm);
+                } else {
+                    tvGraphPH.setText("0");
+                }
 
             }
 
@@ -156,37 +172,63 @@ public class phGraphFragment  extends Fragment {
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
-        String valURL1 = "https://labdevices-8c9a5-default-rtdb.asia-southeast1.firebasedatabase.app/PHMETER/" + PhActivity.DEVICE_ID + "/Data/.json";
+        if (!Constants.OFFLINE_MODE) {
+            String valURL1 = "https://labdevices-8c9a5-default-rtdb.asia-southeast1.firebasedatabase.app/PHMETER/" + PhActivity.DEVICE_ID + "/Data/.json";
 
-        float fe = fetchData(valURL1);
-        Toast.makeText(getContext(), "" + fe, Toast.LENGTH_SHORT).show();
+            float fe = fetchData(valURL1);
+            Toast.makeText(getContext(), "" + fe, Toast.LENGTH_SHORT).show();
+        }
 
         lineDataSet.setLabel("Data");
         spinnerSelected();
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Constants.OFFLINE_MODE) {
+                    if (intervalSelected.equals("5 sec")) {
+                        graphShowOffline(5, 5);
+                    }
+                    if (intervalSelected.equals("10 sec")) {
+                        graphShowOffline(10, 10);
+                    }
+                    if (intervalSelected.equals("30 sec")) {
+                        graphShowOffline(30, 30);
+                    }
+                    if (intervalSelected.equals("1 min")) {
+                        graphShowOffline(30, 60);
+                    }
+                    if (intervalSelected.equals("3 min")) {
+                        graphShowOffline(40, 180);
+                    }
+                    if (intervalSelected.equals("5 min")) {
+                        graphShowOffline(50, 300);
+                    }
+                    if (intervalSelected.equals("10 min")) {
+                        graphShowOffline(60, 600);
+                    }
+                } else {
 //                fetchLogs();
-                if (intervalSelected.equals("5 sec")) {
-                    graphShow(5, 5);
-                }
-                if (intervalSelected.equals("10 sec")) {
-                    graphShow(10, 10);
-                }
-                if (intervalSelected.equals("30 sec")) {
-                    graphShow(30, 30);
-                }
-                if (intervalSelected.equals("1 min")) {
-                    graphShow(30, 60);
-                }
-                if (intervalSelected.equals("3 min")) {
-                    graphShow(40, 180);
-                }
-                if (intervalSelected.equals("5 min")) {
-                    graphShow(50, 300);
-                }
-                if (intervalSelected.equals("10 min")) {
-                    graphShow(60, 600);
+                    if (intervalSelected.equals("5 sec")) {
+                        graphShow(5, 5);
+                    }
+                    if (intervalSelected.equals("10 sec")) {
+                        graphShow(10, 10);
+                    }
+                    if (intervalSelected.equals("30 sec")) {
+                        graphShow(30, 30);
+                    }
+                    if (intervalSelected.equals("1 min")) {
+                        graphShow(30, 60);
+                    }
+                    if (intervalSelected.equals("3 min")) {
+                        graphShow(40, 180);
+                    }
+                    if (intervalSelected.equals("5 min")) {
+                        graphShow(50, 300);
+                    }
+                    if (intervalSelected.equals("10 min")) {
+                        graphShow(60, 600);
+                    }
                 }
             }
         });
@@ -200,6 +242,122 @@ public class phGraphFragment  extends Fragment {
             }
         });
 
+    }
+
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Request request = new okhttp3.Request.Builder().url(SERVER_PATH).build();
+        webSocket1 = client.newWebSocket(request, new SocketListener());
+    }
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable okhttp3.Response response) {
+            super.onFailure(webSocket, t, response);
+            webSocket.cancel();
+            webSocket1.cancel();
+            Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null) + " " + t.getMessage());
+
+        }
+
+        @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            webSocket.cancel();
+            webSocket1.cancel();
+            Log.e("WebSocketClosed", "onClosed " + reason.toString());
+        }
+
+        @Override
+        public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosing(webSocket, code, reason);
+            webSocket.cancel();
+            webSocket1.cancel();
+            Log.e("WebSocketClosed", "onClosing " + reason.toString());
+        }
+
+        @Override
+        public void onOpen(WebSocket webSocket, okhttp3.Response response) {
+            super.onOpen(webSocket, response);
+//            webSocket1 = webSocket;
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            getActivity().runOnUiThread(() -> {
+//                calibrateBtn.setEnabled(true);
+                Toast.makeText(getContext(),
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+            });
+
+            try {
+                jsonData.put("SOCKET_INIT", "Successfully Initialized on phGraphFragment");
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                webSocket.send(jsonData.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(),
+                            "Socket Connection Unsuccessful!",
+                            Toast.LENGTH_SHORT).show();
+
+                });
+            }
+
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            getActivity().runOnUiThread(() -> {
+                try {
+                    jsonData = new JSONObject(text);
+                    Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+                    if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                        String phForm = String.format(Locale.UK, "%.2f", ph);
+                        ec_val_offline = ph;
+                        tvGraphPH.setText(phForm);
+                        AlarmConstants.PH = ph;
+                    }
+                    if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        String temp = jsonData.getString("TEMP_VAL");
+                        tvGraphTemp.setText(temp + "°C");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void onStart() {
+//        initiateSocketConnection();
+        if (Constants.OFFLINE_MODE) {
+            initiateSocketConnection();
+        }
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        if (Constants.OFFLINE_MODE) {
+            webSocket1.cancel();
+        }
+        super.onStop();
     }
 
     public void spinnerSelected() {
@@ -282,8 +440,77 @@ public class phGraphFragment  extends Fragment {
     }
 
     public static float ec_val;
+    public static float ec_val_offline = -100;
 
     public static boolean start = false;
+
+    public void graphShowOffline(long totalMin, long interval) {
+
+        lineChart.clear();
+        lineChart.invalidate();
+
+        ArrayList<Entry> information = new ArrayList<>();
+        float ecValue;
+        int[] times = {0};
+        btnGraphCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                countDownTimer.cancel();
+                btnGraphCancel.setEnabled(false);
+                refresh.setEnabled(true);
+            }
+        });
+//        String valURL = "https://labdevices-8c9a5-default-rtdb.asia-southeast1.firebasedatabase.app/PHMETER/" + PhActivity.DEVICE_ID + "/Data/.json";
+
+        countDownTimer = new CountDownTimer(totalMin * 60 * 1000, interval * 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                millisUntilFinished /= 1000;
+                int min = (int) millisUntilFinished / 60;
+                int sec = (int) millisUntilFinished % 60;
+
+                start = true;
+
+                refresh.setEnabled(false);
+                btnGraphCancel.setEnabled(true);
+//                Toast.makeText(getContext(), "" + getConductivity, Toast.LENGTH_SHORT).show();
+                if (ec_val_offline != -100) {
+                    information.add(new Entry(times[0], ec_val_offline));
+                    times[0] = (int) (times[0] + interval);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showChart(information);
+
+                        }
+                    });
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lineChart.clear();
+                            lineChart.invalidate();
+                            countDownTimer.cancel();
+                        }
+                    });
+
+
+                }
+
+            }
+
+            @Override
+            public void onFinish() {
+                refresh.setEnabled(true);
+                btnGraphCancel.setEnabled(false);
+            }
+        };
+
+        countDownTimer.start();
+
+
+    }
 
     public void graphShow(long totalMin, long interval) {
 

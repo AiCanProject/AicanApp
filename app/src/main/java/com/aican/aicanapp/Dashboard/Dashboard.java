@@ -1,44 +1,55 @@
 package com.aican.aicanapp.Dashboard;
 
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
+
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.SupplicantState;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.AddDevice.AddDeviceOption;
-import com.aican.aicanapp.Authentication.LoginActivity;
+import com.aican.aicanapp.BuildConfig;
 import com.aican.aicanapp.DownloadHandler.DownloadHandler;
 import com.aican.aicanapp.FirebaseAccounts.DeviceAccount;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
@@ -57,17 +68,17 @@ import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
+import com.aican.aicanapp.interfaces.WebSocketInit;
 import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
-import com.aican.aicanapp.specificactivities.ConnectDeviceActivity;
-import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
 import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.AlarmConstants;
+import com.aican.aicanapp.utils.Constants;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.api.LogDescriptor;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -76,8 +87,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.itextpdf.styledxmlparser.jsoup.helper.StringUtil;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -85,6 +96,9 @@ import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,10 +108,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener {
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
+
+public class Dashboard extends AppCompatActivity implements DashboardListsOptionsClickListener, EditNameDialog.OnNameChangedListener, WebSocketInit {
 
     public static final String TAG = "Dashboard";
     public static final String KEY_DEVICE_ID = "device_id";
@@ -114,7 +135,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     DatabaseReference primaryDatabase;
     DatabaseReference databaseReference;
     DatabaseReference deviceRef;
-
+    Switch offlineMode;
+    WebSocket webSocket1;
+    JSONObject jsonData;
+    TextView connectedDeviceSSID;
+    PhDevice device;
+    ImageView refreshWifi;
     String mUid;
     Button setting, export;
     private TextView internetStatus, locationD, weather, batteryPercentage;
@@ -147,11 +173,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private FloatingActionButton addNewDevice;
     private TextView tvTemp, tvCooling, tvPump, tvPh, tvName, tvConnectDevice, tvInstruction;
     private ImageView ivLogout;
+    LinearLayout onlineStatus, offlineStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        refreshWifi = findViewById(R.id.refreshWifi);
+        offlineStatus = findViewById(R.id.offlineStatus);
+        onlineStatus = findViewById(R.id.onlineStatus);
+        offlineMode = findViewById(R.id.offlineMode);
 
         databaseHelper = new DatabaseHelper(this);
         Source.id_fetched = new ArrayList<>();
@@ -167,6 +199,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ecDev = findViewById(R.id.ecMeter_dev);
         tempDev = findViewById(R.id.temp_dev);
         tvInstruction = findViewById(R.id.tvInstruction);
+        connectedDeviceSSID = findViewById(R.id.connectedDeviceSSID);
 
         batteryPercentage = findViewById(R.id.batteryPercent);
         internetStatus = findViewById(R.id.internetStatus);
@@ -195,9 +228,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         deviceNames = new HashMap<>();
         ecDevices = new ArrayList<>();
 
-
-
-
+        jsonData = new JSONObject();
 
         // subscription checking
         subscriptionChecker();
@@ -211,6 +242,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         pumpRecyclerView.setVisibility(View.GONE);
         ecRecyclerView.setVisibility(View.GONE);
 
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION},
+                PackageManager.PERMISSION_GRANTED);
+
+
+//        getWifi();
         tvInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,6 +283,29 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
         });
 
+        refreshWifi.setOnClickListener(v -> {
+            if (isLocnEnabled(this)) {
+                String ssid = getCurrentSsid(Dashboard.this);
+                Constants.wifiSSID = ssid;
+
+                connectedDeviceSSID.setText(ssid != null ? ssid : "N/A");
+            } else {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                String ssid = getCurrentSsid(Dashboard.this);
+                Constants.wifiSSID = ssid;
+
+                connectedDeviceSSID.setText(ssid != null ? ssid : "N/A");
+            }
+
+            if (isConnected) {
+                internetStatus.setText("Active");
+                internetStatus.setTextColor(getResources().getColor(R.color.internetActive));
+            } else {
+                internetStatus.setText("Inactive");
+                internetStatus.setTextColor(getResources().getColor(R.color.internetInactive));
+            }
+
+        });
 
         NewAsyncTask newAsyncTask = new NewAsyncTask(this);
         newAsyncTask.execute(Dashboard.this);
@@ -376,6 +439,20 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             startActivity(new Intent(this, AvailableWifiDevices.class));
         });
 
+//        offlineMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if (offlineMode.isChecked()) {
+//                    Constants.OFFLINE_MODE = true;
+//                    initiateSocketConnection();
+//
+//                } else {
+//                    Constants.OFFLINE_MODE = false;
+//                    webSocket1.cancel();
+//                }
+//            }
+//        });
+
         // battery percentage
         BatteryManager bm = (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -390,6 +467,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpPh();
         setUpPump();
         setUpEc();
+
+//        if (Constants.OFFLINE_MODE) {
+//            initiateSocketConnection();
+//        }
+
     }
 
 /*    private void showNetworkDialog(){
@@ -412,6 +494,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     "Welcome", Toast.LENGTH_LONG).show();
         }
     }*/
+
+
+    private void offlineModeCheck() {
+        offlineMode.setChecked(Constants.OFFLINE_MODE);
+    }
 
     private void getList() {
         Cursor res = databaseHelper.get_data();
@@ -446,6 +533,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     @Override
     protected void onStop() {
+        if (Constants.OFFLINE_MODE) {
+            webSocket1.cancel();
+        }
         super.onStop();
     }
 
@@ -469,6 +559,21 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ecRecyclerView.setVisibility(View.GONE);
 
         getList();
+
+        if (isLocnEnabled(this)) {
+            String ssid = getCurrentSsid(Dashboard.this);
+            Constants.wifiSSID = ssid;
+
+            connectedDeviceSSID.setText(ssid != null ? ssid : "N/A");
+        } else {
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            String ssid = getCurrentSsid(Dashboard.this);
+            Constants.wifiSSID = ssid;
+
+            connectedDeviceSSID.setText(ssid != null ? ssid : "N/A");
+        }
+
+
         super.onStart();
     }
 
@@ -478,6 +583,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         NewAsyncTask newAsyncTask = new NewAsyncTask(this);
         newAsyncTask.execute(Dashboard.this);
         refresh();
+//        offlineModeCheck();
     }
 
     //Toolbar------------------------------------------------------------------------------------------------------
@@ -510,15 +616,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     //Ph RC------------------------------------------------------------------------------------------------------
     public void setUpPh() {
         phRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        phAdapter = new PhAdapter(phDevices, this::onOptionsIconClicked);
+        phAdapter = new PhAdapter(Dashboard.this, phDevices, this::onOptionsIconClicked, this);
         phRecyclerView.setAdapter(phAdapter);
     }
+
     //Ph RC------------------------------------------------------------------------------------------------------
     public void setUpEc() {
         ecRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         ecAdapter = new EcAdapter(ecDevices, this::onOptionsIconClicked);
         ecRecyclerView.setAdapter(ecAdapter);
     }
+
     //Pump RC------------------------------------------------------------------------------------------------------
     public void setUpPump() {
         pumpRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -552,6 +660,157 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 getDeviceAccounts();
             }
         });
+    }
+
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(SERVER_PATH).build();
+        webSocket1 = client.newWebSocket(request, new SocketListener());
+
+
+    }
+
+    @Override
+    public void initWebSocket(String deviceID) {
+        if (Constants.OFFLINE_MODE) {
+            initiateSocketConnection();
+        }
+    }
+
+    @Override
+    public void cancelWebSocket(String deviceID) {
+        if (Constants.OFFLINE_MODE) {
+            webSocket1.cancel();
+            if (webSocket1 == null) {
+                offlineStatus.setVisibility(View.GONE);
+                onlineStatus.setVisibility(View.VISIBLE);
+            }
+
+            Constants.OFFLINE_MODE = false;
+        }
+    }
+
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
+
+            runOnUiThread(() -> {
+                Toast.makeText(Dashboard.this,
+                        "Socket Connection Successful with " + Constants.DeviceIDOffline,
+                        Toast.LENGTH_SHORT).show();
+                offlineStatus.setVisibility(View.VISIBLE);
+                onlineStatus.setVisibility(View.GONE);
+            });
+
+            try {
+                jsonData.put("SOCKET_INIT", "Successfully Initialized on Dashboard with " + Constants.DeviceIDOffline);
+                jsonData.put("DEVICE_ID", Constants.DeviceIDOffline);
+                webSocket.send(jsonData.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> {
+                    Toast.makeText(Dashboard.this,
+                            "Socket Connection Successful!",
+                            Toast.LENGTH_SHORT).show();
+
+                });
+            }
+
+
+        }
+
+
+        @Override
+        public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
+            super.onFailure(webSocket, t, response);
+            Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null));
+            runOnUiThread(() -> {
+                offlineStatus.setVisibility(View.GONE);
+                onlineStatus.setVisibility(View.VISIBLE);
+            });
+
+        }
+
+        @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            Log.e("WebSocketClosed", "onClosed " + reason.toString());
+            runOnUiThread(() -> {
+                offlineStatus.setVisibility(View.GONE);
+                onlineStatus.setVisibility(View.VISIBLE);
+            });
+        }
+
+        @Override
+        public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosing(webSocket, code, reason);
+            Log.e("WebSocketClosed", "onClosing " + reason.toString());
+            webSocket.cancel();
+            webSocket1.cancel();
+            runOnUiThread(() -> {
+                offlineStatus.setVisibility(View.GONE);
+                onlineStatus.setVisibility(View.VISIBLE);
+            });
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            runOnUiThread(() -> {
+                try {
+
+                    jsonData = new JSONObject(text);
+//                String devID = jsonData.getString("DEVICE_ID");
+                    Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+                    if (jsonData.has("PH_VAL") && jsonData.has("TEMP_VAL")
+                            && jsonData.has("MV_VAL")
+                            && jsonData.getString("DEVICE_ID").equals(Constants.DeviceIDOffline)) {
+                        float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                        float mv = Float.parseFloat(jsonData.getString("MV_VAL"));
+                        int tm = Integer.parseInt(jsonData.getString("TEMP_VAL"));
+                        String phForm = String.format(Locale.UK, "%.2f", ph);
+                        String devID = jsonData.getString("DEVICE_ID");
+
+
+//                    device.setPh(ph);
+                        Constants.flag = 0;
+                        phAdapter.changePh(devID, ph, mv, tm);
+//                    phAdapter.refreshPh(Constants.devicePosition, ph);
+
+                    }
+
+                    if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        String temp1 = jsonData.getString("TEMP_VAL");
+
+//                    if (Integer.parseInt(temp1) <= -127) {
+//                        temp0 = "NA";
+//                    } else {
+//                        temp0 = temp1;
+//                    }
+
+//                    phDevice1.setTemp(Integer.parseInt(temp1));
+//                    phAdapter.refreshPh(Constants.devicePosition);
+
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+
+
+        }
+
     }
 
     private void getDeviceAccounts() {
@@ -610,7 +869,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 deviceNames.put(id, name);
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
-                        PhDevice device = new PhDevice(
+                        device = new PhDevice(
                                 id,
                                 name,
                                 data.child("PH_VAL").getValue(Float.class),
@@ -1003,7 +1262,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     }
 
 
-
     private class NewAsyncTask extends AsyncTask<Context, Void, Void> {
         private WeakReference<Dashboard> dashboardWeakReference;
 
@@ -1088,4 +1346,40 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     }
 
     public static boolean isConnected;
+
+    public static boolean isLocnEnabled(Context context) {
+        List locnProviders = null;
+        try {
+            LocationManager lm = (LocationManager) context.getApplicationContext().getSystemService(Activity.LOCATION_SERVICE);
+            locnProviders = lm.getProviders(true);
+
+            return (locnProviders.size() != 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (BuildConfig.DEBUG) {
+                if ((locnProviders == null) || (locnProviders.isEmpty()))
+                    Log.d(TAG, "Location services disabled");
+                else
+                    Log.d(TAG, "locnProviders: " + locnProviders.toString());
+            }
+        }
+        return (false);
+    }
+
+    public static String getCurrentSsid(Context context) {
+
+        String ssid = null;
+
+        WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
+        WifiInfo wifiInfo;
+
+        wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+            ssid = wifiInfo.getSSID();
+        }
+
+        return ssid;
+    }
+
 }

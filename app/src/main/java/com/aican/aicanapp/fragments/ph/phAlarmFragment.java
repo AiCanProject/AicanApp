@@ -1,5 +1,7 @@
 package com.aican.aicanapp.fragments.ph;
 
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
+
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -27,6 +29,7 @@ import com.aican.aicanapp.R;
 import com.aican.aicanapp.Services.alarmBackgroundService;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.AlarmConstants;
+import com.aican.aicanapp.utils.Constants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,8 +38,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Locale;
+
+import okhttp3.OkHttpClient;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 public class phAlarmFragment extends Fragment {
 
@@ -50,6 +59,8 @@ public class phAlarmFragment extends Fragment {
     RadioButton radioButton;
     Intent serviceIntent;
     float ph = 0;
+    WebSocket webSocket1;
+    JSONObject jsonData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,17 +106,17 @@ public class phAlarmFragment extends Fragment {
 
         stopAlarm.setEnabled(false);
 
-        if(AlarmConstants.ringtone == null)
-        AlarmConstants.ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+        if (AlarmConstants.ringtone == null)
+            AlarmConstants.ringtone = RingtoneManager.getRingtone(getContext().getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
 
-        if(AlarmConstants.ringtone.isPlaying()){
+        if (AlarmConstants.ringtone.isPlaying()) {
             stopAlarm.setEnabled(true);
             alarm.setEnabled(false);
         }
 
-        if(AlarmConstants.minPh !=null && AlarmConstants.maxPh !=null){
-            phValue.setText(""+AlarmConstants.minPh);
-            maxPhValue.setText(""+AlarmConstants.maxPh);
+        if (AlarmConstants.minPh != null && AlarmConstants.maxPh != null) {
+            phValue.setText("" + AlarmConstants.minPh);
+            maxPhValue.setText("" + AlarmConstants.maxPh);
         }
         alarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,10 +124,10 @@ public class phAlarmFragment extends Fragment {
                 String minPH = phValue.getText().toString();
                 String maxPH = maxPhValue.getText().toString();
 
-                if(phValue.getText().toString().isEmpty() || maxPhValue.getText().toString().isEmpty()){
-                    Toast.makeText(getContext(),"Please enter all values" , Toast.LENGTH_SHORT).show();
-                }else {
-                    Log.d("Alarm","Start alarm clicked");
+                if (phValue.getText().toString().isEmpty() || maxPhValue.getText().toString().isEmpty()) {
+                    Toast.makeText(getContext(), "Please enter all values", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d("Alarm", "Start alarm clicked");
                     stopAlarm.setEnabled(true);
                     AlarmConstants.maxPh = Float.parseFloat(minPH);
                     AlarmConstants.minPh = Float.parseFloat(maxPH);
@@ -124,7 +135,7 @@ public class phAlarmFragment extends Fragment {
                     stopAlarm.setEnabled(true);
                     alarm.setEnabled(false);
                     AlarmConstants.isServiceAvailable = true;
-                    new alarmBackgroundService().execute(minPH,maxPH);
+                    new alarmBackgroundService().execute(minPH, maxPH);
                 }
             }
         });
@@ -132,7 +143,7 @@ public class phAlarmFragment extends Fragment {
         stopAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(AlarmConstants.ringtone.isPlaying() || AlarmConstants.ringtone != null) {
+                if (AlarmConstants.ringtone.isPlaying() || AlarmConstants.ringtone != null) {
                     AlarmConstants.ringtone.stop();
                 }
                 AlarmConstants.isServiceAvailable = false;
@@ -143,25 +154,141 @@ public class phAlarmFragment extends Fragment {
         });
     }
 
-    public class alarmBackgroundService extends AsyncTask<String,String,String>{
+    public class alarmBackgroundService extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... strings) {
-            while(AlarmConstants.isServiceAvailable){
+            while (AlarmConstants.isServiceAvailable) {
 //                if(AlarmConstants.ringtone.isPlaying()) break;
                 Float minPH = Float.parseFloat(strings[0]);
                 Float maxPH = Float.parseFloat(strings[1]);
-                Log.d("AlarmFragment","AlarmFragment: doInBackground in if "+AlarmConstants.PH);
-                if(AlarmConstants.PH<minPH || AlarmConstants.PH>maxPH ){
-                    if(!AlarmConstants.ringtone.isPlaying() && AlarmConstants.ringtone!=null)
-                    AlarmConstants.ringtone.play();
-                }else if(AlarmConstants.ringtone.isPlaying()){
-                        AlarmConstants.ringtone.stop();
+                Log.d("AlarmFragment", "AlarmFragment: doInBackground in if " + AlarmConstants.PH);
+                if (AlarmConstants.PH < minPH || AlarmConstants.PH > maxPH) {
+                    if (!AlarmConstants.ringtone.isPlaying() && AlarmConstants.ringtone != null)
+                        AlarmConstants.ringtone.play();
+                } else if (AlarmConstants.ringtone.isPlaying()) {
+                    AlarmConstants.ringtone.stop();
                 }
 
-                }
+            }
 
-            Log.d("AlarmFragment","AlarmFragment: Service stopped "+AlarmConstants.PH);
+            Log.d("AlarmFragment", "AlarmFragment: Service stopped " + AlarmConstants.PH);
             return null;
         }
     }
+
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Request request = new okhttp3.Request.Builder().url(SERVER_PATH).build();
+        webSocket1 = client.newWebSocket(request, new SocketListener());
+    }
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable okhttp3.Response response) {
+            super.onFailure(webSocket, t, response);
+            webSocket.cancel();
+            webSocket1.cancel();
+            Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null) + " " + t.getMessage());
+
+        }
+
+        @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            webSocket.cancel();
+            webSocket1.cancel();
+            Log.e("WebSocketClosed", "onClosed " + reason.toString());
+        }
+
+        @Override
+        public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosing(webSocket, code, reason);
+            webSocket.cancel();
+            webSocket1.cancel();
+            Log.e("WebSocketClosed", "onClosing " + reason.toString());
+        }
+
+        @Override
+        public void onOpen(WebSocket webSocket, okhttp3.Response response) {
+            super.onOpen(webSocket, response);
+//            webSocket1 = webSocket;
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            getActivity().runOnUiThread(() -> {
+//                calibrateBtn.setEnabled(true);
+                Toast.makeText(getContext(),
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+            });
+
+            try {
+                jsonData.put("SOCKET_INIT", "Successfully Initialized on phAlarmFragment");
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                webSocket.send(jsonData.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(),
+                            "Socket Connection Unsuccessful!",
+                            Toast.LENGTH_SHORT).show();
+
+                });
+            }
+
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            getActivity().runOnUiThread(() -> {
+                try {
+                    jsonData = new JSONObject(text);
+                    Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+                    if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                        String phForm = String.format(Locale.UK, "%.2f", ph);
+                        AlarmConstants.PH = ph;
+
+                    }
+                    if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        String temp = jsonData.getString("TEMP_VAL");
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void onStart() {
+//        initiateSocketConnection();
+        if (Constants.OFFLINE_MODE) {
+            initiateSocketConnection();
+        }
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        if (Constants.OFFLINE_MODE) {
+            webSocket1.cancel();
+        }
+        super.onStop();
+    }
+
 }

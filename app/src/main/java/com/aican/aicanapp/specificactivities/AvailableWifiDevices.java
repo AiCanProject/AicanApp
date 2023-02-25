@@ -71,6 +71,8 @@ public class AvailableWifiDevices extends AppCompatActivity {
         getWifi();
     }
 
+
+
     private void getWifi() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            Toast.makeText(AvailableWifiDevices.this, "version >= marshmallow", Toast.LENGTH_SHORT).show();
