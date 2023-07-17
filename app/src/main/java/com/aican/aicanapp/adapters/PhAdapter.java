@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.interfaces.WebSocketInit;
 import com.aican.aicanapp.specificactivities.PhActivity;
@@ -52,6 +53,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     WebSocketInit webSocketInit;
     Context context;
     PhAdapter.PhAdapterViewHolder holder1;
+
 
     public PhAdapter(Context context, ArrayList<PhDevice> phDevices, DashboardListsOptionsClickListener optionsClickListener, WebSocketInit webSocketInit) {
         this.phDevices = phDevices;
@@ -85,6 +87,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
         private Switch offlineModeSwitch;
         LinearLayout onlineStatus;
         LinearLayout offlineStatus;
+        LinearLayout offlineLayout;
         CardView ph_Cardview;
 
         /**
@@ -104,6 +107,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             onlineStatus = itemView.findViewById(R.id.onlineStatus);
             offlineStatus = itemView.findViewById(R.id.offlineStatus);
             ph_Cardview = itemView.findViewById(R.id.ph_Cardview);
+            offlineLayout = itemView.findViewById(R.id.offlineLayout);
         }
 
         public void bind(PhDevice device, int position) {
@@ -120,6 +124,14 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 //            } else {
             tempString = String.format(Locale.UK, "Temp: %d°C", device.getTemp());
 //            }
+
+            if (device.getOffline() == 0) {
+                offlineLayout.setVisibility(View.GONE);
+            }
+
+            if (device.getOffline() == 1) {
+                offlineLayout.setVisibility(View.VISIBLE);
+            }
 
             ph.setText(phString);
             ec.setText(ecString);

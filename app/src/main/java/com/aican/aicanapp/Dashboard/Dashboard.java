@@ -1,5 +1,8 @@
 package com.aican.aicanapp.Dashboard;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.os.Build.VERSION.SDK_INT;
 import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 
 import android.Manifest;
@@ -230,8 +233,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         jsonData = new JSONObject();
 
+//        checkPermission();
+//        requestPermission();
         // subscription checking
         subscriptionChecker();
+
 
         //showNetworkDialog();
 
@@ -455,7 +461,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         // battery percentage
         BatteryManager bm = (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             int tabBatteryPer = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
             batteryPercentage.setText(tabBatteryPer + "%");
         }
@@ -467,6 +473,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpPh();
         setUpPump();
         setUpEc();
+
 
 //        if (Constants.OFFLINE_MODE) {
 //            initiateSocketConnection();
@@ -866,6 +873,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 DataSnapshot data = dataSnapshot.child("Data");
                 DataSnapshot ui = dataSnapshot.child("UI");
                 String name = dataSnapshot.child("NAME").getValue(String.class);
+                int offline = 0;
+                if (dataSnapshot.child("offline").exists()) {
+                    offline = dataSnapshot.child("offline").getValue(Integer.class);
+                } else {
+                    offline = 0;
+                }
                 deviceNames.put(id, name);
                 switch (deviceTypes.get(id)) {
                     case "PHMETER": {
@@ -875,7 +888,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 data.child("PH_VAL").getValue(Float.class),
                                 data.child("EC_VAL").getValue(Float.class),
                                 data.child("TEMP_VAL").getValue(Integer.class),
-                                data.child("TDS_VAL").getValue(Long.class)
+                                data.child("TDS_VAL").getValue(Long.class), offline
                         );
                         phDevices.add(device);
 //                        setPhDeviceListeners(device, phDevices.size()-1);
@@ -1012,7 +1025,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         if (connectivityManager != null) {
 
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (SDK_INT >= Build.VERSION_CODES.Q) {
                 NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
                 if (capabilities != null) {
                     if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
@@ -1169,6 +1182,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
 
         });
+
+
     }
 
     private void CheckForUpdate() {
@@ -1218,11 +1233,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     }
 
     private void runtimeStoragePermission() {
-        Dexter.withContext(Dashboard.this).withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        Dexter.withContext(Dashboard.this).withPermissions(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        if (SDK_INT >= Build.VERSION_CODES.O) {
                             if (!getPackageManager().canRequestPackageInstalls()) {
                                 startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData(Uri.parse(String.format("package:%s", getPackageName()))), 1234);
                             } else {
@@ -1381,5 +1396,74 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         return ssid;
     }
+
+    public static final int PERMISSION_REQUEST_CODE = 2296;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+                    boolean READ_EXTERNAL_STORAGE = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean WRITE_EXTERNAL_STORAGE = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+
+                    if (READ_EXTERNAL_STORAGE && WRITE_EXTERNAL_STORAGE) {
+                        // perform action when allow permission success
+                    } else {
+                        Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2296) {
+            if (SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    // perform action when allow permission success
+                } else {
+                    Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void requestPermission() {
+        if (SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
+                startActivityForResult(intent, 2296);
+            } catch (Exception e) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivityForResult(intent, 2296);
+            }
+        } else {
+            //below android 11
+//            ActivityCompat.requestPermissions(Dashboard.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+
+            ActivityCompat.requestPermissions(Dashboard.this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+
+        }
+    }
+
+    private boolean checkPermission() {
+        if (SDK_INT >= Build.VERSION_CODES.R) {
+            return Environment.isExternalStorageManager();
+        } else {
+            int result = ContextCompat.checkSelfPermission(Dashboard.this, READ_EXTERNAL_STORAGE);
+            int result1 = ContextCompat.checkSelfPermission(Dashboard.this, WRITE_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+
+
 
 }

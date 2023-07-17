@@ -31,6 +31,7 @@ import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.specificactivities.Export;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kyanogen.signatureview.SignatureView;
@@ -44,6 +45,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class SettingActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -107,6 +109,8 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
 
         generate.setOnClickListener(view -> {
             if (isEmailValid() && isPassCodeValid()) {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                 Source.userRole = Role;
                 Source.userId = userId.getText().toString();
                 Source.userName = name.getText().toString();
@@ -117,6 +121,8 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
                 databaseHelper.insert_data(Source.userName, Source.userRole, Source.userId, Source.userPasscode, Source.expiryDate, Source.dateCreated);
                 databaseHelper.insertUserData(Source.userName, Source.userId, Source.userRole, Source.expiryDate, Source.dateCreated);
                 String details = Role + "\n" + name.getText().toString() + "\n" + passcode.getText().toString() + "\n" + userId.getText().toString();
+                databaseHelper.insert_action_data(time, date, "Name: " + Source.userName + ", UID: " + Source.userId + " Role: " + Source.userRole
+                        + " user added", "", "", "", "", PhActivity.DEVICE_ID);
 
                 FileOutputStream fos = null;
 
@@ -166,7 +172,7 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             public void onClick(View view) {
 //                dialog.dismiss();
                 Bitmap signBitmap = signatureView.getSignatureBitmap();
-                if (signBitmap != null){
+                if (signBitmap != null) {
                     imageView.setImageBitmap(signBitmap);
                     saveImage(signBitmap);
                     dialog.dismiss();
@@ -315,7 +321,6 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
             }
         }
     }
-
 
 
     private String getExpiryDate() {

@@ -81,11 +81,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
             }
         });
-
-
         databaseHelper = new DatabaseHelper(PhActivity.this);
 
-        loadFragments(phFragment);
         ph = findViewById(R.id.item1);
         calibrate = findViewById(R.id.item2);
         log = findViewById(R.id.item3);
@@ -99,6 +96,31 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         log.setOnClickListener(this);
         graph.setOnClickListener(this);
         alarm.setOnClickListener(this);
+
+
+        String i = getIntent().getStringExtra("refreshCalib");
+        if (i != null) {
+            if (i.equals("y")) {
+                tabItemPh.setBackground(getResources().getDrawable(R.drawable.backselect1));
+                tabItemPh.setVisibility(View.INVISIBLE);
+                TextView select2 = findViewById(R.id.select2);
+                select2.setBackground(getResources().getDrawable(R.drawable.back_select2));
+
+                loadFragments(phCalibFragmentNew);
+                calibrate.setTextColor(Color.WHITE);
+                ph.setTextColor(Color.parseColor("#FF24003A"));
+                log.setTextColor(Color.parseColor("#FF24003A"));
+                graph.setTextColor(Color.parseColor("#FF24003A"));
+                alarm.setTextColor(Color.parseColor("#FF24003A"));
+//                Toast.makeText(this, "" + calibrate.getWidth(), Toast.LENGTH_SHORT).show();
+//                int size = calibrate.getWidth();
+//                tabItemPh.animate().x(size).setDuration(100);
+
+            }
+        } else {
+            loadFragments(phFragment);
+        }
+
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         deviceRef.child("PH_MODE").addValueEventListener(new ValueEventListener() {
@@ -121,6 +143,12 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if (Source.auto_log == 0 && !Source.calibratingNow) {
+            TextView select2 = findViewById(R.id.select2);
+            select2.setBackground(getResources().getDrawable(R.drawable.backselect1));
+            select2.setVisibility(View.INVISIBLE);
+            tabItemPh.setVisibility(View.VISIBLE);
+            tabItemPh.setBackground(getResources().getDrawable(R.drawable.back_select2));
+
             if (view.getId() == R.id.item1) {
                 tabItemPh.animate().x(0).setDuration(100);
                 loadFragments(phFragment);

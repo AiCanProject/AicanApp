@@ -7,17 +7,31 @@ public class PhDevice {
     float ec;
     int temp;
     int tds;
+    int offline;
 
-    public PhDevice(String id, String name, float ph, float ec, int temp, long tds) {
+    public PhDevice(String id, String name, float ph, float ec, int temp, long tds, int offline) {
         this.id = id;
         this.name = name;
         this.ph = ph;
         this.ec = ec;
         this.temp = temp;
+        this.offline    = offline;
         this.tds = (int) Math.min(10000, tds);
     }
 
     public PhDevice() {
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getOffline() {
+        return offline;
+    }
+
+    public void setOffline(int offline) {
+        this.offline = offline;
     }
 
     public String getId() {

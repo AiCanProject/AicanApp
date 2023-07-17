@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false">
+
     <LinearLayout
+        android:id="@+id/backgroundll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/backgroundll">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ivBackground"
@@ -21,22 +22,23 @@
             app:tint="#FF9E5D" />
 
         <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/wave2"
-        android:transitionName="@string/background_transition"/>
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/wave2"
+            android:transitionName="@string/background_transition" />
 
-</LinearLayout>
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/ivBackBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_back"
-        app:tint="@color/white_force"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:padding="12dp"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"/>
+        android:src="@drawable/ic_back"
+        app:tint="@color/white_force" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -44,8 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="110dp"
-        android:text="Create\nAccount"
         android:fontFamily="@font/sofia_bold"
+        android:text="Create\nAccount"
         android:textColor="@color/white_force"
         android:textSize="32sp"
         android:transitionName="@string/title_transition" />
@@ -59,11 +61,11 @@
         tools:context=".LoginActivity">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:id="@+id/tilName">
+            app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
@@ -72,19 +74,19 @@
                 android:drawableStart="@drawable/ic_user"
                 android:drawablePadding="8dp"
                 android:drawableTint="@color/grey_force"
-                android:hint="Name"
                 android:fontFamily="@font/sofia_medium"
+                android:hint="Name"
                 android:inputType="textPersonName"
                 android:textColorHint="@color/grey_light_force" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:id="@+id/tilEmail">
+            app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
@@ -93,21 +95,21 @@
                 android:drawableStart="@drawable/ic_email"
                 android:drawablePadding="8dp"
                 android:drawableTint="@color/grey_force"
-                android:hint="Email"
                 android:fontFamily="@font/sofia_medium"
+                android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:textColorHint="@color/grey_light_force" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPassword"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/grey_light_force"
-            android:id="@+id/tilPassword">
+            app:passwordToggleTint="@color/grey_light_force">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
@@ -116,8 +118,8 @@
                 android:drawableStart="@drawable/ic_password"
                 android:drawablePadding="8dp"
                 android:drawableTint="@color/grey_force"
-                android:hint="Password"
                 android:fontFamily="@font/sofia_medium"
+                android:hint="Password"
                 android:inputType="textPassword"
                 android:textColorHint="@color/grey_light_force" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -128,11 +130,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:background="@drawable/primary_button_selector"
-            android:text="Sign up"
-            android:textSize="15dp"
             android:fontFamily="@font/sofia_medium"
+            android:text="Sign up"
             android:textAllCaps="false"
-            android:textColor="@color/white_force" />
+            android:textColor="@color/white_force"
+            android:textSize="15dp" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -161,11 +163,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/secondary_button_selector"
-            android:text="Login"
-            android:textSize="15sp"
             android:fontFamily="@font/sofia_medium"
+            android:text="Login"
             android:textAllCaps="false"
-            android:textColor="@color/grey_force" />
+            android:textColor="@color/grey_force"
+            android:textSize="15sp" />
 
     </LinearLayout>
 

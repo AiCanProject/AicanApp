@@ -158,7 +158,7 @@
                             android:fontFamily="@font/sofia_bold"
                             android:text="Connected Device ID -> "
                             android:textColor="@color/white"
-                            android:textSize="20dp" />
+                            android:textSize="18dp" />
 
                         <TextView
                             android:id="@+id/connectedDeviceSSID"
@@ -167,12 +167,12 @@
                             android:fontFamily="@font/sofia_bold"
                             android:text="--"
                             android:textColor="@color/internetActive"
-                            android:textSize="20sp" />
+                            android:textSize="18dp" />
 
                         <ImageView
                             android:id="@+id/refreshWifi"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
                             android:src="@drawable/refresh" />
@@ -209,64 +209,7 @@
                             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
-                        <LinearLayout
-                            android:id="@+id/offlineStatus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginEnd="20dp"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:visibility="gone">
 
-
-                            <LinearLayout
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:background="@drawable/green_circle" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/sofia_light"
-                                android:text="Offline Connected"
-                                android:textColor="@color/white"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/onlineStatus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginEnd="20dp"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-
-                            <LinearLayout
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:background="@drawable/red_circle" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/sofia_light"
-                                android:text="Offline Disconnected"
-                                android:textColor="@color/white"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
 
 
                         <Button
@@ -503,6 +446,7 @@
                                 android:textSize="19sp" />
 
                             <TextView
+                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
@@ -515,6 +459,69 @@
                                 android:text="Note : Please connect one device at a time, to avoid conflicts (For Offline Mode)"
                                 android:textColor="@color/white"
                                 android:textSize="17sp" />
+
+                            <LinearLayout
+                                android:layout_marginTop="5dp"
+                                android:id="@+id/onlineStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+
+                                <LinearLayout
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:background="@drawable/red_circle" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginStart="2dp"
+                                    android:fontFamily="@font/sofia_light"
+                                    android:text="Offline Disconnected"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_marginTop="5dp"
+                                android:id="@+id/offlineStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+
+                                <LinearLayout
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:background="@drawable/green_circle" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_marginStart="2dp"
+                                    android:fontFamily="@font/sofia_light"
+                                    android:text="Offline Connected"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+
 
                         </LinearLayout>
 
@@ -647,91 +654,93 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/drawer"
-                android:layout_width="250dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:background="@color/white"
-                tools:layout_gravity=""
-                tools:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/gradient_color"
-                        android:orientation="vertical"
-                        android:padding="8dp">
-
-                        <ImageView
-                            android:id="@+id/iv"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:adjustViewBounds="true"
-                            android:padding="5dp"
-                            android:src="@drawable/profile_pic_placeholder" />
-
-                        <TextView
-                            android:id="@+id/tvName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/iv"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginTop="8dp"
-                            android:padding="3dp"
-                            android:text="UserName"
-                            android:textColor="@color/white"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:id="@+id/ivLogout"
-                            android:layout_width="24dp"
-                            android:layout_height="32dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginEnd="12dp"
-                            android:layout_marginBottom="12dp"
-                            android:src="@drawable/ic_logout"
-                            app:tint="@color/white" />
-                    </RelativeLayout>
-
-                    <TextView
-                        android:id="@+id/tvConnectDevice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="22dp"
-                        android:paddingVertical="16dp"
-                        android:text="Setup Device"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/tvInstruction"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="22dp"
-                        android:paddingVertical="16dp"
-                        android:text="Instruction Manual"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-
-                </LinearLayout>
-
-
-            </RelativeLayout>
-
 
         </LinearLayout>
     </ScrollView>
+
+
+    <RelativeLayout
+        android:id="@+id/drawer"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        tools:layout_gravity=""
+        tools:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_color"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/iv"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:adjustViewBounds="true"
+                    android:padding="5dp"
+                    android:src="@drawable/profile_pic_placeholder" />
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="8dp"
+                    android:padding="3dp"
+                    android:text="UserName"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/ivLogout"
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_logout"
+                    app:tint="@color/white" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvConnectDevice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="16dp"
+                android:text="Setup Device"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="16dp"
+                android:text="Instruction Manual"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

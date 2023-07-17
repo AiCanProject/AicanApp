@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -638,12 +639,39 @@ public class PhCalibFragmentNew extends Fragment {
 
         // add a button
         builder.setPositiveButton(
-                "OK",
+                "Continue Calibration",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(
                             DialogInterface dialog,
                             int which) {
+                        Source.calibratingNow = false;
+                        phMvTable.setEnabled(true);
+                    }
+                });
+
+        builder.setNeutralButton(
+                "Restart",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(
+                            DialogInterface dialog,
+                            int which) {
+                        Source.calibratingNow = false;
+                        Intent i = new Intent(requireContext(), PhActivity.class);
+                        i.putExtra("refreshCalib", "y");
+                        i.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
+                        startActivity(i);
+                        getActivity().finish();
+
+//                        Fragment frg = null;
+//                        frg = requireActivity().getSupportFragmentManager().findFragmentById(R.layout.fragment_ph_calib_new);
+//                        final FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
+//                        if (frg != null) {
+//                            ft.detach(frg);
+//                        }
+//                        ft.attach(frg);
+//                        ft.commit();
 
                     }
                 });

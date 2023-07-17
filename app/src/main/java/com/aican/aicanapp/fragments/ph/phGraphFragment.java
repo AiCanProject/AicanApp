@@ -206,7 +206,8 @@ public class phGraphFragment extends Fragment {
                     if (intervalSelected.equals("10 min")) {
                         graphShowOffline(60, 600);
                     }
-                } else {
+                }
+                else {
 //                fetchLogs();
                     if (intervalSelected.equals("5 sec")) {
                         graphShow(5, 5);

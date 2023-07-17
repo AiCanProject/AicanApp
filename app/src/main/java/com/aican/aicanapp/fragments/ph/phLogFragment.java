@@ -883,6 +883,7 @@ public class phLogFragment extends Fragment {
                         Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                     } else {
                         databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                        databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                         databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.logUserName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
                     }
                     if (switchBtnClick.isChecked()) {
@@ -909,8 +910,8 @@ public class phLogFragment extends Fragment {
                     if (hold == 1) {
                         date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                         time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-                        fetch_logs();
                         deviceRef.child("Data").child("HOLD").setValue(0);
+                        fetch_logs();
 
                         if (ph == null || temp == null || mv == null) {
                             Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
@@ -1305,6 +1306,125 @@ public class phLogFragment extends Fragment {
         } else {
 
 
+            if (!compound_name_txt.getText().toString().isEmpty()) {
+                compound_name = compound_name_txt.getText().toString();
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            } else {
+                compound_name = "NA";
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            }
+
+
+            deviceRef.child("Data").child("COMPOUND_NAME").setValue(compound_name);
+
+
+            //saving batch number
+            if (!batch_number.getText().toString().isEmpty()) {
+                batchnum = batch_number.getText().toString();
+
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+
+            } else {
+                batchnum = "NA";
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            }
+
+            deviceRef.child("Data").child("BATCH_NUMBER").setValue(batchnum);
+
+
+            if (!ar_number.getText().toString().isEmpty()) {
+                arnum = ar_number.getText().toString();
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            } else {
+                arnum = "NA";
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            }
+
+            deviceRef.child("Data").child("AR_NUMBER").setValue(arnum);
+
+        }
+    }
+
+    private void saveDetails2() {
+
+        if (Constants.OFFLINE_MODE) {
+            if (!compound_name_txt.getText().toString().isEmpty()) {
+                compound_name = compound_name_txt.getText().toString();
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            } else {
+                compound_name = "NA";
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Compound name changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            }
+
+            if (!batch_number.getText().toString().isEmpty()) {
+                batchnum = batch_number.getText().toString();
+
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+
+            } else {
+                batchnum = "NA";
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "Batchnum changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            }
+
+            if (!ar_number.getText().toString().isEmpty()) {
+                arnum = ar_number.getText().toString();
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            } else {
+                arnum = "NA";
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                databaseHelper.insert_action_data(time, date, "AR_NUMBER changed : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+
+            }
+
+        } else {
+
+
             deviceRef.child("Data").child("COMPOUND_NAME").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -1507,16 +1627,10 @@ public class phLogFragment extends Fragment {
             fetch_logs();
 
             if (ph == null || temp == null || mv == null) {
-//            if (Constants.OFFLINE_MODE) {
-//                databaseHelper.print_insert_log_data(date, time, ph , temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-//                databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-//            }
+
                 Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
-//                databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-//                databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-//            } else {
 
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                 databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
@@ -1712,7 +1826,8 @@ public class phLogFragment extends Fragment {
      * @param grantResults
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0) {
                 boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;

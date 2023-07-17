@@ -318,6 +318,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    // for pH log
+    public Boolean print_insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        contentValues.put("ph", ph);
+        contentValues.put("temperature", temperature);
+        contentValues.put("batchnum", batchnum);
+        contentValues.put("arnum", arnum);
+        contentValues.put("compound", compound);
+        contentValues.put("deviceID", deviceID);
+        long result = db.insert("PrintLogUserdetails", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public Boolean insert_log_data_Offline(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -357,25 +377,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    // for pH log
-    public Boolean print_insert_log_data(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("date", date);
-        contentValues.put("time", time);
-        contentValues.put("ph", ph);
-        contentValues.put("temperature", temperature);
-        contentValues.put("batchnum", batchnum);
-        contentValues.put("arnum", arnum);
-        contentValues.put("compound", compound);
-        contentValues.put("deviceID", deviceID);
-        long result = db.insert("PrintLogUserdetails", null, contentValues);
-        if (result == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+
 
     public Boolean print_insert_log_data_Offline(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
         SQLiteDatabase db = this.getWritableDatabase();

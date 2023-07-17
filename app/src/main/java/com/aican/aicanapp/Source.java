@@ -18,6 +18,8 @@ public class Source {
     public static String logUserName;
     public static String loginUserRole;
 
+    public static int offlineStatus = 0;
+
     public static int auto_log = 0;
     public static String calib_completed_by;
 }

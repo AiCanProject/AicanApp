@@ -17,6 +17,14 @@ import android.widget.Toast;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.aican.aicanapp.specificactivities.PhActivity;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class EditUserDatabase extends AppCompatActivity {
     Spinner spinner;
@@ -78,22 +86,54 @@ public class EditUserDatabase extends AppCompatActivity {
         update.setOnClickListener(view -> {
 
             if (passwordText.getText().toString().isEmpty() || passwordText.getText().toString().equals("") || passwordText.getText().toString().equals(prevPasscode)) {
-                if (passwordText.getText().toString().equals(prevPasscode)){
+                if (passwordText.getText().toString().equals(prevPasscode)) {
                     previPasscode.setText("Your previous passcode is same as your current passcode");
                     passwordText.setError("Your previous passcode is same as your current passcode");
-                }else{
+                } else {
                     passwordText.setError("Enter some password");
                 }
             } else {
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                 password = passwordText.getText().toString();
-                boolean passwordUpdated = databaseHelper.updateUserDetails(username,uid, name.getText().toString(), userRole, password);
+                boolean passwordUpdated = databaseHelper.updateUserDetails(username, uid, name.getText().toString(), userRole, password);
                 if (passwordUpdated) {
+                    databaseHelper.insert_action_data(time, date, "Username: " + username + ", Name: " + name.getText().toString() + ", UID: " + uid
+                            + " Password changed", "", "", "", "", PhActivity.DEVICE_ID);
+
                     Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private String getExpiryDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            cal.setTime(sdf.parse(presentDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // use add() method to add the days to the given date
+        cal.add(Calendar.DAY_OF_MONTH, 90);
+        String expiryDate = sdf.format(cal.getTime());
+
+        return expiryDate;
+    }
+
+    private String getPresentDate() {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String presentDate = dateFormat.format(date);
+        return presentDate;
     }
 
 }

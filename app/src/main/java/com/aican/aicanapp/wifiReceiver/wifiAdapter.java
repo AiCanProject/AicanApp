@@ -47,12 +47,12 @@ public class wifiAdapter extends RecyclerView.Adapter<wifiViewHolder> {
         String ssid = resultList.get(position).SSID;
         String capabilities = resultList.get(position).capabilities;
         holder.ssid.setText(ssid.toString());
-        holder.itemView.setVisibility(View.GONE);
-        if (ssid.contains("AICAN") || ssid.contains("Aican")|| ssid.contains("aican")) {
-            holder.itemView.setVisibility(View.VISIBLE);
-        } else {
-            holder.itemView.setVisibility(View.GONE);
-        }
+//        holder.itemView.setVisibility(View.GONE);
+//        if (ssid.contains("AICAN") || ssid.contains("Aican")|| ssid.contains("aican")) {
+//            holder.itemView.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.itemView.setVisibility(View.GONE);
+//        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

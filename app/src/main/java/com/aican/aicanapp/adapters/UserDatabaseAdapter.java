@@ -18,11 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.userdatabase.EditUserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabase;
 import com.aican.aicanapp.userdatabase.UserDatabaseModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapter.ViewHolder> {
 
@@ -65,21 +69,26 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                new AlertDialog.Builder(view.getContext())
-                        .setTitle("Are you sure?")
-                        .setMessage("Do you want to delete this record")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                UserDatabaseModel model = users_list.get(position);
-                                databaseHelper.delete_data(model.getUser_name());
-                                Toast.makeText(view.getContext(), "Record Deleted Successfully", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(context, UserDatabase.class);
-                                context.startActivity(intent);
-                                ((Activity) context).finish();
-                            }
-                        }).setNegativeButton("No", null)
-                        .show();
+                if (users_list.get(position).getUser_role().equals("Admin")) {
+
+                } else {
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle("Are you sure?")
+                            .setMessage("Do you want to delete this record")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    UserDatabaseModel model = users_list.get(position);
+                                    databaseHelper.delete_data(model.getUser_name());
+                                    Toast.makeText(view.getContext(), "Record Deleted Successfully", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(context, UserDatabase.class);
+                                    context.startActivity(intent);
+                                    ((Activity) context).finish();
+                                }
+                            }).setNegativeButton("No", null)
+                            .show();
+                }
+
                 return true;
             }
         });
@@ -97,12 +106,21 @@ public class UserDatabaseAdapter extends RecyclerView.Adapter<UserDatabaseAdapte
             }
         });
 
+        if (users_list.get(position).getUser_role().equals("Admin")) {
+            holder.deleteBtn.setVisibility(View.GONE);
+        }
+
         holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                 UserDatabaseModel model = users_list.get(position);
                 databaseHelper.delete_data(model.getUser_name());
                 databaseHelper.delete_Userdata(model.getUser_name());
+                databaseHelper.insert_action_data(time, date, "Username: " + model.getUser_name() + " Deleted", "", "", "", "", PhActivity.DEVICE_ID);
+
                 Toast.makeText(view.getContext(), "Record Deleted Successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, UserDatabase.class);
                 context.startActivity(intent);

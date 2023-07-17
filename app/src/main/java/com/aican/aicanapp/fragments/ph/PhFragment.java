@@ -617,6 +617,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             switchAtc.setChecked(false);
         }
 
+//        deviceRef.child("Data").child("ATC").setValue(1);
 
         switchAtc.setOnCheckedChangeListener((v, isChecked) -> {
 
@@ -643,6 +644,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                 String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                 String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
+                deviceRef.child("Data").child("ATC").setValue(0);
                 databaseHelper.insert_action_data(time, date, "Extrapolate(ATC temp) toggle off at : " + atcValue.getText() + " by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
                 SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);

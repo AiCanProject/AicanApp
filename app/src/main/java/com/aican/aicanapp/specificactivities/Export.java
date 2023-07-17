@@ -387,6 +387,21 @@ public class Export extends AppCompatActivity {
         fAdapter.notifyDataSetChanged();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
+
+        String path11 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+        File root11 = new File(path11);
+
+        String pathPDF11 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+        File rootPDF11 = new File(pathPDF11);
+        fileNotWrite(root11);
+        File[] filesAndFoldersPDF11 = rootPDF11.listFiles();
+
+
+        uAdapter = new UserDataAdapter(Export.this, reverseFileArray(filesAndFoldersPDF11));
+        userRecyclerView.setAdapter(uAdapter);
+        uAdapter.notifyDataSetChanged();
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
         convertToXls.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -454,6 +469,7 @@ public class Export extends AppCompatActivity {
         if (comLo != null) {
             companyLogo.setImageBitmap(comLo);
         }
+
 
         printAllCalibData.setOnClickListener(v -> {
             try {
@@ -977,8 +993,8 @@ public class Export extends AppCompatActivity {
             table1.addCell(pH != null ? pH : "--");
             table1.addCell(temp != null ? temp : "--");
             table1.addCell(batchnum != null && batchnum.length() >= 8 ? stringSplitter(batchnum) : batchnum);
-            table1.addCell(arnum != null && arnum.length() >= 8 ? stringSplitter(arnum) : batchnum);
-            table1.addCell(comp != null && comp.length() >= 8 ? stringSplitter(comp) : batchnum);
+            table1.addCell(arnum != null && arnum.length() >= 8 ? stringSplitter(arnum) : arnum);
+            table1.addCell(comp != null && comp.length() >= 8 ? stringSplitter(comp) : comp);
 
         }
 

@@ -51,7 +51,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             public void onClick(View v) {
 
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/"+selectedFile.getName();
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/" + selectedFile.getName();
 
 
                 File file = new File(path);
@@ -100,7 +100,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/"+selectedFile.getName();
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {
@@ -116,9 +116,9 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 //                                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                                context.startActivity(chooserIntent);
 
-                                if (!file.exists()){
+                                if (!file.exists()) {
                                     Toast.makeText(context, "File doesn't exists", Toast.LENGTH_LONG).show();
-                                }else {
+                                } else {
                                     Intent intentShare = new Intent(Intent.ACTION_SEND);
                                     intentShare.setType("application/pdf");
                                     intentShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -154,7 +154,8 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return files.length;
+        return files == null ? 0 : files.length;
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
