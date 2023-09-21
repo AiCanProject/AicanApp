@@ -328,106 +328,6 @@ public class PhCalibFragmentNew extends Fragment {
                 break;
         }
 
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        mode = "5";
-                        fivePointCalib.setVisibility(View.VISIBLE);
-                        threePointCalib.setVisibility(View.GONE);
-                        threePointCalibStart.setVisibility(View.GONE);
-                        fivePointCalibStart.setVisibility(View.VISIBLE);
-                        currentBuf = 0;
-                        currentBufThree = 0;
-                        line = 0;
-                        line_3 = 0;
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-                        log1_3.setBackgroundColor(Color.GRAY);
-                        log2_3.setBackgroundColor(Color.WHITE);
-                        log3_3.setBackgroundColor(Color.WHITE);
-
-                        log1.setBackgroundColor(Color.GRAY);
-                        log2.setBackgroundColor(Color.WHITE);
-                        log3.setBackgroundColor(Color.WHITE);
-                        log4.setBackgroundColor(Color.WHITE);
-                        log5.setBackgroundColor(Color.WHITE);
-
-                        fetchAllData5Point();
-                        deleteAllCalibData();
-                        calibData();
-
-                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
-                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
-                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
-                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
-                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
-
-                        if (Constants.OFFLINE_MODE) {
-
-                            deleteAllOfflineCalibData();
-
-                            databaseHelper.insertCalibrationOfflineData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
-                            databaseHelper.insertCalibrationOfflineData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
-                            databaseHelper.insertCalibrationOfflineData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
-                            databaseHelper.insertCalibrationOfflineData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
-                            databaseHelper.insertCalibrationOfflineData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
-                        }
-
-                        break;
-
-                    case 1:
-                        mode = "3";
-                        fivePointCalib.setVisibility(View.GONE);
-                        fivePointCalibStart.setVisibility(View.GONE);
-                        threePointCalib.setVisibility(View.VISIBLE);
-                        threePointCalibStart.setVisibility(View.VISIBLE);
-//                        currentBufThree = 0;
-
-                        currentBuf = 0;
-                        currentBufThree = 0;
-                        line = 0;
-                        line_3 = 0;
-                        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-
-                        log1_3.setBackgroundColor(Color.GRAY);
-                        log2_3.setBackgroundColor(Color.WHITE);
-                        log3_3.setBackgroundColor(Color.WHITE);
-
-                        log1.setBackgroundColor(Color.GRAY);
-                        log2.setBackgroundColor(Color.WHITE);
-                        log3.setBackgroundColor(Color.WHITE);
-                        log4.setBackgroundColor(Color.WHITE);
-                        log5.setBackgroundColor(Color.WHITE);
-
-                        fetchAllData3Point();
-                        deleteAllCalibData();
-                        calibData3();
-
-
-                        databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
-                        databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
-                        databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
-                        if (Constants.OFFLINE_MODE) {
-                            deleteAllOfflineCalibData();
-
-                            databaseHelper.insertCalibrationOfflineData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
-                            databaseHelper.insertCalibrationOfflineData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
-                            databaseHelper.insertCalibrationOfflineData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
-                        }
-
-
-                        break;
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(requireContext(), "Select a mode of Calibration", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         phGraph.setEnabled(true);
         phMvTable.setEnabled(true);
         printCalibData.setEnabled(true);
@@ -3587,7 +3487,20 @@ public class PhCalibFragmentNew extends Fragment {
             case R.id.phEdit1:
                 EditPhBufferDialog dialog = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
+                    if (!Constants.OFFLINE_MODE) {
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_1", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph1.setText(String.valueOf(ph));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
                 });
                 dialog.show(getParentFragmentManager(), null);
                 break;
@@ -3596,30 +3509,78 @@ public class PhCalibFragmentNew extends Fragment {
 
                 EditPhBufferDialog dialog1 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_2", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph2.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } });
                 dialog1.show(getParentFragmentManager(), null);
                 break;
             case R.id.phEdit3:
                 EditPhBufferDialog dialog2 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_3", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph3.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }  });
                 dialog2.show(getParentFragmentManager(), null);
                 break;
             case R.id.phEdit4:
                 EditPhBufferDialog dialog3 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_4", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph4.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } });
                 dialog3.show(getParentFragmentManager(), null);
                 break;
 
             case R.id.phEdit5:
                 EditPhBufferDialog dialog5 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_5", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph5.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }  });
                 dialog5.show(getParentFragmentManager(), null);
                 break;
 
@@ -3627,8 +3588,20 @@ public class PhCalibFragmentNew extends Fragment {
                 EditPhBufferDialog dialog_3 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
                     System.out.println("1");
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_2", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph1_3.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } });
                 dialog_3.show(getParentFragmentManager(), null);
                 break;
 
@@ -3637,16 +3610,40 @@ public class PhCalibFragmentNew extends Fragment {
                 EditPhBufferDialog dialog1_3 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
                     System.out.println("2");
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_3", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph2_3.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }  });
                 dialog1_3.show(getParentFragmentManager(), null);
                 break;
             case R.id.phEdit3_3:
                 EditPhBufferDialog dialog2_3 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
                     System.out.println("3");
+                    if (!Constants.OFFLINE_MODE) {
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
-                });
+                    }else{
+                        try {
+                            jsonData = new JSONObject();
+                            jsonData.put("B_4", String.valueOf(ph));
+                            jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            webSocket1.send(jsonData.toString());
+                            ph3_3.setText(String.valueOf(ph));
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }  });
                 dialog2_3.show(getParentFragmentManager(), null);
                 break;
             case R.id.qr1:
@@ -3810,7 +3807,13 @@ public class PhCalibFragmentNew extends Fragment {
 
 
                             String val = jsonData.getString("MV_1");
-                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String ecForm = "0";
+                            if (val == "nan") {
+
+                            }else{
+                                 ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+
+                            }
                             mv1.setText(ecForm);
                             mV1 = mv1.getText().toString();
                             Log.d("test1", mV1);
@@ -4424,6 +4427,136 @@ public class PhCalibFragmentNew extends Fragment {
         if (Constants.OFFLINE_MODE) {
             initiateSocketConnection();
         }
+        if (Constants.OFFLINE_MODE){
+            try {
+                jsonData = new JSONObject();
+                jsonData.put("CAL_MODE", String.valueOf(5));
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                webSocket1.send(jsonData.toString());
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }else {}
+        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        mode = "5";
+                        fivePointCalib.setVisibility(View.VISIBLE);
+                        threePointCalib.setVisibility(View.GONE);
+                        threePointCalibStart.setVisibility(View.GONE);
+                        fivePointCalibStart.setVisibility(View.VISIBLE);
+                        currentBuf = 0;
+                        currentBufThree = 0;
+                        line = 0;
+                        line_3 = 0;
+                        if (Constants.OFFLINE_MODE){
+                            try {
+                                jsonData = new JSONObject();
+                                jsonData.put("CAL_MODE", String.valueOf(5));
+                                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                                webSocket1.send(jsonData.toString());
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }else {
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                        }log1_3.setBackgroundColor(Color.GRAY);
+                        log2_3.setBackgroundColor(Color.WHITE);
+                        log3_3.setBackgroundColor(Color.WHITE);
+
+                        log1.setBackgroundColor(Color.GRAY);
+                        log2.setBackgroundColor(Color.WHITE);
+                        log3.setBackgroundColor(Color.WHITE);
+                        log4.setBackgroundColor(Color.WHITE);
+                        log5.setBackgroundColor(Color.WHITE);
+
+                        fetchAllData5Point();
+                        deleteAllCalibData();
+                        calibData();
+
+                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
+
+                        if (Constants.OFFLINE_MODE) {
+
+                            deleteAllOfflineCalibData();
+
+                            databaseHelper.insertCalibrationOfflineData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
+                        }
+
+                        break;
+
+                    case 1:
+                        mode = "3";
+                        fivePointCalib.setVisibility(View.GONE);
+                        fivePointCalibStart.setVisibility(View.GONE);
+                        threePointCalib.setVisibility(View.VISIBLE);
+                        threePointCalibStart.setVisibility(View.VISIBLE);
+//                        currentBufThree = 0;
+
+                        currentBuf = 0;
+                        currentBufThree = 0;
+                        line = 0;
+                        line_3 = 0;
+                        if (Constants.OFFLINE_MODE){
+                            try {
+                                jsonData = new JSONObject();
+                                jsonData.put("CAL_MODE", String.valueOf(3));
+                                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                                webSocket1.send(jsonData.toString());
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }else {
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                        }
+                        log1_3.setBackgroundColor(Color.GRAY);
+                        log2_3.setBackgroundColor(Color.WHITE);
+                        log3_3.setBackgroundColor(Color.WHITE);
+
+                        log1.setBackgroundColor(Color.GRAY);
+                        log2.setBackgroundColor(Color.WHITE);
+                        log3.setBackgroundColor(Color.WHITE);
+                        log4.setBackgroundColor(Color.WHITE);
+                        log5.setBackgroundColor(Color.WHITE);
+
+                        fetchAllData3Point();
+                        deleteAllCalibData();
+                        calibData3();
+
+
+                        databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
+                        if (Constants.OFFLINE_MODE) {
+                            deleteAllOfflineCalibData();
+
+                            databaseHelper.insertCalibrationOfflineData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
+                        }
+
+
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(requireContext(), "Select a mode of Calibration", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         super.onStart();
     }
 
