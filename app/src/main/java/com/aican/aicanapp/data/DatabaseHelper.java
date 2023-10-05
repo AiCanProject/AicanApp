@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.aican.aicanapp.dataClasses.CalibDatClass;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DateFormat;
@@ -37,6 +39,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibOfflineData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
+        sqLiteDatabase.execSQL("create Table CalibOfflineDataFive(ID INTEGER, PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
+        sqLiteDatabase.execSQL("create Table CalibOfflineDataThree(ID INTEGER, PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibOfflineAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table UserDataDetails(Username TEXT,id TEXT,Role TEXT,expiryDate TEXT,dateCreated TEXT)");
         sqLiteDatabase.execSQL("create Table ProbeDetail(probeInfo TEXT)");
@@ -61,6 +65,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibAllData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibOfflineData");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibOfflineDataFive");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibOfflineDataThree");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibOfflineAllData");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS UserDataDetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS ProbeDetail");
@@ -180,6 +186,86 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("date", date);
         contentValues.put("time", time);
         long result = db.insert("CalibOfflineData", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public int updateClbOffDataThree(CalibDatClass calibDatClass) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", calibDatClass.getPH());
+        contentValues.put("MV", calibDatClass.getMV());
+        contentValues.put("SLOPE", calibDatClass.getSlope());
+        contentValues.put("DT", calibDatClass.getDT());
+        contentValues.put("BFD", calibDatClass.getBFD());
+        contentValues.put("pHAC", calibDatClass.getPHAC());
+        contentValues.put("temperature", calibDatClass.getTemperature());
+        contentValues.put("date", calibDatClass.getDate());
+        contentValues.put("time", calibDatClass.getTime());
+        //Lets update now
+        return db.update("CalibOfflineDataThree", contentValues, "ID" + "=?",
+                new String[]{String.valueOf(calibDatClass.getId())});
+    }
+
+    public int updateClbOffDataFive(CalibDatClass calibDatClass) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", calibDatClass.getPH());
+        contentValues.put("MV", calibDatClass.getMV());
+        contentValues.put("SLOPE", calibDatClass.getSlope());
+        contentValues.put("DT", calibDatClass.getDT());
+        contentValues.put("BFD", calibDatClass.getBFD());
+        contentValues.put("pHAC", calibDatClass.getPHAC());
+        contentValues.put("temperature", calibDatClass.getTemperature());
+        contentValues.put("date", calibDatClass.getDate());
+        contentValues.put("time", calibDatClass.getTime());
+        //Lets update now
+        return db.update("CalibOfflineDataFive", contentValues, "id" + "=?",
+                new String[]{String.valueOf(calibDatClass.getId())});
+    }
+
+    public Boolean insertCalibrationOfflineDataThree(int id, String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", id);
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
+        contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
+        contentValues.put("pHAC", pHAC);
+        contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        long result = db.insert("CalibOfflineDataThree", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean insertCalibrationOfflineDataFive(int id, String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", id);
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
+        contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
+        contentValues.put("pHAC", pHAC);
+        contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        long result = db.insert("CalibOfflineDataFive", null, contentValues);
         if (result == -1) {
             return false;
         } else {
@@ -375,8 +461,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
-
 
 
     public Boolean print_insert_log_data_Offline(String date, String time, String ph, String temperature, String batchnum, String arnum, String compound, String deviceID) {
