@@ -847,16 +847,23 @@ public class Export extends AppCompatActivity {
         table.addCell("Temperature");
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        Cursor calibCSV;
+        Cursor calibCSV = null;
         if (Constants.OFFLINE_MODE) {
-            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+//            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+            if (Source.calibMode == 0){
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
 
+            }
+            if (Source.calibMode == 1){
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
+
+            }
         } else {
             calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 
         }
 
-        while (calibCSV.moveToNext()) {
+        while (calibCSV != null && calibCSV.moveToNext()) {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
             String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
             String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
@@ -992,8 +999,17 @@ public class Export extends AppCompatActivity {
             table1.addCell(time);
             table1.addCell(pH != null ? pH : "--");
             table1.addCell(temp != null ? temp : "--");
+            if (batchnum == null){
+                batchnum = "--";
+            }
             table1.addCell(batchnum != null && batchnum.length() >= 8 ? stringSplitter(batchnum) : batchnum);
+            if (arnum == null){
+                arnum = "--";
+            }
             table1.addCell(arnum != null && arnum.length() >= 8 ? stringSplitter(arnum) : arnum);
+            if (comp == null){
+                comp = "--";
+            }
             table1.addCell(comp != null && comp.length() >= 8 ? stringSplitter(comp) : comp);
 
         }

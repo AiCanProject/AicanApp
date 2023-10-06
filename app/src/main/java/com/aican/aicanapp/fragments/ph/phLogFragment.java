@@ -1083,17 +1083,25 @@ public class phLogFragment extends Fragment {
         table.addCell("Temperature");
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        Cursor calibCSV;
+        Cursor calibCSV = null;
         if (Constants.OFFLINE_MODE) {
-            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+//            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+//            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+            if (Source.calibMode == 0){
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
 
+            }
+            if (Source.calibMode == 1){
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
+
+            }
         } else {
             calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
 
         }
 
 
-        while (calibCSV.moveToNext()) {
+        while (calibCSV != null && calibCSV.moveToNext()) {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
             String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
             String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
@@ -1938,16 +1946,18 @@ public class phLogFragment extends Fragment {
                                 date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                                 time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 //                            fetch_logs();
+                                Toast.makeText(getContext(), "HOLD " + jsonData.getString("HOLD"), Toast.LENGTH_SHORT).show();
 
                                 jsonData = new JSONObject();
                                 jsonData.put("HOLD", String.valueOf(0));
                                 jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                                 webSocket1.send(jsonData.toString());
 
-                                deviceRef.child("Data").child("HOLD").setValue(0);
+//                                deviceRef.child("Data").child("HOLD").setValue(0);
+
 
                                 if (ph == null || temp == null || mv == null) {
-                                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                                 }
 //                                } else {
 //                                    databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);

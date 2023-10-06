@@ -804,17 +804,26 @@ public class PhCalibFragmentNew extends Fragment {
         table.addCell("Temperature");
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        Cursor calibCSV;
+        Cursor calibCSV = null;
 
         if (Constants.OFFLINE_MODE) {
-            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+//            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+
+            if (spin.getSelectedItemPosition() == 0){
+                            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
+
+            }
+            if (spin.getSelectedItemPosition() == 1){
+                            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
+
+            }
 
         } else {
             calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
         }
 
 
-        while (calibCSV.moveToNext()) {
+        while (calibCSV != null && calibCSV.moveToNext()) {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
             String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
             String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
@@ -3588,6 +3597,15 @@ public class PhCalibFragmentNew extends Fragment {
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
                             ph1.setText(String.valueOf(ph));
+
+                            CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
+                                    mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                                    bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -3611,6 +3629,15 @@ public class PhCalibFragmentNew extends Fragment {
                             webSocket1.send(jsonData.toString());
                             ph2.setText(String.valueOf(ph));
 
+                            CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                    mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -3631,6 +3658,14 @@ public class PhCalibFragmentNew extends Fragment {
                             webSocket1.send(jsonData.toString());
                             ph3.setText(String.valueOf(ph));
 
+                            CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                    mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -3650,7 +3685,13 @@ public class PhCalibFragmentNew extends Fragment {
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
                             ph4.setText(String.valueOf(ph));
+                            CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                    mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -3671,7 +3712,13 @@ public class PhCalibFragmentNew extends Fragment {
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
                             ph5.setText(String.valueOf(ph));
+                            CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                    mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -3693,6 +3740,14 @@ public class PhCalibFragmentNew extends Fragment {
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
                             ph1_3.setText(String.valueOf(ph));
+
+                            CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
+                                    mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
+                                    bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
+                                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass1);
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -3717,6 +3772,15 @@ public class PhCalibFragmentNew extends Fragment {
                             webSocket1.send(jsonData.toString());
                             ph2_3.setText(String.valueOf(ph));
 
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                    mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -3737,6 +3801,14 @@ public class PhCalibFragmentNew extends Fragment {
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
                             ph3_3.setText(String.valueOf(ph));
+
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                    mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -3997,6 +4069,17 @@ public class PhCalibFragmentNew extends Fragment {
                             pHAC1 = phAfterCalib1.getText().toString();
 
 
+                            CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
+                                    mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                                    bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+
+
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
@@ -4009,6 +4092,16 @@ public class PhCalibFragmentNew extends Fragment {
 
                             phAfterCalib2.setText(v);
                             pHAC2 = phAfterCalib2.getText().toString();
+
+
+
+                            CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                    mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -4024,6 +4117,16 @@ public class PhCalibFragmentNew extends Fragment {
                             phAfterCalib3.setText(v);
                             pHAC3 = phAfterCalib3.getText().toString();
 
+
+                            CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                    mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
@@ -4038,6 +4141,16 @@ public class PhCalibFragmentNew extends Fragment {
                             phAfterCalib4.setText(v);
                             pHAC4 = phAfterCalib4.getText().toString();
 
+
+                            CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                    mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
@@ -4051,6 +4164,16 @@ public class PhCalibFragmentNew extends Fragment {
 
                             phAfterCalib5.setText(v);
                             pHAC5 = phAfterCalib5.getText().toString();
+
+
+                            CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                    mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -4190,6 +4313,18 @@ public class PhCalibFragmentNew extends Fragment {
                             if (jsonData.getString("CAL").equals("11") && jsonData.has("POST_VAL_1")) {
                                 String d = jsonData.getString("POST_VAL_1");
                                 phAfterCalib1.setText(d);
+
+
+                                CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
+                                        mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                                        bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                                        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+
                                 myEdit.putString("tem1", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC1", d);
                                 myEdit.commit();
@@ -4199,6 +4334,19 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
                                 String d = jsonData.getString("POST_VAL_2");
                                 phAfterCalib2.setText(d);
+
+
+
+                                CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                        mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                        bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+
                                 myEdit.putString("tem2", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC2", d);
                                 myEdit.commit();
@@ -4207,6 +4355,17 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("31") && jsonData.has("POST_VAL_3")) {
                                 String d = jsonData.getString("POST_VAL_3");
                                 phAfterCalib3.setText(d);
+
+
+                                CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                        mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                        bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
                                 myEdit.putString("tem3", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC3", d);
                                 myEdit.commit();
@@ -4215,6 +4374,19 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
                                 String d = jsonData.getString("POST_VAL_4");
                                 phAfterCalib4.setText(String.valueOf(d));
+
+
+
+                                CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                        mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                        bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+
                                 myEdit.putString("tem4", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC4", String.valueOf(d));
                                 myEdit.commit();
@@ -4223,6 +4395,16 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("51") && jsonData.has("POST_VAL_5")) {
                                 String d = jsonData.getString("POST_VAL_5");
                                 phAfterCalib5.setText(String.valueOf(d));
+
+                                CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                        mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                        bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
                                 myEdit.putString("tem5", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC5", String.valueOf(d));
                                 myEdit.commit();
@@ -4232,7 +4414,8 @@ public class PhCalibFragmentNew extends Fragment {
                             }
                         }
 
-                    } else if (spin.getSelectedItemPosition() == 1) {
+                    }
+                    else if (spin.getSelectedItemPosition() == 1) {
 
                         if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
@@ -4240,6 +4423,16 @@ public class PhCalibFragmentNew extends Fragment {
                             String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
                             phAfterCalib1_3.setText(v);
                             pHAC1_3 = phAfterCalib1_3.getText().toString();
+
+                            CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
+                                    mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
+                                    bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
+                                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
+
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass1);
+
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -4254,6 +4447,17 @@ public class PhCalibFragmentNew extends Fragment {
                             phAfterCalib2_3.setText(v);
                             pHAC2_3 = phAfterCalib2_3.getText().toString();
 
+
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                    mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
+
+
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
@@ -4265,6 +4469,14 @@ public class PhCalibFragmentNew extends Fragment {
                             String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
                             phAfterCalib3_3.setText(v);
                             pHAC3_3 = phAfterCalib3_3.getText().toString();
+
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                    mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -4421,6 +4633,19 @@ public class PhCalibFragmentNew extends Fragment {
                             if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
                                 String d = jsonData.getString("POST_VAL_2");
                                 phAfterCalib1_3.setText(d);
+
+
+                                CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
+                                        mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
+                                        bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
+                                        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
+
+
+                                databaseHelper.updateClbOffDataThree(calibDatClass1);
+
+
+
                                 myEdit.putString("tem1_3", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC1_3", d);
                                 myEdit.commit();
@@ -4430,6 +4655,18 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("31") && jsonData.has("POST_VAL_3")) {
                                 String d = jsonData.getString("POST_VAL_3");
                                 phAfterCalib2_3.setText(d);
+
+
+                                CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                        mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                        bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+
+
+                                databaseHelper.updateClbOffDataThree(calibDatClass2);
+
+
                                 myEdit.putString("tem2_3", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC2_3", d);
                                 myEdit.commit();
@@ -4438,6 +4675,18 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
                                 String d = jsonData.getString("POST_VAL_4");
                                 phAfterCalib3_3.setText(String.valueOf(d));
+
+
+
+                                CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                        mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                        bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataThree(calibDatClass3);
+
+
                                 myEdit.putString("tem3_3", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC3_3", String.valueOf(d));
                                 myEdit.commit();
@@ -4451,9 +4700,9 @@ public class PhCalibFragmentNew extends Fragment {
                     }
 
 
-                    if (Constants.OFFLINE_MODE) {
-                        offlineDataFeeding();
-                    }
+//                    if (Constants.OFFLINE_MODE) {
+//                        offlineDataFeeding();
+//                    }
 
                     if (jsonData.has("FAULT") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                         String val = jsonData.getString("FAULT");
@@ -4530,6 +4779,7 @@ public class PhCalibFragmentNew extends Fragment {
     @Override
     public void onStart() {
 //        initiateSocketConnection();
+        Source.calibMode = 0;
         if (Constants.OFFLINE_MODE) {
             initiateSocketConnection();
         }
@@ -4550,6 +4800,7 @@ public class PhCalibFragmentNew extends Fragment {
                 switch (position) {
                     case 0:
                         mode = "5";
+                        Source.calibMode = 0;
                         fivePointCalib.setVisibility(View.VISIBLE);
                         threePointCalib.setVisibility(View.GONE);
                         threePointCalibStart.setVisibility(View.GONE);
@@ -4614,6 +4865,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                     case 1:
                         mode = "3";
+                        Source.calibMode = 1;
                         fivePointCalib.setVisibility(View.GONE);
                         fivePointCalibStart.setVisibility(View.GONE);
                         threePointCalib.setVisibility(View.VISIBLE);
