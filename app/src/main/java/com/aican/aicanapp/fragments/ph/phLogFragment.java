@@ -3,11 +3,9 @@ package com.aican.aicanapp.fragments.ph;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
-
 import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 
 import android.app.Activity;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,20 +17,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.os.Handler;
-
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -46,30 +32,29 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.aican.aicanapp.Dashboard.Dashboard;
-import com.aican.aicanapp.Source;
-import com.aican.aicanapp.adapters.PrintLogAdapter;
-import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
-
+import com.aican.aicanapp.Source;
 import com.aican.aicanapp.adapters.LogAdapter;
+import com.aican.aicanapp.adapters.PrintLogAdapter;
+import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dataClasses.phData;
-
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.Constants;
-import com.aspose.cells.FileFormatType;
-import com.aspose.cells.LoadOptions;
-import com.aspose.cells.Range;
-import com.aspose.cells.SaveFormat;
-import com.aspose.cells.Style;
-import com.aspose.cells.StyleFlag;
-import com.aspose.cells.TextAlignmentType;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
 import com.google.common.base.Splitter;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -94,9 +79,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1955,6 +1938,12 @@ public class phLogFragment extends Fragment {
                                 date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                                 time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 //                            fetch_logs();
+
+                                jsonData = new JSONObject();
+                                jsonData.put("HOLD", String.valueOf(0));
+                                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                                webSocket1.send(jsonData.toString());
+
                                 deviceRef.child("Data").child("HOLD").setValue(0);
 
                                 if (ph == null || temp == null || mv == null) {

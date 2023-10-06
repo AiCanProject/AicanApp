@@ -519,9 +519,6 @@ public class PhCalibFragmentNew extends Fragment {
                 }
             });
 
-        if (Constants.OFFLINE_MODE) {
-            offlineDataFeeding();
-        }
 
     }
 
@@ -1246,7 +1243,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
                                             mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
-                                            bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), temp1_3.getText().toString(),
+                                            bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                                             dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
@@ -1266,7 +1263,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
                                             mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
-                                            bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), temp2_3.getText().toString(),
+                                            bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                                             dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
@@ -1290,7 +1287,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
                                             mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
-                                            bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), temp3_3.getText().toString(),
+                                            bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                                             dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
@@ -1902,7 +1899,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
                                             mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
-                                            bufferD1.getText().toString(), phAfterCalib1.getText().toString(), temp1.getText().toString(),
+                                            bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
                                             dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
                                             dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
 
@@ -1917,7 +1914,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
                                             mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
-                                            bufferD2.getText().toString(), phAfterCalib2.getText().toString(), temp2.getText().toString(),
+                                            bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
                                             dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
                                             dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
@@ -1931,7 +1928,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
                                             mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
-                                            bufferD3.getText().toString(), phAfterCalib3.getText().toString(), temp3.getText().toString(),
+                                            bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
                                             dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
@@ -1945,7 +1942,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
                                             mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
-                                            bufferD4.getText().toString(), phAfterCalib4.getText().toString(), temp4.getText().toString(),
+                                            bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
                                             dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
                                             dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
@@ -1964,7 +1961,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                                     CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
                                             mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
-                                            bufferD5.getText().toString(), phAfterCalib5.getText().toString(), temp5.getText().toString(),
+                                            bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
                                             dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
                                             dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
@@ -4453,6 +4450,11 @@ public class PhCalibFragmentNew extends Fragment {
 
                     }
 
+
+                    if (Constants.OFFLINE_MODE) {
+                        offlineDataFeeding();
+                    }
+
                     if (jsonData.has("FAULT") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                         String val = jsonData.getString("FAULT");
                         fault = Integer.parseInt(val);
@@ -4519,7 +4521,9 @@ public class PhCalibFragmentNew extends Fragment {
 //            initiateSocketConnection();
 //
 //        }
-
+        if (Constants.OFFLINE_MODE) {
+            offlineDataFeeding();
+        }
         super.onResume();
     }
 
@@ -4576,7 +4580,12 @@ public class PhCalibFragmentNew extends Fragment {
                         log4.setBackgroundColor(Color.WHITE);
                         log5.setBackgroundColor(Color.WHITE);
 
-                        fetchAllData5Point();
+                        if (Constants.OFFLINE_MODE) {
+                            offlineDataFeeding();
+                        } else {
+
+                            fetchAllData5Point();
+                        }
                         deleteAllCalibData();
                         calibData();
 
@@ -4595,8 +4604,12 @@ public class PhCalibFragmentNew extends Fragment {
                             databaseHelper.insertCalibrationOfflineData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
                             databaseHelper.insertCalibrationOfflineData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
                             databaseHelper.insertCalibrationOfflineData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
-                        }
 
+
+                        }
+                        if (Constants.OFFLINE_MODE) {
+                            offlineDataFeeding();
+                        }
                         break;
 
                     case 1:
@@ -4632,8 +4645,11 @@ public class PhCalibFragmentNew extends Fragment {
                         log3.setBackgroundColor(Color.WHITE);
                         log4.setBackgroundColor(Color.WHITE);
                         log5.setBackgroundColor(Color.WHITE);
-
-                        fetchAllData3Point();
+                        if (Constants.OFFLINE_MODE) {
+                            offlineDataFeeding();
+                        } else {
+                            fetchAllData3Point();
+                        }
                         deleteAllCalibData();
                         calibData3();
 
@@ -4649,7 +4665,9 @@ public class PhCalibFragmentNew extends Fragment {
                             databaseHelper.insertCalibrationOfflineData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
                         }
 
-
+                        if (Constants.OFFLINE_MODE) {
+                            offlineDataFeeding();
+                        }
                         break;
 
                 }
@@ -4688,20 +4706,20 @@ public class PhCalibFragmentNew extends Fragment {
 
             databaseHelper.insertCalibrationOfflineDataThree(1, ph1_3.getText().toString(),
                     mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
-                    bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), temp1_3.getText().toString(),
+                    bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
             databaseHelper.insertCalibrationOfflineDataThree(2, ph2_3.getText().toString(),
                     mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
-                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), temp2_3.getText().toString(),
+                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
             databaseHelper.insertCalibrationOfflineDataThree(3, ph3_3.getText().toString(),
                     mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
-                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), temp3_3.getText().toString(),
+                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
@@ -4711,35 +4729,35 @@ public class PhCalibFragmentNew extends Fragment {
 
             databaseHelper.insertCalibrationOfflineDataFive(1, ph1.getText().toString(),
                     mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
-                    bufferD1.getText().toString(), phAfterCalib1.getText().toString(), temp1.getText().toString(),
+                    bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
                     dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
                     dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
 
 
             databaseHelper.insertCalibrationOfflineDataFive(2, ph2.getText().toString(),
                     mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
-                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), temp2.getText().toString(),
+                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
                     dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
                     dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
 
             databaseHelper.insertCalibrationOfflineDataFive(3, ph3.getText().toString(),
                     mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
-                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), temp3.getText().toString(),
+                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
                     dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
                     dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
 
             databaseHelper.insertCalibrationOfflineDataFive(4, ph4.getText().toString(),
                     mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
-                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), temp4.getText().toString(),
+                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
                     dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
                     dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
 
             databaseHelper.insertCalibrationOfflineDataFive(5, ph5.getText().toString(),
                     mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
-                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), temp5.getText().toString(),
+                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
                     dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
                     dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
@@ -4754,6 +4772,9 @@ public class PhCalibFragmentNew extends Fragment {
             String slope = calibCSV5.getString(calibCSV5.getColumnIndex("SLOPE"));
             String pHAC = calibCSV5.getString(calibCSV5.getColumnIndex("pHAC"));
             String temperature1 = calibCSV5.getString(calibCSV5.getColumnIndex("temperature"));
+
+            Log.d("Cursor Data", "PH: " + calibCSV5.getString(calibCSV5.getColumnIndex("PH")));
+
 
             if (index5 == 0) {
                 PH1 = ph;
@@ -4931,6 +4952,7 @@ public class PhCalibFragmentNew extends Fragment {
                 String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
                 String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
                 String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
 
                 deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels1[index]).setValue(ph);
                 deviceRef.child("UI").child("PH").child("PH_CAL").child(dateS[index]).setValue(date);
