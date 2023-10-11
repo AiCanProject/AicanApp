@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -250,10 +253,23 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
         }
     }
 
-    public void refreshPh(int position, float phVal) {
+    public void refreshPh(int position, float phVal, String deviceID) {
+        Log.e("NotifyingS","DNB : " + deviceID );
 
-        holder1.ph.setText(String.valueOf(phVal));
-        notifyItemChanged(position);
+        for (int i = 0; i < phDevices.size(); i++) {
+            Log.e("NotifyingS","DB : " + deviceID );
+
+            PhDevice phDevice = phDevices.get(i);
+            if (phDevice.getId().equals(deviceID)) {
+                phDevice.setPh(phVal);
+                int finalI = i;
+                Log.e("NotifyingS","D : " + deviceID );
+                new Handler(Looper.getMainLooper()).post(() -> notifyItemChanged(finalI));
+                break; // Exit the loop after finding the matching device
+            }
+        }
+//        holder1.ph.setText(String.valueOf(phVal));
+//        notifyItemChanged(position);
     }
 
     public void changePh(String deviceID, float phVal, float ec, int temp) {
@@ -264,6 +280,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
                 phDevices.get(i).setTemp(temp);
                 phDevices.get(i).setEc(ec);
 //                Toast.makeText(context, "Matched", Toast.LENGTH_SHORT).show();
+
                 notifyItemChanged(i);
             }
             i++;
