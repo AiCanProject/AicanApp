@@ -31,7 +31,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -75,7 +74,6 @@ import com.aican.aicanapp.interfaces.WebSocketInit;
 import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
 import com.aican.aicanapp.specificactivities.PhActivity;
-import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.Constants;
 import com.aican.aicanapp.utils.DashboardListsOptionsClickListener;
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -91,7 +89,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.itextpdf.styledxmlparser.jsoup.helper.StringUtil;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -624,6 +621,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public void setUpPh() {
         phRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         phAdapter = new PhAdapter(Dashboard.this, phDevices, this::onOptionsIconClicked, this);
+
+        Toast.makeText(this, "Size " + phDevices.size(), Toast.LENGTH_SHORT).show();
+
         phRecyclerView.setAdapter(phAdapter);
     }
 
@@ -813,7 +813,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
                         String devID = jsonData.getString("DEVICE_ID");
 
-                        Log.e("ThisPHVAL","PH " + ph);
+                        Log.e("ThisPHVAL", "PH " + ph);
 
                         if (Constants.OFFLINE_MODE) {
                             phAdapter.refreshPh(0, ph, devID);
@@ -1483,8 +1483,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
         }
     }
-
-
 
 
 }
