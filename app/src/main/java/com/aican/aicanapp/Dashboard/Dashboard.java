@@ -262,10 +262,14 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 startActivity(intent);
             }
         });
+//        Toast.makeText(this, "Size " + phDevices.size(), Toast.LENGTH_SHORT).show();
 
         phDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+//                Toast.makeText(Dashboard.this, "Size " + phDevices.size(), Toast.LENGTH_SHORT).show();
+
                 //    showNetworkDialog();
                 if (phDevices.size() != 0) {
                     phRecyclerView.setVisibility(View.VISIBLE);
@@ -576,6 +580,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
             connectedDeviceSSID.setText(ssid != null ? ssid : "N/A");
         }
+        refresh();
 
 
         super.onStart();
@@ -586,9 +591,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         super.onResume();
         NewAsyncTask newAsyncTask = new NewAsyncTask(this);
         newAsyncTask.execute(Dashboard.this);
-        refresh();
+
+        Log.e("CallingTwMKTLKKOnRes","CAA");
+
 //        offlineModeCheck();
     }
+
+
 
     //Toolbar------------------------------------------------------------------------------------------------------
     public void setUpToolBar() {
@@ -622,7 +631,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         phRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         phAdapter = new PhAdapter(Dashboard.this, phDevices, this::onOptionsIconClicked, this);
 
-        Toast.makeText(this, "Size " + phDevices.size(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Size " + phDevices.size(), Toast.LENGTH_SHORT).show();
 
         phRecyclerView.setAdapter(phAdapter);
     }
@@ -650,6 +659,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         pumpDevices.clear();
         deviceIdIds.clear();
         ecDevices.clear();
+
         getDeviceIds();
     }
 
@@ -657,13 +667,20 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
      * Connect to devices account and get device details
      */
     private void getDeviceIds() {
+
         primaryDatabase.child("DEVICES").get().addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.hasChildren()) {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     String deviceId = deviceSnapshot.getValue(String.class);
-                    deviceIds.add(deviceId);
-                    deviceIdIds.put(deviceId, deviceSnapshot.getKey());
+                    if (!deviceIds.contains(deviceId)) {
+                        deviceIds.add(deviceId);
+                        deviceIdIds.put(deviceId, deviceSnapshot.getKey());
+                    }
+//                    deviceIds.add(deviceId);
+//                    deviceIdIds.put(deviceId, deviceSnapshot.getKey());
                 }
+//                Log.e("CallingTwMK","CAA");
+
                 getDeviceAccounts();
             }
         });
@@ -842,6 +859,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     }
 
     private void getDeviceAccounts() {
+
         AtomicInteger accountsLoaded = new AtomicInteger();
         DatabaseReference secondaryDatabase = FirebaseDatabase.getInstance(SecondaryAccount.getInstance(this)).getReference();
         for (String id : deviceIds) {
@@ -854,6 +872,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 initialiseFirebaseForDevice(id, deviceAccount);
 
                 if (accountsLoaded.get() == deviceIds.size()) {
+                    Log.e("CallingTw","C");
                     getDevices();
                 }
             }).addOnFailureListener(exception -> {
@@ -885,9 +904,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     @SuppressWarnings("ConstantConditions")
     private void getDevices() {
+        phDevices.clear();
+        Log.d(TAG, "Device IDs: " + deviceIds.toString());
+        Log.d(TAG, "Device IDs: " + deviceIdIds.toString() + " Sii " + deviceIdIds.size());
+
         AtomicInteger devicesLoaded = new AtomicInteger();
         for (String id : deviceIds) {
             FirebaseApp app = FirebaseApp.getInstance(id);
+
+
 
             FirebaseDatabase.getInstance(app).getReference().child(deviceTypes.get(id)).child(id).get().addOnSuccessListener(dataSnapshot -> {
                 devicesLoaded.incrementAndGet();
@@ -1080,6 +1105,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 FirebaseFirestore.getInstance().collection("Devices Registered").document(deviceId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
+                                        Log.e("CallingTwMKTLKK","CAA");
+
                                         refresh();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -1110,6 +1137,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public void onNameChanged(String deviceId, String type, String newName) {
         FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference()
                 .child(type).child(deviceId).child("NAME").setValue(newName);
+        Log.e("CallingTwMKTLKKRes","CAA");
+
         refresh();
     }
 
