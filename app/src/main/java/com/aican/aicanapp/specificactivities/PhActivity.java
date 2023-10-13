@@ -24,6 +24,7 @@ import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
 import com.aican.aicanapp.fragments.ph.phGraphFragment;
 import com.aican.aicanapp.fragments.ph.phLogFragment;
+import com.aican.aicanapp.utils.Constants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,6 +51,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     DatabaseHelper databaseHelper;
 
     public static String DEVICE_ID = null;
+
+    TextView offlineMode, onlineMode, notice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,9 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         log = findViewById(R.id.item3);
         graph = findViewById(R.id.item4);
         alarm = findViewById(R.id.item5);
+        offlineMode = findViewById(R.id.offlineMode);
+        onlineMode = findViewById(R.id.onlineMode);
+        notice = findViewById(R.id.notice);
         tabItemPh = findViewById(R.id.tabItemP);
         tabItemCalib = findViewById(R.id.select2);
 
@@ -96,6 +102,29 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         log.setOnClickListener(this);
         graph.setOnClickListener(this);
         alarm.setOnClickListener(this);
+
+        onlineMode.setVisibility(View.VISIBLE);
+        offlineMode.setVisibility(View.GONE);
+        notice.setVisibility(View.GONE);
+
+        if (Constants.OFFLINE_DATA && Constants.OFFLINE_MODE){
+            onlineMode.setVisibility(View.GONE);
+            offlineMode.setVisibility(View.VISIBLE);
+        }else{
+            onlineMode.setVisibility(View.VISIBLE);
+            offlineMode.setVisibility(View.GONE);
+
+            if (Constants.OFFLINE_MODE){
+                notice.setVisibility(View.GONE);
+            }
+            if (Constants.OFFLINE_DATA){
+                notice.setVisibility(View.VISIBLE);
+                notice.setText("Device is not connected");
+                onlineMode.setVisibility(View.GONE);
+                offlineMode.setVisibility(View.VISIBLE);
+            }
+        }
+
 
 
         String i = getIntent().getStringExtra("refreshCalib");
@@ -222,8 +251,9 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     public void onBackPressed() {
         int count = getSupportFragmentManager().getBackStackEntryCount();
         if (Source.auto_log == 0 && !Source.calibratingNow) {
-            Intent intent = new Intent(PhActivity.this, Dashboard.class);
-            startActivity(intent);
+//            Intent intent = new Intent(PhActivity.this, Dashboard.class);
+//            startActivity(intent);
+            finish();
         } else {
             Toast.makeText(this, "You cannot change fragment while logging / calibrating", Toast.LENGTH_SHORT).show();
         }

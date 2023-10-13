@@ -1,5 +1,6 @@
 package com.aican.aicanapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -32,6 +33,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DialogMain extends AppCompatDialogFragment {
+    Context context;
+    public DialogMain(Context context){
+        this.context = context;
+    }
     @NonNull
     public EditText userID, passcode;
     public Button authenticate, homeBtn;
@@ -57,7 +62,9 @@ public class DialogMain extends AppCompatDialogFragment {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), Dashboard.class));
+                ((Activity) context).finish();
+
+//                startActivity(new Intent(getContext(), Dashboard.class));
             }
         });
 

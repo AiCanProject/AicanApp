@@ -231,7 +231,7 @@ public class LogTempFragment extends Fragment {
             }
         });
 
-        DialogMain dialogMain = new DialogMain();
+        DialogMain dialogMain = new DialogMain(getContext());
         dialogMain.setCancelable(false);
         Source.userTrack = "PhLogFrag logged : ";
         if (Source.subscription.equals("cfr")) {

@@ -76,6 +76,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     public void onBindViewHolder(PhAdapter.PhAdapterViewHolder holder, int position) {
         holder1 = holder;
         holder.bind(phDevices.get(position), position);
+        holder.setIsRecyclable(false);
     }
 
     @Override
@@ -163,6 +164,11 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
             String ssid = getCurrentSsid(context);
 
+            if(!Constants.OFFLINE_MODE || !Constants.OFFLINE_DATA){
+                offlineLayout.setVisibility(View.VISIBLE);
+
+            }
+
             offlineModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -170,22 +176,39 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
                     if (offlineModeSwitch.isChecked()) {
                         if (Constants.wifiSSID == null || Constants.wifiSSID.equals("") || Constants.wifiSSID.equals("N/A")) {
                             Toast.makeText(context, "You are not connected with any wifi device", Toast.LENGTH_SHORT).show();
+                            offlineLayout.setVisibility(View.GONE);
+
+//                            Constants.OFFLINE_MODE = true;
+                            Constants.OFFLINE_DATA = true;
+
                         } else {
                             if (Constants.wifiSSID.contains(device.getId())) {
                                 Toast.makeText(context, "Connected to Offline mode with " + device.getId(), Toast.LENGTH_LONG).show();
                                 Constants.OFFLINE_MODE = true;
+                                Constants.OFFLINE_DATA = true;
+
+                                offlineLayout.setVisibility(View.GONE);
+
                                 Constants.DeviceIDOffline = device.getId();
                                 Constants.devicePosition = position;
                                 webSocketInit.initWebSocket(device.getId());
+                                webSocketInit.updateToggle();
                                 offlineStatus.setVisibility(View.VISIBLE);
                                 onlineStatus.setVisibility(View.GONE);
                             } else {
+//                                Constants.OFFLINE_MODE = true;
+                                Constants.OFFLINE_DATA = true;
+                                offlineLayout.setVisibility(View.GONE);
+
+                                webSocketInit.updateToggle();
+
                                 Toast.makeText(context, "Device you are connecting is not same as the connected wifi, connect with other device", Toast.LENGTH_LONG).show();
                             }
                         }
 
                     } else {
 //                        Constants.OFFLINE_MODE = false;
+                        Constants.OFFLINE_DATA = false;
                         Constants.DeviceIDOffline = device.getId();
                         webSocketInit.cancelWebSocket(device.getId());
                         offlineStatus.setVisibility(View.GONE);

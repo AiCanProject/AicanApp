@@ -47,6 +47,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -135,7 +136,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     DatabaseReference primaryDatabase;
     DatabaseReference databaseReference;
     DatabaseReference deviceRef;
-    Switch offlineMode;
+    Switch offlineMode,offlineModeSwitch;
     WebSocket webSocket1;
     JSONObject jsonData;
     TextView connectedDeviceSSID;
@@ -184,6 +185,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         offlineStatus = findViewById(R.id.offlineStatus);
         onlineStatus = findViewById(R.id.onlineStatus);
         offlineMode = findViewById(R.id.offlineMode);
+        offlineModeSwitch = findViewById(R.id.offlineModeSwitch);
 
         databaseHelper = new DatabaseHelper(this);
         Source.id_fetched = new ArrayList<>();
@@ -216,8 +218,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ivLogout = findViewById(R.id.ivLogout);
         tvConnectDevice = findViewById(R.id.tvConnectDevice);
         setting = findViewById(R.id.settings);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("USERS").child(mUid);
+        
         deviceIds = new ArrayList<>();
         phDevices = new ArrayList<>();
         pumpDevices = new ArrayList<>();
@@ -229,6 +236,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ecDevices = new ArrayList<>();
 
         jsonData = new JSONObject();
+
+
 
 //        checkPermission();
 //        requestPermission();
@@ -468,12 +477,39 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         }
 
         setUpNavDrawer();
+
         setUpToolBar();
+        setUpPh();
+        
         setUpTemp();
         setUpCooling();
-        setUpPh();
         setUpPump();
         setUpEc();
+
+        Source.showLoading(this,false,false,"Loading Devices....");
+        refresh();
+
+        offlineModeSwitch.setVisibility(View.GONE);
+        offlineModeSwitch.setChecked(true);
+
+        offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (offlineModeSwitch.isChecked()){
+                    Constants.OFFLINE_MODE = true;
+                    Constants.OFFLINE_DATA = true;
+                }else{
+
+                    if (Constants.OFFLINE_MODE){
+                        webSocket1.cancel();
+                    }
+                    offlineModeSwitch.setVisibility(View.GONE);
+                    Constants.OFFLINE_MODE = false;
+                    Constants.OFFLINE_DATA = false;
+                    phAdapter.notifyDataSetChanged();
+                }
+            }
+        });
 
 
 //        if (Constants.OFFLINE_MODE) {
@@ -580,7 +616,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
             connectedDeviceSSID.setText(ssid != null ? ssid : "N/A");
         }
-        refresh();
 
 
         super.onStart();
@@ -634,7 +669,20 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 //        Toast.makeText(this, "Size " + phDevices.size(), Toast.LENGTH_SHORT).show();
 
         phRecyclerView.setAdapter(phAdapter);
+        phRecyclerView.setItemAnimator(new NoAnimationItemAnimator());
+
     }
+
+
+    public class NoAnimationItemAnimator extends DefaultItemAnimator {
+        @Override
+        public boolean animateChange(RecyclerView.ViewHolder oldHolder, RecyclerView.ViewHolder newHolder, int fromX, int fromY, int toX, int toY) {
+            dispatchChangeFinished(oldHolder, true);
+            dispatchChangeFinished(newHolder, false);
+            return false;
+        }
+    }
+
 
     //Ph RC------------------------------------------------------------------------------------------------------
     public void setUpEc() {
@@ -669,10 +717,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private void getDeviceIds() {
 
         primaryDatabase.child("DEVICES").get().addOnSuccessListener(dataSnapshot -> {
+//            Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
+
             if (dataSnapshot.hasChildren()) {
                 for (DataSnapshot deviceSnapshot : dataSnapshot.getChildren()) {
                     String deviceId = deviceSnapshot.getValue(String.class);
                     if (!deviceIds.contains(deviceId)) {
+//                        Toast.makeText(this, "Set", Toast.LENGTH_SHORT).show();
                         deviceIds.add(deviceId);
                         deviceIdIds.put(deviceId, deviceSnapshot.getKey());
                     }
@@ -698,7 +749,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     @Override
     public void initWebSocket(String deviceID) {
         if (Constants.OFFLINE_MODE) {
+            offlineModeSwitch.setVisibility(View.VISIBLE);
+
             initiateSocketConnection();
+        }
+    }
+
+    @Override
+    public void updateToggle() {
+        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+            offlineModeSwitch.setVisibility(View.VISIBLE);
+            offlineModeSwitch.setChecked(true);
         }
     }
 
@@ -712,6 +773,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             }
 
             Constants.OFFLINE_MODE = false;
+            Constants.OFFLINE_DATA = false;
         }
     }
 
@@ -832,7 +894,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
                         Log.e("ThisPHVAL", "PH " + ph);
 
-                        if (Constants.OFFLINE_MODE) {
+                        if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
                             phAdapter.refreshPh(0, ph, devID);
                         }
 //                    if (Integer.parseInt(temp1) <= -127) {
@@ -873,6 +935,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
                 if (accountsLoaded.get() == deviceIds.size()) {
                     Log.e("CallingTw","C");
+//                    Toast.makeText(Dashboard.this, "Loaded : " + deviceAccount, Toast.LENGTH_SHORT).show();
                     getDevices();
                 }
             }).addOnFailureListener(exception -> {
@@ -936,6 +999,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 data.child("TEMP_VAL").getValue(Integer.class),
                                 data.child("TDS_VAL").getValue(Long.class), offline
                         );
+                        Source.cancelLoading();
+
+//                        Toast.makeText(Dashboard.this, "Loaded : " + data.child("PH_VAL").getValue(Float.class), Toast.LENGTH_SHORT).show();
+
                         phDevices.add(device);
 //                        setPhDeviceListeners(device, phDevices.size()-1);
                         break;
@@ -1268,6 +1335,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                             }
                         });
                         dialog.show();
+                    }
+                    else{
+//                        Toast.makeText(Dashboard.this, "Loaded", Toast.LENGTH_SHORT).show();
                     }
                 }
 

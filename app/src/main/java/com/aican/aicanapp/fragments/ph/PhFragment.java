@@ -149,7 +149,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
         batteryDialog = new BatteryDialog();
         if (Source.subscription.equals("cfr")) {
-            DialogMain dialogMain = new DialogMain();
+            DialogMain dialogMain = new DialogMain(getContext());
             dialogMain.setCancelable(false);
             Source.userTrack = "PhFrag logged : ";
             dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
@@ -735,6 +735,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 //            initiateSocketConnection();
 //
 //        }
+
+        Toast.makeText(getContext(), "Mode " + Constants.OFFLINE_MODE, Toast.LENGTH_SHORT).show();
         if (Constants.OFFLINE_MODE) {
             initiateSocketConnection();
         }

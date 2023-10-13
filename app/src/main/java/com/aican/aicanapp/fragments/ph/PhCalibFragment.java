@@ -1839,7 +1839,7 @@ public class PhCalibFragment extends Fragment implements OnBackPressed {
             qr2.setOnClickListener(this::onClick);
             qr3.setOnClickListener(this::onClick);
         }
-        DialogMain dialogMain = new DialogMain();
+        DialogMain dialogMain = new DialogMain(getContext());
         dialogMain.setCancelable(false);
         Source.userTrack = "PhCalibPage logged : ";
         if (Source.subscription.equals("cfr")) {

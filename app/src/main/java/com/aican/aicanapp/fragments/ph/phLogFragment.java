@@ -297,7 +297,7 @@ public class phLogFragment extends Fragment {
         ph4 = shp.getString("PH4", "");
         ph5 = shp.getString("PH5", "");
 
-        DialogMain dialogMain = new DialogMain();
+        DialogMain dialogMain = new DialogMain(getContext());
         dialogMain.setCancelable(false);
         Source.userTrack = "PhLogFrag logged : ";
         if (Source.subscription.equals("cfr")) {

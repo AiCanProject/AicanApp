@@ -460,6 +460,19 @@
                                 android:textColor="@color/white"
                                 android:textSize="17sp" />
 
+                            <Switch
+                                android:id="@+id/offlineModeSwitch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="0dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginStart="5dp"
+                                android:fontFamily="@font/sofia_light"
+                                android:gravity="center"
+                                android:text="Offline"
+                                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
                             <LinearLayout
                                 android:layout_marginTop="5dp"
                                 android:id="@+id/onlineStatus"
