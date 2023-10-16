@@ -76,7 +76,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
     public void onBindViewHolder(PhAdapter.PhAdapterViewHolder holder, int position) {
         holder1 = holder;
         holder.bind(phDevices.get(position), position);
-        holder.setIsRecyclable(false);
+        holder.setIsRecyclable(true);
     }
 
     @Override
@@ -129,14 +129,6 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             tempString = String.format(Locale.UK, "Temp: %d°C", device.getTemp());
 //            }
 
-            if (device.getOffline() == 0) {
-                offlineLayout.setVisibility(View.GONE);
-            }
-
-            if (device.getOffline() == 1) {
-                offlineLayout.setVisibility(View.VISIBLE);
-            }
-
             ph.setText(phString);
             ec.setText(ecString);
             temp.setText(tempString);
@@ -152,7 +144,6 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
             ivOptions.setOnClickListener(v -> {
                 optionsClickListener.onOptionsIconClicked(v, device.getId());
             });
-            offlineModeSwitch.setClickable(true);
 
 //            if (Constants.OFFLINE_MODE) {
 //                if (Constants.DeviceIDOffline.equals(device.getId())) {
@@ -164,14 +155,33 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
             String ssid = getCurrentSsid(context);
 
-            if(!Constants.OFFLINE_MODE || !Constants.OFFLINE_DATA){
+            if(!Constants.OFFLINE_MODE  && !Constants.OFFLINE_DATA){
                 offlineLayout.setVisibility(View.VISIBLE);
+
+                offlineModeSwitch.setChecked(false);
+                offlineStatus.setVisibility(View.GONE);
+                onlineStatus.setVisibility(View.VISIBLE);
+
+//                Toast.makeText(context, "True", Toast.LENGTH_SHORT).show();
+
+//                if (device.getOffline() == 0) {
+//                    offlineLayout.setVisibility(View.GONE);
+//                }
+//
+//                if (device.getOffline() == 1) {
+//                    offlineLayout.setVisibility(View.VISIBLE);
+//                }
+                offlineModeSwitch.setClickable(true);
+
+            }else{
+                                    offlineLayout.setVisibility(View.GONE);
 
             }
 
-            offlineModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                public void onClick(View view)
+                    {
 //                    notifyItemChanged(position);
                     if (offlineModeSwitch.isChecked()) {
                         if (Constants.wifiSSID == null || Constants.wifiSSID.equals("") || Constants.wifiSSID.equals("N/A")) {
@@ -180,6 +190,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
 //                            Constants.OFFLINE_MODE = true;
                             Constants.OFFLINE_DATA = true;
+                            webSocketInit.updateToggle();
 
                         } else {
                             if (Constants.wifiSSID.contains(device.getId())) {
@@ -218,9 +229,10 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
                 }
             });
 
+            if(!Constants.OFFLINE_MODE  && !Constants.OFFLINE_DATA) {
 
-            setFirebaseListeners(device);
-
+                setFirebaseListeners(device);
+            }
         }
 
         private void setFirebaseListeners(PhDevice device) {
@@ -273,6 +285,36 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
                 }
             });
+        }
+    }
+
+    public void refreshMv(float mvVal, String deviceID){
+        for (int i = 0; i < phDevices.size(); i++) {
+            Log.e("NotifyingS","DB : " + deviceID );
+
+            PhDevice phDevice = phDevices.get(i);
+            if (phDevice.getId().equals(deviceID)) {
+                phDevice.setEc(mvVal);
+                int finalI = i;
+                Log.e("NotifyingS","D : " + deviceID );
+                new Handler(Looper.getMainLooper()).post(() -> notifyItemChanged(finalI));
+                break; // Exit the loop after finding the matching device
+            }
+        }
+    }
+
+    public void refreshTemp(int tempVal, String deviceID){
+        for (int i = 0; i < phDevices.size(); i++) {
+            Log.e("NotifyingS","DB : " + deviceID );
+
+            PhDevice phDevice = phDevices.get(i);
+            if (phDevice.getId().equals(deviceID)) {
+                phDevice.setTemp(tempVal);
+                int finalI = i;
+                Log.e("NotifyingS","D : " + deviceID );
+                new Handler(Looper.getMainLooper()).post(() -> notifyItemChanged(finalI));
+                break; // Exit the loop after finding the matching device
+            }
         }
     }
 

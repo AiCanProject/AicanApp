@@ -908,7 +908,45 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
 
                     }
+                    if (jsonData.has("TEMP_VAL") && jsonData.has("DEVICE_ID")) {
+                        int ph = Integer.parseInt(jsonData.getString("TEMP_VAL"));
+                        String devID = jsonData.getString("DEVICE_ID");
 
+
+                        if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
+                            phAdapter.refreshTemp( ph, devID);
+                        }
+//                    if (Integer.parseInt(temp1) <= -127) {
+//                        temp0 = "NA";
+//                    } else {
+//                        temp0 = temp1;
+//                    }
+
+//                    phDevice1.setTemp(Integer.parseInt(temp1));
+//                    phAdapter.refreshPh(Constants.devicePosition);
+
+
+                    }
+
+                    if (jsonData.has("EC_VAL") && jsonData.has("DEVICE_ID")) {
+                        float ph = Float.parseFloat(jsonData.getString("EC_VAL"));
+                        String devID = jsonData.getString("DEVICE_ID");
+
+
+                        if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
+                            phAdapter.refreshMv( ph, devID);
+                        }
+//                    if (Integer.parseInt(temp1) <= -127) {
+//                        temp0 = "NA";
+//                    } else {
+//                        temp0 = temp1;
+//                    }
+
+//                    phDevice1.setTemp(Integer.parseInt(temp1));
+//                    phAdapter.refreshPh(Constants.devicePosition);
+
+
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

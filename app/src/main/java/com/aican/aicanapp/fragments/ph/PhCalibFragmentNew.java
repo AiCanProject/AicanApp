@@ -4186,6 +4186,42 @@ public class PhCalibFragmentNew extends Fragment {
                             myEdit.commit();
                         }
 
+                        if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_1");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+
+                            slope2.setText(v);
+
+
+
+                            CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                    mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+                        }
+                        if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_2");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+
+                            slope3.setText(v);
+
+
+                            CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                    mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+                        }
+
                         if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_3");
                             String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
@@ -4208,6 +4244,25 @@ public class PhCalibFragmentNew extends Fragment {
 
                             myEdit.putString("pHAC3", pHAC3);
                             myEdit.commit();
+                        }
+
+                        if (jsonData.has("SLOPE_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_3");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+
+                            slope4.setText(v);
+
+
+                            CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                    mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+
                         }
 
                         if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
@@ -4234,6 +4289,23 @@ public class PhCalibFragmentNew extends Fragment {
                             myEdit.commit();
                         }
 
+                        if (jsonData.has("SLOPE_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_4");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+
+                            slope5.setText(v);
+
+
+                            CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                    mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+                        }
                         if (jsonData.has("POST_VAL_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_5");
                             String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
@@ -4559,6 +4631,41 @@ public class PhCalibFragmentNew extends Fragment {
 
                             myEdit.putString("pHAC3_3", pHAC3_3);
                             myEdit.commit();
+                        }
+
+                        if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_1");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            slope2_3.setText(v);
+
+
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                    mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
+
+
+
+                        }
+                        if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_2");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            slope3_3.setText(v);
+                            pHAC3_3 = phAfterCalib3_3.getText().toString();
+
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                    mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
+
+
                         }
                         if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
