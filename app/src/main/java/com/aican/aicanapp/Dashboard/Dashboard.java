@@ -799,8 +799,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             } catch (JSONException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> {
+//                    Log.e("")
                     Toast.makeText(Dashboard.this,
-                            "Socket Connection Successful!",
+                            "Socket Connection Unsuccessful!",
                             Toast.LENGTH_SHORT).show();
 
                 });
@@ -813,6 +814,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         @Override
         public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
             super.onFailure(webSocket, t, response);
+            Log.e("WebSocketClosedWeb", "onFailure " + (webSocket != null ? webSocket.toString() : null));
+            Log.e("WebSocketClosedThrow", "onFailure " + (t != null ? t.getMessage().toString() : null));
             Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null));
             runOnUiThread(() -> {
                 offlineStatus.setVisibility(View.GONE);
