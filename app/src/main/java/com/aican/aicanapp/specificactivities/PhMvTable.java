@@ -1,22 +1,24 @@
 package com.aican.aicanapp.specificactivities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
-import com.aican.aicanapp.specificactivities.PhActivity;
+import com.aican.aicanapp.utils.Constants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,10 +27,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 public class PhMvTable extends AppCompatActivity {
 
@@ -40,6 +50,8 @@ public class PhMvTable extends AppCompatActivity {
     DatabaseReference deviceRef;
     EditText tempValue;
     Button setATC;
+    WebSocket webSocket1;
+    JSONObject jsonData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -466,9 +478,19 @@ public class PhMvTable extends AppCompatActivity {
         setATC.setOnClickListener(v -> {
             if (!tempValue.getText().toString().equals("")) {
                 Float va = Float.parseFloat(tempValue.getText().toString());
-                deviceRef.child("Data").child("T_SET").setValue(va);
-                databaseHelper.insert_action_data(time, date,  "Temperature offset at: " + tempValue.getText() + " set by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
+                if (Constants.OFFLINE_MODE) {
+                    try {
+                        jsonData.put("R_C", va);
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        webSocket1.send(jsonData.toString());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    deviceRef.child("Data").child("T_SET").setValue(va);
+                    databaseHelper.insert_action_data(time, date, "Temperature offset at: " + tempValue.getText() + " set by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                }
             }
         });
 
@@ -703,5 +725,90 @@ public class PhMvTable extends AppCompatActivity {
                 break;
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Constants.OFFLINE_MODE) {
+            initiateSocketConnection();
+        }
+    }
+
+    @Override
+    public void onStop() {
+
+//        deviceRef.child("Data").child("AUTOLOG").setValue(0);
+//        deviceRef.child("Data").child("LOG_INTERVAL").setValue(0);
+        if (Constants.OFFLINE_MODE) {
+            webSocket1.cancel();
+        }
+        super.onStop();
+
+
+    }
+
+    private void initiateSocketConnection() {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(SERVER_PATH).build();
+        webSocket1 = client.newWebSocket(request, new SocketListener());
+    }
+
+    private class SocketListener extends WebSocketListener {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            runOnUiThread(() -> {
+                Toast.makeText(PhMvTable.this,
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
+
+                try {
+                    jsonData.put("SOCKET_INIT", "Successfully Initialized on phLogFragment");
+                    jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                    webSocket.send(jsonData.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
+                        Toast.makeText(PhMvTable.this,
+                                "Socket Connection Unsuccessful!",
+                                Toast.LENGTH_SHORT).show();
+
+                    });
+                }
+
+            });
+
+        }
+
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+            }
+
+            runOnUiThread(() -> {
+                try {
+                    jsonData = new JSONObject(text);
+                    Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        }
+
+    }
+
 
 }

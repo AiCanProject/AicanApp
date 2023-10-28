@@ -8,7 +8,6 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -28,10 +27,8 @@ import androidx.core.content.ContextCompat;
 import com.aican.aicanapp.Dashboard.Dashboard;
 import com.aican.aicanapp.FirebaseAccounts.PrimaryAccount;
 import com.aican.aicanapp.R;
-import com.aican.aicanapp.specificactivities.PhActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.FirebaseApp;
@@ -49,7 +46,6 @@ import com.google.mlkit.vision.common.InputImage;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -220,10 +216,10 @@ public class ScanQrActivity extends AppCompatActivity implements OnQrResultListe
                                 .addOnFailureListener(e -> {
                                     Toast.makeText(ScanQrActivity.this, "Failed to link device", Toast.LENGTH_SHORT).show();
                                 });
-                    }else{
+                    } else {
                         Toast.makeText(ScanQrActivity.this, "Device Already Registered", Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                } else {
                     Exception e = task.getException();
                 }
             }
