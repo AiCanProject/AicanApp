@@ -79,6 +79,8 @@ public class PhMvTable extends AppCompatActivity {
         phEdit4 = findViewById(R.id.phEdit4);
         phEdit5 = findViewById(R.id.phEdit5);
 
+        jsonData = new JSONObject();
+
         maxMV1 = findViewById(R.id.maxMV1);
         maxMV2 = findViewById(R.id.maxMV2);
         maxMV3 = findViewById(R.id.maxMV3);
@@ -770,6 +772,7 @@ public class PhMvTable extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
 
                 try {
+                    jsonData = new JSONObject();
                     jsonData.put("SOCKET_INIT", "Successfully Initialized on phLogFragment");
                     jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                     webSocket.send(jsonData.toString());

@@ -369,7 +369,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                     }
 
                     if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                        String temp = jsonData.getString("TEMP_VAL");
+                        float tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+
+
+
+                        String temp = String.valueOf(Math.round(tempval));
                         tvTempCurr.setText(temp + "°C");
 
                         if (Integer.parseInt(temp) <= -127) {

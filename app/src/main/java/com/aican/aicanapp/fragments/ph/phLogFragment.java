@@ -1906,7 +1906,12 @@ public class phLogFragment extends Fragment {
                     }
 
                     if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                        String temp1 = jsonData.getString("TEMP_VAL");
+
+                        float tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+
+
+
+                        String temp1 = String.valueOf(Math.round(tempval));
 
                         if (Integer.parseInt(temp1) <= -127) {
                             temp = "NA";
