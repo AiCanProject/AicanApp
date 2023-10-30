@@ -32,6 +32,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Base64;
 import android.util.Log;
@@ -51,6 +53,7 @@ import com.aican.aicanapp.adapters.FileAdapter;
 import com.aican.aicanapp.adapters.UserDataAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.utils.Constants;
+import com.aican.aicanapp.utils.SharedPref;
 import com.aspose.cells.FileFormatType;
 import com.aspose.cells.LoadOptions;
 import com.aspose.cells.PdfCompliance;
@@ -165,6 +168,23 @@ public class Export extends AppCompatActivity {
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
 
         companyNameEditText = findViewById(R.id.companyName);
+
+        companyNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         databaseHelper = new DatabaseHelper(this);
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -418,6 +438,8 @@ public class Export extends AppCompatActivity {
                 }
             }
         });
+
+
 
         exportUserData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1579,23 +1601,33 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                companyName = snapshot.getValue(String.class);
+        if (!Constants.OFFLINE_DATA) {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    companyName = snapshot.getValue(String.class);
+                    companyNameEditText.setText(companyName);
+                    SharedPreferences company_name = getSharedPreferences("COMPANY_NAME", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editT = company_name.edit();
+                    editT.putString("COMPANY_NAME", companyName);
+                    editT.commit();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }else{
+            if (SharedPref.getSavedData(Export.this,"COMPANY_NAME") != null && SharedPref.getSavedData(
+                    Export.this,"COMPANY_NAME") != "NA"){
+                companyName = SharedPref.getSavedData(Export.this,"COMPANY_NAME");
                 companyNameEditText.setText(companyName);
-                SharedPreferences company_name = getSharedPreferences("COMPANY_NAME", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editT = company_name.edit();
-                editT.putString("COMPANY_NAME", companyName);
-                editT.commit();
+            }else{
+                companyName ="NA";
+                companyNameEditText.setText(companyName);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        }
     }
 
 
