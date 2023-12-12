@@ -96,9 +96,10 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class PhCalibFragmentNew extends Fragment {
-    
+
     DeviceConnectionInfo deviceConnectionInfo;
-    public PhCalibFragmentNew(DeviceConnectionInfo deviceConnectionInfo){
+
+    public PhCalibFragmentNew(DeviceConnectionInfo deviceConnectionInfo) {
         this.deviceConnectionInfo = deviceConnectionInfo;
     }
 
@@ -267,15 +268,15 @@ public class PhCalibFragmentNew extends Fragment {
 
         }
 
-        if (Constants.OFFLINE_DATA){
+        if (Constants.OFFLINE_DATA) {
 
-            if (SharedPref.getSavedData(getContext(),"COMPANY_NAME") != null && SharedPref.getSavedData(
-                    getContext(),"COMPANY_NAME") != "N/A"){
-                companyName = SharedPref.getSavedData(getContext(),"COMPANY_NAME");
-            }else{
-                companyName ="N/A";
+            if (SharedPref.getSavedData(getContext(), "COMPANY_NAME") != null && SharedPref.getSavedData(
+                    getContext(), "COMPANY_NAME") != "N/A") {
+                companyName = SharedPref.getSavedData(getContext(), "COMPANY_NAME");
+            } else {
+                companyName = "N/A";
             }
-        }else {
+        } else {
 
             deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
                 @Override
@@ -3973,957 +3974,1272 @@ public class PhCalibFragmentNew extends Fragment {
 
             JSONObject jsonData = new JSONObject();
             try {
-                if (spin.getSelectedItemPosition()==0) {
+                if (spin.getSelectedItemPosition() == 0) {
                     jsonData.put("CAL_MODE", String.valueOf(5));
-                }else{
+                    if (line == -1) {
+                        jsonData.put("CALIBRATION_STAT", "completed");
+
+                    } else {
+                        jsonData.put("CALIBRATION_STAT", "incomplete");
+                    }
+                    if (line == 0) {
+                        jsonData.put("CAL", String.valueOf(calValues[0]));
+
+                    }
+                    if (line == 1) {
+                        jsonData.put("CAL", String.valueOf(calValues[1]));
+
+                    }
+                    if (line == 2) {
+                        jsonData.put("CAL", String.valueOf(calValues[2]));
+
+                    }
+                    if (line == 3) {
+                        jsonData.put("CAL", String.valueOf(calValues[3]));
+
+                    }
+                    if (line == 4) {
+                        jsonData.put("CAL", String.valueOf(calValues[4]));
+
+                    }
+                } else {
+                    if (line_3 == -1) {
+                        jsonData.put("CALIBRATION_STAT", "completed");
+
+                    } else {
+                        jsonData.put("CALIBRATION_STAT", "incomplete");
+
+                    }
+                    if (line_3 == 0) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[0]));
+
+                    }
+                    if (line_3 == 1) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[1]));
+
+                    }
+                    if (line_3 == 2) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[2]));
+
+                    }
                     jsonData.put("CAL_MODE", String.valueOf(3));
 
                 }
                 jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                 jsonData.put("STATUS", "Reconnecting");
 
-} catch (JSONException e) {
-        throw new RuntimeException(e);
-        }
-        deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID,"onClosing", jsonData);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
 
-        Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null) + " " + t.getMessage());
+            Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null) + " " + t.getMessage());
 
-        }
-
-@Override
-public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
-        super.onClosed(webSocket, code, reason);
-        webSocket.cancel();
-        webSocket1.cancel();
-        deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID,"onClosing");
-
-        Log.e("WebSocketClosed", "onClosed " + reason.toString());
         }
 
-@Override
-public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
-        super.onClosing(webSocket, code, reason);
-        webSocket.cancel();
-        webSocket1.cancel();
-        deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID,"onClosing");
-        Log.e("WebSocketClosed", "onClosing " + reason.toString());
+        @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            webSocket.cancel();
+            webSocket1.cancel();
+            JSONObject jsonData = new JSONObject();
+            try {
+                if (spin.getSelectedItemPosition() == 0) {
+                    jsonData.put("CAL_MODE", String.valueOf(5));
+                    if (line == -1) {
+                        jsonData.put("CALIBRATION_STAT", "completed");
+
+                    } else {
+                        jsonData.put("CALIBRATION_STAT", "incomplete");
+                    }
+                    if (line == 0) {
+                        jsonData.put("CAL", String.valueOf(calValues[0]));
+
+                    }
+                    if (line == 1) {
+                        jsonData.put("CAL", String.valueOf(calValues[1]));
+
+                    }
+                    if (line == 2) {
+                        jsonData.put("CAL", String.valueOf(calValues[2]));
+
+                    }
+                    if (line == 3) {
+                        jsonData.put("CAL", String.valueOf(calValues[3]));
+
+                    }
+                    if (line == 4) {
+                        jsonData.put("CAL", String.valueOf(calValues[4]));
+
+                    }
+                } else {
+                    if (line_3 == -1) {
+                        jsonData.put("CALIBRATION_STAT", "completed");
+
+                    } else {
+                        jsonData.put("CALIBRATION_STAT", "incomplete");
+
+                    }
+                    if (line_3 == 0) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[0]));
+
+                    }
+                    if (line_3 == 1) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[1]));
+
+                    }
+                    if (line_3 == 2) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[2]));
+
+                    }
+                    jsonData.put("CAL_MODE", String.valueOf(3));
+
+                }
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                jsonData.put("STATUS", "Reconnecting");
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
+            Log.e("WebSocketClosed", "onClosed " + reason.toString());
         }
 
-@Override
-public void onOpen(WebSocket webSocket, Response response) {
-        super.onOpen(webSocket, response);
+        @Override
+        public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosing(webSocket, code, reason);
+            webSocket.cancel();
+            webSocket1.cancel();
+            JSONObject jsonData = new JSONObject();
+            try {
+                if (spin.getSelectedItemPosition() == 0) {
+                    jsonData.put("CAL_MODE", String.valueOf(5));
+                    if (line == -1) {
+                        jsonData.put("CALIBRATION_STAT", "completed");
+
+                    } else {
+                        jsonData.put("CALIBRATION_STAT", "incomplete");
+                    }
+                    if (line == 0) {
+                        jsonData.put("CAL", String.valueOf(calValues[0]));
+
+                    }
+                    if (line == 1) {
+                        jsonData.put("CAL", String.valueOf(calValues[1]));
+
+                    }
+                    if (line == 2) {
+                        jsonData.put("CAL", String.valueOf(calValues[2]));
+
+                    }
+                    if (line == 3) {
+                        jsonData.put("CAL", String.valueOf(calValues[3]));
+
+                    }
+                    if (line == 4) {
+                        jsonData.put("CAL", String.valueOf(calValues[4]));
+
+                    }
+                } else {
+                    if (line_3 == -1) {
+                        jsonData.put("CALIBRATION_STAT", "completed");
+
+                    } else {
+                        jsonData.put("CALIBRATION_STAT", "incomplete");
+
+                    }
+                    if (line_3 == 0) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[0]));
+
+                    }
+                    if (line_3 == 1) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[1]));
+
+                    }
+                    if (line_3 == 2) {
+                        jsonData.put("CAL", String.valueOf(calValuesThree[2]));
+
+                    }
+                    jsonData.put("CAL_MODE", String.valueOf(3));
+
+                }
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                jsonData.put("STATUS", "Reconnecting");
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
+            Log.e("WebSocketClosed", "onClosing " + reason.toString());
+        }
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            super.onOpen(webSocket, response);
 //            webSocket1 = webSocket;
 
-        if (webSocket1 == null) {
-        webSocket.cancel();
-        }
+            if (webSocket1 == null) {
 
-        getActivity().runOnUiThread(() -> {
+                webSocket.cancel();
+
+                JSONObject jsonData = new JSONObject();
+                try {
+                    if (spin.getSelectedItemPosition() == 0) {
+                        jsonData.put("CAL_MODE", String.valueOf(5));
+                        if (line == -1) {
+                            jsonData.put("CALIBRATION_STAT", "completed");
+
+                        } else {
+                            jsonData.put("CALIBRATION_STAT", "incomplete");
+                        }
+                        if (line == 0) {
+                            jsonData.put("CAL", String.valueOf(calValues[0]));
+
+                        }
+                        if (line == 1) {
+                            jsonData.put("CAL", String.valueOf(calValues[1]));
+
+                        }
+                        if (line == 2) {
+                            jsonData.put("CAL", String.valueOf(calValues[2]));
+
+                        }
+                        if (line == 3) {
+                            jsonData.put("CAL", String.valueOf(calValues[3]));
+
+                        }
+                        if (line == 4) {
+                            jsonData.put("CAL", String.valueOf(calValues[4]));
+
+                        }
+                    } else {
+                        if (line_3 == -1) {
+                            jsonData.put("CALIBRATION_STAT", "completed");
+
+                        } else {
+                            jsonData.put("CALIBRATION_STAT", "incomplete");
+
+                        }
+                        if (line_3 == 0) {
+                            jsonData.put("CAL", String.valueOf(calValuesThree[0]));
+
+                        }
+                        if (line_3 == 1) {
+                            jsonData.put("CAL", String.valueOf(calValuesThree[1]));
+
+                        }
+                        if (line_3 == 2) {
+                            jsonData.put("CAL", String.valueOf(calValuesThree[2]));
+
+                        }
+                        jsonData.put("CAL_MODE", String.valueOf(3));
+
+                    }
+                    jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                    jsonData.put("STATUS", "Reconnecting");
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
+                Source.calibratingNow = false;
+                if (spin.getSelectedItemPosition() == 0) {
+                    if (timer5 != null) {
+
+                        timer5.cancel();
+                    }
+                    calibrateBtn.setEnabled(true);
+                } else {
+                    if (timer3 != null) {
+
+                        timer3.cancel();
+                    }
+                    calibrateBtn.setEnabled(true);
+                }
+
+            }
+
+            getActivity().runOnUiThread(() -> {
 //                calibrateBtn.setEnabled(true);
-        Toast.makeText(getContext(),
-        "Socket Connection Successful!",
-        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        "Socket Connection Successful!",
+                        Toast.LENGTH_SHORT).show();
 
-        });
+            });
 
-        try {
-        jsonData.put("SOCKET_INIT", "Successfully Initialized on PhCalibFragment");
-        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
-        webSocket.send(jsonData.toString());
-        } catch (JSONException e) {
-        e.printStackTrace();
-        getActivity().runOnUiThread(() -> {
-        Toast.makeText(getContext(),
-        "Socket Connection Unsuccessful!",
-        Toast.LENGTH_SHORT).show();
+            try {
+                jsonData.put("SOCKET_INIT", "Successfully Initialized on PhCalibFragment");
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                webSocket.send(jsonData.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(),
+                            "Socket Connection Unsuccessful!",
+                            Toast.LENGTH_SHORT).show();
 
-        });
-        }
-
-        }
-
-@Override
-public void onMessage(WebSocket webSocket, String text) {
-        super.onMessage(webSocket, text);
-
-        if (webSocket1 == null) {
-        webSocket.cancel();
-        }
-
-
-        getActivity().runOnUiThread(() -> {
-        try {
-        jsonData = new JSONObject(text);
-        Log.d("JSONReceived:PHFragment", "onMessage: " + text);
-        if (spin.getSelectedItemPosition() == 0) {
-
-        if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-
-        float ph = 0.0f;
-        if (!jsonData.getString("PH_VAL").equals("nan")) {
-        ph = Float.parseFloat(jsonData.getString("PH_VAL"));
-        }
-
-
-        String phForm = String.format(Locale.UK, "%.2f", ph);
-        tvPhCurr.setText(phForm);
-        phView.moveTo(ph);
-        AlarmConstants.PH = ph;
+                });
+            }
 
         }
 
-        if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        float tempVal = 0.0f;
-        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            super.onMessage(webSocket, text);
+
+            if (webSocket1 == null) {
+                webSocket.cancel();
+                JSONObject jsonData = new JSONObject();
+                try {
+                    if (spin.getSelectedItemPosition() == 0) {
+                        jsonData.put("CAL_MODE", String.valueOf(5));
+                        if (line == -1) {
+                            jsonData.put("CALIBRATION_STAT", "completed");
+
+                        } else {
+                            jsonData.put("CALIBRATION_STAT", "incomplete");
+                        }
+                        if (line == 0) {
+                            jsonData.put("CAL", String.valueOf(calValues[0]));
+
+                        }
+                        if (line == 1) {
+                            jsonData.put("CAL", String.valueOf(calValues[1]));
+
+                        }
+                        if (line == 2) {
+                            jsonData.put("CAL", String.valueOf(calValues[2]));
+
+                        }
+                        if (line == 3) {
+                            jsonData.put("CAL", String.valueOf(calValues[3]));
+
+                        }
+                        if (line == 4) {
+                            jsonData.put("CAL", String.valueOf(calValues[4]));
+
+                        }
+                    } else {
+                        if (line_3 == -1) {
+                            jsonData.put("CALIBRATION_STAT", "completed");
+
+                        } else {
+                            jsonData.put("CALIBRATION_STAT", "incomplete");
+
+                        }
+                        if (line_3 == 0) {
+                            jsonData.put("CAL", String.valueOf(calValuesThree[0]));
+
+                        }
+                        if (line_3 == 1) {
+                            jsonData.put("CAL", String.valueOf(calValuesThree[1]));
+
+                        }
+                        if (line_3 == 2) {
+                            jsonData.put("CAL", String.valueOf(calValuesThree[2]));
+
+                        }
+                        jsonData.put("CAL_MODE", String.valueOf(3));
+
+                    }
+                    jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                    jsonData.put("STATUS", "Reconnecting");
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
 
-        tempVal = Float.parseFloat(jsonData.getString("TEMP_VAL"));
-        }
-        String tempForm = String.format(Locale.UK, "%.1f", tempVal);
-        tvTempCurr.setText(tempForm + "°C");
+                Source.calibratingNow = false;
+                if (spin.getSelectedItemPosition() == 0) {
+                    if (timer5 != null) {
 
-        if (tempVal <= -127.0) {
-        tvTempCurr.setText("NA");
-        }
-        }
+                        timer5.cancel();
+                    }
+                    calibrateBtn.setEnabled(true);
+                } else {
+                    if (timer3 != null) {
 
-        if (jsonData.has("EC_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("EC_VAL");
-        tvEcCurr.setText(val);
-        }
+                        timer3.cancel();
+                    }
+                    calibrateBtn.setEnabled(true);
+                }
+            }
 
-        if (jsonData.has("MV_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
+            getActivity().runOnUiThread(() -> {
+                try {
+                    jsonData = new JSONObject(text);
+                    Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+                    if (spin.getSelectedItemPosition() == 0) {
 
-        String val = jsonData.getString("MV_1");
-        String ecForm = "0";
-        if (val == "nan") {
-        ecForm = "nan";
-        } else {
-        ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                        if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        }
-        mv1.setText(ecForm);
-        mV1 = mv1.getText().toString();
-        Log.d("test1", mV1);
+                            float ph = 0.0f;
+                            if (!jsonData.getString("PH_VAL").equals("nan")) {
+                                ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                            }
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV1", mV1);
-        myEdit.commit();
-        }
+                            String phForm = String.format(Locale.UK, "%.2f", ph);
+                            tvPhCurr.setText(phForm);
+                            phView.moveTo(ph);
+                            AlarmConstants.PH = ph;
 
-        if (jsonData.has("MV_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        }
 
+                        if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            float tempVal = 0.0f;
+                            if (!jsonData.getString("TEMP_VAL").equals("nan")) {
 
-        String val = jsonData.getString("MV_2");
-        String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv2.setText(ecForm);
-        mV2 = mv2.getText().toString();
-        Log.d("test2", mV2);
+                                tempVal = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                            }
+                            String tempForm = String.format(Locale.UK, "%.1f", tempVal);
+                            tvTempCurr.setText(tempForm + "°C");
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            if (tempVal <= -127.0) {
+                                tvTempCurr.setText("NA");
+                            }
+                        }
 
-        myEdit.putString("MV2", mV2);
-        myEdit.commit();
-        }
+                        if (jsonData.has("EC_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("EC_VAL");
+                            tvEcCurr.setText(val);
+                        }
 
+                        if (jsonData.has("MV_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        if (jsonData.has("MV_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
+                            String val = jsonData.getString("MV_1");
+                            String ecForm = "0";
+                            if (val == "nan") {
+                                ecForm = "nan";
+                            } else {
+                                ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        String val = jsonData.getString("MV_3");
-        String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv3.setText(ecForm);
-        mV3 = mv3.getText().toString();
-        Log.d("test3", mV3);
+                            }
+                            mv1.setText(ecForm);
+                            mV1 = mv1.getText().toString();
+                            Log.d("test1", mV1);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV3", mV3);
-        myEdit.commit();
-        }
+                            myEdit.putString("MV1", mV1);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("MV_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("MV_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
 
-        String val = jsonData.getString("MV_4");
-        String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv4.setText(ecForm);
-        mV4 = mv4.getText().toString();
-        Log.d("test4", mV4);
+                            String val = jsonData.getString("MV_2");
+                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv2.setText(ecForm);
+                            mV2 = mv2.getText().toString();
+                            Log.d("test2", mV2);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV4", mV4);
-        myEdit.commit();
-        }
+                            myEdit.putString("MV2", mV2);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("MV_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        String val = jsonData.getString("MV_5");
-        String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv5.setText(ecForm);
-        mV5 = mv5.getText().toString();
-        Log.d("test5", mV5);
+                        if (jsonData.has("MV_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV5", mV5);
-        myEdit.commit();
-        }
+                            String val = jsonData.getString("MV_3");
+                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv3.setText(ecForm);
+                            mV3 = mv3.getText().toString();
+                            Log.d("test3", mV3);
 
-        if (jsonData.has("POST_VAL_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        String val = jsonData.getString("POST_VAL_1");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            myEdit.putString("MV3", mV3);
+                            myEdit.commit();
+                        }
 
-        phAfterCalib1.setText(v);
-        pHAC1 = phAfterCalib1.getText().toString();
+                        if (jsonData.has("MV_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
-        mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
-        bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
-        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
-        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+                            String val = jsonData.getString("MV_4");
+                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv4.setText(ecForm);
+                            mV4 = mv4.getText().toString();
+                            Log.d("test4", mV4);
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
+                            myEdit.putString("MV4", mV4);
+                            myEdit.commit();
+                        }
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                        if (jsonData.has("MV_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        myEdit.putString("pHAC1", pHAC1);
-        myEdit.commit();
-        }
-        if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("POST_VAL_2");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String val = jsonData.getString("MV_5");
+                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv5.setText(ecForm);
+                            mV5 = mv5.getText().toString();
+                            Log.d("test5", mV5);
 
-        phAfterCalib2.setText(v);
-        pHAC2 = phAfterCalib2.getText().toString();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
+                            myEdit.putString("MV5", mV5);
+                            myEdit.commit();
+                        }
 
-        CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
-        mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
-        bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+                        if (jsonData.has("POST_VAL_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            String val = jsonData.getString("POST_VAL_1");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            phAfterCalib1.setText(v);
+                            pHAC1 = phAfterCalib1.getText().toString();
 
-        myEdit.putString("pHAC2", pHAC2);
-        myEdit.commit();
-        }
 
-        if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("SLOPE_1");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
+                                    mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                                    bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
 
-        slope2.setText(v);
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
-        mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
-        bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            myEdit.putString("pHAC1", pHAC1);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("POST_VAL_2");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
+                            phAfterCalib2.setText(v);
+                            pHAC2 = phAfterCalib2.getText().toString();
 
-        }
-        if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("SLOPE_2");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        slope3.setText(v);
+                            CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                    mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
-        mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
-        bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            myEdit.putString("pHAC2", pHAC2);
+                            myEdit.commit();
+                        }
 
+                        if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_1");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        }
+                            slope2.setText(v);
 
-        if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("POST_VAL_3");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        phAfterCalib3.setText(v);
-        pHAC3 = phAfterCalib3.getText().toString();
+                            CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                    mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
-        mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
-        bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                        }
+                        if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_2");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
+                            slope3.setText(v);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("pHAC3", pHAC3);
-        myEdit.commit();
-        }
+                            CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                    mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
-        if (jsonData.has("SLOPE_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("SLOPE_3");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        slope4.setText(v);
 
+                        }
 
-        CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
-        mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
-        bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+                        if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("POST_VAL_3");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            phAfterCalib3.setText(v);
+                            pHAC3 = phAfterCalib3.getText().toString();
 
 
-        }
+                            CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                    mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
-        if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("POST_VAL_4");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        phAfterCalib4.setText(v);
-        pHAC4 = phAfterCalib4.getText().toString();
 
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
-        mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
-        bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+                            myEdit.putString("pHAC3", pHAC3);
+                            myEdit.commit();
+                        }
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                        if (jsonData.has("SLOPE_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_3");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
+                            slope4.setText(v);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("pHAC4", pHAC4);
-        myEdit.commit();
-        }
+                            CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                    mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
-        if (jsonData.has("SLOPE_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("SLOPE_4");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        slope5.setText(v);
 
+                        }
 
-        CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
-        mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
-        bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+                        if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("POST_VAL_4");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            phAfterCalib4.setText(v);
+                            pHAC4 = phAfterCalib4.getText().toString();
 
 
-        }
-        if (jsonData.has("POST_VAL_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("POST_VAL_5");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                    mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
-        phAfterCalib5.setText(v);
-        pHAC5 = phAfterCalib5.getText().toString();
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
-        mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
-        bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                            myEdit.putString("pHAC4", pHAC4);
+                            myEdit.commit();
+                        }
 
+                        if (jsonData.has("SLOPE_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_4");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            slope5.setText(v);
 
-        myEdit.putString("pHAC5", pHAC5);
-        myEdit.commit();
-        }
 
-        if (jsonData.has("DT_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                    mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
-        String val = jsonData.getString("DT_1");
-        dt1.setText(val);
-        DT1 = dt1.getText().toString();
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("DT1", DT1);
-        myEdit.commit();
-        }
+                        }
+                        if (jsonData.has("POST_VAL_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("POST_VAL_5");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
-        if (jsonData.has("DT_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("DT_2");
-        dt2.setText(val);
-        DT2 = dt2.getText().toString();
+                            phAfterCalib5.setText(v);
+                            pHAC5 = phAfterCalib5.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("DT2", DT2);
-        myEdit.commit();
-        }
-        if (jsonData.has("DT_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("DT_3");
-        dt3.setText(val);
-        DT3 = dt3.getText().toString();
+                            CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                    mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            databaseHelper.updateClbOffDataFive(calibDatClass);
 
-        myEdit.putString("DT3", DT3);
-        myEdit.commit();
-        }
-        if (jsonData.has("DT_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("DT_4");
-        dt4.setText(val);
-        DT4 = dt4.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("DT4", DT4);
-        myEdit.commit();
-        }
-        if (jsonData.has("DT_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("DT_5");
-        dt5.setText(val);
-        DT5 = dt5.getText().toString();
+                            myEdit.putString("pHAC5", pHAC5);
+                            myEdit.commit();
+                        }
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                        if (jsonData.has("DT_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        myEdit.putString("DT5", DT5);
-        myEdit.commit();
-        }
+                            String val = jsonData.getString("DT_1");
+                            dt1.setText(val);
+                            DT1 = dt1.getText().toString();
 
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        if (jsonData.has("B_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            myEdit.putString("DT1", DT1);
+                            myEdit.commit();
+                        }
 
-        String val = jsonData.getString("B_1");
-        ph1.setText(val);
-        PH1 = ph1.getText().toString();
+                        if (jsonData.has("DT_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("DT_2");
+                            dt2.setText(val);
+                            DT2 = dt2.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("PH1", PH1);
-        myEdit.commit();
-        }
+                            myEdit.putString("DT2", DT2);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("DT_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("DT_3");
+                            dt3.setText(val);
+                            DT3 = dt3.getText().toString();
 
-        if (jsonData.has("B_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("B_2");
-        ph2.setText(val);
-        PH2 = ph2.getText().toString();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            myEdit.putString("DT3", DT3);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("DT_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("DT_4");
+                            dt4.setText(val);
+                            DT4 = dt4.getText().toString();
 
-        myEdit.putString("PH2", PH2);
-        myEdit.commit();
-        }
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        if (jsonData.has("B_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("B_3");
-        ph3.setText(val);
-        PH3 = ph3.getText().toString();
+                            myEdit.putString("DT4", DT4);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("DT_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("DT_5");
+                            dt5.setText(val);
+                            DT5 = dt5.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("PH3", PH3);
-        myEdit.commit();
-        }
+                            myEdit.putString("DT5", DT5);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("B_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("B_4");
-        ph4.setText(val);
-        PH4 = ph4.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                        if (jsonData.has("B_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        myEdit.putString("PH4", PH4);
-        myEdit.commit();
-        }
+                            String val = jsonData.getString("B_1");
+                            ph1.setText(val);
+                            PH1 = ph1.getText().toString();
 
-        if (jsonData.has("B_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("B_5");
-        ph5.setText(val);
-        PH5 = ph5.getText().toString();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            myEdit.putString("PH1", PH1);
+                            myEdit.commit();
+                        }
 
-        myEdit.putString("PH5", PH5);
-        myEdit.commit();
-        }
+                        if (jsonData.has("B_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("B_2");
+                            ph2.setText(val);
+                            PH2 = ph2.getText().toString();
 
-        if (jsonData.has("CAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("CAL");
-        ec = Integer.parseInt(val);
-        Log.d("ECVal", "onDataChange: " + ec);
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH2", PH2);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("B_3");
+                            ph3.setText(val);
+                            PH3 = ph3.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH3", PH3);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("B_4");
+                            ph4.setText(val);
+                            PH4 = ph4.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH4", PH4);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("B_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("B_5");
+                            ph5.setText(val);
+                            PH5 = ph5.getText().toString();
+
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                            myEdit.putString("PH5", PH5);
+                            myEdit.commit();
+                        }
+
+                        if (jsonData.has("CAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("CAL");
+                            ec = Integer.parseInt(val);
+                            Log.d("ECVal", "onDataChange: " + ec);
 //                            stateChangeModeFive();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        if (jsonData.getString("CAL").equals("11") && jsonData.has("POST_VAL_1")) {
-        String d = jsonData.getString("POST_VAL_1");
-        phAfterCalib1.setText(d);
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            if (jsonData.getString("CAL").equals("11") && jsonData.has("POST_VAL_1")) {
+                                String d = jsonData.getString("POST_VAL_1");
+                                phAfterCalib1.setText(d);
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
-        mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
-        bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
-        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
-        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+                                CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
+                                        mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                                        bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                                        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-        myEdit.putString("tem1", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC1", d);
-        myEdit.commit();
+                                myEdit.putString("tem1", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC1", d);
+                                myEdit.commit();
 //                                deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
 
-        temp1.setText(tvTempCurr.getText());
-        } else if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
-        String d = jsonData.getString("POST_VAL_2");
-        phAfterCalib2.setText(d);
+                                temp1.setText(tvTempCurr.getText());
+                            } else if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
+                                String d = jsonData.getString("POST_VAL_2");
+                                phAfterCalib2.setText(d);
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
-        mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
-        bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+                                CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
+                                        mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                                        bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                                        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
-
-
-        myEdit.putString("tem2", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC2", d);
-        myEdit.commit();
-
-        temp2.setText(tvTempCurr.getText());
-        } else if (jsonData.getString("CAL").equals("31") && jsonData.has("POST_VAL_3")) {
-        String d = jsonData.getString("POST_VAL_3");
-        phAfterCalib3.setText(d);
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
-        mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
-        bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+                                myEdit.putString("tem2", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC2", d);
+                                myEdit.commit();
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
-
-
-        myEdit.putString("tem3", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC3", d);
-        myEdit.commit();
-
-        temp3.setText(tvTempCurr.getText());
-        } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
-        String d = jsonData.getString("POST_VAL_4");
-        phAfterCalib4.setText(String.valueOf(d));
+                                temp2.setText(tvTempCurr.getText());
+                            } else if (jsonData.getString("CAL").equals("31") && jsonData.has("POST_VAL_3")) {
+                                String d = jsonData.getString("POST_VAL_3");
+                                phAfterCalib3.setText(d);
 
 
-        CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
-        mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
-        bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+                                CalibDatClass calibDatClass = new CalibDatClass(3, ph3.getText().toString(),
+                                        mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                                        bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                                        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.updateClbOffDataFive(calibDatClass);
-
-
-        myEdit.putString("tem4", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC4", String.valueOf(d));
-        myEdit.commit();
-
-        temp4.setText(tvTempCurr.getText());
-        } else if (jsonData.getString("CAL").equals("51") && jsonData.has("POST_VAL_5")) {
-        String d = jsonData.getString("POST_VAL_5");
-        phAfterCalib5.setText(String.valueOf(d));
-
-        CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
-        mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
-        bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
-
-        databaseHelper.updateClbOffDataFive(calibDatClass);
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-        myEdit.putString("tem5", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC5", String.valueOf(d));
-        myEdit.commit();
-        temp5.setText(tvTempCurr.getText());
+                                myEdit.putString("tem3", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC3", d);
+                                myEdit.commit();
+
+                                temp3.setText(tvTempCurr.getText());
+                            } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
+                                String d = jsonData.getString("POST_VAL_4");
+                                phAfterCalib4.setText(String.valueOf(d));
+
+
+                                CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
+                                        mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                                        bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                                        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+                                myEdit.putString("tem4", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC4", String.valueOf(d));
+                                myEdit.commit();
+
+                                temp4.setText(tvTempCurr.getText());
+                            } else if (jsonData.getString("CAL").equals("51") && jsonData.has("POST_VAL_5")) {
+                                String d = jsonData.getString("POST_VAL_5");
+                                phAfterCalib5.setText(String.valueOf(d));
+
+                                CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
+                                        mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                                        bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                                        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+
+                                databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
+                                myEdit.putString("tem5", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC5", String.valueOf(d));
+                                myEdit.commit();
+                                temp5.setText(tvTempCurr.getText());
 //                                deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
-        calibData();
-        }
-        }
+                                calibData();
+                            }
+                        }
 
-        }
-        else if (spin.getSelectedItemPosition() == 1) {
+                    } else if (spin.getSelectedItemPosition() == 1) {
 
-        if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        String val = jsonData.getString("POST_VAL_2");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        phAfterCalib1_3.setText(v);
-        pHAC1_3 = phAfterCalib1_3.getText().toString();
+                            String val = jsonData.getString("POST_VAL_2");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            phAfterCalib1_3.setText(v);
+                            pHAC1_3 = phAfterCalib1_3.getText().toString();
 
-        CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
-        mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
-        bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
-        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
+                            CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
+                                    mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
+                                    bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
+                                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.updateClbOffDataThree(calibDatClass1);
+                            databaseHelper.updateClbOffDataThree(calibDatClass1);
 
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("pHAC1_3", pHAC1_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("pHAC1_3", pHAC1_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("POST_VAL_3");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        phAfterCalib2_3.setText(v);
-        pHAC2_3 = phAfterCalib2_3.getText().toString();
+                        if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("POST_VAL_3");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            phAfterCalib2_3.setText(v);
+                            pHAC2_3 = phAfterCalib2_3.getText().toString();
 
 
-        CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
-        mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
-        bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                    mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.updateClbOffDataThree(calibDatClass2);
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("pHAC2_3", pHAC2_3);
-        myEdit.commit();
-        }
-        if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("POST_VAL_4");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        phAfterCalib3_3.setText(v);
-        pHAC3_3 = phAfterCalib3_3.getText().toString();
+                            myEdit.putString("pHAC2_3", pHAC2_3);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("POST_VAL_4");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            phAfterCalib3_3.setText(v);
+                            pHAC3_3 = phAfterCalib3_3.getText().toString();
 
-        CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
-        mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
-        bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                    mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.updateClbOffDataThree(calibDatClass3);
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("pHAC3_3", pHAC3_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("pHAC3_3", pHAC3_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("SLOPE_1");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        slope2_3.setText(v);
+                        if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_1");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            slope2_3.setText(v);
 
 
-        CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
-        mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
-        bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                    mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.updateClbOffDataThree(calibDatClass2);
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
-        }
-        if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("SLOPE_2");
-        String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        slope3_3.setText(v);
-        pHAC3_3 = phAfterCalib3_3.getText().toString();
+                        }
+                        if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("SLOPE_2");
+                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            slope3_3.setText(v);
+                            pHAC3_3 = phAfterCalib3_3.getText().toString();
 
-        CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
-        mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
-        bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                    mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.updateClbOffDataThree(calibDatClass3);
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
 
-        }
-        if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
-        String phForm = String.format(Locale.UK, "%.2f", ph);
-        tvPhCurr.setText(phForm);
-        phView.moveTo(ph);
+                        }
+                        if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                            String phForm = String.format(Locale.UK, "%.2f", ph);
+                            tvPhCurr.setText(phForm);
+                            phView.moveTo(ph);
 
-        }
+                        }
 
-        if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
-        String tempForm = String.format(Locale.UK, "%.1f", ph);
-        tvTempCurr.setText(tempForm + "°C");
+                            float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                            String tempForm = String.format(Locale.UK, "%.1f", ph);
+                            tvTempCurr.setText(tempForm + "°C");
 
-        if (ph <= -127.0) {
-        tvTempCurr.setText("NA");
-        }
-        }
+                            if (ph <= -127.0) {
+                                tvTempCurr.setText("NA");
+                            }
+                        }
 
-        if (jsonData.has("EC_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String ph = jsonData.getString("EC_VAL");
-        tvEcCurr.setText(ph);
+                        if (jsonData.has("EC_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String ph = jsonData.getString("EC_VAL");
+                            tvEcCurr.setText(ph);
 
-        }
+                        }
 
-        if (jsonData.has("MV_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("MV_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        String val = jsonData.getString("MV_2");
-        String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv1_3.setText(e);
-        mV1_3 = mv1_3.getText().toString();
+                            String val = jsonData.getString("MV_2");
+                            String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv1_3.setText(e);
+                            mV1_3 = mv1_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV1_3", mV1_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("MV1_3", mV1_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("MV_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("MV_3");
-        String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv2_3.setText(e);
-        mV2_3 = mv2_3.getText().toString();
+                        if (jsonData.has("MV_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("MV_3");
+                            String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv2_3.setText(e);
+                            mV2_3 = mv2_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV2_3", mV2_3);
-        myEdit.commit();
-        }
-        if (jsonData.has("MV_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("MV_4");
-        String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-        mv3_3.setText(e);
-        mV3_3 = mv3_3.getText().toString();
+                            myEdit.putString("MV2_3", mV2_3);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("MV_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("MV_4");
+                            String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            mv3_3.setText(e);
+                            mV3_3 = mv3_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("MV3_3", mV3_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("MV3_3", mV3_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("DT_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("DT_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        String val = jsonData.getString("DT_2");
-        dt1_3.setText(val);
-        DT1_3 = dt1_3.getText().toString();
+                            String val = jsonData.getString("DT_2");
+                            dt1_3.setText(val);
+                            DT1_3 = dt1_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("DT1_3", DT1_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("DT1_3", DT1_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("DT_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("DT_3");
-        dt2_3.setText(val);
-        DT2_3 = dt2_3.getText().toString();
+                        if (jsonData.has("DT_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("DT_3");
+                            dt2_3.setText(val);
+                            DT2_3 = dt2_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("DT2_3", DT2_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("DT2_3", DT2_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("DT_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("DT_4");
-        dt3_3.setText(val);
-        DT3_3 = dt3_3.getText().toString();
+                        if (jsonData.has("DT_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("DT_4");
+                            dt3_3.setText(val);
+                            DT3_3 = dt3_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("DT3_3", DT3_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("DT3_3", DT3_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("B_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("B_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        String val = jsonData.getString("B_2");
-        ph1_3.setText(val);
-        PH1_3 = ph1_3.getText().toString();
+                            String val = jsonData.getString("B_2");
+                            ph1_3.setText(val);
+                            PH1_3 = ph1_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("PH1_3", PH1_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("PH1_3", PH1_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("B_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("B_3");
-        ph2_3.setText(val);
-        PH2_3 = ph2_3.getText().toString();
+                        if (jsonData.has("B_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("B_3");
+                            ph2_3.setText(val);
+                            PH2_3 = ph2_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("PH2_3", PH2_3);
-        myEdit.commit();
-        }
-        if (jsonData.has("B_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("B_4");
-        ph3_3.setText(val);
-        PH3_3 = ph3_3.getText().toString();
+                            myEdit.putString("PH2_3", PH2_3);
+                            myEdit.commit();
+                        }
+                        if (jsonData.has("B_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                            String val = jsonData.getString("B_4");
+                            ph3_3.setText(val);
+                            PH3_3 = ph3_3.getText().toString();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        myEdit.putString("PH3_3", PH3_3);
-        myEdit.commit();
-        }
+                            myEdit.putString("PH3_3", PH3_3);
+                            myEdit.commit();
+                        }
 
-        if (jsonData.has("CAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        if (jsonData.has("CAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-        String val = jsonData.getString("CAL");
-        ec = Integer.parseInt(val);
-        Log.d("ECVal", "onDataChange: " + ec);
+                            String val = jsonData.getString("CAL");
+                            ec = Integer.parseInt(val);
+                            Log.d("ECVal", "onDataChange: " + ec);
 //                            stateChangeModeFive();
 
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
-        String d = jsonData.getString("POST_VAL_2");
-        phAfterCalib1_3.setText(d);
+                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                            if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
+                                String d = jsonData.getString("POST_VAL_2");
+                                phAfterCalib1_3.setText(d);
 
 
-        CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
-        mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
-        bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
-        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
+                                CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
+                                        mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
+                                        bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
+                                        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.updateClbOffDataThree(calibDatClass1);
+                                databaseHelper.updateClbOffDataThree(calibDatClass1);
 
 
-        myEdit.putString("tem1_3", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC1_3", d);
-        myEdit.commit();
+                                myEdit.putString("tem1_3", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC1_3", d);
+                                myEdit.commit();
 
 
-        temp1_3.setText(tvTempCurr.getText());
-        } else if (jsonData.getString("CAL").equals("31") && jsonData.has("POST_VAL_3")) {
-        String d = jsonData.getString("POST_VAL_3");
-        phAfterCalib2_3.setText(d);
+                                temp1_3.setText(tvTempCurr.getText());
+                            } else if (jsonData.getString("CAL").equals("31") && jsonData.has("POST_VAL_3")) {
+                                String d = jsonData.getString("POST_VAL_3");
+                                phAfterCalib2_3.setText(d);
 
 
-        CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
-        mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
-        bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+                                CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
+                                        mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                                        bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                                        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.updateClbOffDataThree(calibDatClass2);
+                                databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
-        myEdit.putString("tem2_3", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC2_3", d);
-        myEdit.commit();
+                                myEdit.putString("tem2_3", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC2_3", d);
+                                myEdit.commit();
 
-        temp2_3.setText(tvTempCurr.getText());
-        } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
-        String d = jsonData.getString("POST_VAL_4");
-        phAfterCalib3_3.setText(String.valueOf(d));
-
-
-        CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
-        mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
-        bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
-
-        databaseHelper.updateClbOffDataThree(calibDatClass3);
+                                temp2_3.setText(tvTempCurr.getText());
+                            } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
+                                String d = jsonData.getString("POST_VAL_4");
+                                phAfterCalib3_3.setText(String.valueOf(d));
 
 
-        myEdit.putString("tem3_3", tvTempCurr.getText().toString());
-        myEdit.putString("pHAC3_3", String.valueOf(d));
-        myEdit.commit();
+                                CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
+                                        mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                                        bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                                        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                                        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-        temp3_3.setText(tvTempCurr.getText());
-        calibData3();
-        }
-        }
+                                databaseHelper.updateClbOffDataThree(calibDatClass3);
 
 
-        }
+                                myEdit.putString("tem3_3", tvTempCurr.getText().toString());
+                                myEdit.putString("pHAC3_3", String.valueOf(d));
+                                myEdit.commit();
+
+                                temp3_3.setText(tvTempCurr.getText());
+                                calibData3();
+                            }
+                        }
+
+
+                    }
 
 
 //                    if (Constants.OFFLINE_MODE) {
 //                        offlineDataFeeding();
 //                    }
 
-        if (jsonData.has("FAULT") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-        String val = jsonData.getString("FAULT");
-        fault = Integer.parseInt(val);
-        if (fault != null)
-        if (fault == 1) {
-        showAlertDialogButtonClicked();
-        }
-        }
+                    if (jsonData.has("FAULT") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        String val = jsonData.getString("FAULT");
+                        fault = Integer.parseInt(val);
+                        if (fault != null)
+                            if (fault == 1) {
+                                showAlertDialogButtonClicked();
+                            }
+                    }
 
 //                    progressDialog.dismiss();
 //                    calibrateBtn.setEnabled(true);
@@ -4935,19 +5251,19 @@ public void onMessage(WebSocket webSocket, String text) {
 //                    }
 
 
-        } catch (JSONException e) {
-        e.printStackTrace();
-        }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
-        });
-
-        }
+            });
 
         }
 
-@Override
-public void onResume() {
+    }
+
+    @Override
+    public void onResume() {
 
         Source.activeFragment = 1;
 
@@ -4985,178 +5301,178 @@ public void onResume() {
 //
 //        }
         if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-        offlineDataFeeding();
+            offlineDataFeeding();
         }
         super.onResume();
-        }
+    }
 
-@Override
-public void onStart() {
+    @Override
+    public void onStart() {
 //        initiateSocketConnection();
         Source.calibMode = 0;
         if (Constants.OFFLINE_MODE) {
-        initiateSocketConnection();
+            initiateSocketConnection();
         }
         if (Constants.OFFLINE_MODE) {
-        try {
-        jsonData = new JSONObject();
-        jsonData.put("CAL_MODE", String.valueOf(5));
-        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
-        webSocket1.send(jsonData.toString());
-        } catch (JSONException e) {
-        throw new RuntimeException(e);
-        }
+            try {
+                jsonData = new JSONObject();
+                jsonData.put("CAL_MODE", String.valueOf(5));
+                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                webSocket1.send(jsonData.toString());
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         } else {
         }
         spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-@Override
-public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (position) {
-        case 0:
-        mode = "5";
-        Source.calibMode = 0;
-        fivePointCalib.setVisibility(View.VISIBLE);
-        threePointCalib.setVisibility(View.GONE);
-        threePointCalibStart.setVisibility(View.GONE);
-        fivePointCalibStart.setVisibility(View.VISIBLE);
-        currentBuf = 0;
-        currentBufThree = 0;
-        line = 0;
-        line_3 = 0;
-        if (Constants.OFFLINE_MODE) {
-        try {
-        jsonData = new JSONObject();
-        jsonData.put("CAL_MODE", String.valueOf(5));
-        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
-        webSocket1.send(jsonData.toString());
-        } catch (JSONException e) {
-        throw new RuntimeException(e);
-        }
-        } else {
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-        }
-        log1_3.setBackgroundColor(Color.GRAY);
-        log2_3.setBackgroundColor(Color.WHITE);
-        log3_3.setBackgroundColor(Color.WHITE);
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        mode = "5";
+                        Source.calibMode = 0;
+                        fivePointCalib.setVisibility(View.VISIBLE);
+                        threePointCalib.setVisibility(View.GONE);
+                        threePointCalibStart.setVisibility(View.GONE);
+                        fivePointCalibStart.setVisibility(View.VISIBLE);
+                        currentBuf = 0;
+                        currentBufThree = 0;
+                        line = 0;
+                        line_3 = 0;
+                        if (Constants.OFFLINE_MODE) {
+                            try {
+                                jsonData = new JSONObject();
+                                jsonData.put("CAL_MODE", String.valueOf(5));
+                                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                                webSocket1.send(jsonData.toString());
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                        }
+                        log1_3.setBackgroundColor(Color.GRAY);
+                        log2_3.setBackgroundColor(Color.WHITE);
+                        log3_3.setBackgroundColor(Color.WHITE);
 
-        log1.setBackgroundColor(Color.GRAY);
-        log2.setBackgroundColor(Color.WHITE);
-        log3.setBackgroundColor(Color.WHITE);
-        log4.setBackgroundColor(Color.WHITE);
-        log5.setBackgroundColor(Color.WHITE);
+                        log1.setBackgroundColor(Color.GRAY);
+                        log2.setBackgroundColor(Color.WHITE);
+                        log3.setBackgroundColor(Color.WHITE);
+                        log4.setBackgroundColor(Color.WHITE);
+                        log5.setBackgroundColor(Color.WHITE);
 
-        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-        offlineDataFeeding();
-        } else {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+                            offlineDataFeeding();
+                        } else {
 
-        fetchAllData5Point();
-        }
-        deleteAllCalibData();
-        calibData();
+                            fetchAllData5Point();
+                        }
+                        deleteAllCalibData();
+                        calibData();
 
-        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
-        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
-        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
-        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
-        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
 
-        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
 
-        deleteAllOfflineCalibData();
+                            deleteAllOfflineCalibData();
 
-        databaseHelper.insertCalibrationOfflineData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
-        databaseHelper.insertCalibrationOfflineData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
-        databaseHelper.insertCalibrationOfflineData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
-        databaseHelper.insertCalibrationOfflineData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
-        databaseHelper.insertCalibrationOfflineData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH3, MV3, SLOPE3, DT3, BFD3, pHAC3, t3, DT3.length() >= 15 ? DT3.substring(0, 10) : "--", DT3.length() >= 15 ? DT3.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
 
 
-        }
-        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-        offlineDataFeeding();
-        }
-        break;
+                        }
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+                            offlineDataFeeding();
+                        }
+                        break;
 
-        case 1:
-        mode = "3";
-        Source.calibMode = 1;
-        fivePointCalib.setVisibility(View.GONE);
-        fivePointCalibStart.setVisibility(View.GONE);
-        threePointCalib.setVisibility(View.VISIBLE);
-        threePointCalibStart.setVisibility(View.VISIBLE);
+                    case 1:
+                        mode = "3";
+                        Source.calibMode = 1;
+                        fivePointCalib.setVisibility(View.GONE);
+                        fivePointCalibStart.setVisibility(View.GONE);
+                        threePointCalib.setVisibility(View.VISIBLE);
+                        threePointCalibStart.setVisibility(View.VISIBLE);
 //                        currentBufThree = 0;
 
-        currentBuf = 0;
-        currentBufThree = 0;
-        line = 0;
-        line_3 = 0;
-        if (Constants.OFFLINE_MODE) {
-        try {
-        jsonData = new JSONObject();
-        jsonData.put("CAL_MODE", String.valueOf(3));
-        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
-        webSocket1.send(jsonData.toString());
-        } catch (JSONException e) {
-        throw new RuntimeException(e);
-        }
-        } else {
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
-        }
-        log1_3.setBackgroundColor(Color.GRAY);
-        log2_3.setBackgroundColor(Color.WHITE);
-        log3_3.setBackgroundColor(Color.WHITE);
+                        currentBuf = 0;
+                        currentBufThree = 0;
+                        line = 0;
+                        line_3 = 0;
+                        if (Constants.OFFLINE_MODE) {
+                            try {
+                                jsonData = new JSONObject();
+                                jsonData.put("CAL_MODE", String.valueOf(3));
+                                jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                                webSocket1.send(jsonData.toString());
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
+                        }
+                        log1_3.setBackgroundColor(Color.GRAY);
+                        log2_3.setBackgroundColor(Color.WHITE);
+                        log3_3.setBackgroundColor(Color.WHITE);
 
-        log1.setBackgroundColor(Color.GRAY);
-        log2.setBackgroundColor(Color.WHITE);
-        log3.setBackgroundColor(Color.WHITE);
-        log4.setBackgroundColor(Color.WHITE);
-        log5.setBackgroundColor(Color.WHITE);
-        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-        offlineDataFeeding();
-        } else {
-        fetchAllData3Point();
-        }
-        deleteAllCalibData();
-        calibData3();
+                        log1.setBackgroundColor(Color.GRAY);
+                        log2.setBackgroundColor(Color.WHITE);
+                        log3.setBackgroundColor(Color.WHITE);
+                        log4.setBackgroundColor(Color.WHITE);
+                        log5.setBackgroundColor(Color.WHITE);
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+                            offlineDataFeeding();
+                        } else {
+                            fetchAllData3Point();
+                        }
+                        deleteAllCalibData();
+                        calibData3();
 
 
-        databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
-        databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
-        databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
-        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-        deleteAllOfflineCalibData();
+                        databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
+                        databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+                            deleteAllOfflineCalibData();
 
-        databaseHelper.insertCalibrationOfflineData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
-        databaseHelper.insertCalibrationOfflineData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
-        databaseHelper.insertCalibrationOfflineData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
-        }
+                            databaseHelper.insertCalibrationOfflineData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
+                            databaseHelper.insertCalibrationOfflineData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
+                        }
 
-        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-        offlineDataFeeding();
-        }
-        break;
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
+                            offlineDataFeeding();
+                        }
+                        break;
 
-        }
-        }
+                }
+            }
 
-@Override
-public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(requireContext(), "Select a mode of Calibration", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(requireContext(), "Select a mode of Calibration", Toast.LENGTH_SHORT).show();
+            }
         });
 
         super.onStart();
-        }
+    }
 
-@Override
-public void onStop() {
+    @Override
+    public void onStop() {
         if (Constants.OFFLINE_MODE) {
-        webSocket1.cancel();
+            webSocket1.cancel();
         }
         super.onStop();
-        }
+    }
 
-        void offlineDataFeeding() {
+    void offlineDataFeeding() {
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
@@ -5170,289 +5486,297 @@ public void onStop() {
 
         if (calibCSV3.getCount() == 0) {
 
-        databaseHelper.insertCalibrationOfflineDataThree(1, ph1_3.getText().toString(),
-        mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
-        bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
-        dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataThree(1, ph1_3.getText().toString(),
+                    mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
+                    bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
+                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
+                    dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
-        databaseHelper.insertCalibrationOfflineDataThree(2, ph2_3.getText().toString(),
-        mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
-        bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
-        dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataThree(2, ph2_3.getText().toString(),
+                    mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
+                    bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
+                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
+                    dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.insertCalibrationOfflineDataThree(3, ph3_3.getText().toString(),
-        mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
-        bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
-        dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataThree(3, ph3_3.getText().toString(),
+                    mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
+                    bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
+                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
+                    dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
         }
 
         if (calibCSV5.getCount() == 0) {
 
-        databaseHelper.insertCalibrationOfflineDataFive(1, ph1.getText().toString(),
-        mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
-        bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
-        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
-        dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataFive(1, ph1.getText().toString(),
+                    mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                    bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                    dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.insertCalibrationOfflineDataFive(2, ph2.getText().toString(),
-        mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
-        bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
-        dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataFive(2, ph2.getText().toString(),
+                    mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                    bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                    dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.insertCalibrationOfflineDataFive(3, ph3.getText().toString(),
-        mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
-        bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
-        dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataFive(3, ph3.getText().toString(),
+                    mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                    bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                    dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.insertCalibrationOfflineDataFive(4, ph4.getText().toString(),
-        mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
-        bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
-        dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataFive(4, ph4.getText().toString(),
+                    mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                    bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                    dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
 
-        databaseHelper.insertCalibrationOfflineDataFive(5, ph5.getText().toString(),
-        mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
-        bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
-        dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+            databaseHelper.insertCalibrationOfflineDataFive(5, ph5.getText().toString(),
+                    mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                    bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                    dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
 
         }
 
         int index5 = 0;
         while (calibCSV5.moveToNext()) {
-        String ph = calibCSV5.getString(calibCSV5.getColumnIndex("PH"));
-        String mv = calibCSV5.getString(calibCSV5.getColumnIndex("MV"));
-        String date = calibCSV5.getString(calibCSV5.getColumnIndex("DT"));
-        String slope = calibCSV5.getString(calibCSV5.getColumnIndex("SLOPE"));
-        String pHAC = calibCSV5.getString(calibCSV5.getColumnIndex("pHAC"));
-        String temperature1 = calibCSV5.getString(calibCSV5.getColumnIndex("temperature"));
+            String ph = calibCSV5.getString(calibCSV5.getColumnIndex("PH"));
+            String mv = calibCSV5.getString(calibCSV5.getColumnIndex("MV"));
+            String date = calibCSV5.getString(calibCSV5.getColumnIndex("DT"));
+            String slope = calibCSV5.getString(calibCSV5.getColumnIndex("SLOPE"));
+            String pHAC = calibCSV5.getString(calibCSV5.getColumnIndex("pHAC"));
+            String temperature1 = calibCSV5.getString(calibCSV5.getColumnIndex("temperature"));
 
-        Log.d("Cursor Data", "PH: " + calibCSV5.getString(calibCSV5.getColumnIndex("PH")));
-
-
-        if (index5 == 0) {
-        PH1 = ph;
-        MV1 = mv;
-        SLOPE1 = slope;
-        DT1 = date;
-        pHAC1 = pHAC;
-        t1 = temperature1;
-
-        ph1.setText(ph);
-        mv1.setText(mv);
-        slope1.setText(slope);
-        dt1.setText(date);
-        phAfterCalib1.setText(pHAC);
-        temp1.setText(temperature1);
+            Log.d("Cursor Data", "PH: " + calibCSV5.getString(calibCSV5.getColumnIndex("PH")));
 
 
-        }
-        if (index5 == 1) {
-        PH2 = ph;
-        MV2 = mv;
-        SLOPE2 = slope;
-        DT2 = date;
-        pHAC2 = pHAC;
-        t2 = temperature1;
+            if (index5 == 0) {
+                PH1 = ph;
+                MV1 = mv;
+                SLOPE1 = slope;
+                DT1 = date;
+                pHAC1 = pHAC;
+                t1 = temperature1;
 
-        ph2.setText(ph);
-        mv2.setText(mv);
-        slope2.setText(slope);
-        dt2.setText(date);
-        phAfterCalib2.setText(pHAC);
-        temp2.setText(temperature1);
+                ph1.setText(ph);
+                mv1.setText(mv);
+                slope1.setText(slope);
+                dt1.setText(date);
+                phAfterCalib1.setText(pHAC);
+                temp1.setText(temperature1);
 
-        }
-        if (index5 == 2) {
-        PH3 = ph;
-        MV3 = mv;
-        SLOPE3 = slope;
-        DT3 = date;
-        pHAC3 = pHAC;
-        t3 = temperature1;
 
-        ph3.setText(ph);
-        mv3.setText(mv);
-        slope3.setText(slope);
-        dt3.setText(date);
-        phAfterCalib3.setText(pHAC);
-        temp3.setText(temperature1);
+            }
+            if (index5 == 1) {
+                PH2 = ph;
+                MV2 = mv;
+                SLOPE2 = slope;
+                DT2 = date;
+                pHAC2 = pHAC;
+                t2 = temperature1;
 
-        }
-        if (index5 == 3) {
-        PH4 = ph;
-        MV4 = mv;
-        SLOPE4 = slope;
-        DT4 = date;
-        pHAC4 = pHAC;
-        t4 = temperature1;
+                ph2.setText(ph);
+                mv2.setText(mv);
+                slope2.setText(slope);
+                dt2.setText(date);
+                phAfterCalib2.setText(pHAC);
+                temp2.setText(temperature1);
 
-        ph4.setText(ph);
-        mv4.setText(mv);
-        slope4.setText(slope);
-        dt4.setText(date);
-        phAfterCalib4.setText(pHAC);
-        temp4.setText(temperature1);
+            }
+            if (index5 == 2) {
+                PH3 = ph;
+                MV3 = mv;
+                SLOPE3 = slope;
+                DT3 = date;
+                pHAC3 = pHAC;
+                t3 = temperature1;
 
-        }
-        if (index5 == 4) {
-        PH5 = ph;
-        MV5 = mv;
-        SLOPE5 = slope;
-        DT5 = date;
-        pHAC5 = pHAC;
-        t5 = temperature1;
+                ph3.setText(ph);
+                mv3.setText(mv);
+                slope3.setText(slope);
+                dt3.setText(date);
+                phAfterCalib3.setText(pHAC);
+                temp3.setText(temperature1);
 
-        ph5.setText(ph);
-        mv5.setText(mv);
-        slope5.setText(slope);
-        dt5.setText(date);
-        phAfterCalib5.setText(pHAC);
-        temp5.setText(temperature1);
-        }
+            }
+            if (index5 == 3) {
+                PH4 = ph;
+                MV4 = mv;
+                SLOPE4 = slope;
+                DT4 = date;
+                pHAC4 = pHAC;
+                t4 = temperature1;
 
-        index5++;
+                ph4.setText(ph);
+                mv4.setText(mv);
+                slope4.setText(slope);
+                dt4.setText(date);
+                phAfterCalib4.setText(pHAC);
+                temp4.setText(temperature1);
+
+            }
+            if (index5 == 4) {
+                PH5 = ph;
+                MV5 = mv;
+                SLOPE5 = slope;
+                DT5 = date;
+                pHAC5 = pHAC;
+                t5 = temperature1;
+
+                ph5.setText(ph);
+                mv5.setText(mv);
+                slope5.setText(slope);
+                dt5.setText(date);
+                phAfterCalib5.setText(pHAC);
+                temp5.setText(temperature1);
+            }
+
+            index5++;
         }
 
 
         while (calibCSV3.moveToNext()) {
-        String ph = calibCSV3.getString(calibCSV3.getColumnIndex("PH"));
-        String mv = calibCSV3.getString(calibCSV3.getColumnIndex("MV"));
-        String date = calibCSV3.getString(calibCSV3.getColumnIndex("DT"));
-        String slope = calibCSV3.getString(calibCSV3.getColumnIndex("SLOPE"));
-        String pHAC = calibCSV3.getString(calibCSV3.getColumnIndex("pHAC"));
-        String temperature1 = calibCSV3.getString(calibCSV3.getColumnIndex("temperature"));
+            String ph = calibCSV3.getString(calibCSV3.getColumnIndex("PH"));
+            String mv = calibCSV3.getString(calibCSV3.getColumnIndex("MV"));
+            String date = calibCSV3.getString(calibCSV3.getColumnIndex("DT"));
+            String slope = calibCSV3.getString(calibCSV3.getColumnIndex("SLOPE"));
+            String pHAC = calibCSV3.getString(calibCSV3.getColumnIndex("pHAC"));
+            String temperature1 = calibCSV3.getString(calibCSV3.getColumnIndex("temperature"));
 
-        if (index == 0) {
+            if (index == 0) {
 
-        ph1_3.setText(ph);
-        mv1_3.setText(mv);
-        slope1_3.setText(slope);
-        dt1_3.setText(date);
-        phAfterCalib1_3.setText(pHAC);
-        temp1_3.setText(temperature1);
+                ph1_3.setText(ph);
+                mv1_3.setText(mv);
+                slope1_3.setText(slope);
+                dt1_3.setText(date);
+                phAfterCalib1_3.setText(pHAC);
+                temp1_3.setText(temperature1);
 
-        PH1_3 = ph;
-        MV1_3 = mv;
-        SLOPE1_3 = slope;
-        DT1_3 = date;
-        pHAC1_3 = pHAC;
-        t1_3 = temperature1;
-        }
-        if (index == 1) {
+                PH1_3 = ph;
+                MV1_3 = mv;
+                SLOPE1_3 = slope;
+                DT1_3 = date;
+                pHAC1_3 = pHAC;
+                t1_3 = temperature1;
+            }
+            if (index == 1) {
 
-        ph2_3.setText(ph);
-        mv2_3.setText(mv);
-        slope2_3.setText(slope);
-        dt2_3.setText(date);
-        phAfterCalib2_3.setText(pHAC);
-        temp2_3.setText(temperature1);
+                ph2_3.setText(ph);
+                mv2_3.setText(mv);
+                slope2_3.setText(slope);
+                dt2_3.setText(date);
+                phAfterCalib2_3.setText(pHAC);
+                temp2_3.setText(temperature1);
 
 
-        PH2_3 = ph;
-        MV2_3 = mv;
-        SLOPE2_3 = slope;
-        DT2_3 = date;
-        pHAC2_3 = pHAC;
-        t2_3 = temperature1;
-        }
-        if (index == 2) {
+                PH2_3 = ph;
+                MV2_3 = mv;
+                SLOPE2_3 = slope;
+                DT2_3 = date;
+                pHAC2_3 = pHAC;
+                t2_3 = temperature1;
+            }
+            if (index == 2) {
 
-        ph3_3.setText(ph);
-        mv3_3.setText(mv);
-        slope3_3.setText(slope);
-        dt3_3.setText(date);
-        phAfterCalib3_3.setText(pHAC);
-        temp3_3.setText(temperature1);
+                ph3_3.setText(ph);
+                mv3_3.setText(mv);
+                slope3_3.setText(slope);
+                dt3_3.setText(date);
+                phAfterCalib3_3.setText(pHAC);
+                temp3_3.setText(temperature1);
 
-        PH3_3 = ph;
-        MV3_3 = mv;
-        SLOPE3_3 = slope;
-        DT3_3 = date;
-        pHAC3_3 = pHAC;
-        t3_3 = temperature1;
-        }
+                PH3_3 = ph;
+                MV3_3 = mv;
+                SLOPE3_3 = slope;
+                DT3_3 = date;
+                pHAC3_3 = pHAC;
+                t3_3 = temperature1;
+            }
 
-        index++;
-        }
-
+            index++;
         }
 
-private void syncOfflineWithOnline() {
+    }
+
+    private void syncOfflineWithOnline() {
         if (Dashboard.isConnected && !Constants.OFFLINE_MODE && !Constants.OFFLINE_DATA) {
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        Cursor calibCSV;
+            Cursor calibCSV;
 
-        calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
+            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
 
-        String[] bufferLabels1 = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
-        String[] bufferLabelsThree1 = new String[]{"B_2", "B_3", "B_4"};
-        String[] coeffLabels1 = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
-        String[] postCoeffLabels1 = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
-        String[] postCoeffLabelsThree1 = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
-        String[] coeffLabelsThree1 = new String[]{"VAL_2", "VAL_3", "VAL_4"};
-        String[] mvS = new String[]{"MV_1", "MV_2", "MV_3", "MV_4", "MV_5"};
-        String[] dateS = new String[]{"DT_1", "DT_2", "DT_3", "DT_4", "DT_5"};
-        String[] SlopeS = new String[]{"SLOPE_1", "SLOPE_2", "SLOPE_3", "SLOPE_4"};
+            String[] bufferLabels1 = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
+            String[] bufferLabelsThree1 = new String[]{"B_2", "B_3", "B_4"};
+            String[] coeffLabels1 = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
+            String[] postCoeffLabels1 = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
+            String[] postCoeffLabelsThree1 = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
+            String[] coeffLabelsThree1 = new String[]{"VAL_2", "VAL_3", "VAL_4"};
+            String[] mvS = new String[]{"MV_1", "MV_2", "MV_3", "MV_4", "MV_5"};
+            String[] dateS = new String[]{"DT_1", "DT_2", "DT_3", "DT_4", "DT_5"};
+            String[] SlopeS = new String[]{"SLOPE_1", "SLOPE_2", "SLOPE_3", "SLOPE_4"};
 
-        int index = 0;
-
-
-        while (calibCSV.moveToNext()) {
-        String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-        String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-        String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-        String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
-        String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-        String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+            int index = 0;
 
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels1[index]).setValue(ph);
-        deviceRef.child("UI").child("PH").child("PH_CAL").child(dateS[index]).setValue(date);
-        deviceRef.child("UI").child("PH").child("PH_CAL").child(mvS[index]).setValue(Float.parseFloat(mv));
-        deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels1[index]).setValue(Float.parseFloat(pHAC));
-        if (index > 0) {
-        deviceRef.child("UI").child("PH").child("PH_CAL").child(SlopeS[index - 1]).setValue(Float.parseFloat(slope));
-        }
-        deviceRef.child("Data").child("PH_VAL").setValue(Float.parseFloat(ph));
-        if (index == 0) {
-        deviceRef.child("Data").child("TEMP_VAL").setValue(Float.parseFloat(temperature1.replace("°C", "")));
-        }
+            while (calibCSV.moveToNext()) {
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+                String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
+                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
+
+                deviceRef.child("UI").child("PH").child("PH_CAL").child(bufferLabels1[index]).setValue(ph);
+                deviceRef.child("UI").child("PH").child("PH_CAL").child(dateS[index]).setValue(date);
+                deviceRef.child("UI").child("PH").child("PH_CAL").child(mvS[index]).setValue(Float.parseFloat(mv));
+                deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels1[index]).setValue(Float.parseFloat(pHAC));
+                if (index > 0) {
+                    deviceRef.child("UI").child("PH").child("PH_CAL").child(SlopeS[index - 1]).setValue(Float.parseFloat(slope));
+                }
+                deviceRef.child("Data").child("PH_VAL").setValue(Float.parseFloat(ph));
+                if (index == 0) {
+                    deviceRef.child("Data").child("TEMP_VAL").setValue(Float.parseFloat(temperature1.replace("°C", "")));
+                }
 //                deviceRef.child("Data").child("EC_VAL").setValue(Float.parseFloat(temperature1));
-        index++;
-        }
+                index++;
+            }
 
 
         } else {
-        if (!Dashboard.isConnected) {
-        Toast.makeText(getContext(), "Your device is not connected with any internet connection", Toast.LENGTH_LONG).show();
+            if (!Dashboard.isConnected) {
+                Toast.makeText(getContext(), "Your device is not connected with any internet connection", Toast.LENGTH_LONG).show();
+            }
+            if (Constants.OFFLINE_MODE) {
+                Toast.makeText(getContext(), "Currently your device is in offline mode, so data can sync", Toast.LENGTH_LONG).show();
+            }
         }
-        if (Constants.OFFLINE_MODE) {
-        Toast.makeText(getContext(), "Currently your device is in offline mode, so data can sync", Toast.LENGTH_LONG).show();
-        }
-        }
-        }
+    }
 
     public void receiveDataFromPhActivity(String data, String deviceID, JSONObject lastJsonData) {
-        
-        if (data.equals("Connect")){
-            Log.d("SwitchStatusFrag", "Switch Unchecked: Perform other actions if needed");
 
+        if (data.equals("Connect")) {
+            Log.d("SwitchStatusFrag", "Switch Unchecked: Perform other actions if needed");
+            if (Constants.OFFLINE_MODE) {
+                initiateSocketConnection();
+            }
+            if (Constants.OFFLINE_MODE) {
+
+                webSocket1.send(lastJsonData.toString());
+
+            } else {
+            }
             Toast.makeText(requireContext(), "Connected", Toast.LENGTH_SHORT).show();
         }
-        
+
     }
-    }
+}
