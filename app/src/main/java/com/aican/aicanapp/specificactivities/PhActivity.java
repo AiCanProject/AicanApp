@@ -114,24 +114,23 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         offlineMode.setVisibility(View.GONE);
         notice.setVisibility(View.GONE);
 
-        if (Constants.OFFLINE_DATA && Constants.OFFLINE_MODE){
+        if (Constants.OFFLINE_DATA && Constants.OFFLINE_MODE) {
             onlineMode.setVisibility(View.GONE);
             offlineMode.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             onlineMode.setVisibility(View.VISIBLE);
             offlineMode.setVisibility(View.GONE);
 
-            if (Constants.OFFLINE_MODE){
+            if (Constants.OFFLINE_MODE) {
                 notice.setVisibility(View.GONE);
             }
-            if (Constants.OFFLINE_DATA){
+            if (Constants.OFFLINE_DATA) {
                 notice.setVisibility(View.VISIBLE);
                 notice.setText("Device is not connected");
                 onlineMode.setVisibility(View.GONE);
                 offlineMode.setVisibility(View.VISIBLE);
             }
         }
-
 
 
         String i = getIntent().getStringExtra("refreshCalib");
@@ -175,33 +174,28 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             }
         });
 
-        if (Constants.OFFLINE_DATA){
+        if (Constants.OFFLINE_DATA) {
 
-        offlineModeSwitch.setChecked(true);
-        offlineModeSwitch.setText("Disconnect");
+            offlineModeSwitch.setChecked(true);
+            offlineModeSwitch.setText("Disconnect");
 
-        offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (offlineModeSwitch.isChecked()){
-                    if (frag.equals("Calib") && Source.activeFragment == 1){
-                        phCalibFragmentNew.receiveDataFromPhActivity("Connect",PhActivity.DEVICE_ID, lastJsonData);
-                    }
-                }else{
-                    Log.d("SwitchStatusAct", "Switch Unchecked: Perform other actions if needed");
+            offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (offlineModeSwitch.isChecked()) {
+                        if (frag.equals("Calib") && Source.activeFragment == 1) {
+                            phCalibFragmentNew.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
+                        }
+                    } else {
+                        Log.d("SwitchStatusAct", "Switch Unchecked: Perform other actions if needed");
 
-                    if (frag.equals(("Calib")) && Source.activeFragment == 1) {
-                        phCalibFragmentNew.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
+                        if (frag.equals(("Calib")) && Source.activeFragment == 1) {
+                            phCalibFragmentNew.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
+                        }
                     }
                 }
-            }
-        });
+            });
         }
-
-
-
-
-
 
 
     }
@@ -314,6 +308,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
     String frag = "na";
     JSONObject lastJsonData;
+
     @Override
     public void onDisconnect(String frag, String deviceID, String message, JSONObject lastJsonData) {
         offlineModeSwitch.setChecked(false);

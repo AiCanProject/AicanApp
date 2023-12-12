@@ -5777,6 +5777,23 @@ public class PhCalibFragmentNew extends Fragment {
             }
             Toast.makeText(requireContext(), "Connected", Toast.LENGTH_SHORT).show();
         }
+        if (data.equals("Disconnect")) {
+            webSocket1.cancel();
+            Source.calibratingNow = false;
+            if (spin.getSelectedItemPosition() == 0) {
+                if (timer5 != null) {
+
+                    timer5.cancel();
+                }
+                calibrateBtn.setEnabled(true);
+            } else {
+                if (timer3 != null) {
+
+                    timer3.cancel();
+                }
+                calibrateBtn.setEnabled(true);
+            }
+        }
 
     }
 }
