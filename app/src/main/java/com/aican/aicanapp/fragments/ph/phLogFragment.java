@@ -55,6 +55,7 @@ import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.Constants;
+import com.aican.aicanapp.utils.SharedPref;
 import com.google.common.base.Splitter;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -246,23 +247,32 @@ public class phLogFragment extends Fragment {
 
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
+if (Constants.OFFLINE_DATA){
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    companyName = snapshot.getValue(String.class);
-                } else {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
-                    companyName = "NA";
-                }
+    if (SharedPref.getSavedData(getContext(),"COMPANY_NAME") != null && SharedPref.getSavedData(
+            getContext(),"COMPANY_NAME") != "N/A"){
+        companyName = SharedPref.getSavedData(getContext(),"COMPANY_NAME");
+    }else{
+        companyName ="N/A";
+    }
+
+}else {
+    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+            if (snapshot.exists()) {
+                companyName = snapshot.getValue(String.class);
+            } else {
+                deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
+                companyName = "NA";
             }
+        }
 
-            @Override
-            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
-            }
-        });
-
+        @Override
+        public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+        }
+    });
+}
 
         if (!Constants.OFFLINE_MODE) {
 
