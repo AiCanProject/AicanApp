@@ -57,6 +57,7 @@ import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhMvTable;
 import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.Constants;
+import com.aican.aicanapp.utils.SharedPref;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -260,22 +261,32 @@ public class PhCalibFragmentNew extends Fragment {
 
         }
 
+        if (Constants.OFFLINE_DATA){
 
-        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    companyName = snapshot.getValue(String.class);
-                } else {
-                    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
-                    companyName = "NA";
+            if (SharedPref.getSavedData(getContext(),"COMPANY_NAME") != null && SharedPref.getSavedData(
+                    getContext(),"COMPANY_NAME") != "N/A"){
+                companyName = SharedPref.getSavedData(getContext(),"COMPANY_NAME");
+            }else{
+                companyName ="N/A";
+            }
+        }else {
+
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        companyName = snapshot.getValue(String.class);
+                    } else {
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("N/A");
+                        companyName = "N/A";
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+                }
+            });
+        }
         databaseHelper = new DatabaseHelper(requireContext());
 
         Cursor res = databaseHelper.get_data();
@@ -468,6 +479,8 @@ public class PhCalibFragmentNew extends Fragment {
             calibFileAdapter.notifyDataSetChanged();
             calibRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
         });
+
+        getFirebaseValue();
 
         phGraph.setOnClickListener(v ->
 

@@ -177,6 +177,7 @@ public class Export extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                companyName = String.valueOf(charSequence);
 
             }
 
@@ -1620,11 +1621,11 @@ public class Export extends AppCompatActivity {
             });
         }else{
             if (SharedPref.getSavedData(Export.this,"COMPANY_NAME") != null && SharedPref.getSavedData(
-                    Export.this,"COMPANY_NAME") != "NA"){
+                    Export.this,"COMPANY_NAME") != "N/A"){
                 companyName = SharedPref.getSavedData(Export.this,"COMPANY_NAME");
                 companyNameEditText.setText(companyName);
             }else{
-                companyName ="NA";
+                companyName ="N/A";
                 companyNameEditText.setText(companyName);
             }
         }
