@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Source {
 
     public static int calibMode = 0;
+    public static int activeFragment = 0;
 
     public static String userId, userPasscode, userRole, userName, userTrack, deviceID, expiryDate, dateCreated;
     public static Boolean status_export = false;

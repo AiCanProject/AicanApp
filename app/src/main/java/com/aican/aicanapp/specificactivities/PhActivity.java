@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.fragments.ph.phAlarmFragment;
 import com.aican.aicanapp.fragments.ph.phGraphFragment;
 import com.aican.aicanapp.fragments.ph.phLogFragment;
+import com.aican.aicanapp.interfaces.DeviceConnectionInfo;
 import com.aican.aicanapp.utils.Constants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -33,21 +35,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class PhActivity extends AppCompatActivity implements View.OnClickListener {
+public class PhActivity extends AppCompatActivity implements View.OnClickListener, DeviceConnectionInfo {
 
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
     DatabaseReference deviceRef;
+
+    Switch offlineModeSwitch;
 
     PhFragment phFragment = new PhFragment();
     PhCalibFragment phCalibFragment = new PhCalibFragment();
     phLogFragment phLogFragment = new phLogFragment();
     phGraphFragment phGraphFragment = new phGraphFragment();
     phAlarmFragment phAlarmFragment = new phAlarmFragment();
-    PhCalibFragmentNew phCalibFragmentNew = new PhCalibFragmentNew();
+    PhCalibFragmentNew phCalibFragmentNew = new PhCalibFragmentNew(this);
     DatabaseHelper databaseHelper;
 
     public static String DEVICE_ID = null;
@@ -86,6 +92,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         });
         databaseHelper = new DatabaseHelper(PhActivity.this);
 
+        offlineModeSwitch = findViewById(R.id.offlineModeSwitch);
         ph = findViewById(R.id.item1);
         calibrate = findViewById(R.id.item2);
         log = findViewById(R.id.item3);
@@ -167,6 +174,36 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
             }
         });
+
+        if (Constants.OFFLINE_DATA){
+
+        offlineModeSwitch.setChecked(true);
+        offlineModeSwitch.setText("Disconnect");
+
+        offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (offlineModeSwitch.isChecked()){
+                    if (frag.equals("Calib") && Source.activeFragment == 1){
+                        phCalibFragmentNew.receiveDataFromPhActivity("Connect",PhActivity.DEVICE_ID, lastJsonData);
+                    }
+                }else{
+                    Log.d("SwitchStatusAct", "Switch Unchecked: Perform other actions if needed");
+
+                    if (frag.equals(("Calib")) && Source.activeFragment == 1) {
+                        phCalibFragmentNew.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
+                    }
+                }
+            }
+        });
+        }
+
+
+
+
+
+
+
     }
 
     @Override
@@ -275,4 +312,22 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
         return false;
     }
 
+    String frag = "na";
+    JSONObject lastJsonData;
+    @Override
+    public void onDisconnect(String frag, String deviceID, String message, JSONObject lastJsonData) {
+        offlineModeSwitch.setChecked(false);
+        offlineModeSwitch.setText("Reconnect");
+        this.frag = frag;
+        this.lastJsonData = lastJsonData;
+    }
+
+    @Override
+    public void onReconnect(String frag, String deviceID, String message, JSONObject lastJsonData) {
+        offlineModeSwitch.setChecked(true);
+        offlineModeSwitch.setText("Disconnect");
+        this.frag = frag;
+        this.lastJsonData = lastJsonData;
+
+    }
 }

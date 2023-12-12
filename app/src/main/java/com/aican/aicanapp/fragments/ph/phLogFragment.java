@@ -148,6 +148,7 @@ public class phLogFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Source.activeFragment = 2;
         printLifecycle("onResume");
     }
 
