@@ -1093,6 +1093,18 @@ public class PhCalibFragmentNew extends Fragment {
                 String time = String.format(Locale.UK, "%02d:%02d", min, sec);
                 tvTimerThree.setText(time);
                 Log.e("lineNThree", line + "");
+                if (!Source.calibratingNow){
+                    timer3.cancel();
+//                    handler33.removeCallbacks(this);
+                    wrong_3 = false;
+                    calibrateBtnThree.setEnabled(true);
+                    calibrateBtnThree.setEnabled(true);
+                    phGraph.setEnabled(true);
+                    phMvTable.setEnabled(true);
+                    printCalibData.setEnabled(true);
+                    calibSpinner.setEnabled(true);
+                    spin.setEnabled(true);
+                }
                 Source.calibratingNow = true;
                 if (line_3 == -1) {
                     log1_3.setBackgroundColor(Color.WHITE);
@@ -2085,6 +2097,17 @@ public class PhCalibFragmentNew extends Fragment {
                 String time = String.format(Locale.UK, "%02d:%02d", min, sec);
                 tvTimer.setText(time);
                 Log.e("lineN", line + "");
+                if (!Source.calibratingNow) {
+                    timer5.cancel();
+//                        handler33.removeCallbacks(this);
+//                        wrong_3 = false;
+                    calibrateBtn.setEnabled(true);
+                    phGraph.setEnabled(true);
+                    phMvTable.setEnabled(true);
+                    printCalibData.setEnabled(true);
+                    calibSpinner.setEnabled(true);
+                    spin.setEnabled(true);
+                }
                 Source.calibratingNow = true;
 
                 phGraph.setEnabled(false);
