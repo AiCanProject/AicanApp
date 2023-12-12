@@ -343,8 +343,13 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                     if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                         String val = jsonData.getString("PH_VAL");
                         tvPhCurr.setText(val);
-                        phView.moveTo(Float.parseFloat(val));
-                        AlarmConstants.PH = Float.parseFloat(val);
+                        float floatVal = 0.0f;
+                        if (!jsonData.getString("PH_VAL").equals("nan")) {
+                            floatVal = Float.parseFloat(val);
+                        }
+                        phView.moveTo(floatVal);
+
+                        AlarmConstants.PH = floatVal;
                     }
 
                     if (jsonData.has("ATC") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
@@ -369,19 +374,26 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                     }
 
                     if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                        float tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
 
+                        float tempval = 0.0f;
+                        String temp = "0.0";
+                        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
 
+                            tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                            temp = String.valueOf(Math.round(tempval));
 
-                        String temp = String.valueOf(Math.round(tempval));
-                        tvTempCurr.setText(temp + "°C");
+                            tvTempCurr.setText(temp + "°C");
 
-                        if (Integer.parseInt(temp) <= -127) {
-                            tvTempCurr.setText("NA");
-                            switchAtc.setEnabled(false);
-                        } else {
-                            switchAtc.setEnabled(true);
+                            if (Integer.parseInt(temp) <= -127) {
+                                tvTempCurr.setText("NA");
+                                switchAtc.setEnabled(false);
+                            } else {
+                                switchAtc.setEnabled(true);
+                            }
+
                         }
+
+
 
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                         SharedPreferences.Editor edit = sharedPreferences.edit();

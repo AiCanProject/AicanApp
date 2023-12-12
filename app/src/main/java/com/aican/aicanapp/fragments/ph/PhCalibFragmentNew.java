@@ -243,7 +243,7 @@ public class PhCalibFragmentNew extends Fragment {
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         jsonData = new JSONObject();
-        if (!Constants.OFFLINE_MODE && !                                Constants.OFFLINE_DATA) {
+        if (!Constants.OFFLINE_MODE && !Constants.OFFLINE_DATA) {
             fetchAllDataFromFirebase();
             fetchAllData5Point();
             fetchAllData3Point();
@@ -355,9 +355,9 @@ public class PhCalibFragmentNew extends Fragment {
 //        }
 
         calibrateBtn.setOnClickListener(v -> {
-            if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
+            if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                 calibrateFivePointOffline(webSocket1);
-            } else if (                                Constants.OFFLINE_DATA ) {
+            } else if (Constants.OFFLINE_DATA) {
                 Toast.makeText(getContext(), "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
             } else {
                 calibrateFivePoint();
@@ -367,11 +367,11 @@ public class PhCalibFragmentNew extends Fragment {
         calibrateBtnThree.setOnClickListener(v ->
 
         {
-            if (Constants.OFFLINE_MODE  &&                                 Constants.OFFLINE_DATA) {
+            if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                 calibrateThreePointOffline();
-            }else if (                                Constants.OFFLINE_DATA ) {
+            } else if (Constants.OFFLINE_DATA) {
                 Toast.makeText(getContext(), "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
-            }  else {
+            } else {
                 calibrateThreePoint();
             }
         });
@@ -785,7 +785,7 @@ public class PhCalibFragmentNew extends Fragment {
 //
 //
 //
-        if (Constants.OFFLINE_MODE  ||                             Constants.OFFLINE_DATA) {
+        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
             document.add(new Paragraph("Offline Mode"));
         }
         document.add(new Paragraph(company_name + "\n" + calib_by + "\n" + user_name + "\n" + device_id));
@@ -810,15 +810,15 @@ public class PhCalibFragmentNew extends Fragment {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor calibCSV = null;
 
-        if (Constants.OFFLINE_MODE ||                      Constants.OFFLINE_DATA) {
+        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
 //            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
 
-            if (spin.getSelectedItemPosition() == 0){
-                            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
+            if (spin.getSelectedItemPosition() == 0) {
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
 
             }
-            if (spin.getSelectedItemPosition() == 1){
-                            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
+            if (spin.getSelectedItemPosition() == 1) {
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
 
             }
 
@@ -939,7 +939,7 @@ public class PhCalibFragmentNew extends Fragment {
 
         Cursor calibCSV;
 
-        if (Constants.OFFLINE_MODE  ||                              Constants.OFFLINE_DATA) {
+        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
             calibCSV = db.rawQuery("SELECT * FROM CalibOfflineAllData", null);
 
         } else {
@@ -3615,17 +3615,17 @@ public class PhCalibFragmentNew extends Fragment {
 
                     } else {
 
-                        if (Constants.OFFLINE_DATA){
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
 
                         }
 
                     }
 
-                   });
+                });
                 dialog.show(getParentFragmentManager(), null);
                 break;
 
@@ -3635,7 +3635,7 @@ public class PhCalibFragmentNew extends Fragment {
                     updateBufferValue(ph);
 
 
-                    if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA){
+                    if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                         try {
                             jsonData = new JSONObject();
                             jsonData.put("B_2", String.valueOf(ph));
@@ -3655,12 +3655,11 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else {
-                        if (Constants.OFFLINE_DATA){
+                    } else {
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
 
                         }
@@ -3672,7 +3671,7 @@ public class PhCalibFragmentNew extends Fragment {
                 EditPhBufferDialog dialog2 = new EditPhBufferDialog(ph -> {
                     updateBufferValue(ph);
 
-                    if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA){
+                    if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                         try {
                             jsonData = new JSONObject();
                             jsonData.put("B_3", String.valueOf(ph));
@@ -3691,12 +3690,11 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else{
-                        if (Constants.OFFLINE_DATA){
+                    } else {
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
 
                         }
@@ -3726,12 +3724,11 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else{
-                        if (Constants.OFFLINE_DATA){
+                    } else {
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
 
                         }
@@ -3761,12 +3758,11 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else{
-                        if (Constants.OFFLINE_DATA){
+                    } else {
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
 
                         }
@@ -3799,12 +3795,11 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else{
-                        if (Constants.OFFLINE_DATA){
+                    } else {
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
 
                         }
@@ -3840,12 +3835,11 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else{
-                        if (Constants.OFFLINE_DATA){
+                    } else {
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
 
                         }
@@ -3878,13 +3872,12 @@ public class PhCalibFragmentNew extends Fragment {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else {
+                    } else {
 
-                        if (Constants.OFFLINE_DATA){
+                        if (Constants.OFFLINE_DATA) {
                             Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
 
-                        }else{
+                        } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
 
                         }
@@ -4027,7 +4020,13 @@ public class PhCalibFragmentNew extends Fragment {
                     if (spin.getSelectedItemPosition() == 0) {
 
                         if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                            float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+
+                            float ph = 0.0f;
+                            if (!jsonData.getString("PH_VAL").equals("nan")) {
+                                ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                            }
+
+
                             String phForm = String.format(Locale.UK, "%.2f", ph);
                             tvPhCurr.setText(phForm);
                             phView.moveTo(ph);
@@ -4036,11 +4035,15 @@ public class PhCalibFragmentNew extends Fragment {
                         }
 
                         if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                            float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
-                            String tempForm = String.format(Locale.UK, "%.1f", ph);
+                            float tempVal = 0.0f;
+                            if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+
+                                tempVal = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                            }
+                            String tempForm = String.format(Locale.UK, "%.1f", tempVal);
                             tvTempCurr.setText(tempForm + "°C");
 
-                            if (ph <= -127.0) {
+                            if (tempVal <= -127.0) {
                                 tvTempCurr.setText("NA");
                             }
                         }
@@ -4154,8 +4157,6 @@ public class PhCalibFragmentNew extends Fragment {
                             databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-
-
                             SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
@@ -4168,7 +4169,6 @@ public class PhCalibFragmentNew extends Fragment {
 
                             phAfterCalib2.setText(v);
                             pHAC2 = phAfterCalib2.getText().toString();
-
 
 
                             CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
@@ -4191,7 +4191,6 @@ public class PhCalibFragmentNew extends Fragment {
                             String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
 
                             slope2.setText(v);
-
 
 
                             CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
@@ -4260,7 +4259,6 @@ public class PhCalibFragmentNew extends Fragment {
                                     dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
                             databaseHelper.updateClbOffDataFive(calibDatClass);
-
 
 
                         }
@@ -4472,7 +4470,6 @@ public class PhCalibFragmentNew extends Fragment {
                                 databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-
                                 myEdit.putString("tem1", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC1", d);
                                 myEdit.commit();
@@ -4484,7 +4481,6 @@ public class PhCalibFragmentNew extends Fragment {
                                 phAfterCalib2.setText(d);
 
 
-
                                 CalibDatClass calibDatClass = new CalibDatClass(2, ph2.getText().toString(),
                                         mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
                                         bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
@@ -4492,7 +4488,6 @@ public class PhCalibFragmentNew extends Fragment {
                                         dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
 
                                 databaseHelper.updateClbOffDataFive(calibDatClass);
-
 
 
                                 myEdit.putString("tem2", tvTempCurr.getText().toString());
@@ -4524,7 +4519,6 @@ public class PhCalibFragmentNew extends Fragment {
                                 phAfterCalib4.setText(String.valueOf(d));
 
 
-
                                 CalibDatClass calibDatClass = new CalibDatClass(4, ph4.getText().toString(),
                                         mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
                                         bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
@@ -4532,7 +4526,6 @@ public class PhCalibFragmentNew extends Fragment {
                                         dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
 
                                 databaseHelper.updateClbOffDataFive(calibDatClass);
-
 
 
                                 myEdit.putString("tem4", tvTempCurr.getText().toString());
@@ -4562,8 +4555,7 @@ public class PhCalibFragmentNew extends Fragment {
                             }
                         }
 
-                    }
-                    else if (spin.getSelectedItemPosition() == 1) {
+                    } else if (spin.getSelectedItemPosition() == 1) {
 
                         if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
@@ -4647,7 +4639,6 @@ public class PhCalibFragmentNew extends Fragment {
 
 
                             databaseHelper.updateClbOffDataThree(calibDatClass2);
-
 
 
                         }
@@ -4828,7 +4819,6 @@ public class PhCalibFragmentNew extends Fragment {
                                 databaseHelper.updateClbOffDataThree(calibDatClass1);
 
 
-
                                 myEdit.putString("tem1_3", tvTempCurr.getText().toString());
                                 myEdit.putString("pHAC1_3", d);
                                 myEdit.commit();
@@ -4858,7 +4848,6 @@ public class PhCalibFragmentNew extends Fragment {
                             } else if (jsonData.getString("CAL").equals("41") && jsonData.has("POST_VAL_4")) {
                                 String d = jsonData.getString("POST_VAL_4");
                                 phAfterCalib3_3.setText(String.valueOf(d));
-
 
 
                                 CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
@@ -4953,7 +4942,7 @@ public class PhCalibFragmentNew extends Fragment {
 //            initiateSocketConnection();
 //
 //        }
-        if (Constants.OFFLINE_MODE ||                               Constants.OFFLINE_DATA) {
+        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
             offlineDataFeeding();
         }
         super.onResume();
@@ -5014,7 +5003,7 @@ public class PhCalibFragmentNew extends Fragment {
                         log4.setBackgroundColor(Color.WHITE);
                         log5.setBackgroundColor(Color.WHITE);
 
-                        if (Constants.OFFLINE_MODE ||                                 Constants.OFFLINE_DATA) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
                             offlineDataFeeding();
                         } else {
 
@@ -5029,7 +5018,7 @@ public class PhCalibFragmentNew extends Fragment {
                         databaseHelper.insertCalibration(PH4, MV4, SLOPE4, DT4, BFD4, pHAC4, t4, DT4.length() >= 15 ? DT4.substring(0, 10) : "--", DT4.length() >= 15 ? DT4.substring(11, 16) : "--");
                         databaseHelper.insertCalibration(PH5, MV5, SLOPE5, DT5, BFD5, pHAC5, t5, DT5.length() >= 15 ? DT5.substring(0, 10) : "--", DT5.length() >= 15 ? DT5.substring(11, 16) : "--");
 
-                        if (Constants.OFFLINE_MODE ||                                 Constants.OFFLINE_DATA) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
 
                             deleteAllOfflineCalibData();
 
@@ -5041,7 +5030,7 @@ public class PhCalibFragmentNew extends Fragment {
 
 
                         }
-                        if (Constants.OFFLINE_MODE ||                                 Constants.OFFLINE_DATA ) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
                             offlineDataFeeding();
                         }
                         break;
@@ -5080,7 +5069,7 @@ public class PhCalibFragmentNew extends Fragment {
                         log3.setBackgroundColor(Color.WHITE);
                         log4.setBackgroundColor(Color.WHITE);
                         log5.setBackgroundColor(Color.WHITE);
-                        if (Constants.OFFLINE_MODE ||                                 Constants.OFFLINE_DATA) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
                             offlineDataFeeding();
                         } else {
                             fetchAllData3Point();
@@ -5092,7 +5081,7 @@ public class PhCalibFragmentNew extends Fragment {
                         databaseHelper.insertCalibration(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
                         databaseHelper.insertCalibration(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
                         databaseHelper.insertCalibration(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
-                        if (Constants.OFFLINE_MODE ||                                 Constants.OFFLINE_DATA) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
                             deleteAllOfflineCalibData();
 
                             databaseHelper.insertCalibrationOfflineData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
@@ -5100,7 +5089,7 @@ public class PhCalibFragmentNew extends Fragment {
                             databaseHelper.insertCalibrationOfflineData(PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
                         }
 
-                        if (Constants.OFFLINE_MODE ||                                 Constants.OFFLINE_DATA ) {
+                        if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
                             offlineDataFeeding();
                         }
                         break;
@@ -5360,7 +5349,7 @@ public class PhCalibFragmentNew extends Fragment {
     }
 
     private void syncOfflineWithOnline() {
-        if (Dashboard.isConnected && !Constants.OFFLINE_MODE && !                                Constants.OFFLINE_DATA ) {
+        if (Dashboard.isConnected && !Constants.OFFLINE_MODE && !Constants.OFFLINE_DATA) {
             SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
             Cursor calibCSV;

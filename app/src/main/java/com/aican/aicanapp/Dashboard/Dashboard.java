@@ -136,7 +136,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     DatabaseReference primaryDatabase;
     DatabaseReference databaseReference;
     DatabaseReference deviceRef;
-    Switch offlineMode,offlineModeSwitch;
+    Switch offlineMode, offlineModeSwitch;
     WebSocket webSocket1;
     JSONObject jsonData;
     TextView connectedDeviceSSID;
@@ -224,7 +224,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
         primaryDatabase = FirebaseDatabase.getInstance(PrimaryAccount.getInstance(this)).getReference().child("USERS").child(mUid);
-        
+
         deviceIds = new ArrayList<>();
         phDevices = new ArrayList<>();
         pumpDevices = new ArrayList<>();
@@ -236,7 +236,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         ecDevices = new ArrayList<>();
 
         jsonData = new JSONObject();
-
 
 
 //        checkPermission();
@@ -480,13 +479,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
         setUpToolBar();
         setUpPh();
-        
+
         setUpTemp();
         setUpCooling();
         setUpPump();
         setUpEc();
 
-        Source.showLoading(this,false,false,"Loading Devices....");
+        Source.showLoading(this, false, false, "Loading Devices....");
         refresh();
 
         offlineModeSwitch.setVisibility(View.GONE);
@@ -495,12 +494,12 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (offlineModeSwitch.isChecked()){
+                if (offlineModeSwitch.isChecked()) {
                     Constants.OFFLINE_MODE = true;
                     Constants.OFFLINE_DATA = true;
-                }else{
+                } else {
 
-                    if (Constants.OFFLINE_MODE){
+                    if (Constants.OFFLINE_MODE) {
                         webSocket1.cancel();
                     }
                     offlineModeSwitch.setVisibility(View.GONE);
@@ -627,11 +626,10 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         NewAsyncTask newAsyncTask = new NewAsyncTask(this);
         newAsyncTask.execute(Dashboard.this);
 
-        Log.e("CallingTwMKTLKKOnRes","CAA");
+        Log.e("CallingTwMKTLKKOnRes", "CAA");
 
 //        offlineModeCheck();
     }
-
 
 
     //Toolbar------------------------------------------------------------------------------------------------------
@@ -862,9 +860,18 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     if (jsonData.has("PH_VAL") && jsonData.has("TEMP_VAL")
                             && jsonData.has("MV_VAL")
                             && jsonData.getString("DEVICE_ID").equals(Constants.DeviceIDOffline)) {
-                        float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
-                        float mv = Float.parseFloat(jsonData.getString("MV_VAL"));
-                        int tm = Integer.parseInt(jsonData.getString("TEMP_VAL"));
+                        float ph = 0.0f;
+                        float mv = 0.0f;
+                        int tm = 0;
+                        if (!jsonData.getString("PH_VAL").equals("nan")) {
+                            ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                        }
+                        if (!jsonData.getString("MV_VAL").equals("nan")) {
+                            mv = Float.parseFloat(jsonData.getString("MV_VAL"));
+                        }
+                        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+                            tm = Integer.parseInt(jsonData.getString("TEMP_VAL"));
+                        }
                         String phForm = String.format(Locale.UK, "%.2f", ph);
                         String devID = jsonData.getString("DEVICE_ID");
 
@@ -892,12 +899,17 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     }
 //                    if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                     if (jsonData.has("PH_VAL") && jsonData.has("DEVICE_ID")) {
-                        float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+
+                        float ph = 0.0f;
+                        if (!jsonData.getString("PH_VAL").equals("nan")) {
+                            ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+
+                        }
                         String devID = jsonData.getString("DEVICE_ID");
 
                         Log.e("ThisPHVAL", "PH " + ph);
 
-                        if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
+                        if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                             phAdapter.refreshPh(0, ph, devID);
                         }
 //                    if (Integer.parseInt(temp1) <= -127) {
@@ -912,12 +924,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
                     }
                     if (jsonData.has("TEMP_VAL") && jsonData.has("DEVICE_ID")) {
-                        float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                        float tem = 0.0f;
+                        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+                            tem = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                        }
                         String devID = jsonData.getString("DEVICE_ID");
 
 
-                        if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
-                            phAdapter.refreshTemp(Math.round(ph), devID);
+                        if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
+                            phAdapter.refreshTemp(Math.round(tem), devID);
                         }
 //                    if (Integer.parseInt(temp1) <= -127) {
 //                        temp0 = "NA";
@@ -932,12 +947,15 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     }
 
                     if (jsonData.has("EC_VAL") && jsonData.has("DEVICE_ID")) {
-                        float ph = Float.parseFloat(jsonData.getString("EC_VAL"));
+                        float ecVal = 0.0f;
+                        if (!jsonData.getString("EC_VAL").equals("nan")) {
+                            ecVal = Float.parseFloat(jsonData.getString("EC_VAL"));
+                        }
                         String devID = jsonData.getString("DEVICE_ID");
 
 
-                        if (Constants.OFFLINE_MODE &&                                 Constants.OFFLINE_DATA ) {
-                            phAdapter.refreshMv( ph, devID);
+                        if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
+                            phAdapter.refreshMv(ecVal, devID);
                         }
 //                    if (Integer.parseInt(temp1) <= -127) {
 //                        temp0 = "NA";
@@ -975,7 +993,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                 initialiseFirebaseForDevice(id, deviceAccount);
 
                 if (accountsLoaded.get() == deviceIds.size()) {
-                    Log.e("CallingTw","C");
+                    Log.e("CallingTw", "C");
 //                    Toast.makeText(Dashboard.this, "Loaded : " + deviceAccount, Toast.LENGTH_SHORT).show();
                     getDevices();
                 }
@@ -1015,7 +1033,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         AtomicInteger devicesLoaded = new AtomicInteger();
         for (String id : deviceIds) {
             FirebaseApp app = FirebaseApp.getInstance(id);
-
 
 
             FirebaseDatabase.getInstance(app).getReference().child(deviceTypes.get(id)).child(id).get().addOnSuccessListener(dataSnapshot -> {
@@ -1213,7 +1230,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                                 FirebaseFirestore.getInstance().collection("Devices Registered").document(deviceId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Log.e("CallingTwMKTLKK","CAA");
+                                        Log.e("CallingTwMKTLKK", "CAA");
 
                                         refresh();
                                     }
@@ -1245,7 +1262,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public void onNameChanged(String deviceId, String type, String newName) {
         FirebaseDatabase.getInstance(FirebaseApp.getInstance(deviceId)).getReference()
                 .child(type).child(deviceId).child("NAME").setValue(newName);
-        Log.e("CallingTwMKTLKKRes","CAA");
+        Log.e("CallingTwMKTLKKRes", "CAA");
 
         refresh();
     }
@@ -1376,8 +1393,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                             }
                         });
                         dialog.show();
-                    }
-                    else{
+                    } else {
 //                        Toast.makeText(Dashboard.this, "Loaded", Toast.LENGTH_SHORT).show();
                     }
                 }
