@@ -5801,6 +5801,7 @@ public class PhCalibFragmentNew extends Fragment {
             Toast.makeText(requireContext(), "Connected", Toast.LENGTH_SHORT).show();
         }
         if (data.equals("Disconnect")) {
+            Toast.makeText(requireContext(), "Disconnected", Toast.LENGTH_SHORT).show();
             webSocket1.cancel();
             Source.calibratingNow = false;
             if (spin.getSelectedItemPosition() == 0) {
