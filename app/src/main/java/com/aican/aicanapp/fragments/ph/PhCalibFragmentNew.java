@@ -145,7 +145,7 @@ public class PhCalibFragmentNew extends Fragment {
     public static String PH_MODE = "both";
 
     LinearLayout fivePointCalibStart, threePointCalibStart;
-
+boolean connectedWebsocket = false;
     LinearLayout log1, log2, log3, log4, log5;
     LinearLayout log1_3, log2_3, log3_3;
     LinearLayout log3point, log5point;
@@ -374,11 +374,17 @@ public class PhCalibFragmentNew extends Fragment {
 
         calibrateBtn.setOnClickListener(v -> {
             if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
-                calibrateFivePointOffline(webSocket1);
+                if (connectedWebsocket){
+
+                    calibrateFivePointOffline(webSocket1);}
+                else{
+                    Toast.makeText(getContext(), "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
+                }
             } else if (Constants.OFFLINE_DATA) {
-                Toast.makeText(getContext(), "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "You can't calibrate you are in offline mode and device is not connect", Toast.LENGTH_SHORT).show();
             } else {
                 calibrateFivePoint();
+
             }
         });
 
@@ -386,7 +392,13 @@ public class PhCalibFragmentNew extends Fragment {
 
         {
             if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
-                calibrateThreePointOffline();
+                if (connectedWebsocket){
+
+                    calibrateThreePointOffline();}
+                else{
+                    Toast.makeText(getContext(), "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
+
+                }
             } else if (Constants.OFFLINE_DATA) {
                 Toast.makeText(getContext(), "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
             } else {
@@ -3994,7 +4006,7 @@ public class PhCalibFragmentNew extends Fragment {
             super.onFailure(webSocket, t, response);
             webSocket.cancel();
             webSocket1.cancel();
-
+            connectedWebsocket = false;
             JSONObject jsonData = new JSONObject();
             try {
                 if (spin.getSelectedItemPosition() == 0) {
@@ -4063,6 +4075,7 @@ public class PhCalibFragmentNew extends Fragment {
         @Override
         public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
             super.onClosed(webSocket, code, reason);
+            connectedWebsocket = false;
             webSocket.cancel();
             webSocket1.cancel();
             JSONObject jsonData = new JSONObject();
@@ -4134,6 +4147,7 @@ public class PhCalibFragmentNew extends Fragment {
             super.onClosing(webSocket, code, reason);
             webSocket.cancel();
             webSocket1.cancel();
+            connectedWebsocket = false;
             JSONObject jsonData = new JSONObject();
             try {
                 if (spin.getSelectedItemPosition() == 0) {
@@ -4201,8 +4215,13 @@ public class PhCalibFragmentNew extends Fragment {
         public void onOpen(WebSocket webSocket, Response response) {
             super.onOpen(webSocket, response);
 //            webSocket1 = webSocket;
+            
+            connectedWebsocket = true;
+            deviceConnectionInfo.onReconnect("Calib",PhActivity.DEVICE_ID,"hello");
 
             if (webSocket1 == null) {
+                
+                connectedWebsocket = false;
 
                 webSocket.cancel();
 
@@ -4279,7 +4298,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                         timer3.cancel();
                     }
-                    calibrateBtn.setEnabled(true);
+                    calibrateBtnThree.setEnabled(true);
                 }
 
             }
@@ -4311,85 +4330,7 @@ public class PhCalibFragmentNew extends Fragment {
         @Override
         public void onMessage(WebSocket webSocket, String text) {
             super.onMessage(webSocket, text);
-
-            if (webSocket1 == null) {
-                webSocket.cancel();
-                JSONObject jsonData = new JSONObject();
-                try {
-                    if (spin.getSelectedItemPosition() == 0) {
-                        jsonData.put("CAL_MODE", String.valueOf(5));
-                        if (line == -1) {
-                            jsonData.put("CALIBRATION_STAT", "completed");
-
-                        } else {
-                            jsonData.put("CALIBRATION_STAT", "incomplete");
-                        }
-                        if (line == 0) {
-                            jsonData.put("CAL", String.valueOf(calValues[0]));
-
-                        }
-                        if (line == 1) {
-                            jsonData.put("CAL", String.valueOf(calValues[1]));
-
-                        }
-                        if (line == 2) {
-                            jsonData.put("CAL", String.valueOf(calValues[2]));
-
-                        }
-                        if (line == 3) {
-                            jsonData.put("CAL", String.valueOf(calValues[3]));
-
-                        }
-                        if (line == 4) {
-                            jsonData.put("CAL", String.valueOf(calValues[4]));
-
-                        }
-                    } else {
-                        if (line_3 == -1) {
-                            jsonData.put("CALIBRATION_STAT", "completed");
-
-                        } else {
-                            jsonData.put("CALIBRATION_STAT", "incomplete");
-
-                        }
-                        if (line_3 == 0) {
-                            jsonData.put("CAL", String.valueOf(calValuesThree[0]));
-
-                        }
-                        if (line_3 == 1) {
-                            jsonData.put("CAL", String.valueOf(calValuesThree[1]));
-
-                        }
-                        if (line_3 == 2) {
-                            jsonData.put("CAL", String.valueOf(calValuesThree[2]));
-
-                        }
-                        jsonData.put("CAL_MODE", String.valueOf(3));
-
-                    }
-                    jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
-                    jsonData.put("STATUS", "Reconnecting");
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
-
-                Source.calibratingNow = false;
-                if (spin.getSelectedItemPosition() == 0) {
-                    if (timer5 != null) {
-
-                        timer5.cancel();
-                    }
-                    calibrateBtn.setEnabled(true);
-                } else {
-                    if (timer3 != null) {
-
-                        timer3.cancel();
-                    }
-                    calibrateBtn.setEnabled(true);
-                }
-            }
+            connectedWebsocket = true;
 
 
             getActivity().runOnUiThread(() -> {
@@ -5804,6 +5745,7 @@ public class PhCalibFragmentNew extends Fragment {
             Toast.makeText(requireContext(), "Disconnected", Toast.LENGTH_SHORT).show();
             webSocket1.cancel();
             Source.calibratingNow = false;
+//            connectedWebsocket = false;
             if (spin.getSelectedItemPosition() == 0) {
                 if (timer5 != null) {
 
@@ -5815,7 +5757,7 @@ public class PhCalibFragmentNew extends Fragment {
 
                     timer3.cancel();
                 }
-                calibrateBtn.setEnabled(true);
+                calibrateBtnThree.setEnabled(true);
             }
             phGraph.setEnabled(true);
             phMvTable.setEnabled(true);

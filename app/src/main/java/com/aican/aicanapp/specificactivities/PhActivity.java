@@ -46,6 +46,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
     DatabaseReference deviceRef;
 
+    boolean connectedWebsocket = false;
+
     Switch offlineModeSwitch;
 
     PhFragment phFragment = new PhFragment();
@@ -183,10 +185,13 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 @Override
                 public void onClick(View view) {
                     if (offlineModeSwitch.isChecked()) {
+                        offlineModeSwitch.setText("Reconnect");
+
                         if ( Source.activeFragment == 1) {
                             phCalibFragmentNew.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
                         }
                     } else {
+                        offlineModeSwitch.setText("Disconnect");
 
                         if ( Source.activeFragment == 1) {
 
@@ -197,6 +202,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             });
         }
 
+        offlineModeSwitch.setVisibility(View.GONE);
 
     }
 
@@ -210,6 +216,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             tabItemPh.setBackground(getResources().getDrawable(R.drawable.back_select2));
 
             if (view.getId() == R.id.item1) {
+                offlineModeSwitch.setVisibility(View.GONE);
                 tabItemPh.animate().x(0).setDuration(100);
                 loadFragments(phFragment);
                 ph.setTextColor(Color.WHITE);
@@ -218,6 +225,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 graph.setTextColor(Color.parseColor("#FF24003A"));
                 alarm.setTextColor(Color.parseColor("#FF24003A"));
             } else if (view.getId() == R.id.item2) {
+                offlineModeSwitch.setVisibility(View.VISIBLE);
 
 //                loadFragments(phCalibFragment);
                 loadFragments(phCalibFragmentNew);
@@ -231,6 +239,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 tabItemPh.animate().x(size).setDuration(100);
 
             } else if (view.getId() == R.id.item3) {
+                offlineModeSwitch.setVisibility(View.GONE);
+
                 loadFragments(phLogFragment);
                 log.setTextColor(Color.WHITE);
                 ph.setTextColor(Color.parseColor("#FF24003A"));
@@ -241,6 +251,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 tabItemPh.animate().x(size).setDuration(100);
 
             } else if (view.getId() == R.id.item4) {
+                offlineModeSwitch.setVisibility(View.GONE);
+
                 loadFragments(phGraphFragment);
 
                 graph.setTextColor(Color.WHITE);
@@ -311,18 +323,29 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onDisconnect(String frag, String deviceID, String message, JSONObject lastJsonData) {
-        offlineModeSwitch.setChecked(false);
-        offlineModeSwitch.setText("Reconnect");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                offlineModeSwitch.setChecked(false);
+                offlineModeSwitch.setText("Reconnect");
+
+            }
+        });
         this.frag = frag;
         this.lastJsonData = lastJsonData;
     }
 
     @Override
-    public void onReconnect(String frag, String deviceID, String message, JSONObject lastJsonData) {
+    public void onReconnect(String frag, String deviceID, String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
         offlineModeSwitch.setChecked(true);
         offlineModeSwitch.setText("Disconnect");
+            }
+        });
         this.frag = frag;
-        this.lastJsonData = lastJsonData;
 
     }
 }
