@@ -5793,6 +5793,11 @@ public class PhCalibFragmentNew extends Fragment {
                 }
                 calibrateBtn.setEnabled(true);
             }
+            phGraph.setEnabled(true);
+            phMvTable.setEnabled(true);
+            printCalibData.setEnabled(true);
+            calibSpinner.setEnabled(true);
+            spin.setEnabled(true);
         }
 
     }
