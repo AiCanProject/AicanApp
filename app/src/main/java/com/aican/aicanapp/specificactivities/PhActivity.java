@@ -183,13 +183,13 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 @Override
                 public void onClick(View view) {
                     if (offlineModeSwitch.isChecked()) {
-                        if (frag.equals("Calib") && Source.activeFragment == 1) {
+                        if ( Source.activeFragment == 1) {
                             phCalibFragmentNew.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
                         }
                     } else {
-                        Log.d("SwitchStatusAct", "Switch Unchecked: Perform other actions if needed");
 
-                        if (frag.equals(("Calib")) && Source.activeFragment == 1) {
+                        if ( Source.activeFragment == 1) {
+
                             phCalibFragmentNew.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
                         }
                     }
