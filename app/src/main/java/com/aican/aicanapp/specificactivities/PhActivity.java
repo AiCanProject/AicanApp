@@ -187,13 +187,13 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                     if (offlineModeSwitch.isChecked()) {
                         offlineModeSwitch.setText("Reconnect");
 
-                        if ( Source.activeFragment == 1) {
+                        if (Source.activeFragment == 1) {
                             phCalibFragmentNew.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
                         }
                     } else {
                         offlineModeSwitch.setText("Disconnect");
 
-                        if ( Source.activeFragment == 1) {
+                        if (Source.activeFragment == 1) {
 
                             phCalibFragmentNew.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
                         }
@@ -341,8 +341,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             @Override
             public void run() {
 
-        offlineModeSwitch.setChecked(true);
-        offlineModeSwitch.setText("Disconnect");
+                offlineModeSwitch.setChecked(true);
+                offlineModeSwitch.setText("Disconnect");
             }
         });
         this.frag = frag;
