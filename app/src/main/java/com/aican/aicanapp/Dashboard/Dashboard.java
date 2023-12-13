@@ -71,6 +71,7 @@ import com.aican.aicanapp.dataClasses.PhDevice;
 import com.aican.aicanapp.dataClasses.PumpDevice;
 import com.aican.aicanapp.dataClasses.TempDevice;
 import com.aican.aicanapp.dialogs.EditNameDialog;
+import com.aican.aicanapp.fragments.ph.PhFragment;
 import com.aican.aicanapp.interfaces.WebSocketInit;
 import com.aican.aicanapp.specificactivities.AvailableWifiDevices;
 import com.aican.aicanapp.specificactivities.InstructionActivity;
@@ -863,13 +864,13 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                         float ph = 0.0f;
                         float mv = 0.0f;
                         int tm = 0;
-                        if (!jsonData.getString("PH_VAL").equals("nan")) {
+                        if (!jsonData.getString("PH_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("PH_VAL"))) {
                             ph = Float.parseFloat(jsonData.getString("PH_VAL"));
                         }
-                        if (!jsonData.getString("MV_VAL").equals("nan")) {
+                        if (!jsonData.getString("MV_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("MV_VAL"))) {
                             mv = Float.parseFloat(jsonData.getString("MV_VAL"));
                         }
-                        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+                        if (!jsonData.getString("TEMP_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("TEMP_VAL"))) {
                             tm = Integer.parseInt(jsonData.getString("TEMP_VAL"));
                         }
                         String phForm = String.format(Locale.UK, "%.2f", ph);
@@ -901,7 +902,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     if (jsonData.has("PH_VAL") && jsonData.has("DEVICE_ID")) {
 
                         float ph = 0.0f;
-                        if (!jsonData.getString("PH_VAL").equals("nan")) {
+                        if (!jsonData.getString("PH_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("PH_VAL"))) {
                             ph = Float.parseFloat(jsonData.getString("PH_VAL"));
 
                         }
@@ -925,7 +926,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     }
                     if (jsonData.has("TEMP_VAL") && jsonData.has("DEVICE_ID")) {
                         float tem = 0.0f;
-                        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+                        if (!jsonData.getString("TEMP_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("TEMP_VAL"))) {
                             tem = Float.parseFloat(jsonData.getString("TEMP_VAL"));
                         }
                         String devID = jsonData.getString("DEVICE_ID");
@@ -948,10 +949,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
                     if (jsonData.has("EC_VAL") && jsonData.has("DEVICE_ID")) {
                         float ecVal = 0.0f;
-                        if (!jsonData.getString("EC_VAL").equals("nan")) {
+                        if (!jsonData.getString("EC_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("EC_VAL"))) {
                             ecVal = Float.parseFloat(jsonData.getString("EC_VAL"));
                         }
                         String devID = jsonData.getString("DEVICE_ID");
+
 
 
                         if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {

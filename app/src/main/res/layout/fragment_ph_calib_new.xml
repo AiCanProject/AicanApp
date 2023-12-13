@@ -158,6 +158,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView3"
+                android:visibility="visible"
                 android:layout_width="180dp"
                 android:layout_height="90dp"
                 android:layout_margin="10dp"
@@ -197,7 +198,35 @@
                 app:strokeColor="@color/red"
                 app:strokeWidth="2dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="0dp"
+                        android:text="Avg, Slope"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/finalSlope"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="0dp"
+                        android:text="---"
+                        android:textColor="@color/blueDark"
+                        android:textSize="37sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
                 <Button
+                    android:visibility="gone"
                     android:id="@+id/syncOfflineData"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

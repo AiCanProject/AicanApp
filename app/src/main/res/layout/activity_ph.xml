@@ -50,7 +50,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/sofia_light"
-            android:text="Reconnect "
+            android:text="Connect "
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 

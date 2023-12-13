@@ -47,6 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -344,7 +346,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                         String val = jsonData.getString("PH_VAL");
                         tvPhCurr.setText(val);
                         float floatVal = 0.0f;
-                        if (!jsonData.getString("PH_VAL").equals("nan")) {
+                        if (!jsonData.getString("PH_VAL").equals("nan") && validateNumber(jsonData.getString("PH_VAL"))) {
                             floatVal = Float.parseFloat(val);
                         }
                         phView.moveTo(floatVal);
@@ -377,7 +379,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
                         float tempval = 0.0f;
                         String temp = "0.0";
-                        if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+                        if (!jsonData.getString("TEMP_VAL").equals("nan") && validateNumber(jsonData.getString("TEMP_VAL"))) {
 
                             tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
                             temp = String.valueOf(Math.round(tempval));
@@ -712,6 +714,14 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         printLifecycle("onCreate");
         super.onCreate(savedInstanceState);
+    }
+
+    public static boolean validateNumber(String text) {
+        // Regular expression to match a valid float or integer
+        Pattern pattern = Pattern.compile("^-?\\d+(\\.\\d+)?$");
+        Matcher matcher = pattern.matcher(text);
+
+        return matcher.matches();
     }
 
     @Override
