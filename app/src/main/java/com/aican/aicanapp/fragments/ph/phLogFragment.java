@@ -1909,18 +1909,23 @@ if (Constants.OFFLINE_DATA){
                     Log.d("JSONReceived:PHFragment", "onMessage: " + text);
 
                     if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                        String val = jsonData.getString("PH_VAL");
-                        tvPhCurr.setText(val);
-                        phView.moveTo(Float.parseFloat(val));
-                        ph = val;
-                        AlarmConstants.PH = Float.parseFloat(val);
+                        float ph = 0.0f;
+                        if (!jsonData.getString("PH_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("PH_VAL"))) {
+                            ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                        }
+                        tvPhCurr.setText(String.valueOf(ph));
+                        phView.moveTo(ph);
+                        ph = ph;
+                        AlarmConstants.PH = ph;
                     }
 
                     if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-                        float tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                        float tempval = 0.0f;
 
-
+                        if (!jsonData.getString("TEMP_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("TEMP_VAL"))) {
+                            tempval = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                        }
 
                         String temp1 = String.valueOf(Math.round(tempval));
 

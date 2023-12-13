@@ -152,7 +152,7 @@ boolean connectedWebsocket = false;
     LinearLayout calibSpinner;
     Spinner spin;
     TextView tvTimer, tvTimerThree, tvTempCurr, tvPhCurr;
-    TextView modeText;
+    TextView modeText, finalSlope;
     Button calibrateBtn, calibrateBtnThree, printCalibData, phMvTable, phGraph, printAllCalibData;
     TextView ph1, ph2, ph3, ph4, ph5;
     TextView phAfterCalib1, phAfterCalib2, phAfterCalib3, phAfterCalib4, phAfterCalib5;
@@ -375,6 +375,8 @@ boolean connectedWebsocket = false;
         calibrateBtn.setOnClickListener(v -> {
             if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                 if (connectedWebsocket){
+
+
 
                     calibrateFivePointOffline(webSocket1);}
                 else{
@@ -1128,6 +1130,18 @@ boolean connectedWebsocket = false;
                     log1_3.setBackgroundColor(Color.GRAY);
                     log2_3.setBackgroundColor(Color.WHITE);
                     log3_3.setBackgroundColor(Color.WHITE);
+
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_2", String.valueOf(ph1_3.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_2"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
 //                    if (Float.parseFloat(String.valueOf(mV1_3)) <= maxMV1_3 && Float.parseFloat(String.valueOf(mV1_3)) >= minMV1_3) {
 //                        wrong_3 = false;
 ////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
@@ -1145,6 +1159,18 @@ boolean connectedWebsocket = false;
                     log1_3.setBackgroundColor(Color.WHITE);
                     log2_3.setBackgroundColor(Color.GRAY);
                     log3_3.setBackgroundColor(Color.WHITE);
+
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_3", String.valueOf(ph2_3.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_3"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
 //                    if (Float.parseFloat(String.valueOf(mV2_3)) <= maxMV2_3 && Float.parseFloat(String.valueOf(mV2_3)) >= minMV2_3) {
 //                        wrong_3 = false;
 ////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
@@ -1163,6 +1189,18 @@ boolean connectedWebsocket = false;
                     log1_3.setBackgroundColor(Color.WHITE);
                     log2_3.setBackgroundColor(Color.WHITE);
                     log3_3.setBackgroundColor(Color.GRAY);
+
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_4", String.valueOf(ph3_3.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_4"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
 //                    if (Float.parseFloat(String.valueOf(mV3_3)) <= maxMV3_3 && Float.parseFloat(String.valueOf(mV3_3)) >= minMV3_3) {
 //                        wrong_3 = false;
 ////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
@@ -1694,6 +1732,18 @@ boolean connectedWebsocket = false;
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
+
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_1", String.valueOf(ph1.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_1"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
 //                    if (Float.parseFloat(String.valueOf(mV1)) <= maxMV1 && Float.parseFloat(String.valueOf(mV1)) >= minMV1) {
 //                        wrong_5 = false;
 ////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
@@ -1714,6 +1764,18 @@ boolean connectedWebsocket = false;
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
+
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_2", String.valueOf(ph2.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_2"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
 //                    if (Float.parseFloat(String.valueOf(mV2)) <= maxMV2 && Float.parseFloat(String.valueOf(mV2)) >= minMV2) {
 //                        wrong_5 = false;
 ////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
@@ -1734,6 +1796,16 @@ boolean connectedWebsocket = false;
                     log3.setBackgroundColor(Color.GRAY);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_3", String.valueOf(ph3.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_3"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 //                    if (Float.parseFloat(String.valueOf(mV3)) <= maxMV3 && Float.parseFloat(String.valueOf(mV3)) >= minMV3) {
 //                        wrong_5 = false;
 ////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
@@ -1754,6 +1826,16 @@ boolean connectedWebsocket = false;
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.GRAY);
                     log5.setBackgroundColor(Color.WHITE);
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_4", String.valueOf(ph4.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_4"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 
 //                    if (Float.parseFloat(String.valueOf(mV4)) <= maxMV4 && Float.parseFloat(String.valueOf(mV4)) >= minMV4) {
 //                        wrong_5 = false;
@@ -1776,6 +1858,18 @@ boolean connectedWebsocket = false;
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.GRAY);
+
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("B_5", String.valueOf(ph5.getText()));
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        Log.e("ThisIsNotAnError", jsonData.getString("B_5"));
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
 //                    if (Float.parseFloat(String.valueOf(mV5)) <= maxMV5 && Float.parseFloat(String.valueOf(mV5)) >= minMV5) {
 //                        wrong_5 = false;
 //                    } else {
@@ -3469,6 +3563,7 @@ boolean connectedWebsocket = false;
 
     private void initializeAllViews(View view) {
         fivePointCalib = view.findViewById(R.id.fivePointCalib);
+        finalSlope = view.findViewById(R.id.finalSlope);
         threePointCalib = view.findViewById(R.id.threePointCalib);
 
         phMvTable = view.findViewById(R.id.phMvTable);
@@ -3653,6 +3748,7 @@ boolean connectedWebsocket = false;
                             jsonData = new JSONObject();
                             jsonData.put("B_1", String.valueOf(ph));
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                            Log.e("ThisIsNotAnError", jsonData.getString("B_1"));
                             webSocket1.send(jsonData.toString());
                             ph1.setText(String.valueOf(ph));
 
@@ -4337,12 +4433,21 @@ boolean connectedWebsocket = false;
                 try {
                     jsonData = new JSONObject(text);
                     Log.d("JSONReceived:PHFragment", "onMessage: " + text);
+                    if (jsonData.has("SLOPE") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)){
+                        if (!jsonData.getString("SLOPE").equals("nan") && PhFragment.validateNumber(jsonData.getString("SLOPE"))) {
+                            String finalSlopes = jsonData.getString("SLOPE");
+                            Toast.makeText(requireContext(), "" + finalSlopes, Toast.LENGTH_SHORT).show();
+                            SharedPref.saveData(requireContext(), "SLOPE_"+PhActivity.DEVICE_ID,finalSlopes);
+                            finalSlope.setText(finalSlopes);
+                        }
+
+                    }
                     if (spin.getSelectedItemPosition() == 0) {
 
                         if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
                             float ph = 0.0f;
-                            if (!jsonData.getString("PH_VAL").equals("nan")) {
+                            if (!jsonData.getString("PH_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("PH_VAL"))) {
                                 ph = Float.parseFloat(jsonData.getString("PH_VAL"));
                             }
 
@@ -4356,7 +4461,7 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             float tempVal = 0.0f;
-                            if (!jsonData.getString("TEMP_VAL").equals("nan")) {
+                            if (!jsonData.getString("TEMP_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("TEMP_VAL"))) {
 
                                 tempVal = Float.parseFloat(jsonData.getString("TEMP_VAL"));
                             }
@@ -4378,7 +4483,7 @@ boolean connectedWebsocket = false;
 
                             String val = jsonData.getString("MV_1");
                             String ecForm = "0";
-                            if (val == "nan") {
+                            if (val == "nan" && !PhFragment.validateNumber(val)) {
                                 ecForm = "nan";
                             } else {
                                 ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
@@ -5230,6 +5335,13 @@ boolean connectedWebsocket = false;
     public void onResume() {
 
         Source.activeFragment = 1;
+        if (SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+            String  data =  SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID);
+            finalSlope.setText(data);
+        }else{
+            finalSlope.setText("---");
+
+        }
 
         SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
