@@ -452,7 +452,7 @@ boolean connectedWebsocket = false;
                 startActivity(intent);
             }
         });
-        File exportDir = new File(requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData");
+        File exportDir = new File(requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -481,7 +481,7 @@ boolean connectedWebsocket = false;
                 }
             }
 
-            String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/";
+            String pathPDF = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
             File rootPDF = new File(pathPDF);
             fileNotWrite(root);
             File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -503,7 +503,7 @@ boolean connectedWebsocket = false;
             }
 //                exportCalibData();
 
-            String path = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData";
+            String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
             File root = new File(path);
             File[] filesAndFolders = root.listFiles();
 
@@ -516,7 +516,7 @@ boolean connectedWebsocket = false;
                 }
             }
 
-            String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/";
+            String pathPDF = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
             File rootPDF = new File(pathPDF);
             fileNotWrite(root);
             File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -824,12 +824,12 @@ boolean connectedWebsocket = false;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath =requireContext().getExternalFilesDir(null).toString() + File.separator + "/LabApp/CalibrationData";
+        String tempPath =requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
-        String fileName = requireContext().getExternalFilesDir(null).toString() +
+        String fileName = requireContext().getExternalFilesDir(null).getAbsolutePath() +
                 File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" +
                 ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf";
 
