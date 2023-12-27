@@ -408,6 +408,10 @@ if (Constants.OFFLINE_DATA){
                 recyclerView.setAdapter(adapter);
             }
         });
+        File exportDir = new File(requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
 
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -422,7 +426,7 @@ if (Constants.OFFLINE_DATA){
 //                exportSensorCsv();
 
                 String startsWith = "CurrentData";
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+                String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
@@ -477,7 +481,7 @@ if (Constants.OFFLINE_DATA){
 //                }
 
 
-                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/";
+                String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/Currentlog/";
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -509,7 +513,7 @@ if (Constants.OFFLINE_DATA){
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
 //        String startsWith = "CurrentData";
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+        String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -1053,162 +1057,185 @@ if (Constants.OFFLINE_DATA){
         slope = "Slope: " + shp.getString("slope", "");
         tempe = "Temperature: " + shp.getString("temp", "");
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
+//        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog");
+//        if (!exportDir.exists()) {
+//            exportDir.mkdirs();
+//        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+        String tempPath = requireContext().getExternalFilesDir(null)  + "/LabApp/Currentlog";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
+//        Toast.makeText(requireContext(), "" + tempFilesAndFolders.length, Toast.LENGTH_SHORT).show();
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
+//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+//                + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1)
+//                + ".pdf");
+
+
+
+        String filePath = ""
+//                requireContext().getExternalFilesDir(null)
+                + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1)
+                + ".pdf";
+
+
+        File file = new File(requireContext().getFilesDir(),filePath);
+
+        Log.e("FileNameError", file.getPath());
+        Log.e("FileNameError", file.getAbsolutePath());
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
-        if (Constants.OFFLINE_MODE) {
-            document.add(new Paragraph("Offline Mode"));
-        }
-        document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
-        document.add(new Paragraph(""));
-        document.add(new Paragraph(reportDate
-                + "  |  " + reportTime + "\n" +
-                offset + "  |  " + battery + "\n" + slope + "  |  " + tempe
-        ));
-        document.add(new Paragraph(""));
-        document.add(new Paragraph("Calibration Table"));
+        try {
 
-        float columnWidth[] = {200f, 210f, 190f, 170f, 340f, 170f};
-        Table table = new Table(columnWidth);
-        table.addCell("pH");
-        table.addCell("pH Aft Calib");
-        table.addCell("Slope");
-        table.addCell("mV");
-        table.addCell("Date & Time");
-        table.addCell("Temperature");
 
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        Cursor calibCSV = null;
-        if (Constants.OFFLINE_MODE) {
+            if (Constants.OFFLINE_MODE) {
+                document.add(new Paragraph("Offline Mode"));
+            }
+            document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
+            document.add(new Paragraph(""));
+            document.add(new Paragraph(reportDate
+                    + "  |  " + reportTime + "\n" +
+                    offset + "  |  " + battery + "\n" + slope + "  |  " + tempe
+            ));
+            document.add(new Paragraph(""));
+            document.add(new Paragraph("Calibration Table"));
+
+            float columnWidth[] = {200f, 210f, 190f, 170f, 340f, 170f};
+            Table table = new Table(columnWidth);
+            table.addCell("pH");
+            table.addCell("pH Aft Calib");
+            table.addCell("Slope");
+            table.addCell("mV");
+            table.addCell("Date & Time");
+            table.addCell("Temperature");
+
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            Cursor calibCSV = null;
+            if (Constants.OFFLINE_MODE) {
 //            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
 //            calibCSV = db.rawQuery("SELECT * FROM CalibOfflineData", null);
-            if (Source.calibMode == 0){
-                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
+                if (Source.calibMode == 0) {
+                    calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
 
-            }
-            if (Source.calibMode == 1){
-                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
+                }
+                if (Source.calibMode == 1) {
+                    calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
 
-            }
-        } else {
-            calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
-
-        }
-
-
-        while (calibCSV != null && calibCSV.moveToNext()) {
-            String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-            String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-            String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-            String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
-            String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-            String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
-
-            table.addCell(ph != null ? ph : "--");
-            table.addCell(pHAC != null ? pHAC : "--");
-            table.addCell(slope != null ? slope : "--");
-            table.addCell(mv != null ? mv : "--");
-            table.addCell(date != null ? date : "--");
-            table.addCell(temperature1 != null ? temperature1 : "--");
-
-        }
-        document.add(table);
-
-        document.add(new Paragraph(""));
-        document.add(new Paragraph("Log Table"));
-
-        float[] columnWidth1 = {240f, 120f, 150f, 150f, 270f, 270f, 270f};
-        Table table1 = new Table(columnWidth1);
-        table1.addCell("Date");
-        table1.addCell("Time");
-        table1.addCell("pH");
-        table1.addCell("Temp");
-        table1.addCell("Batch No");
-        table1.addCell("AR No");
-        table1.addCell("Compound");
-        Cursor curCSV;
-        if (Constants.OFFLINE_MODE) {
-            curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-        } else {
-            curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
-        }
-
-
-        while (curCSV.moveToNext()) {
-
-            String date = curCSV.getString(curCSV.getColumnIndex("date"));
-            String time = curCSV.getString(curCSV.getColumnIndex("time"));
-            String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
-            String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
-            String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
-            String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
-            String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
-
-            String newBatchNum = "--";
-            if (batchnum != null && batchnum.length() >= 8) {
-                newBatchNum = stringSplitter(batchnum);
+                }
             } else {
-                newBatchNum = batchnum;
+                calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
+
             }
-            String newArum = "--";
-            if (arnum != null && arnum.length() >= 8) {
-                newArum = stringSplitter(arnum);
+
+
+            while (calibCSV != null && calibCSV.moveToNext()) {
+                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+                String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
+                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
+                table.addCell(ph != null ? ph : "--");
+                table.addCell(pHAC != null ? pHAC : "--");
+                table.addCell(slope != null ? slope : "--");
+                table.addCell(mv != null ? mv : "--");
+                table.addCell(date != null ? date : "--");
+                table.addCell(temperature1 != null ? temperature1 : "--");
+
+            }
+            document.add(table);
+
+            document.add(new Paragraph(""));
+            document.add(new Paragraph("Log Table"));
+
+            float[] columnWidth1 = {240f, 120f, 150f, 150f, 270f, 270f, 270f};
+            Table table1 = new Table(columnWidth1);
+            table1.addCell("Date");
+            table1.addCell("Time");
+            table1.addCell("pH");
+            table1.addCell("Temp");
+            table1.addCell("Batch No");
+            table1.addCell("AR No");
+            table1.addCell("Compound");
+            Cursor curCSV;
+            if (Constants.OFFLINE_MODE) {
+                curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
             } else {
-                newArum = arnum;
-            }
-            String newComp = "--";
-            if (comp != null && comp.length() >= 8) {
-                newComp = stringSplitter(comp);
-            } else {
-                newComp = comp;
+                curCSV = db.rawQuery("SELECT * FROM PrintLogUserdetails", null);
             }
 
-            table1.addCell(date != null ? date : "--");
-            table1.addCell(time != null ? time : "--");
-            table1.addCell(pH != null ? pH : "--");
-            table1.addCell(temp != null ? temp : "--");
-            table1.addCell(newBatchNum != null ? newBatchNum : "--");
-            table1.addCell(newArum != null ? newArum : "--");
-            table1.addCell(newComp != null ? newComp : "--");
 
-        }
+            while (curCSV.moveToNext()) {
 
-        document.add(table1);
+                String date = curCSV.getString(curCSV.getColumnIndex("date"));
+                String time = curCSV.getString(curCSV.getColumnIndex("time"));
+                String pH = curCSV.getString(curCSV.getColumnIndex("ph"));
+                String temp = curCSV.getString(curCSV.getColumnIndex("temperature"));
+                String batchnum = curCSV.getString(curCSV.getColumnIndex("batchnum"));
+                String arnum = curCSV.getString(curCSV.getColumnIndex("arnum"));
+                String comp = curCSV.getString(curCSV.getColumnIndex("compound"));
 
-        document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+                String newBatchNum = "--";
+                if (batchnum != null && batchnum.length() >= 8) {
+                    newBatchNum = stringSplitter(batchnum);
+                } else {
+                    newBatchNum = batchnum;
+                }
+                String newArum = "--";
+                if (arnum != null && arnum.length() >= 8) {
+                    newArum = stringSplitter(arnum);
+                } else {
+                    newArum = arnum;
+                }
+                String newComp = "--";
+                if (comp != null && comp.length() >= 8) {
+                    newComp = stringSplitter(comp);
+                } else {
+                    newComp = comp;
+                }
 
-        Bitmap imgBit1 = getSignImage();
-        if (imgBit1 != null) {
-            Uri uri1 = getImageUri(getContext(), imgBit1);
+                table1.addCell(date != null ? date : "--");
+                table1.addCell(time != null ? time : "--");
+                table1.addCell(pH != null ? pH : "--");
+                table1.addCell(temp != null ? temp : "--");
+                table1.addCell(newBatchNum != null ? newBatchNum : "--");
+                table1.addCell(newArum != null ? newArum : "--");
+                table1.addCell(newComp != null ? newComp : "--");
 
-            try {
-                String add = getPath(uri1);
-                ImageData imageData1 = ImageDataFactory.create(add);
-                Image image1 = new Image(imageData1).setHeight(80f).setWidth(80f);
+            }
+
+            document.add(table1);
+
+            document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+
+            Bitmap imgBit1 = getSignImage();
+            if (imgBit1 != null) {
+                Uri uri1 = getImageUri(getContext(), imgBit1);
+
+                try {
+                    String add = getPath(uri1);
+                    ImageData imageData1 = ImageDataFactory.create(add);
+                    Image image1 = new Image(imageData1).setHeight(80f).setWidth(80f);
 //                table12.addCell(new Cell(2, 1).add(image));
-                // Adding image to the document
-                document.add(image1);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                    // Adding image to the document
+                    document.add(image1);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
+        }catch (Exception e){
+            Toast.makeText(
+                    requireContext(), "Error : " + e.getMessage(), Toast.LENGTH_SHORT
+                ).show();
         }
-
         document.close();
 
         Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();

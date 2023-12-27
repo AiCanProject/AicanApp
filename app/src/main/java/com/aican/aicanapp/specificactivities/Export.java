@@ -764,13 +764,14 @@ public class Export extends AppCompatActivity {
     }
 
     File[] reverseFileArray(File[] fileArray) {
-        for (int i = 0; i < fileArray.length / 2; i++) {
-            File a = fileArray[i];
-            fileArray[i] = fileArray[fileArray.length - i - 1];
-            fileArray[fileArray.length - i - 1] = a;
+        if(fileArray != null) {
+            for (int i = 0; i < fileArray.length / 2; i++) {
+                File a = fileArray[i];
+                fileArray[i] = fileArray[fileArray.length - i - 1];
+                fileArray[fileArray.length - i - 1] = a;
+            }
         }
-
-        return fileArray.length > 0 ? fileArray : null;
+        return fileArray;
     }
 
     private String stringSplitter(String str) {

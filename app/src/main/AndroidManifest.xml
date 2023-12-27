@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
@@ -31,12 +34,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
+
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AicanApp"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon"
-        tools:targetApi="m">
+        tools:targetApi="33">
         <activity
             android:name=".specificactivities.PHCalibGraph"
             android:exported="false" />
@@ -92,7 +96,8 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity android:name=".specificactivities.ConnectDeviceActivity" />
-        <activity android:name=".Authentication.SplashActivity">
+        <activity android:name=".Authentication.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -132,7 +137,6 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
-            //provider_paths.xml file path in this example
         </provider>
 
         <service

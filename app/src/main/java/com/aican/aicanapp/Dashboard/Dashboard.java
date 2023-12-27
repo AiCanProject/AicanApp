@@ -111,6 +111,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -176,6 +177,9 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     private TextView tvTemp, tvCooling, tvPump, tvPh, tvName, tvConnectDevice, tvInstruction;
     private ImageView ivLogout;
     LinearLayout onlineStatus, offlineStatus;
+   int REQUEST_CODE_ASK_PERMISSIONS = 123;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,6 +225,70 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setting = findViewById(R.id.settings);
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            String[] permissions = {
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                    WRITE_EXTERNAL_STORAGE
+            };
+
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_IMAGES
+            ) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.READ_MEDIA_VIDEO
+                    ) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.READ_MEDIA_AUDIO
+                    ) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Permissions are not granted, request them
+                int STORAGE_PERMISSION_REQUEST_CODE = 1000;
+                ActivityCompat.requestPermissions(
+                        this,
+                        permissions,
+                        REQUEST_CODE_ASK_PERMISSIONS
+                );
+            } else {
+                Toast.makeText(this, "granted", Toast.LENGTH_SHORT).show();
+
+                // Permissions are already granted, proceed with using external storage
+                // Your code for accessing external storage goes here
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Permissions are not granted, request them
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        },
+                        REQUEST_CODE_ASK_PERMISSIONS
+                );
+            } else {
+                // Permissions are already granted, proceed with using external storage
+                // Your code for accessing external storage goes here
+            }
+        }
+
 
 
         mUid = FirebaseAuth.getInstance(PrimaryAccount.getInstance(this)).getUid();
@@ -1580,6 +1648,25 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+
+        if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+
+            if (allPermissionsGranted) {
+                Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
+                // Your code for using permissions goes here
+            } else {
+                Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0) {

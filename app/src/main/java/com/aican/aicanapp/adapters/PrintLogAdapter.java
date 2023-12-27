@@ -55,7 +55,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                 StrictMode.setVmPolicy(builder.build());
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Currentlog/"+selectedFile.getName();
+                String path = context.getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog/"+selectedFile.getName();
                 File file = new File(path);
 
                 try {
@@ -118,7 +118,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Currentlog/"+selectedFile.getName();
+                            String path = context.getExternalFilesDir(null).getPath() + "/LabApp/Currentlog/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {

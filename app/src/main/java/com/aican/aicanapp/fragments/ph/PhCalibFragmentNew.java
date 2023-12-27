@@ -1,13 +1,17 @@
 package com.aican.aicanapp.fragments.ph;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
 import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -36,6 +40,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -241,6 +246,17 @@ boolean connectedWebsocket = false;
         return inflater.inflate(R.layout.fragment_ph_calib_new, container, false);
     }
 
+    private boolean checkPermission() {
+        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
+        return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
+    }
+    private void requestPermission() {
+        ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -248,6 +264,12 @@ boolean connectedWebsocket = false;
         initializeAllViews(view);
 
         databaseHelper = new DatabaseHelper(requireContext());
+
+        if (checkPermission()) {
+            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission();
+        }
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
         jsonData = new JSONObject();
@@ -430,22 +452,27 @@ boolean connectedWebsocket = false;
                 startActivity(intent);
             }
         });
-
+        File exportDir = new File(requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
         printCalibData.setOnClickListener(v ->
 
         {
             try {
                 generatePDF();
             } catch (FileNotFoundException e) {
+//                Toast.makeText(requireContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
 //                exportCalibData();
 
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+            String path = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData";
             File root = new File(path);
             File[] filesAndFolders = root.listFiles();
 
             if (filesAndFolders == null || filesAndFolders.length == 0) {
+                Toast.makeText(requireContext(), "No Files Found", Toast.LENGTH_SHORT).show();
 
                 return;
             } else {
@@ -454,7 +481,7 @@ boolean connectedWebsocket = false;
                 }
             }
 
-            String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+            String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/";
             File rootPDF = new File(pathPDF);
             fileNotWrite(root);
             File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -476,7 +503,7 @@ boolean connectedWebsocket = false;
             }
 //                exportCalibData();
 
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+            String path = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData";
             File root = new File(path);
             File[] filesAndFolders = root.listFiles();
 
@@ -489,7 +516,7 @@ boolean connectedWebsocket = false;
                 }
             }
 
-            String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+            String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/";
             File rootPDF = new File(pathPDF);
             fileNotWrite(root);
             File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -527,7 +554,7 @@ boolean connectedWebsocket = false;
             }
         });
 
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+        String path = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -793,20 +820,21 @@ boolean connectedWebsocket = false;
         slope = "Slope: " + shp.getString("slope", "");
         temp = "Temperature: " + shp.getString("temp", "");
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
+
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+        String tempPath =requireContext().getExternalFilesDir(null).toString() + File.separator + "/LabApp/CalibrationData";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
+        String fileName = requireContext().getExternalFilesDir(null).toString() +
+                File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" +
+                ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf";
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
+        File file = new File(fileName);
+
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -923,20 +951,20 @@ boolean connectedWebsocket = false;
         slope = "Slope: " + shp.getString("slope", "");
         temp = "Temperature: " + shp.getString("temp", "");
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
+//        File exportDir = new File(requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData");
+//        if (!exportDir.exists()) {
+//            exportDir.mkdirs();
+//        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+        String tempPath = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData/AllCalibData_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
+        File file = new File(requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/AllCalibData_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
