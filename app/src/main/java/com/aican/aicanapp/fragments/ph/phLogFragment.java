@@ -17,7 +17,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -248,32 +247,32 @@ public class phLogFragment extends Fragment {
 
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);
-if (Constants.OFFLINE_DATA){
+        if (Constants.OFFLINE_DATA) {
 
-    if (SharedPref.getSavedData(getContext(),"COMPANY_NAME") != null && SharedPref.getSavedData(
-            getContext(),"COMPANY_NAME") != "N/A"){
-        companyName = SharedPref.getSavedData(getContext(),"COMPANY_NAME");
-    }else{
-        companyName ="N/A";
-    }
-
-}else {
-    deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
-            if (snapshot.exists()) {
-                companyName = snapshot.getValue(String.class);
+            if (SharedPref.getSavedData(getContext(), "COMPANY_NAME") != null && SharedPref.getSavedData(
+                    getContext(), "COMPANY_NAME") != "N/A") {
+                companyName = SharedPref.getSavedData(getContext(), "COMPANY_NAME");
             } else {
-                deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
-                companyName = "NA";
+                companyName = "N/A";
             }
-        }
 
-        @Override
-        public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+        } else {
+            deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @com.google.firebase.database.annotations.NotNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        companyName = snapshot.getValue(String.class);
+                    } else {
+                        deviceRef.child("UI").child("PH").child("PH_CAL").child("COMPANY_NAME").setValue("NA");
+                        companyName = "NA";
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull @com.google.firebase.database.annotations.NotNull DatabaseError error) {
+                }
+            });
         }
-    });
-}
 
         if (!Constants.OFFLINE_MODE) {
 
@@ -409,6 +408,9 @@ if (Constants.OFFLINE_DATA){
             }
         });
         File exportDir = new File(requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog");
+
+        Log.e("FileNameErrorExportDir", exportDir.getPath());
+
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -429,6 +431,9 @@ if (Constants.OFFLINE_DATA){
                 String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/Currentlog";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
+
+                Log.e("FileNameErrorDirRoot", root.getPath());
+
 
 
                 if (filesAndFolders == null || filesAndFolders.length == 0) {
@@ -1064,7 +1069,7 @@ if (Constants.OFFLINE_DATA){
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = requireContext().getExternalFilesDir(null)  + "/LabApp/Currentlog";
+        String tempPath = requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
@@ -1076,14 +1081,13 @@ if (Constants.OFFLINE_DATA){
 //                + ".pdf");
 
 
-
         String filePath = ""
 //                requireContext().getExternalFilesDir(null)
                 + "/LabApp/Currentlog/CL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1)
                 + ".pdf";
 
 
-        File file = new File(requireContext().getFilesDir(),filePath);
+        File file = new File(requireContext().getExternalFilesDir(null).getAbsolutePath(), filePath);
 
         Log.e("FileNameError", file.getPath());
         Log.e("FileNameError", file.getAbsolutePath());
@@ -1231,10 +1235,10 @@ if (Constants.OFFLINE_DATA){
                     e.printStackTrace();
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(
                     requireContext(), "Error : " + e.getMessage(), Toast.LENGTH_SHORT
-                ).show();
+            ).show();
         }
         document.close();
 
