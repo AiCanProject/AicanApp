@@ -65,7 +65,7 @@ class ProgressBar(context: Context, attrs: AttributeSet?) : View(context, attrs)
         calcActivePath()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         canvas?.apply {

@@ -1,6 +1,7 @@
 package com.aican.aicanapp.adapters;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -55,7 +56,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                 StrictMode.setVmPolicy(builder.build());
 
-                String path = context.getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog/"+selectedFile.getName();
+                String path = new ContextWrapper(context).getExternalMediaDirs()[0] + "/LabApp/Currentlog/"+selectedFile.getName();
                 File file = new File(path);
 
                 try {
@@ -118,7 +119,7 @@ public class PrintLogAdapter extends RecyclerView.Adapter<PrintLogAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = context.getExternalFilesDir(null).getPath() + "/LabApp/Currentlog/" + selectedFile.getName();
+                            String path = new ContextWrapper(context).getExternalMediaDirs()[0] + "/LabApp/Currentlog/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {

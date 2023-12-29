@@ -17,6 +17,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -383,7 +384,7 @@ public class Export extends AppCompatActivity {
                 }
 
 
-                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+                String pathPDF = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/";
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(rootPDF);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -397,7 +398,7 @@ public class Export extends AppCompatActivity {
             }
         });
 
-        String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+        String pathPDF = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/";
         File rootPDF = new File(pathPDF);
         fileNotWrite(rootPDF);
         File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -409,10 +410,10 @@ public class Export extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
 
-        String path11 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+        String path11 = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity";
         File root11 = new File(path11);
 
-        String pathPDF11 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+        String pathPDF11 = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity/";
         File rootPDF11 = new File(pathPDF11);
         fileNotWrite(root11);
         File[] filesAndFoldersPDF11 = rootPDF11.listFiles();
@@ -428,11 +429,11 @@ public class Export extends AppCompatActivity {
             public void onClick(View v) {
 
                 try {
-                    Workbook workbook = new Workbook(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
+                    Workbook workbook = new Workbook(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx");
 
                     PdfSaveOptions options = new PdfSaveOptions();
                     options.setCompliance(PdfCompliance.PDF_A_1_B);
-                    workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
+                    workbook.save(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/DataSensorLog.pdf", options);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -459,10 +460,10 @@ public class Export extends AppCompatActivity {
 //                exportUserData();
 
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+                String path = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity";
                 File root = new File(path);
 
-                String pathPDF = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+                String pathPDF = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity/";
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -502,7 +503,7 @@ public class Export extends AppCompatActivity {
             }
 //                exportCalibData();
 
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+            String path = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData";
             File root = new File(path);
             File[] filesAndFolders = root.listFiles();
 
@@ -515,7 +516,7 @@ public class Export extends AppCompatActivity {
                 }
             }
 
-            String pathPDF1 = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+            String pathPDF1 = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/";
             File rootPDF1 = new File(pathPDF1);
             fileNotWrite(root);
             File[] filesAndFoldersPDF1 = rootPDF1.listFiles();
@@ -546,20 +547,20 @@ public class Export extends AppCompatActivity {
         slope = "Slope: " + shp.getString("slope", "");
         temp = "Temperature: " + shp.getString("temp", "");
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
+        File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+        String tempPath = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/AllCalibData_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
+        File file = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/AllCalibData_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -807,20 +808,20 @@ public class Export extends AppCompatActivity {
 
         roleExport = "Made By: " + Source.logUserName;
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
+        File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata";
+        String tempPath = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
+        File file = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/DSL_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -1094,11 +1095,11 @@ public class Export extends AppCompatActivity {
         reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         //We use the Download directory for saving our .csv file.
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata");
+        File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
-        File outputDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles");
+        File outputDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/ExcelFiles");
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
@@ -1285,7 +1286,7 @@ public class Export extends AppCompatActivity {
             db.close();
 
             LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
-            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/";
+            String inputFile = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/";
 
             Workbook workbook = new Workbook(inputFile + "DataSensorLog.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
@@ -1297,7 +1298,7 @@ public class Export extends AppCompatActivity {
             worksheet.getCells().setColumnWidth(5, 16);
             worksheet.getCells().setColumnWidth(6, 12.0);
 //            worksheet.getCells().setColumnWidth(7, 9.0);
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
+            workbook.save(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/ExcelFiles/DataSensorLog.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));
@@ -1328,20 +1329,20 @@ public class Export extends AppCompatActivity {
         slope = "Slope: " + shp.getString("slope", "");
         String tempe = "Temperature: " + shp.getString("temp", "");
 
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity");
+        File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity";
+        String tempPath = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/UA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
+        File file = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity/UA_" + currentDateandTime + "_" + (tempFilesAndFolders.length - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);
@@ -1447,7 +1448,7 @@ public class Export extends AppCompatActivity {
     }
 
     public void exportUserData() {
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity");
+        File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -1517,14 +1518,14 @@ public class Export extends AppCompatActivity {
             db.close();
 
             LoadOptions loadOptions = new LoadOptions(FileFormatType.CSV);
-            String inputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/";
+            String inputFile = new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity/";
 
             Workbook workbook = new Workbook(inputFile + "DataUserActivity.csv", loadOptions);
             Worksheet worksheet = workbook.getWorksheets().get(0);
             worksheet.getCells().setColumnWidth(0, 18.5);
             worksheet.getCells().setColumnWidth(1, 20.5);
             worksheet.getCells().setColumnWidth(2, 12.5);
-            workbook.save(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx", SaveFormat.XLSX);
+            workbook.save(new ContextWrapper(Export.this).getExternalMediaDirs()[0]+ File.separator + "/LabApp/Useractivity/DataUserActivity.xlsx", SaveFormat.XLSX);
 
         } catch (Exception e) {
             Log.d("csvexception", String.valueOf(e));

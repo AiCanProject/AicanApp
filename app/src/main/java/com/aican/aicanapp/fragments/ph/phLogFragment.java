@@ -8,6 +8,7 @@ import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -407,13 +408,15 @@ public class phLogFragment extends Fragment {
                 recyclerView.setAdapter(adapter);
             }
         });
-        File exportDir = new File(requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog");
+        //        File exportDir = new File(requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog");
+        File exportDir = new File( new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + "/LabApp/Currentlog");
 
         Log.e("FileNameErrorExportDir", exportDir.getPath());
 
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
+
 
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -427,8 +430,13 @@ public class phLogFragment extends Fragment {
                 }
 //                exportSensorCsv();
 
+                // calibration
+                // reset button
+                // voltage recieve and
+
                 String startsWith = "CurrentData";
-                String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+//                String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+                String path = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/Currentlog";
                 File root = new File(path);
                 File[] filesAndFolders = root.listFiles();
 
@@ -486,7 +494,8 @@ public class phLogFragment extends Fragment {
 //                }
 
 
-                String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/Currentlog/";
+//                String pathPDF = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/Currentlog/";
+                String pathPDF = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/Currentlog/";
                 File rootPDF = new File(pathPDF);
                 fileNotWrite(root);
                 File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -518,7 +527,7 @@ public class phLogFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
 //        String startsWith = "CurrentData";
-        String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/Currentlog";
+        String path = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/Currentlog";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -1069,7 +1078,8 @@ public class phLogFragment extends Fragment {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog";
+//        String tempPath = requireContext().getExternalFilesDir(null).getAbsolutePath() + "/LabApp/Currentlog";
+        String tempPath =new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + "/LabApp/Currentlog";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
@@ -1087,7 +1097,8 @@ public class phLogFragment extends Fragment {
                 + ".pdf";
 
 
-        File file = new File(requireContext().getExternalFilesDir(null).getAbsolutePath(), filePath);
+//        File file = new File(requireContext().getExternalFilesDir(null).getAbsolutePath(), filePath);
+        File file = new File(new ContextWrapper(requireContext()).getExternalMediaDirs()[0], filePath);
 
         Log.e("FileNameError", file.getPath());
         Log.e("FileNameError", file.getAbsolutePath());

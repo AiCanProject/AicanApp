@@ -8,6 +8,7 @@ import static com.aican.aicanapp.utils.Constants.SERVER_PATH;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -452,7 +453,7 @@ boolean connectedWebsocket = false;
                 startActivity(intent);
             }
         });
-        File exportDir = new File(requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData");
+        File exportDir = new File(new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
@@ -467,7 +468,7 @@ boolean connectedWebsocket = false;
             }
 //                exportCalibData();
 
-            String path = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData";
+            String path = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData";
             File root = new File(path);
             File[] filesAndFolders = root.listFiles();
 
@@ -481,7 +482,7 @@ boolean connectedWebsocket = false;
                 }
             }
 
-            String pathPDF = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+            String pathPDF = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData/";
             File rootPDF = new File(pathPDF);
             fileNotWrite(root);
             File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -503,7 +504,7 @@ boolean connectedWebsocket = false;
             }
 //                exportCalibData();
 
-            String path = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+            String path = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData";
             File root = new File(path);
             File[] filesAndFolders = root.listFiles();
 
@@ -516,7 +517,7 @@ boolean connectedWebsocket = false;
                 }
             }
 
-            String pathPDF = requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData/";
+            String pathPDF = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData/";
             File rootPDF = new File(pathPDF);
             fileNotWrite(root);
             File[] filesAndFoldersPDF = rootPDF.listFiles();
@@ -554,7 +555,7 @@ boolean connectedWebsocket = false;
             }
         });
 
-        String path = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/";
+        String path = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData/";
         File root = new File(path);
         File[] filesAndFolders = root.listFiles();
 
@@ -824,12 +825,12 @@ boolean connectedWebsocket = false;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath =requireContext().getExternalFilesDir(null).getAbsolutePath() + File.separator + "/LabApp/CalibrationData";
+        String tempPath =new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
-        String fileName = requireContext().getExternalFilesDir(null).getAbsolutePath() +
+        String fileName = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] +
                 File.separator + "/LabApp/CalibrationData/CD_" + currentDateandTime + "_" +
                 ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf";
 
@@ -958,13 +959,13 @@ boolean connectedWebsocket = false;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        String tempPath = requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData";
+        String tempPath = new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData";
         File tempRoot = new File(tempPath);
         fileNotWrite(tempRoot);
         File[] tempFilesAndFolders = tempRoot.listFiles();
 
 
-        File file = new File(requireContext().getExternalFilesDir(null).getPath() + File.separator + "/LabApp/CalibrationData/AllCalibData_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
+        File file = new File(new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData/AllCalibData_" + currentDateandTime + "_" + ((tempFilesAndFolders != null ? tempFilesAndFolders.length : 0) - 1) + ".pdf");
         OutputStream outputStream = new FileOutputStream(file);
         PdfWriter writer = new PdfWriter(file);
         PdfDocument pdfDocument = new PdfDocument(writer);

@@ -1,6 +1,7 @@
 package com.aican.aicanapp.adapters;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -51,7 +52,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
             public void onClick(View v) {
 
 
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/" + selectedFile.getName();
+                String path = new ContextWrapper(context).getExternalMediaDirs()[0] + "/LabApp/Useractivity/" + selectedFile.getName();
 
 
                 File file = new File(path);
@@ -100,7 +101,7 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LabApp/Useractivity/" + selectedFile.getName();
+                            String path =new ContextWrapper(context).getExternalMediaDirs()[0]+ "/LabApp/Useractivity/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {

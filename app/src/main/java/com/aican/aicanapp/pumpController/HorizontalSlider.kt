@@ -125,7 +125,7 @@ class   HorizontalSlider(context: Context, attrs: AttributeSet) : View(context, 
         calcBoxPath()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         canvas?.apply {

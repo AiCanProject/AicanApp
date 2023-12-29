@@ -220,7 +220,7 @@ class CurveSeekView @JvmOverloads constructor(
         initLabels()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         canvas?.apply {

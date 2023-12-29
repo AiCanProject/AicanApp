@@ -1,6 +1,7 @@
 package com.aican.aicanapp.adapters;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.utils.PDFViewer;
 
 import java.io.File;
@@ -54,12 +56,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 File file = null;
                 String path = null;
                 if (activity.equals("PhExport")) {
-                     path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/" + selectedFile.getName();
+                     path = new ContextWrapper(context).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/" + selectedFile.getName();
                     file = new File(path);
                 }
 
                 if (activity.equals("EcExport")) {
-                    path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/EcSensordata/" + selectedFile.getName();
+                    path = new ContextWrapper(context).getExternalMediaDirs()[0] + File.separator + "/LabApp/EcSensordata/" + selectedFile.getName();
                     file = new File(path);
                 }
 
@@ -114,7 +116,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Sensordata/" + selectedFile.getName();
+                            String path = new ContextWrapper(context).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {

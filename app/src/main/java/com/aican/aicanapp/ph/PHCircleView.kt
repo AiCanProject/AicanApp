@@ -129,8 +129,10 @@ class PHCircleView(context: Context, attrs: AttributeSet) : View(context, attrs)
         )
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+    override fun onDraw(canvas: Canvas) {
+        if (canvas != null) {
+            super.onDraw(canvas)
+        }
         canvas?.apply {
             drawScale(this)
             drawArrow(this)

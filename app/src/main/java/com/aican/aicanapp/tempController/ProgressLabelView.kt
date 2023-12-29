@@ -123,7 +123,7 @@ class ProgressLabelView @JvmOverloads constructor(
 
     private val bounds = Rect()
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas?.apply {
             var x = 0F

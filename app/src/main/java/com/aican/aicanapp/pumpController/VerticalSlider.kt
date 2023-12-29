@@ -106,7 +106,7 @@ class VerticalSlider(context: Context, attrs: AttributeSet) : View(context, attr
         setProgressDelayed()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         canvas?.apply {

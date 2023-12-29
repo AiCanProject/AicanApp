@@ -1,6 +1,7 @@
 package com.aican.aicanapp.adapters;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aican.aicanapp.R;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.utils.PDFViewer;
 
 import java.io.File;
@@ -48,7 +50,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
             @Override
             public void onClick(View v) {
 
-                String path = context.getExternalFilesDir(null).getAbsolutePath() + "/LabApp/CalibrationData/" + selectedFile.getName();
+                String path = new ContextWrapper(context).getExternalMediaDirs()[0] + "/LabApp/CalibrationData/" + selectedFile.getName();
                 File file = new File(path);
 
                 try {
@@ -111,7 +113,7 @@ public class CalibFileAdapter extends RecyclerView.Adapter<CalibFileAdapter.View
                         }
                         if (item.getTitle().equals("SHARE")) {
 
-                            String path = context.getExternalFilesDir(null).getAbsolutePath()+ "/LabApp/CalibrationData/" + selectedFile.getName();
+                            String path = new ContextWrapper(context).getExternalMediaDirs()[0]+ "/LabApp/CalibrationData/" + selectedFile.getName();
                             File file = new File(path);
 
                             try {

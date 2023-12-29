@@ -231,7 +231,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     Manifest.permission.READ_MEDIA_IMAGES,
                     Manifest.permission.READ_MEDIA_VIDEO,
                     Manifest.permission.READ_MEDIA_AUDIO,
-                    WRITE_EXTERNAL_STORAGE
             };
 
             if (ContextCompat.checkSelfPermission(
@@ -245,10 +244,6 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
                     ContextCompat.checkSelfPermission(
                             this,
                             Manifest.permission.READ_MEDIA_AUDIO
-                    ) != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ) != PackageManager.PERMISSION_GRANTED
             ) {
                 // Permissions are not granted, request them
@@ -1650,6 +1645,7 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
             boolean allPermissionsGranted = true;
             for (int result : grantResults) {
