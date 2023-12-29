@@ -286,11 +286,19 @@
 
                 <Button
                     android:id="@+id/startBtn"
-                    android:layout_width="95dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
                     android:layout_margin="10dp"
                     android:backgroundTint="#9037C7"
                     android:text="Start" />
+
+                <Button
+                    android:id="@+id/resetCalibFive"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="#9E0101"
+                    android:text="Reset" />
 
             </LinearLayout>
 
@@ -323,7 +331,13 @@
                     android:layout_margin="10dp"
                     android:backgroundTint="#9037C7"
                     android:text="Start" />
-
+                <Button
+                    android:id="@+id/resetCalibThree"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="#9E0101"
+                    android:text="Reset" />
             </LinearLayout>
 
 
@@ -349,8 +363,9 @@
                 android:id="@+id/modeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="10dp"
                 android:text="Mode"
                 android:textColor="#9037C7"
@@ -393,7 +408,9 @@
             <Button
                 android:id="@+id/printCalibData"
                 android:layout_width="80dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:textSize="14dp"
+                android:textAllCaps="false"
                 android:layout_gravity="center"
                 android:text="Print" />
 
@@ -401,18 +418,23 @@
             <Button
                 android:id="@+id/printAllCalibData"
                 android:layout_width="110dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
                 android:backgroundTint="#9037C7"
                 android:text="Print All"
+                android:textSize="14dp"
                 android:textAllCaps="true"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/phMvTable"
-                android:layout_width="127dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_width="117dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:textSize="12dp"
+                android:layout_gravity="center"
+
                 android:backgroundTint="#9037C7"
                 android:text="pH mV Table"
                 android:textAllCaps="false" />
@@ -420,8 +442,12 @@
             <Button
                 android:id="@+id/phGraph"
                 android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_gravity="center"
+
+                android:layout_height="40dp"
+                android:layout_margin="1dp"
+                android:textSize="12dp"
+
                 android:backgroundTint="#9037C7"
                 android:text="Graph"
                 android:textAllCaps="false" />

@@ -44,6 +44,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,6 +59,7 @@ import com.aican.aicanapp.dataClasses.BufferData;
 import com.aican.aicanapp.dataClasses.CalibDatClass;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.interfaces.DeviceConnectionInfo;
+import com.aican.aicanapp.interfaces.ResetCalibration;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.PHCalibGraph;
 import com.aican.aicanapp.specificactivities.PhActivity;
@@ -104,9 +106,11 @@ import okhttp3.WebSocketListener;
 public class PhCalibFragmentNew extends Fragment {
 
     DeviceConnectionInfo deviceConnectionInfo;
+    ResetCalibration resetCalibration;
 
-    public PhCalibFragmentNew(DeviceConnectionInfo deviceConnectionInfo) {
+    public PhCalibFragmentNew(DeviceConnectionInfo deviceConnectionInfo, ResetCalibration resetCalibration) {
         this.deviceConnectionInfo = deviceConnectionInfo;
+        this.resetCalibration = resetCalibration;
     }
 
     private static float LOG_INTERVAL = 0;
@@ -114,6 +118,8 @@ public class PhCalibFragmentNew extends Fragment {
     Handler handler1;
     Runnable runnable1;
     Button syncOfflineData;
+    Button resetCalibFive;
+    Button resetCalibThree;
 
     Handler handler2;
     Runnable runnable2;
@@ -248,8 +254,8 @@ boolean connectedWebsocket = false;
     }
 
     private boolean checkPermission() {
-        int permission1 = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
-        int permission2 = ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE);
+        int permission1 = ContextCompat.checkSelfPermission(fragmentContext, WRITE_EXTERNAL_STORAGE);
+        int permission2 = ContextCompat.checkSelfPermission(fragmentContext, READ_EXTERNAL_STORAGE);
         return permission1 == PackageManager.PERMISSION_GRANTED && permission2 == PackageManager.PERMISSION_GRANTED;
     }
     private void requestPermission() {
@@ -293,9 +299,9 @@ boolean connectedWebsocket = false;
 
         if (Constants.OFFLINE_DATA) {
 
-            if (SharedPref.getSavedData(getContext(), "COMPANY_NAME") != null && SharedPref.getSavedData(
-                    getContext(), "COMPANY_NAME") != "N/A") {
-                companyName = SharedPref.getSavedData(getContext(), "COMPANY_NAME");
+            if (SharedPref.getSavedData(fragmentContext, "COMPANY_NAME") != null && SharedPref.getSavedData(
+                    fragmentContext, "COMPANY_NAME") != "N/A") {
+                companyName = SharedPref.getSavedData(fragmentContext, "COMPANY_NAME");
             } else {
                 companyName = "N/A";
             }
@@ -372,7 +378,7 @@ boolean connectedWebsocket = false;
         calibSpinner.setEnabled(true);
         spin.setEnabled(true);
 
-        DialogMain dialogMain = new DialogMain(getContext());
+        DialogMain dialogMain = new DialogMain(fragmentContext);
         dialogMain.setCancelable(false);
         Source.userTrack = "PhCalibPage logged : ";
         if (Source.subscription.equals("cfr")) {
@@ -383,7 +389,7 @@ boolean connectedWebsocket = false;
 
 //        if (Constants.OFFLINE_MODE){
 //            calibrateBtn.setEnabled(false);
-//            progressDialog = new ProgressDialog(getContext());
+//            progressDialog = new ProgressDialog(fragmentContext);
 //            progressDialog.setMessage("Establizing socket connection");
 //            progressDialog.setCancelable(false);
 //            progressDialog.setMax(100);
@@ -395,6 +401,33 @@ boolean connectedWebsocket = false;
 //
 //        }
 
+        resetCalibFive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Source.calibratingNow = false;
+//                Intent i = new Intent(requireContext(), PhActivity.class);
+//                i.putExtra("refreshCalib", "y");
+//                i.putExtra(Dashboard.KEY_DEVICE_ID, PhActivity.DEVICE_ID);
+//                startActivity(i);
+//                getActivity().finish();
+
+              resetCalibration.resetCalibration();
+
+//                calibrateBtn.setEnabled(true);
+//                isCalibrating = false;
+//                phGraph.setEnabled(true);
+//                phMvTable.setEnabled(true);
+//                printCalibData.setEnabled(true);
+//                calibSpinner.setEnabled(true);
+//                spin.setEnabled(true);
+//                Source.calibratingNow = false;
+//
+//                tvTimer.setVisibility(View.INVISIBLE);
+            }
+        });
+
+
+
         calibrateBtn.setOnClickListener(v -> {
             if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                 if (connectedWebsocket){
@@ -403,10 +436,10 @@ boolean connectedWebsocket = false;
 
                     calibrateFivePointOffline(webSocket1);}
                 else{
-                    Toast.makeText(getContext(), "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragmentContext, "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
                 }
             } else if (Constants.OFFLINE_DATA) {
-                Toast.makeText(getContext(), "You can't calibrate you are in offline mode and device is not connect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "You can't calibrate you are in offline mode and device is not connect", Toast.LENGTH_SHORT).show();
             } else {
                 calibrateFivePoint();
 
@@ -421,11 +454,11 @@ boolean connectedWebsocket = false;
 
                     calibrateThreePointOffline();}
                 else{
-                    Toast.makeText(getContext(), "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fragmentContext, "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
 
                 }
             } else if (Constants.OFFLINE_DATA) {
-                Toast.makeText(getContext(), "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
             } else {
                 calibrateThreePoint();
             }
@@ -436,7 +469,7 @@ boolean connectedWebsocket = false;
         {
             Source.status_phMvTable = true;
 
-            SharedPreferences sh = getContext().getSharedPreferences("RolePref", MODE_PRIVATE);
+            SharedPreferences sh = fragmentContext.getSharedPreferences("RolePref", MODE_PRIVATE);
             SharedPreferences.Editor roleE = sh.edit();
             String roleSuper = Source.logUserName;
             roleE.putString("roleSuper", roleSuper);
@@ -449,7 +482,7 @@ boolean connectedWebsocket = false;
 //                    Source.userTrack = "PhLogFragment logged in by ";
                 dialogMain.show(getActivity().getSupportFragmentManager(), "example dialog");
             } else {
-                Intent intent = new Intent(getContext(), PhMvTable.class);
+                Intent intent = new Intent(fragmentContext, PhMvTable.class);
                 startActivity(intent);
             }
         });
@@ -537,7 +570,7 @@ boolean connectedWebsocket = false;
             if (!PH1.equals("") || !PH2.equals("") || !PH3.equals("") || !PH4.equals("") || !PH5.equals("")
                     || !MV1.equals("") || !MV2.equals("") || !MV3.equals("") || !MV4.equals("") || !MV5.equals("")
             ) {
-                Intent i = new Intent(getContext(), PHCalibGraph.class);
+                Intent i = new Intent(fragmentContext, PHCalibGraph.class);
                 i.putExtra("PH1", PH1);
                 i.putExtra("PH2", PH2);
                 i.putExtra("PH3", PH3);
@@ -551,7 +584,7 @@ boolean connectedWebsocket = false;
                 i.putExtra("MV5", MV5);
                 startActivity(i);
             } else {
-                Toast.makeText(getContext(), "Not allow to move further because some values are null, and null values cannot plot the graph", Toast.LENGTH_LONG).show();
+                Toast.makeText(fragmentContext, "Not allow to move further because some values are null, and null values cannot plot the graph", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -662,7 +695,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -677,7 +710,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -691,7 +724,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -705,7 +738,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -719,7 +752,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -734,7 +767,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -747,7 +780,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -761,7 +794,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -775,7 +808,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -789,7 +822,7 @@ boolean connectedWebsocket = false;
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                Toast.makeText(getContext(), "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "error : " + error.getDetails(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -815,7 +848,7 @@ boolean connectedWebsocket = false;
         reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
+        SharedPreferences shp = fragmentContext.getSharedPreferences("Extras", MODE_PRIVATE);
         offset = "Offset: " + shp.getString("offset", "");
         battery = "Battery: " + shp.getString("battery", "");
         slope = "Slope: " + shp.getString("slope", "");
@@ -916,7 +949,7 @@ boolean connectedWebsocket = false;
 
         Bitmap imgBit1 = getSignImage();
         if (imgBit1 != null) {
-            Uri uri1 = getImageUri(getContext(), imgBit1);
+            Uri uri1 = getImageUri(fragmentContext, imgBit1);
 
             try {
                 String add = getPath(uri1);
@@ -932,7 +965,7 @@ boolean connectedWebsocket = false;
 
         document.close();
 
-        Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(fragmentContext, "Pdf generated", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -946,7 +979,7 @@ boolean connectedWebsocket = false;
         reportDate = "Date: " + new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         reportTime = "Time: " + new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-        SharedPreferences shp = getContext().getSharedPreferences("Extras", MODE_PRIVATE);
+        SharedPreferences shp = fragmentContext.getSharedPreferences("Extras", MODE_PRIVATE);
         offset = "Offset: " + shp.getString("offset", "");
         battery = "Battery: " + shp.getString("battery", "");
         slope = "Slope: " + shp.getString("slope", "");
@@ -1037,7 +1070,7 @@ boolean connectedWebsocket = false;
 
         Bitmap imgBit1 = getSignImage();
         if (imgBit1 != null) {
-            Uri uri1 = getImageUri(getContext(), imgBit1);
+            Uri uri1 = getImageUri(fragmentContext, imgBit1);
 
             try {
                 String add = getPath(uri1);
@@ -1053,7 +1086,7 @@ boolean connectedWebsocket = false;
 
         document.close();
 
-        Toast.makeText(getContext(), "Pdf generated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(fragmentContext, "Pdf generated", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -1089,7 +1122,7 @@ boolean connectedWebsocket = false;
     }
 
     private Bitmap getSignImage() {
-        SharedPreferences sh = getContext().getSharedPreferences("signature", Context.MODE_PRIVATE);
+        SharedPreferences sh = fragmentContext.getSharedPreferences("signature", Context.MODE_PRIVATE);
         String photo = sh.getString("signature_data", "");
         Bitmap bitmap = null;
 
@@ -1173,7 +1206,7 @@ boolean connectedWebsocket = false;
 
 //                    if (Float.parseFloat(String.valueOf(mV1_3)) <= maxMV1_3 && Float.parseFloat(String.valueOf(mV1_3)) >= minMV1_3) {
 //                        wrong_3 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_3 = true;
 //                        timer3.cancel();
@@ -1181,7 +1214,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtnThree.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //                    }
                 }
                 if (line_3 == 1) {
@@ -1202,7 +1235,7 @@ boolean connectedWebsocket = false;
 
 //                    if (Float.parseFloat(String.valueOf(mV2_3)) <= maxMV2_3 && Float.parseFloat(String.valueOf(mV2_3)) >= minMV2_3) {
 //                        wrong_3 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_3 = true;
 //                        timer3.cancel();
@@ -1210,7 +1243,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtnThree.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
                 }
@@ -1232,7 +1265,7 @@ boolean connectedWebsocket = false;
 
 //                    if (Float.parseFloat(String.valueOf(mV3_3)) <= maxMV3_3 && Float.parseFloat(String.valueOf(mV3_3)) >= minMV3_3) {
 //                        wrong_3 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_3 = true;
 //                        timer3.cancel();
@@ -1240,7 +1273,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtnThree.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
                 }
@@ -1349,7 +1382,7 @@ boolean connectedWebsocket = false;
                                 Log.e("cValue2", currentBufThree + "");
                                 Log.e("bValue", b + "");
 
-                                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
                                 if (b == 0) {
 
@@ -1511,7 +1544,7 @@ boolean connectedWebsocket = false;
                     log3_3.setBackgroundColor(Color.WHITE);
                     if (Float.parseFloat(String.valueOf(mV1_3)) <= maxMV1_3 && Float.parseFloat(String.valueOf(mV1_3)) >= minMV1_3) {
                         wrong_3 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_3 = true;
                         timer3.cancel();
@@ -1519,7 +1552,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtnThree.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
                     }
                 }
                 if (line_3 == 1) {
@@ -1528,7 +1561,7 @@ boolean connectedWebsocket = false;
                     log3_3.setBackgroundColor(Color.WHITE);
                     if (Float.parseFloat(String.valueOf(mV2_3)) <= maxMV2_3 && Float.parseFloat(String.valueOf(mV2_3)) >= minMV2_3) {
                         wrong_3 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_3 = true;
                         timer3.cancel();
@@ -1536,7 +1569,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtnThree.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -1546,7 +1579,7 @@ boolean connectedWebsocket = false;
                     log3_3.setBackgroundColor(Color.GRAY);
                     if (Float.parseFloat(String.valueOf(mV3_3)) <= maxMV3_3 && Float.parseFloat(String.valueOf(mV3_3)) >= minMV3_3) {
                         wrong_3 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_3 = true;
                         timer3.cancel();
@@ -1554,7 +1587,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtnThree.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -1643,7 +1676,7 @@ boolean connectedWebsocket = false;
 
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabelsThree[b]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
-                                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                                    SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
                                     if (b == 0) {
                                         phAfterCalib1_3.setText(String.valueOf(postCoeff));
@@ -1775,7 +1808,7 @@ boolean connectedWebsocket = false;
 
 //                    if (Float.parseFloat(String.valueOf(mV1)) <= maxMV1 && Float.parseFloat(String.valueOf(mV1)) >= minMV1) {
 //                        wrong_5 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_5 = true;
 //                        timer5.cancel();
@@ -1783,7 +1816,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtn.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
                 }
@@ -1807,7 +1840,7 @@ boolean connectedWebsocket = false;
 
 //                    if (Float.parseFloat(String.valueOf(mV2)) <= maxMV2 && Float.parseFloat(String.valueOf(mV2)) >= minMV2) {
 //                        wrong_5 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_5 = true;
 //                        timer5.cancel();
@@ -1815,7 +1848,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtn.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
                 }
@@ -1837,7 +1870,7 @@ boolean connectedWebsocket = false;
                     }
 //                    if (Float.parseFloat(String.valueOf(mV3)) <= maxMV3 && Float.parseFloat(String.valueOf(mV3)) >= minMV3) {
 //                        wrong_5 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_5 = true;
 //                        timer5.cancel();
@@ -1845,7 +1878,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtn.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
                 }
@@ -1868,7 +1901,7 @@ boolean connectedWebsocket = false;
 
 //                    if (Float.parseFloat(String.valueOf(mV4)) <= maxMV4 && Float.parseFloat(String.valueOf(mV4)) >= minMV4) {
 //                        wrong_5 = false;
-////                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+////                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
 //                    } else {
 //                        wrong_5 = true;
 //                        timer5.cancel();
@@ -1876,7 +1909,7 @@ boolean connectedWebsocket = false;
 ////                        wrong_3 = false;
 //                        calibrateBtn.setEnabled(true);
 //                        showAlertDialogButtonClicked();
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
 
@@ -1909,7 +1942,7 @@ boolean connectedWebsocket = false;
 //                        calibrateBtn.setEnabled(true);
 //                        showAlertDialogButtonClicked();
 //
-//                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 //
 //                    }
                 }
@@ -2064,7 +2097,7 @@ boolean connectedWebsocket = false;
 
 //                                deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels[b]).get().addOnSuccessListener(dataSnapshot2 -> {
 //                                    Float postCoeff = dataSnapshot2.getValue(Float.class);
-                                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                                 if (b == 0) {
@@ -2267,7 +2300,7 @@ boolean connectedWebsocket = false;
                     log5.setBackgroundColor(Color.WHITE);
                     if (Float.parseFloat(String.valueOf(mV1)) <= maxMV1 && Float.parseFloat(String.valueOf(mV1)) >= minMV1) {
                         wrong_5 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_5 = true;
                         timer5.cancel();
@@ -2275,7 +2308,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtn.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -2287,7 +2320,7 @@ boolean connectedWebsocket = false;
                     log5.setBackgroundColor(Color.WHITE);
                     if (Float.parseFloat(String.valueOf(mV2)) <= maxMV2 && Float.parseFloat(String.valueOf(mV2)) >= minMV2) {
                         wrong_5 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_5 = true;
                         timer5.cancel();
@@ -2295,7 +2328,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtn.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -2307,7 +2340,7 @@ boolean connectedWebsocket = false;
                     log5.setBackgroundColor(Color.WHITE);
                     if (Float.parseFloat(String.valueOf(mV3)) <= maxMV3 && Float.parseFloat(String.valueOf(mV3)) >= minMV3) {
                         wrong_5 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_5 = true;
                         timer5.cancel();
@@ -2315,7 +2348,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtn.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -2328,7 +2361,7 @@ boolean connectedWebsocket = false;
 
                     if (Float.parseFloat(String.valueOf(mV4)) <= maxMV4 && Float.parseFloat(String.valueOf(mV4)) >= minMV4) {
                         wrong_5 = false;
-//                        Toast.makeText(getContext(), "In Range", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(fragmentContext, "In Range", Toast.LENGTH_SHORT).show();
                     } else {
                         wrong_5 = true;
                         timer5.cancel();
@@ -2336,7 +2369,7 @@ boolean connectedWebsocket = false;
 //                        wrong_3 = false;
                         calibrateBtn.setEnabled(true);
                         showAlertDialogButtonClicked();
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -2357,7 +2390,7 @@ boolean connectedWebsocket = false;
                         calibrateBtn.setEnabled(true);
                         showAlertDialogButtonClicked();
 
-                        Toast.makeText(getContext(), "Out of Range", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(fragmentContext, "Out of Range", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -2472,7 +2505,7 @@ boolean connectedWebsocket = false;
 
                                 deviceRef.child("UI").child("PH").child("PH_CAL").child(postCoeffLabels[b]).get().addOnSuccessListener(dataSnapshot2 -> {
                                     Float postCoeff = dataSnapshot2.getValue(Float.class);
-                                    SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                                    SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
                                     if (b == 0) {
                                         phAfterCalib1.setText(String.valueOf(postCoeff));
@@ -2559,7 +2592,7 @@ boolean connectedWebsocket = false;
 
 
     public void calibData() {
-        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+        SharedPreferences shp = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
         MV1 = shp.getString("MV1", "--");
         MV2 = shp.getString("MV2", "--");
@@ -2606,7 +2639,7 @@ boolean connectedWebsocket = false;
     }
 
     public void calibData3() {
-        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+        SharedPreferences shp = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
         MV1_3 = shp.getString("MV1_3", "--");
         MV2_3 = shp.getString("MV2_3", "--");
@@ -2817,7 +2850,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib1_3.setText(ecForm);
                 pHAC1_3 = phAfterCalib1_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC1_3", pHAC1_3);
@@ -2837,7 +2870,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib2_3.setText(ecForm);
                 pHAC2_3 = phAfterCalib2_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC2_3", pHAC2_3);
@@ -2856,7 +2889,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib3_3.setText(ecForm);
                 pHAC3_3 = phAfterCalib3_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC3_3", pHAC3_3);
@@ -2877,7 +2910,7 @@ boolean connectedWebsocket = false;
                 mv1_3.setText(ecForm);
                 mV1_3 = mv1_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV1_3", mV1_3);
@@ -2898,7 +2931,7 @@ boolean connectedWebsocket = false;
                 mv2_3.setText(ecForm);
                 mV2_3 = mv2_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV2_3", mV2_3);
@@ -2918,7 +2951,7 @@ boolean connectedWebsocket = false;
                 mv3_3.setText(ecForm);
                 mV3_3 = mv3_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV3_3", mV3_3);
@@ -2941,7 +2974,7 @@ boolean connectedWebsocket = false;
                 slope1_3.setText(sl);
                 SLOPE1_3 = slope1_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE1_3", SLOPE1_3);
@@ -2963,7 +2996,7 @@ boolean connectedWebsocket = false;
                 slope2_3.setText(sl);
                 SLOPE2_3 = slope2_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE2_3", SLOPE2_3);
@@ -2982,7 +3015,7 @@ boolean connectedWebsocket = false;
                 slope3_3.setText(sl);
                 SLOPE3_3 = slope3_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE3_3", SLOPE3_3);
@@ -3002,7 +3035,7 @@ boolean connectedWebsocket = false;
                 dt1_3.setText(time);
                 DT1_3 = dt1_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT1_3", DT1_3);
@@ -3021,7 +3054,7 @@ boolean connectedWebsocket = false;
                 dt2_3.setText(time);
                 DT2_3 = dt2_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT2_3", DT2_3);
@@ -3040,7 +3073,7 @@ boolean connectedWebsocket = false;
                 dt3_3.setText(time);
                 DT3_3 = dt3_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT3_3", DT3_3);
@@ -3059,7 +3092,7 @@ boolean connectedWebsocket = false;
                 ph1_3.setText(phVal);
                 PH1_3 = ph1_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH1_3", PH1_3);
@@ -3078,7 +3111,7 @@ boolean connectedWebsocket = false;
                 ph2_3.setText(phVal);
                 PH2_3 = ph2_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH2_3", PH2_3);
@@ -3097,7 +3130,7 @@ boolean connectedWebsocket = false;
                 ph3_3.setText(phVal);
                 PH3_3 = ph3_3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH3_3", PH3_3);
@@ -3111,7 +3144,14 @@ boolean connectedWebsocket = false;
 
 
     }
+    private Context fragmentContext;
 
+    // Within your fragment's lifecycle methods or when the context is available
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        fragmentContext = context;
+    }
     private void fetchAllData5Point() {
 
         deviceRef.child("UI").child("PH").child("PH_CAL").child("MV_1").addValueEventListener(new ValueEventListener() {
@@ -3123,7 +3163,7 @@ boolean connectedWebsocket = false;
                 mV1 = mv1.getText().toString();
                 Log.d("test1", mV1);
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV1", mV1);
@@ -3144,7 +3184,7 @@ boolean connectedWebsocket = false;
                 slope2.setText(sl);
                 SLOPE2 = slope2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE2", SLOPE2);
@@ -3165,7 +3205,7 @@ boolean connectedWebsocket = false;
                 slope3.setText(sl);
                 SLOPE3 = slope3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE3", SLOPE3);
@@ -3186,7 +3226,7 @@ boolean connectedWebsocket = false;
                 slope4.setText(sl);
                 SLOPE4 = slope4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE4", SLOPE4);
@@ -3207,7 +3247,7 @@ boolean connectedWebsocket = false;
                 slope5.setText(sl);
                 SLOPE5 = slope5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("SLOPE5", SLOPE5);
@@ -3228,7 +3268,7 @@ boolean connectedWebsocket = false;
                 pHAC1 = phAfterCalib1.getText().toString();
 
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC1", pHAC1);
@@ -3248,7 +3288,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib2.setText(ecForm);
                 pHAC2 = phAfterCalib2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC2", pHAC2);
@@ -3268,7 +3308,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib3.setText(ecForm);
                 pHAC3 = phAfterCalib3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC3", pHAC3);
@@ -3287,7 +3327,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib4.setText(ecForm);
                 pHAC4 = phAfterCalib4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC4", pHAC4);
@@ -3306,7 +3346,7 @@ boolean connectedWebsocket = false;
                 phAfterCalib5.setText(ecForm);
                 pHAC5 = phAfterCalib5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("pHAC5", pHAC5);
@@ -3325,7 +3365,7 @@ boolean connectedWebsocket = false;
                 mv2.setText(ecForm);
                 mV2 = mv2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV2", mV2);
@@ -3346,7 +3386,7 @@ boolean connectedWebsocket = false;
                 mv3.setText(ecForm);
                 mV3 = mv3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV3", mV3);
@@ -3367,7 +3407,7 @@ boolean connectedWebsocket = false;
                 mv4.setText(ecForm);
                 mV4 = mv4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV4", mV4);
@@ -3387,7 +3427,7 @@ boolean connectedWebsocket = false;
                 mv5.setText(ecForm);
                 mV5 = mv5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("MV5", mV5);
@@ -3406,8 +3446,11 @@ boolean connectedWebsocket = false;
                 dt1.setText(time);
                 DT1 = dt1.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
+                SharedPref.saveData(requireContext(),"DT", DT1);
+
 
                 myEdit.putString("DT1", DT1);
                 myEdit.commit();
@@ -3425,7 +3468,7 @@ boolean connectedWebsocket = false;
                 dt2.setText(time);
                 DT2 = dt2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT2", DT2);
@@ -3444,7 +3487,7 @@ boolean connectedWebsocket = false;
                 dt3.setText(time);
                 DT3 = dt3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT3", DT3);
@@ -3463,7 +3506,7 @@ boolean connectedWebsocket = false;
                 dt4.setText(time);
                 DT4 = dt4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT4", DT4);
@@ -3482,7 +3525,7 @@ boolean connectedWebsocket = false;
                 dt5.setText(time);
                 DT5 = dt5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("DT5", DT5);
@@ -3501,7 +3544,7 @@ boolean connectedWebsocket = false;
                 ph1.setText(phVal);
                 PH1 = ph1.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH1", PH1);
@@ -3520,7 +3563,7 @@ boolean connectedWebsocket = false;
                 ph2.setText(phVal);
                 PH2 = ph2.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH2", PH2);
@@ -3539,7 +3582,7 @@ boolean connectedWebsocket = false;
                 ph3.setText(phVal);
                 PH3 = ph3.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH3", PH3);
@@ -3558,7 +3601,7 @@ boolean connectedWebsocket = false;
                 ph4.setText(phVal);
                 PH4 = ph4.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH4", PH4);
@@ -3577,7 +3620,7 @@ boolean connectedWebsocket = false;
                 ph5.setText(phVal);
                 PH5 = ph5.getText().toString();
 
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                 myEdit.putString("PH5", PH5);
@@ -3610,6 +3653,8 @@ boolean connectedWebsocket = false;
         log2_3 = view.findViewById(R.id.log2_3);
         log3_3 = view.findViewById(R.id.log3_3);
 
+        resetCalibFive = view.findViewById(R.id.resetCalibFive);
+        resetCalibThree = view.findViewById(R.id.resetCalibThree);
         syncOfflineData = view.findViewById(R.id.syncOfflineData);
         fivePointCalibStart = view.findViewById(R.id.fivePointCalibStart);
         threePointCalibStart = view.findViewById(R.id.threePointCalibStart);
@@ -3796,7 +3841,7 @@ boolean connectedWebsocket = false;
                     } else {
 
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_1").setValue(String.valueOf(ph));
@@ -3837,7 +3882,7 @@ boolean connectedWebsocket = false;
                         }
                     } else {
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
@@ -3872,7 +3917,7 @@ boolean connectedWebsocket = false;
                         }
                     } else {
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
@@ -3906,7 +3951,7 @@ boolean connectedWebsocket = false;
                         }
                     } else {
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
@@ -3940,7 +3985,7 @@ boolean connectedWebsocket = false;
                         }
                     } else {
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_5").setValue(String.valueOf(ph));
@@ -3977,7 +4022,7 @@ boolean connectedWebsocket = false;
                         }
                     } else {
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_2").setValue(String.valueOf(ph));
@@ -4017,7 +4062,7 @@ boolean connectedWebsocket = false;
                         }
                     } else {
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_3").setValue(String.valueOf(ph));
@@ -4055,7 +4100,7 @@ boolean connectedWebsocket = false;
                     } else {
 
                         if (Constants.OFFLINE_DATA) {
-                            Toast.makeText(getContext(), "You can't edit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(fragmentContext, "You can't edit", Toast.LENGTH_SHORT).show();
 
                         } else {
                             deviceRef.child("UI").child("PH").child("PH_CAL").child("B_4").setValue(String.valueOf(ph));
@@ -4100,7 +4145,7 @@ boolean connectedWebsocket = false;
     }
 
     private void openQRActivity(String view) {
-        Intent intent = new Intent(getContext(), ProbeScanner.class);
+        Intent intent = new Intent(fragmentContext, ProbeScanner.class);
         intent.putExtra("activity", "PhCalibFragment");
         intent.putExtra("view", view);
         startActivity(intent);
@@ -4191,7 +4236,17 @@ boolean connectedWebsocket = false;
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
             deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
+//            Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
 
             Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null) + " " + t.getMessage());
 
@@ -4262,7 +4317,16 @@ boolean connectedWebsocket = false;
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
             deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
+//            Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
+
 
             Log.e("WebSocketClosed", "onClosed " + reason.toString());
         }
@@ -4332,8 +4396,17 @@ boolean connectedWebsocket = false;
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
             deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
             Log.e("WebSocketClosed", "onClosing " + reason.toString());
+//            Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
+
         }
 
         @Override
@@ -4342,6 +4415,7 @@ boolean connectedWebsocket = false;
 //            webSocket1 = webSocket;
             
             connectedWebsocket = true;
+
             deviceConnectionInfo.onReconnect("Calib",PhActivity.DEVICE_ID,"hello");
 
             if (webSocket1 == null) {
@@ -4409,6 +4483,13 @@ boolean connectedWebsocket = false;
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(requireContext(), "Socket Disconnected - " + jsonData.toString(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
                 deviceConnectionInfo.onDisconnect("Calib", PhActivity.DEVICE_ID, "onClosing", jsonData);
 
                 Source.calibratingNow = false;
@@ -4430,7 +4511,7 @@ boolean connectedWebsocket = false;
 
             getActivity().runOnUiThread(() -> {
 //                calibrateBtn.setEnabled(true);
-                Toast.makeText(getContext(),
+                Toast.makeText(fragmentContext,
                         "Socket Connection Successful!",
                         Toast.LENGTH_SHORT).show();
 
@@ -4443,7 +4524,7 @@ boolean connectedWebsocket = false;
             } catch (JSONException e) {
                 e.printStackTrace();
                 getActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(),
+                    Toast.makeText(fragmentContext,
                             "Socket Connection Unsuccessful!",
                             Toast.LENGTH_SHORT).show();
 
@@ -4522,7 +4603,7 @@ boolean connectedWebsocket = false;
                             mV1 = mv1.getText().toString();
                             Log.d("test1", mV1);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV1", mV1);
@@ -4533,12 +4614,15 @@ boolean connectedWebsocket = false;
 
 
                             String val = jsonData.getString("MV_2");
-                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv2.setText(ecForm);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            mv2.setText(v);
                             mV2 = mv2.getText().toString();
                             Log.d("test2", mV2);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV2", mV2);
@@ -4550,12 +4634,15 @@ boolean connectedWebsocket = false;
 
 
                             String val = jsonData.getString("MV_3");
-                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv3.setText(ecForm);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            mv3.setText(v);
                             mV3 = mv3.getText().toString();
                             Log.d("test3", mV3);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV3", mV3);
@@ -4566,12 +4653,15 @@ boolean connectedWebsocket = false;
 
 
                             String val = jsonData.getString("MV_4");
-                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv4.setText(ecForm);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            mv4.setText(v);
                             mV4 = mv4.getText().toString();
                             Log.d("test4", mV4);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV4", mV4);
@@ -4581,12 +4671,15 @@ boolean connectedWebsocket = false;
                         if (jsonData.has("MV_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
                             String val = jsonData.getString("MV_5");
-                            String ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv5.setText(ecForm);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            mv5.setText(v);
                             mV5 = mv5.getText().toString();
                             Log.d("test5", mV5);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV5", mV5);
@@ -4596,8 +4689,11 @@ boolean connectedWebsocket = false;
                         if (jsonData.has("POST_VAL_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
                             String val = jsonData.getString("POST_VAL_1");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             phAfterCalib1.setText(v);
                             pHAC1 = phAfterCalib1.getText().toString();
 
@@ -4611,7 +4707,7 @@ boolean connectedWebsocket = false;
                             databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC1", pHAC1);
@@ -4619,8 +4715,11 @@ boolean connectedWebsocket = false;
                         }
                         if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_2");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             phAfterCalib2.setText(v);
                             pHAC2 = phAfterCalib2.getText().toString();
 
@@ -4633,7 +4732,7 @@ boolean connectedWebsocket = false;
 
                             databaseHelper.updateClbOffDataFive(calibDatClass);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC2", pHAC2);
@@ -4642,8 +4741,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("SLOPE_1");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = "--";
+                            if (!jsonData.getString("SLOPE_1").equals("nan") && PhFragment.validateNumber(jsonData.getString("SLOPE_1"))) {
 
+                                 v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             slope2.setText(v);
 
 
@@ -4659,8 +4761,11 @@ boolean connectedWebsocket = false;
                         }
                         if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("SLOPE_2");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = "--";
+                            if (!jsonData.getString("SLOPE_2").equals("nan") && PhFragment.validateNumber(jsonData.getString("SLOPE_2"))) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             slope3.setText(v);
 
 
@@ -4677,8 +4782,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_3");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = "--";
+                            if (!jsonData.getString("POST_VAL_3").equals("nan") && PhFragment.validateNumber(jsonData.getString("POST_VAL_3"))) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             phAfterCalib3.setText(v);
                             pHAC3 = phAfterCalib3.getText().toString();
 
@@ -4692,7 +4800,7 @@ boolean connectedWebsocket = false;
                             databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC3", pHAC3);
@@ -4701,8 +4809,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("SLOPE_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("SLOPE_3");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = "--";
+                            if (!jsonData.getString("SLOPE_3").equals("nan") && PhFragment.validateNumber(jsonData.getString("SLOPE_3"))) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             slope4.setText(v);
 
 
@@ -4719,7 +4830,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_4");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = "--";
+                            if (!jsonData.getString("POST_VAL_4").equals("nan") && PhFragment.validateNumber(jsonData.getString("POST_VAL_4"))) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
 
                             phAfterCalib4.setText(v);
                             pHAC4 = phAfterCalib4.getText().toString();
@@ -4734,7 +4849,7 @@ boolean connectedWebsocket = false;
                             databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC4", pHAC4);
@@ -4743,8 +4858,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("SLOPE_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("SLOPE_4");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = "--";
+                            if (!jsonData.getString("SLOPE_4").equals("nan") && PhFragment.validateNumber(jsonData.getString("SLOPE_4"))) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             slope5.setText(v);
 
 
@@ -4760,8 +4878,11 @@ boolean connectedWebsocket = false;
                         }
                         if (jsonData.has("POST_VAL_5") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_5");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
 
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             phAfterCalib5.setText(v);
                             pHAC5 = phAfterCalib5.getText().toString();
 
@@ -4775,7 +4896,7 @@ boolean connectedWebsocket = false;
                             databaseHelper.updateClbOffDataFive(calibDatClass);
 
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC5", pHAC5);
@@ -4788,7 +4909,7 @@ boolean connectedWebsocket = false;
                             dt1.setText(val);
                             DT1 = dt1.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT1", DT1);
@@ -4800,7 +4921,7 @@ boolean connectedWebsocket = false;
                             dt2.setText(val);
                             DT2 = dt2.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT2", DT2);
@@ -4811,7 +4932,7 @@ boolean connectedWebsocket = false;
                             dt3.setText(val);
                             DT3 = dt3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT3", DT3);
@@ -4822,7 +4943,7 @@ boolean connectedWebsocket = false;
                             dt4.setText(val);
                             DT4 = dt4.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT4", DT4);
@@ -4833,7 +4954,7 @@ boolean connectedWebsocket = false;
                             dt5.setText(val);
                             DT5 = dt5.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT5", DT5);
@@ -4847,7 +4968,7 @@ boolean connectedWebsocket = false;
                             ph1.setText(val);
                             PH1 = ph1.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH1", PH1);
@@ -4859,7 +4980,7 @@ boolean connectedWebsocket = false;
                             ph2.setText(val);
                             PH2 = ph2.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH2", PH2);
@@ -4871,7 +4992,7 @@ boolean connectedWebsocket = false;
                             ph3.setText(val);
                             PH3 = ph3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH3", PH3);
@@ -4883,7 +5004,7 @@ boolean connectedWebsocket = false;
                             ph4.setText(val);
                             PH4 = ph4.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH4", PH4);
@@ -4895,7 +5016,7 @@ boolean connectedWebsocket = false;
                             ph5.setText(val);
                             PH5 = ph5.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH5", PH5);
@@ -4908,7 +5029,7 @@ boolean connectedWebsocket = false;
                             Log.d("ECVal", "onDataChange: " + ec);
 //                            stateChangeModeFive();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
                             if (jsonData.getString("CAL").equals("11") && jsonData.has("POST_VAL_1")) {
                                 String d = jsonData.getString("POST_VAL_1");
@@ -5014,7 +5135,11 @@ boolean connectedWebsocket = false;
                         if (jsonData.has("POST_VAL_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
                             String val = jsonData.getString("POST_VAL_2");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }
                             phAfterCalib1_3.setText(v);
                             pHAC1_3 = phAfterCalib1_3.getText().toString();
 
@@ -5028,7 +5153,7 @@ boolean connectedWebsocket = false;
                             databaseHelper.updateClbOffDataThree(calibDatClass1);
 
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC1_3", pHAC1_3);
@@ -5037,8 +5162,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("POST_VAL_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_3");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            phAfterCalib2_3.setText(v);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            phAfterCalib2_3.setText(v);
                             pHAC2_3 = phAfterCalib2_3.getText().toString();
 
 
@@ -5052,7 +5180,7 @@ boolean connectedWebsocket = false;
                             databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC2_3", pHAC2_3);
@@ -5060,8 +5188,11 @@ boolean connectedWebsocket = false;
                         }
                         if (jsonData.has("POST_VAL_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("POST_VAL_4");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            phAfterCalib3_3.setText(v);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            phAfterCalib3_3.setText(v);
                             pHAC3_3 = phAfterCalib3_3.getText().toString();
 
                             CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
@@ -5072,7 +5203,7 @@ boolean connectedWebsocket = false;
 
                             databaseHelper.updateClbOffDataThree(calibDatClass3);
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("pHAC3_3", pHAC3_3);
@@ -5081,8 +5212,11 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("SLOPE_1") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("SLOPE_1");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            slope2_3.setText(v);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            slope2_3.setText(v);
 
 
                             CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
@@ -5098,8 +5232,11 @@ boolean connectedWebsocket = false;
                         }
                         if (jsonData.has("SLOPE_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("SLOPE_2");
-                            String v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            slope3_3.setText(v);
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            slope3_3.setText(v);
                             pHAC3_3 = phAfterCalib3_3.getText().toString();
 
                             CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
@@ -5113,10 +5250,13 @@ boolean connectedWebsocket = false;
 
                         }
                         if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                            float ph = Float.parseFloat(jsonData.getString("PH_VAL"));
-                            String phForm = String.format(Locale.UK, "%.2f", ph);
-                            tvPhCurr.setText(phForm);
-                            phView.moveTo(ph);
+                            String val = jsonData.getString("PH_VAL");
+                            String v = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            phView.moveTo(Float.parseFloat(v));
+                            }                            tvPhCurr.setText(v);
 
                         }
 
@@ -5140,11 +5280,14 @@ boolean connectedWebsocket = false;
                         if (jsonData.has("MV_2") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
                             String val = jsonData.getString("MV_2");
-                            String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv1_3.setText(e);
+                            String e = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                            mv1_3.setText(e);
                             mV1_3 = mv1_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV1_3", mV1_3);
@@ -5153,11 +5296,14 @@ boolean connectedWebsocket = false;
 
                         if (jsonData.has("MV_3") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("MV_3");
-                            String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv2_3.setText(e);
+                            String e = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                                       mv2_3.setText(e);
                             mV2_3 = mv2_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV2_3", mV2_3);
@@ -5165,11 +5311,14 @@ boolean connectedWebsocket = false;
                         }
                         if (jsonData.has("MV_4") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
                             String val = jsonData.getString("MV_4");
-                            String e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            mv3_3.setText(e);
+                            String e = val;
+                            if (!val.equals("nan") && PhFragment.validateNumber(val)) {
+
+                                e = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                            }                                               mv3_3.setText(e);
                             mV3_3 = mv3_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("MV3_3", mV3_3);
@@ -5182,7 +5331,7 @@ boolean connectedWebsocket = false;
                             dt1_3.setText(val);
                             DT1_3 = dt1_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT1_3", DT1_3);
@@ -5194,7 +5343,7 @@ boolean connectedWebsocket = false;
                             dt2_3.setText(val);
                             DT2_3 = dt2_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT2_3", DT2_3);
@@ -5206,7 +5355,7 @@ boolean connectedWebsocket = false;
                             dt3_3.setText(val);
                             DT3_3 = dt3_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("DT3_3", DT3_3);
@@ -5219,7 +5368,7 @@ boolean connectedWebsocket = false;
                             ph1_3.setText(val);
                             PH1_3 = ph1_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH1_3", PH1_3);
@@ -5231,7 +5380,7 @@ boolean connectedWebsocket = false;
                             ph2_3.setText(val);
                             PH2_3 = ph2_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH2_3", PH2_3);
@@ -5242,7 +5391,7 @@ boolean connectedWebsocket = false;
                             ph3_3.setText(val);
                             PH3_3 = ph3_3.getText().toString();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
                             myEdit.putString("PH3_3", PH3_3);
@@ -5256,7 +5405,7 @@ boolean connectedWebsocket = false;
                             Log.d("ECVal", "onDataChange: " + ec);
 //                            stateChangeModeFive();
 
-                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+                            SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
                             if (jsonData.getString("CAL").equals("21") && jsonData.has("POST_VAL_2")) {
                                 String d = jsonData.getString("POST_VAL_2");
@@ -5372,7 +5521,7 @@ boolean connectedWebsocket = false;
 
         }
 
-        SharedPreferences shp = getContext().getSharedPreferences("CalibPrefs", MODE_PRIVATE);
+        SharedPreferences shp = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
 
         BFD1 = shp.getString("BFD1", "");
         BFD2 = BFD1_3 = shp.getString("BFD2", "");
@@ -5859,10 +6008,10 @@ boolean connectedWebsocket = false;
 
         } else {
             if (!Dashboard.isConnected) {
-                Toast.makeText(getContext(), "Your device is not connected with any internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(fragmentContext, "Your device is not connected with any internet connection", Toast.LENGTH_LONG).show();
             }
             if (Constants.OFFLINE_MODE) {
-                Toast.makeText(getContext(), "Currently your device is in offline mode, so data can sync", Toast.LENGTH_LONG).show();
+                Toast.makeText(fragmentContext, "Currently your device is in offline mode, so data can sync", Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -26,6 +26,7 @@ import com.aican.aicanapp.fragments.ph.phAlarmFragment;
 import com.aican.aicanapp.fragments.ph.phGraphFragment;
 import com.aican.aicanapp.fragments.ph.phLogFragment;
 import com.aican.aicanapp.interfaces.DeviceConnectionInfo;
+import com.aican.aicanapp.interfaces.ResetCalibration;
 import com.aican.aicanapp.utils.Constants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class PhActivity extends AppCompatActivity implements View.OnClickListener, DeviceConnectionInfo {
+public class PhActivity extends AppCompatActivity implements View.OnClickListener, DeviceConnectionInfo, ResetCalibration {
 
     TextView ph, calibrate, log, graph, alarm, tabItemPh, tabItemCalib;
     DatabaseReference deviceRef;
@@ -55,7 +56,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
     phLogFragment phLogFragment = new phLogFragment();
     phGraphFragment phGraphFragment = new phGraphFragment();
     phAlarmFragment phAlarmFragment = new phAlarmFragment();
-    PhCalibFragmentNew phCalibFragmentNew = new PhCalibFragmentNew(this);
+    PhCalibFragmentNew phCalibFragmentNew = new PhCalibFragmentNew(this, this);
     DatabaseHelper databaseHelper;
 
     public static String DEVICE_ID = null;
@@ -347,6 +348,32 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             }
         });
         this.frag = frag;
+
+    }
+
+    @Override
+    public void resetCalibration() {
+//            tabItemPh.setBackground(getResources().getDrawable(R.drawable.backselect1));
+//            tabItemPh.setVisibility(View.INVISIBLE);
+//            TextView select2 = findViewById(R.id.select2);
+//            select2.setBackground(getResources().getDrawable(R.drawable.back_select2));
+
+        Toast.makeText(this, "Resetting...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Reconnecting...", Toast.LENGTH_LONG).show();
+
+
+//            calibrate.setTextColor(Color.WHITE);
+//            ph.setTextColor(Color.parseColor("#FF24003A"));
+//            log.setTextColor(Color.parseColor("#FF24003A"));
+//            graph.setTextColor(Color.parseColor("#FF24003A"));
+//            alarm.setTextColor(Color.parseColor("#FF24003A"));
+//                Toast.makeText(this, "" + calibrate.getWidth(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Reset Done", Toast.LENGTH_SHORT).show();
+//                int size = calibrate.getWidth();
+//                tabItemPh.animate().x(size).setDuration(100);
+        loadFragments(new PhCalibFragmentNew(this, this));
+
+//        loadFragments(phCalibFragmentNew);
 
     }
 }

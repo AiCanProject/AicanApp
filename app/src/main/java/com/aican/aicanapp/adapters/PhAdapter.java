@@ -194,7 +194,7 @@ public class PhAdapter extends RecyclerView.Adapter<PhAdapter.PhAdapterViewHolde
 
                         } else {
                             if (Constants.wifiSSID.contains(device.getId())) {
-                                Toast.makeText(context, "Connected to Offline mode with " + device.getId(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(context, "Connecting to Offline mode with " + device.getId(), Toast.LENGTH_LONG).show();
                                 Constants.OFFLINE_MODE = true;
                                 Constants.OFFLINE_DATA = true;
 

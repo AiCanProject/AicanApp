@@ -719,6 +719,17 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/voltage"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Voltage : null"
+                android:layout_marginStart="50dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="24dp" />
+
 
         </LinearLayout>
 
