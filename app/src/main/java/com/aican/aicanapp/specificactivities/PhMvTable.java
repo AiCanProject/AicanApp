@@ -126,6 +126,7 @@ public class PhMvTable extends AppCompatActivity {
 
         databaseHelper.insert_action_data(time, date, "pHMvTable : " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
 
+        databaseHelper.deletePhBufferMVTable();
         insertIntoDB();
 
         deviceRef = FirebaseDatabase.getInstance(FirebaseApp.getInstance(PhActivity.DEVICE_ID)).getReference().child("PHMETER").child(PhActivity.DEVICE_ID);

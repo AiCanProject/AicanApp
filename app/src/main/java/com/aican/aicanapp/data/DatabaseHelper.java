@@ -340,6 +340,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deletePhBufferMVTable()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM PHBuffer");
+    }
     public Boolean insert_probe(String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
