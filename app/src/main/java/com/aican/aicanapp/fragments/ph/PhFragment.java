@@ -355,7 +355,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
                     }
 
                     if (jsonData.has("ATC") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                        if (jsonData.getString("ATC") == "1") {
+                        if (jsonData.getString("ATC").equals("1")) {
                             switchAtc.setChecked(true);
                             SharedPreferences togglePref = requireContext().getSharedPreferences("togglePref", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editT = togglePref.edit();

@@ -4593,11 +4593,11 @@ boolean connectedWebsocket = false;
 
                             String val = jsonData.getString("MV_1");
                             String ecForm = "0";
-                            if (val == "nan" && !PhFragment.validateNumber(val)) {
+                            if (val.equals("nan") && !PhFragment.validateNumber(val)) {
                                 ecForm = "nan";
                             } else {
                                 ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-
+///sdjhdh
                             }
                             mv1.setText(ecForm);
                             mV1 = mv1.getText().toString();
