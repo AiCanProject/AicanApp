@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.aican.aicanapp.R;
@@ -19,6 +22,7 @@ import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.utils.Constants;
+import com.aican.aicanapp.utils.SharedPref;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,15 +45,17 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
 public class PhMvTable extends AppCompatActivity {
+    Switch offlineModeSwitch;
 
     TextView ph1, minMV1, phEdit1, ph2, minMV2, phEdit2, ph3, minMV3, phEdit3, ph4, minMV4, phEdit4, ph5, minMV5, phEdit5, maxMV1, maxMV2, maxMV3, maxMV4, maxMV5;
-    TextView minMVEdit1, minMVEdit2, minMVEdit3, minMVEdit4, minMVEdit5, maxMVEdit1, maxMVEdit2, maxMVEdit3, maxMVEdit4, maxMVEdit5;
+    TextView minMVEdit1, minMVEdit2, minMVEdit3, minMVEdit4, minMVEdit5, maxMVEdit1, maxMVEdit2, maxMVEdit3, maxMVEdit4, maxMVEdit5, monitorValTxt;
     String MIN_MV1, MIN_MV2, MIN_MV3, MIN_MV4, MIN_MV5, MAX_MV1, MAX_MV2, MAX_MV3, MAX_MV4, MAX_MV5,
             PH1, PH2, PH3, PH4, PH5;
     DatabaseHelper databaseHelper;
     DatabaseReference deviceRef;
     EditText tempValue;
-    Button setATC;
+    Button setATC, setThermistor;
+    CheckBox setNTC, setPTC;
     WebSocket webSocket1;
     JSONObject jsonData;
 
@@ -58,6 +64,11 @@ public class PhMvTable extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ph_mv_table);
 
+        setPTC = findViewById(R.id.setPTC);
+        setNTC = findViewById(R.id.setNTC);
+        setThermistor = findViewById(R.id.setThermistor);
+        monitorValTxt = findViewById(R.id.monitorValTxt);
+        offlineModeSwitch = findViewById(R.id.offlineModeSwitch);
         maxMVEdit1 = findViewById(R.id.maxMVEdit1);
         maxMVEdit2 = findViewById(R.id.maxMVEdit2);
         maxMVEdit3 = findViewById(R.id.maxMVEdit3);
@@ -466,7 +477,10 @@ public class PhMvTable extends AppCompatActivity {
                 } else {
                     Float phVal = snapshot.getValue(Float.class);
                     if (phVal != null) {
+                        if (!Constants.OFFLINE_DATA){
+
                         tempValue.setText(phVal.toString());
+                        }
                     }
                 }
 
@@ -477,10 +491,16 @@ public class PhMvTable extends AppCompatActivity {
             }
         });
 
+        if(SharedPref.getSavedData(this, "ATC_R_C") != null && SharedPref.getSavedData(this, "ATC_R_C") != ""){
+            tempValue.setText(SharedPref.getSavedData(this, "ATC_R_C"));
+        }else{
+            tempValue.setText("0.0");
+        }
 
         setATC.setOnClickListener(v -> {
             if (!tempValue.getText().toString().equals("")) {
                 Float va = Float.parseFloat(tempValue.getText().toString());
+                SharedPref.saveData(this,"ATC_R_C",String.valueOf(va));
 
                 if (Constants.OFFLINE_MODE) {
                     try {
@@ -493,6 +513,62 @@ public class PhMvTable extends AppCompatActivity {
                 } else {
                     deviceRef.child("Data").child("T_SET").setValue(va);
                     databaseHelper.insert_action_data(time, date, "Temperature offset at: " + tempValue.getText() + " set by " + Source.logUserName, "", "", "", "", PhActivity.DEVICE_ID);
+                }
+            }
+        });
+
+
+        setNTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(setNTC.isChecked()){
+                    setPTC.setChecked(false);
+                }else{
+                    setPTC.setChecked(true);
+                }
+            }
+        });
+        setPTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(setPTC.isChecked()){
+                    setNTC.setChecked(false);
+                }else{
+                    setNTC.setChecked(true);
+                }
+            }
+        });
+        setNTC.setChecked(true);
+
+        setThermistor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(setNTC.isChecked()){
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("THERM_VAL", "0");
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+               else if (setPTC.isChecked()){
+                    jsonData = new JSONObject();
+                    try {
+                        jsonData.put("THERM_VAL", "1");
+                        jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
+                        webSocket1.send(jsonData.toString());
+
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }else{
+                    Toast.makeText(PhMvTable.this, "Check at least one", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -750,6 +826,36 @@ public class PhMvTable extends AppCompatActivity {
 
     }
 
+    private void socketSwitch(){
+        offlineModeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (offlineModeSwitch.isChecked()) {
+                    offlineModeSwitch.setText("Connect");
+                    Toast.makeText(PhMvTable.this, "Connecting", Toast.LENGTH_SHORT).show();
+
+                    Log.d("SwitchStatusFrag", "Switch Unchecked: Perform other actions if needed");
+                    if (Constants.OFFLINE_MODE) {
+                        initiateSocketConnection();
+                    }
+                    if (Constants.OFFLINE_MODE) {
+
+//                webSocket1.send(lastJsonData.toString());
+
+                    } else {
+                    }
+                } else {
+                    offlineModeSwitch.setText("Connected");
+
+
+                    Toast.makeText(PhMvTable.this, "Disconnected", Toast.LENGTH_SHORT).show();
+                    webSocket1.cancel();
+                }
+            }
+        });
+    }
+
+
     private void initiateSocketConnection() {
 
         OkHttpClient client = new OkHttpClient();
@@ -766,6 +872,14 @@ public class PhMvTable extends AppCompatActivity {
             if (webSocket1 == null) {
                 webSocket.cancel();
             }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    offlineModeSwitch.setChecked(true);
+                    offlineModeSwitch.setText("Connected");
+                }
+            });
 
             runOnUiThread(() -> {
                 Toast.makeText(PhMvTable.this,
@@ -792,7 +906,50 @@ public class PhMvTable extends AppCompatActivity {
         }
 
         @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    offlineModeSwitch.setChecked(false);
+                    offlineModeSwitch.setText("Connect");
+                }
+            });
+        }
+
+        @Override
+        public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosing(webSocket, code, reason);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    offlineModeSwitch.setChecked(false);
+                    offlineModeSwitch.setText("Connect");
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
+            super.onFailure(webSocket, t, response);
+
+
+        }
+
+
+
+        @Override
         public void onMessage(WebSocket webSocket, String text) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    offlineModeSwitch.setChecked(true);
+                    offlineModeSwitch.setText("Connected");
+                }
+            });
+
+
             super.onMessage(webSocket, text);
 
             if (webSocket1 == null) {
@@ -804,6 +961,9 @@ public class PhMvTable extends AppCompatActivity {
                     jsonData = new JSONObject(text);
                     Log.d("JSONReceived:PHFragment", "onMessage: " + text);
 
+                    if (jsonData.has("VOLT") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
+                        monitorValTxt.setText("Monitor Val : "+jsonData.getString("VOLT"));
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

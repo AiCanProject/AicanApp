@@ -543,9 +543,42 @@ public class Export extends AppCompatActivity {
 
         SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
         offset = "Offset: " + shp.getString("offset", "");
-        battery = "Battery: " + shp.getString("battery", "");
-        slope = "Slope: " + shp.getString("slope", "");
+
+        if (Constants.OFFLINE_DATA){
+
+            if (SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID);
+                offset = "Offset: " + data;
+            }else{
+                offset = "Offset: " + "null";
+
+            }
+        }else {
+        }
+
+
         temp = "Temperature: " + shp.getString("temp", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        if (Constants.OFFLINE_DATA){
+            if (SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID);
+                slope = "Slope: " + data;
+            }else{
+                slope = "Slope: " + "null";
+
+            }
+
+            if (SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID);
+                temp = "Temperature: " + data;
+            }else{
+                temp = "Temperature: " + "null";
+
+            }
+
+        }else {
+            slope = "Slope: " + shp.getString("slope", "");
+        }
 
         File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Sensordata");
         if (!exportDir.exists()) {
@@ -802,9 +835,39 @@ public class Export extends AppCompatActivity {
 
         SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
         offset = "Offset: " + shp.getString("offset", "");
-        battery = "Battery: " + shp.getString("battery", "");
-        slope = "Slope: " + shp.getString("slope", "");
+
+        if (Constants.OFFLINE_DATA){
+
+            if (SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID);
+                offset = "Offset: " + data;
+            }else{
+                offset = "Offset: " + "null";
+
+            }
+        }else {
+        }
+
         temp = "Temperature: " + shp.getString("temp", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        if (Constants.OFFLINE_DATA){
+            if (SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID);
+                slope = "Slope: " + data;
+            }else{
+                slope = "Slope: " + "null";
+
+            }
+            if (SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID);
+                temp = "Temperature: " + data;
+            }else{
+                temp = "Temperature: " + "null";
+
+            }
+        }else {
+            slope = "Slope: " + shp.getString("slope", "");
+        }
 
         roleExport = "Made By: " + Source.logUserName;
 
@@ -1115,9 +1178,41 @@ public class Export extends AppCompatActivity {
 
             SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
             offset = "Offset: " + shp.getString("offset", "");
+
+            if (Constants.OFFLINE_DATA){
+
+                if (SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != ""){
+                    String  data =  SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID);
+                    offset = "Offset: " + data;
+                }else{
+                    offset = "Offset: " + "null";
+
+                }
+            }else {
+            }
+
+
             battery = "Battery: " + shp.getString("battery", "");
-            slope = "Slope: " + shp.getString("slope", "");
             temp = "Temperature: " + shp.getString("temp", "");
+            if (Constants.OFFLINE_DATA){
+                if (SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+                    String  data =  SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID);
+                    slope = "Slope: " + data;
+                }else{
+                    slope = "Slope: " + "null";
+
+                }
+                if (SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != ""){
+                    String  data =  SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID);
+                    temp = "Temperature: " + data;
+                }else{
+                    temp = "Temperature: " + "null";
+
+                }
+            }else {
+                slope = "Slope: " + shp.getString("slope", "");
+            }
+
 
             setFirebaseListeners();
 
@@ -1325,9 +1420,43 @@ public class Export extends AppCompatActivity {
 
         SharedPreferences shp = getSharedPreferences("Extras", MODE_PRIVATE);
         offset = "Offset: " + shp.getString("offset", "");
-        battery = "Battery: " + shp.getString("battery", "");
-        slope = "Slope: " + shp.getString("slope", "");
+
+        if (Constants.OFFLINE_DATA){
+
+            if (SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"OFFSET_"+PhActivity.DEVICE_ID);
+                offset = "Offset: " + data;
+            }else{
+                offset = "Offset: " + "null";
+
+            }
+        }else {
+        }
+
+
         String tempe = "Temperature: " + shp.getString("temp", "");
+
+
+        battery = "Battery: " + shp.getString("battery", "");
+        if (Constants.OFFLINE_DATA){
+            if (SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"SLOPE_"+PhActivity.DEVICE_ID);
+                slope = "Slope: " + data;
+            }else{
+                slope = "Slope: " + "null";
+
+            }
+            if (SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(Export.this,"TEMP_VAL_"+PhActivity.DEVICE_ID);
+                tempe = "Temperature: " + data;
+            }else{
+                tempe = "Temperature: " + "null";
+
+            }
+        }else {
+            slope = "Slope: " + shp.getString("slope", "");
+        }
+
 
         File exportDir = new File(new ContextWrapper(Export.this).getExternalMediaDirs()[0] + File.separator + "/LabApp/Useractivity");
         if (!exportDir.exists()) {

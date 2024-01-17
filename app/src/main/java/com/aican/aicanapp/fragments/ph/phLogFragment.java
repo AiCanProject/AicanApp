@@ -50,6 +50,8 @@ import com.aican.aicanapp.adapters.LogAdapter;
 import com.aican.aicanapp.adapters.PrintLogAdapter;
 import com.aican.aicanapp.data.DatabaseHelper;
 import com.aican.aicanapp.dataClasses.phData;
+import com.aican.aicanapp.interfaces.DeviceConnectionInfo;
+import com.aican.aicanapp.interfaces.ResetCalibration;
 import com.aican.aicanapp.ph.PhView;
 import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
@@ -93,13 +95,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import okio.ByteString;
 
 public class phLogFragment extends Fragment {
 
     private static float LOG_INTERVAL = 0;
     Handler handler1;
     Runnable runnable1;
-
+    DeviceConnectionInfo deviceConnectionInfo;
+    ResetCalibration resetCalibration;
     WebSocket webSocket1;
     JSONObject jsonData;
 
@@ -139,6 +143,12 @@ public class phLogFragment extends Fragment {
     int timerInSec;
     Boolean isTimer;
     String companyName;
+
+    int holdFlag = 0;
+    public phLogFragment(DeviceConnectionInfo deviceConnectionInfo, ResetCalibration resetCalibration) {
+        this.deviceConnectionInfo = deviceConnectionInfo;
+        this.resetCalibration = resetCalibration;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -769,7 +779,7 @@ public class phLogFragment extends Fragment {
                     if (Constants.OFFLINE_MODE) {
                         try {
                             jsonData = new JSONObject();
-                            jsonData.put("HOLD", "0");
+//                            jsonData.put("HOLD", "0");
                             jsonData.put("AUTOLOG", "1");
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
@@ -795,7 +805,10 @@ public class phLogFragment extends Fragment {
                         }
                         switchBtnClick.setChecked(false);
                     }
-                } else {
+                }
+
+                else {
+                    holdFlag = 0;
                     if (!switchInterval.isChecked() && !switchBtnClick.isChecked()) {
                         autoLogggg = 0;
                         updateAutoLog();
@@ -1067,9 +1080,40 @@ public class phLogFragment extends Fragment {
 
         SharedPreferences shp = requireContext().getSharedPreferences("Extras", MODE_PRIVATE);
         offset = "Offset: " + shp.getString("offset", "");
-        battery = "Battery: " + shp.getString("battery", "");
-        slope = "Slope: " + shp.getString("slope", "");
+
+        if (Constants.OFFLINE_DATA){
+
+            if (SharedPref.getSavedData(requireContext(),"OFFSET_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(requireContext(),"OFFSET_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(requireContext(),"OFFSET_"+PhActivity.DEVICE_ID);
+                offset = "Offset: " + data;
+            }else{
+                offset = "Offset: " + "null";
+
+            }
+        }else {
+        }
+
         tempe = "Temperature: " + shp.getString("temp", "");
+        battery = "Battery: " + shp.getString("battery", "");
+        if (Constants.OFFLINE_DATA){
+            if (SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID);
+                slope = "Slope: " + data;
+            }else{
+                slope = "Slope: " + "null";
+
+            }
+
+            if (SharedPref.getSavedData(requireContext(),"TEMP_VAL_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(requireContext(),"TEMP_VAL_"+PhActivity.DEVICE_ID) != ""){
+                String  data =  SharedPref.getSavedData(requireContext(),"TEMP_VAL_"+PhActivity.DEVICE_ID);
+                temp = "Temperature: " + data;
+            }else{
+                temp = "Temperature: " + "null";
+
+            }
+        }else {
+            slope = "Slope: " + shp.getString("slope", "");
+        }
 
 //        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "/LabApp/Currentlog");
 //        if (!exportDir.exists()) {
@@ -1905,6 +1949,31 @@ public class phLogFragment extends Fragment {
 
     private class SocketListener extends WebSocketListener {
 
+
+        @Override
+        public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosed(webSocket, code, reason);
+            deviceConnectionInfo.onDisconnect("Log", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
+        }
+
+        @Override
+        public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+            super.onClosing(webSocket, code, reason);
+            deviceConnectionInfo.onDisconnect("Log", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
+        }
+
+        @Override
+        public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
+            super.onFailure(webSocket, t, response);
+
+            deviceConnectionInfo.onDisconnect("Log", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
+        }
+
+
+
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
             super.onOpen(webSocket, response);
@@ -1912,6 +1981,7 @@ public class phLogFragment extends Fragment {
             if (webSocket1 == null) {
                 webSocket.cancel();
             }
+            deviceConnectionInfo.onReconnect("Log",PhActivity.DEVICE_ID,"hello");
 
             getActivity().runOnUiThread(() -> {
                 Toast.makeText(getContext(),
@@ -1951,14 +2021,15 @@ public class phLogFragment extends Fragment {
                     Log.d("JSONReceived:PHFragment", "onMessage: " + text);
 
                     if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
-                        float ph = 0.0f;
+                        float phk = 0.0f;
                         if (!jsonData.getString("PH_VAL").equals("nan") && PhFragment.validateNumber(jsonData.getString("PH_VAL"))) {
-                            ph = Float.parseFloat(jsonData.getString("PH_VAL"));
+                            phk = Float.parseFloat(jsonData.getString("PH_VAL"));
                         }
                         tvPhCurr.setText(String.valueOf(ph));
-                        phView.moveTo(ph);
-                        ph = ph;
-                        AlarmConstants.PH = ph;
+                        phView.moveTo(phk);
+                        ph = String.valueOf(phk);
+
+                        AlarmConstants.PH = phk;
                     }
 
                     if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
@@ -2004,12 +2075,21 @@ public class phLogFragment extends Fragment {
 
                     if (jsonData.has("HOLD") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
+                        if (switchHold.isChecked()){
+                            if (jsonData.getString("HOLD").equals("0")) {
+                                holdFlag = 0;
+                            }
+                            }
+
                         if (switchHold.isChecked()) {
                             if (jsonData.getString("HOLD").equals("1")) {
+
+                                holdFlag++;
+
                                 date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
                                 time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 //                            fetch_logs();
-                                Toast.makeText(getContext(), "HOLD " + jsonData.getString("HOLD"), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "HOLD " + jsonData.getString("HOLD"), Toast.LENGTH_SHORT).show();
 
                                 jsonData = new JSONObject();
                                 jsonData.put("HOLD", String.valueOf(0));
@@ -2018,20 +2098,22 @@ public class phLogFragment extends Fragment {
 
 //                                deviceRef.child("Data").child("HOLD").setValue(0);
 
+                                if (holdFlag == 1) {
 
-                                if (ph == null || temp == null || mv == null) {
+                                    if (ph == null || temp == null || mv == null) {
 //                                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
-                                }
+                                    }
 //                                } else {
 //                                    databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
 //                                    databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
 //                                    databaseHelper.insert_action_data(time, date, "Log pressed : " + Source.userName, ph, temp, mv, compound_name, PhActivity.DEVICE_ID);
 //                                }
-                                adapter = new LogAdapter(getContext(), getList());
-                                recyclerView.setAdapter(adapter);
-                                if (Constants.OFFLINE_MODE) {
-                                    databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
-                                    databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                    adapter = new LogAdapter(getContext(), getList());
+                                    recyclerView.setAdapter(adapter);
+                                    if (Constants.OFFLINE_MODE) {
+                                        databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                        databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
+                                    }
                                 }
                             }
 
@@ -2043,6 +2125,31 @@ public class phLogFragment extends Fragment {
                     e.printStackTrace();
                 }
             });
+
+        }
+
+    }
+    public void receiveDataFromPhActivity(String data, String deviceID, JSONObject lastJsonData) {
+
+        if (data.equals("Connect")) {
+            Log.d("SwitchStatusFrag", "Switch Unchecked: Perform other actions if needed");
+            if (Constants.OFFLINE_MODE) {
+                initiateSocketConnection();
+            }
+            if (Constants.OFFLINE_MODE) {
+
+                webSocket1.send(lastJsonData.toString());
+
+            } else {
+            }
+            Toast.makeText(requireContext(), "Connected", Toast.LENGTH_SHORT).show();
+        }
+        if (data.equals("Disconnect")) {
+            Toast.makeText(requireContext(), "Disconnected", Toast.LENGTH_SHORT).show();
+            webSocket1.cancel();
+            Source.calibratingNow = false;
+            Source.auto_log = 0;
+//            connectedWebsocket = false;
 
         }
 

@@ -27,10 +27,14 @@ import com.aican.aicanapp.DialogMain;
 import com.aican.aicanapp.R;
 import com.aican.aicanapp.Source;
 import com.aican.aicanapp.data.DatabaseHelper;
+import com.aican.aicanapp.interfaces.DeviceConnectionInfo;
+import com.aican.aicanapp.interfaces.ResetCalibration;
 import com.aican.aicanapp.ph.PhView;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.utils.AlarmConstants;
 import com.aican.aicanapp.utils.Constants;
+import com.aican.aicanapp.utils.SharedPref;
 import com.github.mikephil.charting.data.Entry;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -76,6 +80,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     static SwitchCompat switchAtc;
     WebSocket webSocket1;
     JSONObject jsonData;
+    DeviceConnectionInfo deviceConnectionInfo;
 
     BatteryDialog batteryDialog;
     String probeInfo = "-";
@@ -84,6 +89,9 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
     String[] probe = {"Unbreakable", "Glass", "Others"};
 
     ArrayList<Entry> entriesOriginal;
+    public PhFragment(DeviceConnectionInfo deviceConnectionInfo) {
+        this.deviceConnectionInfo = deviceConnectionInfo;
+    }
 
     @Nullable
     @org.jetbrains.annotations.Nullable
@@ -201,9 +209,29 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             tvPhCurr.setText("");
             tvTempCurr.setText("");
             tvEcCurr.setText("");
-            offsetCurr.setText("");
             batteryCurr.setText("");
-            slopeCurr.setText("");
+            String slope = "";
+            String offset = "";
+            if (Constants.OFFLINE_DATA){
+                if (SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID) != ""){
+                    String  data =  SharedPref.getSavedData(requireContext(),"SLOPE_"+PhActivity.DEVICE_ID);
+                    slope = "" + data;
+                }else{
+                    slope = "" + "null";
+
+                }
+                if (SharedPref.getSavedData(requireContext(),"OFFSET_"+PhActivity.DEVICE_ID) != null && SharedPref.getSavedData(requireContext(),"OFFSET_"+PhActivity.DEVICE_ID) != ""){
+                    String  data =  SharedPref.getSavedData(requireContext(),"OFFSET_"+PhActivity.DEVICE_ID);
+                    offset = "" + data;
+                }else{
+                    offset = "" + "null";
+
+                }
+            }else {
+            }
+            offsetCurr.setText(offset);
+
+            slopeCurr.setText(slope);
 
         }
 
@@ -278,6 +306,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             if (webSocket1 == null) {
                 webSocket.cancel();
             }
+            deviceConnectionInfo.onReconnect("PhFrag",PhActivity.DEVICE_ID,"hello");
 
 
             getActivity().runOnUiThread(() -> {
@@ -309,6 +338,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             webSocket.cancel();
             webSocket1.cancel();
             Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null));
+            deviceConnectionInfo.onDisconnect("PhFrag", PhActivity.DEVICE_ID, "onClosing", jsonData);
 
         }
 
@@ -318,6 +348,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             webSocket.cancel();
             webSocket1.cancel();
             Log.e("WebSocketClosed", "onClosed " + reason.toString());
+            deviceConnectionInfo.onDisconnect("PhFrag", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
         }
 
         @Override
@@ -326,6 +358,8 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             Log.e("WebSocketClosed", "onClosing " + reason.toString());
             webSocket.cancel();
             webSocket1.cancel();
+            deviceConnectionInfo.onDisconnect("PhFrag", PhActivity.DEVICE_ID, "onClosing", jsonData);
+
         }
 
         @Override
@@ -422,7 +456,7 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
 
                         SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                         SharedPreferences.Editor edit = sharedPreferences.edit();
-                        edit.putString("slope", slopeCurr.getText().toString());
+                        edit.putString("SLOPE_" + PhActivity.DEVICE_ID, slopeCurr.getText().toString());
                         edit.commit();
                     }
 
@@ -550,11 +584,13 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String offset = snapshot.getValue(Integer.class).toString();
-                offsetCurr.setText(offset);
+                if(!Constants.OFFLINE_DATA){
+                offsetCurr.setText(offset);}
                 Float offSet = snapshot.getValue(Float.class);
                 String offsetForm = String.format(Locale.UK, "%.2f", offSet);
-                offsetCurr.setText(offsetForm);
-
+                if(!Constants.OFFLINE_DATA) {
+                    offsetCurr.setText(offsetForm);
+                }
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                 SharedPreferences.Editor edit = sharedPreferences.edit();
                 edit.putString("offset", offsetCurr.getText().toString());
@@ -570,9 +606,11 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 String battery = snapshot.getValue(Integer.class).toString();
-                batteryCurr.setText(battery);
-                batteryCurr.setText(battery + " %");
+                if(!Constants.OFFLINE_DATA) {
 
+                    batteryCurr.setText(battery);
+                    batteryCurr.setText(battery + " %");
+                }
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("Extras", Context.MODE_PRIVATE);
                 SharedPreferences.Editor edit = sharedPreferences.edit();
                 edit.putString("battery", batteryCurr.getText().toString());
@@ -800,5 +838,30 @@ public class PhFragment extends Fragment implements AdapterView.OnItemSelectedLi
         super.onResume();
     }
 
+    public void receiveDataFromPhActivity(String data, String deviceID, JSONObject lastJsonData) {
+
+        if (data.equals("Connect")) {
+            Log.d("SwitchStatusFrag", "Switch Unchecked: Perform other actions if needed");
+            if (Constants.OFFLINE_MODE) {
+                initiateSocketConnection();
+            }
+            if (Constants.OFFLINE_MODE) {
+
+                webSocket1.send(lastJsonData.toString());
+
+            } else {
+            }
+            Toast.makeText(requireContext(), "Connected", Toast.LENGTH_SHORT).show();
+        }
+        if (data.equals("Disconnect")) {
+            Toast.makeText(requireContext(), "Disconnected", Toast.LENGTH_SHORT).show();
+            webSocket1.cancel();
+            Source.calibratingNow = false;
+            Source.auto_log = 0;
+//            connectedWebsocket = false;
+
+        }
+
+    }
 
 }

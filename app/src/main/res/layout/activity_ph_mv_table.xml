@@ -7,6 +7,18 @@
     android:orientation="vertical"
     tools:context=".specificactivities.PhMvTable">
 
+    <Switch
+        android:id="@+id/offlineModeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="25dp"
+        android:fontFamily="@font/sofia_light"
+        android:text="Connect "
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -679,7 +691,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="50dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="0dp"
                 android:gravity="left"
                 android:orientation="horizontal">
 
@@ -720,15 +732,59 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/voltage"
-                android:visibility="gone"
+                android:id="@+id/monitorValTxt"
+                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Voltage : null"
+                android:text="Monitor Val : null"
                 android:layout_marginStart="50dp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="24dp" />
+                android:textSize="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="left"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thermistor : "
+                    android:textColor="@color/black"
+                    android:textSize="20dp" />
+
+                <CheckBox
+                    android:id="@+id/setNTC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NTC"/>
+
+                <CheckBox
+                    android:id="@+id/setPTC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="PTC"/>
+
+                <Button
+                    android:id="@+id/setThermistor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:text="Set"
+                    android:textAllCaps="false"
+                    android:textSize="15sp" />
+
+
+            </LinearLayout>
+
+
 
 
         </LinearLayout>

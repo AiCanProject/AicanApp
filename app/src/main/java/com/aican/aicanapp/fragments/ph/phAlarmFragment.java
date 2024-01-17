@@ -147,7 +147,6 @@ public class phAlarmFragment extends Fragment {
                     AlarmConstants.ringtone.stop();
                 }
                 AlarmConstants.isServiceAvailable = false;
-
                 stopAlarm.setEnabled(false);
                 alarm.setEnabled(true);
             }

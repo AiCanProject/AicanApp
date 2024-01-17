@@ -51,9 +51,9 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
     Switch offlineModeSwitch;
 
-    PhFragment phFragment = new PhFragment();
+    PhFragment phFragment = new PhFragment(this);
     PhCalibFragment phCalibFragment = new PhCalibFragment();
-    phLogFragment phLogFragment = new phLogFragment();
+    phLogFragment phLogFragment = new phLogFragment(this, this);
     phGraphFragment phGraphFragment = new phGraphFragment();
     phAlarmFragment phAlarmFragment = new phAlarmFragment();
     PhCalibFragmentNew phCalibFragmentNew = new PhCalibFragmentNew(this, this);
@@ -187,9 +187,15 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 public void onClick(View view) {
                     if (offlineModeSwitch.isChecked()) {
                         offlineModeSwitch.setText("Connect");
+                        if (Source.activeFragment == 0) {
 
+                            phFragment.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
+                        }
                         if (Source.activeFragment == 1) {
                             phCalibFragmentNew.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
+                        }
+                        if (Source.activeFragment == 2){
+                            phLogFragment.receiveDataFromPhActivity("Connect", PhActivity.DEVICE_ID, lastJsonData);
                         }
                     } else {
                         offlineModeSwitch.setText("Connected");
@@ -198,12 +204,20 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
 
                             phCalibFragmentNew.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
                         }
+                        if (Source.activeFragment == 2) {
+
+                            phLogFragment.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
+                        }
+                        if (Source.activeFragment == 0) {
+
+                            phFragment.receiveDataFromPhActivity("Disconnect", PhActivity.DEVICE_ID, lastJsonData);
+                        }
                     }
                 }
             });
         }
 
-        offlineModeSwitch.setVisibility(View.GONE);
+//        offlineModeSwitch.setVisibility(View.GONE);
 
     }
 
@@ -217,7 +231,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
             tabItemPh.setBackground(getResources().getDrawable(R.drawable.back_select2));
 
             if (view.getId() == R.id.item1) {
-                offlineModeSwitch.setVisibility(View.GONE);
+                offlineModeSwitch.setVisibility(View.VISIBLE);
                 tabItemPh.animate().x(0).setDuration(100);
                 loadFragments(phFragment);
                 ph.setTextColor(Color.WHITE);
@@ -240,7 +254,7 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 tabItemPh.animate().x(size).setDuration(100);
 
             } else if (view.getId() == R.id.item3) {
-                offlineModeSwitch.setVisibility(View.GONE);
+                offlineModeSwitch.setVisibility(View.VISIBLE);
 
                 loadFragments(phLogFragment);
                 log.setTextColor(Color.WHITE);
@@ -265,6 +279,8 @@ public class PhActivity extends AppCompatActivity implements View.OnClickListene
                 tabItemPh.animate().x(size).setDuration(100);
 
             } else if (view.getId() == R.id.item5) {
+                offlineModeSwitch.setVisibility(View.GONE);
+
                 loadFragments(phAlarmFragment);
 
                 alarm.setTextColor(Color.WHITE);

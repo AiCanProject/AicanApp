@@ -878,6 +878,8 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
             super.onFailure(webSocket, t, response);
             Log.e("WebSocketClosedWeb", "onFailure " + (webSocket != null ? webSocket.toString() : null));
             Log.e("WebSocketClosedThrow", "onFailure " + (t != null ? t.getMessage().toString() : null));
+//            Log.e("WebSocketClosedDetail", "onFailure " + (t != null ? t.getCause().toString()
+//                    + "," + t.getLocalizedMessage(): null));
             Log.e("WebSocketClosed", "onFailure " + (response != null ? response.message().toString() : null));
             runOnUiThread(() -> {
                 offlineStatus.setVisibility(View.GONE);
