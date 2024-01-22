@@ -157,7 +157,7 @@ public class PhCalibFragmentNew extends Fragment {
     public static String PH_MODE = "both";
 
     LinearLayout fivePointCalibStart, threePointCalibStart;
-boolean connectedWebsocket = false;
+    boolean connectedWebsocket = false;
     LinearLayout log1, log2, log3, log4, log5;
     LinearLayout log1_3, log2_3, log3_3;
     LinearLayout log3point, log5point;
@@ -355,6 +355,10 @@ boolean connectedWebsocket = false;
         threePointCalib.setVisibility(View.GONE);
         threePointCalibStart.setVisibility(View.GONE);
 
+        if (Constants.OFFLINE_DATA){
+            PH_MODE = "5";
+        }
+
         switch (PH_MODE) {
             case "both":
                 calibSpinner.setVisibility(View.VISIBLE);
@@ -429,7 +433,7 @@ boolean connectedWebsocket = false;
                 spin.setEnabled(true);
                 Source.calibratingNow = false;
                 if(timer3 != null){
-                timer3.cancel();}
+                    timer3.cancel();}
 
                 log1_3.setBackgroundColor(Color.GRAY);
                 log2_3.setBackgroundColor(Color.WHITE);
@@ -490,7 +494,6 @@ boolean connectedWebsocket = false;
         });
 
 
-
         calibrateBtn.setOnClickListener(v -> {
             if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                 if (connectedWebsocket){
@@ -509,18 +512,19 @@ boolean connectedWebsocket = false;
             }
         });
 
-        calibrateBtnThree.setOnClickListener(v -> {
+        calibrateBtnThree.setOnClickListener(v ->
+
+        {
             if (Constants.OFFLINE_MODE && Constants.OFFLINE_DATA) {
                 if (connectedWebsocket){
 
-                    calibrateThreePointOffline();
-                }
+                    calibrateThreePointOffline();}
                 else{
                     Toast.makeText(fragmentContext, "Websocket connection is not established yet", Toast.LENGTH_SHORT).show();
 
                 }
             } else if (Constants.OFFLINE_DATA) {
-                Toast.makeText(fragmentContext, "You can't calibrate you are in offline mode and device is not connect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(fragmentContext, "You can't calibrate you are inoffline mode and device is not connect", Toast.LENGTH_SHORT).show();
             } else {
                 calibrateThreePoint();
             }
@@ -949,7 +953,6 @@ boolean connectedWebsocket = false;
         }
 
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
         String tempPath =new ContextWrapper(requireContext()).getExternalMediaDirs()[0] + File.separator + "/LabApp/CalibrationData";
@@ -1005,77 +1008,39 @@ boolean connectedWebsocket = false;
 
             if (spin.getSelectedItemPosition() == 0) {
                 calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
-                while (calibCSV != null && calibCSV.moveToNext()) {
-                    String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-                    String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-                    String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-                    String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
-                    String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-                    String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
 
-                    table.addCell(ph);
-                    table.addCell(pHAC + "");
-                    table.addCell(slope + "");
-                    table.addCell(mv);
-                    table.addCell(date);
-                    table.addCell(temperature1);
-
-                }
-                document.add(table);
             }
             if (spin.getSelectedItemPosition() == 1) {
-                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
-                int iVal = 1;
-                while (calibCSV != null && calibCSV.moveToNext()) {
-                    if(iVal == 2 || iVal == 3 || iVal == 4){
-                        String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-                        String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-                        String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-                        String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
-                        String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-                        String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+                calibCSV = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
 
-                        table.addCell(ph);
-                        table.addCell(pHAC + "");
-                        table.addCell(slope + "");
-                        table.addCell(mv);
-                        table.addCell(date);
-                        table.addCell(temperature1);
-                    }
-                  iVal++;
-
-                }
-                document.add(table);
             }
 
         } else {
             calibCSV = db.rawQuery("SELECT * FROM CalibData", null);
-
-            while (calibCSV != null && calibCSV.moveToNext()) {
-                String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
-                String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
-                String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
-                String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
-                String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
-                String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
-
-                table.addCell(ph);
-                table.addCell(pHAC + "");
-                table.addCell(slope + "");
-                table.addCell(mv);
-                table.addCell(date);
-                table.addCell(temperature1);
-
-            }
-            document.add(table);
-
-
         }
 
 
+        while (calibCSV != null && calibCSV.moveToNext()) {
+            String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
+            String mv = calibCSV.getString(calibCSV.getColumnIndex("MV"));
+            String date = calibCSV.getString(calibCSV.getColumnIndex("DT"));
+            String slope = calibCSV.getString(calibCSV.getColumnIndex("SLOPE"));
+            String pHAC = calibCSV.getString(calibCSV.getColumnIndex("pHAC"));
+            String temperature1 = calibCSV.getString(calibCSV.getColumnIndex("temperature"));
+
+            table.addCell(ph);
+            table.addCell(pHAC + "");
+            table.addCell(slope + "");
+            table.addCell(mv);
+            table.addCell(date);
+            table.addCell(temperature1);
+
+        }
+        document.add(table);
+
         if(Constants.OFFLINE_DATA){
             if( SharedPref.getSavedData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                    ) != null && SharedPref.getSavedData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
+            ) != null && SharedPref.getSavedData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
             ) != ""){
                 String calibSTat = SharedPref.getSavedData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
                 );
@@ -1470,9 +1435,6 @@ boolean connectedWebsocket = false;
 //                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(date123 + " " + time123);
                                     calibrateBtnThree.setEnabled(false);
                                     Source.calib_completed_by = Source.logUserName;
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"completed");
-
                                     calibrateBtnThree.setText("DONE");
                                     startTimer3();
 
@@ -1493,8 +1455,7 @@ boolean connectedWebsocket = false;
                                     log1_3.setBackgroundColor(Color.WHITE);
                                     log2_3.setBackgroundColor(Color.GRAY);
                                     log3_3.setBackgroundColor(Color.WHITE);
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"incomplete");
+
                                 }
                                 if (currentBufThree == 1) {
                                     String date123 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -1509,8 +1470,7 @@ boolean connectedWebsocket = false;
                                     log1_3.setBackgroundColor(Color.WHITE);
                                     log2_3.setBackgroundColor(Color.WHITE);
                                     log3_3.setBackgroundColor(Color.GRAY);
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"incomplete");
+
                                 }
 
                                 calibrateBtnThree.setEnabled(true);
@@ -1550,14 +1510,14 @@ boolean connectedWebsocket = false;
 
 //                                    CalibDatClass calibDatClass1 = new CalibDatClass(1, PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
 
-                                    CalibDatClass calibDatClass1 = new CalibDatClass(2, ph1_3.getText().toString(),
+                                    CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
                                             mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
                                             bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                                             dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
 
-                                    databaseHelper.updateClbOffDataFive(calibDatClass1);
+                                    databaseHelper.updateClbOffDataThree(calibDatClass1);
 
                                     temp1_3.setText(tvTempCurr.getText());
                                 } else if (b == 1) {
@@ -1570,14 +1530,14 @@ boolean connectedWebsocket = false;
 //                                    CalibDatClass calibDatClass2 = new CalibDatClass(2, PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
 
 
-                                    CalibDatClass calibDatClass2 = new CalibDatClass(3, ph2_3.getText().toString(),
+                                    CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
                                             mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
                                             bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                                             dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-                                    databaseHelper.updateClbOffDataFive(calibDatClass2);
+                                    databaseHelper.updateClbOffDataThree(calibDatClass2);
 
                                     temp2_3.setText(tvTempCurr.getText());
                                 } else if (b == 2) {
@@ -1594,13 +1554,13 @@ boolean connectedWebsocket = false;
 //                                    CalibDatClass calibDatClass3 = new CalibDatClass(3, PH3_3, MV3_3, SLOPE3_3, DT3_3, BFD3_3, pHAC3_3, t3_3, DT3_3.length() >= 15 ? DT3_3.substring(0, 10) : "--", DT3_3.length() >= 15 ? DT3_3.substring(11, 16) : "--");
 
 
-                                    CalibDatClass calibDatClass3 = new CalibDatClass(4, ph3_3.getText().toString(),
+                                    CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
                                             mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
                                             bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                                             dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                                             dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-                                    databaseHelper.updateClbOffDataFive(calibDatClass3);
+                                    databaseHelper.updateClbOffDataThree(calibDatClass3);
 
                                     databaseHelper.insertCalibrationOfflineAllData(PH1_3, MV1_3, SLOPE1_3, DT1_3, BFD1_3, pHAC1_3, t1_3, DT1_3.length() >= 15 ? DT1_3.substring(0, 10) : "--", DT1_3.length() >= 15 ? DT1_3.substring(11, 16) : "--");
                                     databaseHelper.insertCalibrationOfflineAllData(PH2_3, MV2_3, SLOPE2_3, DT2_3, BFD2_3, pHAC2_3, t2_3, DT2_3.length() >= 15 ? DT2_3.substring(0, 10) : "--", DT2_3.length() >= 15 ? DT2_3.substring(11, 16) : "--");
@@ -2141,6 +2101,9 @@ boolean connectedWebsocket = false;
                                     jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                                     webSocket2.send(jsonData.toString());
 
+                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
+                                            ,"completed");
+
 //                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_5").setValue(date123 + " " + time123);
                                     calibrateBtn.setEnabled(false);
                                     Source.calib_completed_by = Source.logUserName;
@@ -2155,11 +2118,16 @@ boolean connectedWebsocket = false;
 
                                     dt1.setText(date123 + " " + time123);
 
+
+
                                     jsonData = new JSONObject();
                                     JSONObject object1 = new JSONObject();
                                     jsonData.put("DT_1", date123 + " " + time123);
                                     jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                                     webSocket2.send(jsonData.toString());
+
+                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
+                                            ,"incomplete");
 //                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_1").setValue(date123 + " " + time123);
                                     log1.setBackgroundColor(Color.WHITE);
                                     log2.setBackgroundColor(Color.GRAY);
@@ -2178,7 +2146,8 @@ boolean connectedWebsocket = false;
                                     jsonData.put("DT_2", date123 + " " + time123);
                                     jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                                     webSocket2.send(jsonData.toString());
-
+                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
+                                            ,"incomplete");
 //                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_2").setValue(date123 + " " + time123);
                                     log1.setBackgroundColor(Color.WHITE);
                                     log2.setBackgroundColor(Color.WHITE);
@@ -2199,7 +2168,8 @@ boolean connectedWebsocket = false;
                                     webSocket2.send(jsonData.toString());
 
 //                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_3").setValue(date123 + " " + time123);
-
+                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
+                                            ,"incomplete");
                                     log1.setBackgroundColor(Color.WHITE);
                                     log2.setBackgroundColor(Color.WHITE);
                                     log3.setBackgroundColor(Color.WHITE);
@@ -2216,7 +2186,8 @@ boolean connectedWebsocket = false;
                                     jsonData.put("DT_4", date123 + " " + time123);
                                     jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                                     webSocket2.send(jsonData.toString());
-
+                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
+                                            ,"incomplete");
 //                                    deviceRef.child("UI").child("PH").child("PH_CAL").child("DT_4").setValue(date123 + " " + time123);
                                     log1.setBackgroundColor(Color.WHITE);
                                     log2.setBackgroundColor(Color.WHITE);
@@ -2262,8 +2233,7 @@ boolean connectedWebsocket = false;
                                     webSocket2.send(jsonData.toString());
 //                                    deviceRef.child("Data").child("CALIBRATION_STAT").setValue("incomplete");
 
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"incomplete");
+
                                     CalibDatClass calibDatClass = new CalibDatClass(1, ph1.getText().toString(),
                                             mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
                                             bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
@@ -2284,9 +2254,9 @@ boolean connectedWebsocket = false;
                                             bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
                                             dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
                                             dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"incomplete");
+
                                     databaseHelper.updateClbOffDataFive(calibDatClass);
+
 
                                     temp2.setText(tvTempCurr.getText());
                                 } else if (b == 2) {
@@ -2301,8 +2271,7 @@ boolean connectedWebsocket = false;
                                             dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
 
                                     databaseHelper.updateClbOffDataFive(calibDatClass);
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"incomplete");
+
                                     temp3.setText(tvTempCurr.getText());
                                 } else if (b == 3) {
                                     myEdit.putString("tem4", tvTempCurr.getText().toString());
@@ -2314,9 +2283,10 @@ boolean connectedWebsocket = false;
                                             bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
                                             dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
                                             dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"incomplete");
+
                                     databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
                                     temp4.setText(tvTempCurr.getText());
                                 } else if (b == 4) {
                                     myEdit.putString("tem5", tvTempCurr.getText().toString());
@@ -2328,8 +2298,7 @@ boolean connectedWebsocket = false;
                                     webSocket2.send(jsonData.toString());
 //                                    deviceRef.child("Data").child("CALIBRATION_STAT").setValue("ok");
                                     calibData();
-                                    SharedPref.saveData(requireContext(),"CALIB_STAT" + PhActivity.DEVICE_ID
-                                            ,"completed");
+
                                     CalibDatClass calibDatClass = new CalibDatClass(5, ph5.getText().toString(),
                                             mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
                                             bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
@@ -2337,6 +2306,8 @@ boolean connectedWebsocket = false;
                                             dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
                                     databaseHelper.updateClbOffDataFive(calibDatClass);
+
+
 
                                     databaseHelper.insertCalibrationOfflineAllData(PH1, MV1, SLOPE1, DT1, BFD1, pHAC1, t1, DT1.length() >= 15 ? DT1.substring(0, 10) : "--", DT1.length() >= 15 ? DT1.substring(11, 16) : "--");
                                     databaseHelper.insertCalibrationOfflineAllData(PH2, MV2, SLOPE2, DT2, BFD2, pHAC2, t2, DT2.length() >= 15 ? DT2.substring(0, 10) : "--", DT2.length() >= 15 ? DT2.substring(11, 16) : "--");
@@ -2853,6 +2824,40 @@ boolean connectedWebsocket = false;
                     log3.setBackgroundColor(Color.WHITE);
                     log4.setBackgroundColor(Color.WHITE);
                     log5.setBackgroundColor(Color.WHITE);
+
+                    databaseHelper.insertCalibrationAllDataOffline(ph1.getText().toString(),
+                            mv1.getText().toString(), slope1.getText().toString(), dt1.getText().toString(),
+                            bufferD1.getText().toString(), phAfterCalib1.getText().toString(), tvTempCurr.getText().toString(),
+                            dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(0, 10) : "--",
+                            dt1.getText().toString().length() >= 15 ? dt1.getText().toString().substring(11, 16) : "--");
+
+
+                    databaseHelper.insertCalibrationAllDataOffline(ph2.getText().toString(),
+                            mv2.getText().toString(), slope2.getText().toString(), dt2.getText().toString(),
+                            bufferD2.getText().toString(), phAfterCalib2.getText().toString(), tvTempCurr.getText().toString(),
+                            dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(0, 10) : "--",
+                            dt2.getText().toString().length() >= 15 ? dt2.getText().toString().substring(11, 16) : "--");
+
+                    databaseHelper.insertCalibrationAllDataOffline(ph3.getText().toString(),
+                            mv3.getText().toString(), slope3.getText().toString(), dt3.getText().toString(),
+                            bufferD3.getText().toString(), phAfterCalib3.getText().toString(), tvTempCurr.getText().toString(),
+                            dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(0, 10) : "--",
+                            dt3.getText().toString().length() >= 15 ? dt3.getText().toString().substring(11, 16) : "--");
+
+                    databaseHelper.insertCalibrationAllDataOffline(ph4.getText().toString(),
+                            mv4.getText().toString(), slope4.getText().toString(), dt4.getText().toString(),
+                            bufferD4.getText().toString(), phAfterCalib4.getText().toString(), tvTempCurr.getText().toString(),
+                            dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(0, 10) : "--",
+                            dt4.getText().toString().length() >= 15 ? dt4.getText().toString().substring(11, 16) : "--");
+
+                    databaseHelper.insertCalibrationAllDataOffline(ph5.getText().toString(),
+                            mv5.getText().toString(), slope5.getText().toString(), dt5.getText().toString(),
+                            bufferD5.getText().toString(), phAfterCalib5.getText().toString(), tvTempCurr.getText().toString(),
+                            dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
+                            dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
+
+                    databaseHelper.insertCalibrationAllDataOffline("-","-","-","-","-","-","-","-","-");
+
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                     tvTimer.setText("00:45");
                     Log.d("Runnable", "ok");
@@ -4167,14 +4172,13 @@ boolean connectedWebsocket = false;
                             webSocket1.send(jsonData.toString());
                             ph1_3.setText(String.valueOf(ph));
 
-                            CalibDatClass calibDatClass1 = new CalibDatClass(2, ph1_3.getText().toString(),
+                            CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
                                     mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
                                     bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
-//                            databaseHelper.updateClbOffDataThree(calibDatClass1);
-                            databaseHelper.updateClbOffDataFive(calibDatClass1);
+                            databaseHelper.updateClbOffDataThree(calibDatClass1);
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -4207,14 +4211,14 @@ boolean connectedWebsocket = false;
                             webSocket1.send(jsonData.toString());
                             ph2_3.setText(String.valueOf(ph));
 
-                            CalibDatClass calibDatClass2 = new CalibDatClass(3, ph2_3.getText().toString(),
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
                                     mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
                                     bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass2);
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -4245,13 +4249,13 @@ boolean connectedWebsocket = false;
                             webSocket1.send(jsonData.toString());
                             ph3_3.setText(String.valueOf(ph));
 
-                            CalibDatClass calibDatClass3 = new CalibDatClass(4, ph3_3.getText().toString(),
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
                                     mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
                                     bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass3);
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -4768,7 +4772,6 @@ boolean connectedWebsocket = false;
                         }
 
                     }
-
                     if (spin.getSelectedItemPosition() == 0) {
 
                         if (jsonData.has("PH_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
@@ -4826,7 +4829,7 @@ boolean connectedWebsocket = false;
                                 ecForm = "nan";
                             } else {
                                 ecForm = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-///sdjhdh
+
                             }
                             mv1.setText(ecForm);
                             mV1 = mv1.getText().toString();
@@ -4973,7 +4976,7 @@ boolean connectedWebsocket = false;
                             String v = "--";
                             if (!jsonData.getString("SLOPE_1").equals("nan") && PhFragment.validateNumber(jsonData.getString("SLOPE_1"))) {
 
-                                 v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
+                                v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
                             }
                             slope2.setText(v);
 
@@ -5372,14 +5375,14 @@ boolean connectedWebsocket = false;
                             phAfterCalib1_3.setText(v);
                             pHAC1_3 = phAfterCalib1_3.getText().toString();
 
-                            CalibDatClass calibDatClass1 = new CalibDatClass(2, ph1_3.getText().toString(),
+                            CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
                                     mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
                                     bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass1);
+                            databaseHelper.updateClbOffDataThree(calibDatClass1);
 
 
                             SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
@@ -5399,14 +5402,14 @@ boolean connectedWebsocket = false;
                             pHAC2_3 = phAfterCalib2_3.getText().toString();
 
 
-                            CalibDatClass calibDatClass2 = new CalibDatClass(3, ph2_3.getText().toString(),
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
                                     mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
                                     bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass2);
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
                             SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
@@ -5424,13 +5427,13 @@ boolean connectedWebsocket = false;
                             }                            phAfterCalib3_3.setText(v);
                             pHAC3_3 = phAfterCalib3_3.getText().toString();
 
-                            CalibDatClass calibDatClass3 = new CalibDatClass(4, ph3_3.getText().toString(),
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
                                     mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
                                     bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass3);
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
                             SharedPreferences sharedPreferences = fragmentContext.getSharedPreferences("CalibPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor myEdit = sharedPreferences.edit();
@@ -5448,14 +5451,14 @@ boolean connectedWebsocket = false;
                             }                            slope2_3.setText(v);
 
 
-                            CalibDatClass calibDatClass2 = new CalibDatClass(3, ph2_3.getText().toString(),
+                            CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
                                     mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
                                     bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass2);
+                            databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
                         }
@@ -5468,13 +5471,13 @@ boolean connectedWebsocket = false;
                             }                            slope3_3.setText(v);
                             pHAC3_3 = phAfterCalib3_3.getText().toString();
 
-                            CalibDatClass calibDatClass3 = new CalibDatClass(4, ph3_3.getText().toString(),
+                            CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
                                     mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
                                     bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-                            databaseHelper.updateClbOffDataFive(calibDatClass3);
+                            databaseHelper.updateClbOffDataThree(calibDatClass3);
 
 
                         }
@@ -5484,28 +5487,20 @@ boolean connectedWebsocket = false;
                             if (!val.equals("nan") && PhFragment.validateNumber(val)) {
 
                                 v = String.format(Locale.UK, "%.2f", Float.parseFloat(val));
-                            phView.moveTo(Float.parseFloat(v));
+                                phView.moveTo(Float.parseFloat(v));
                             }                            tvPhCurr.setText(v);
 
                         }
 
                         if (jsonData.has("TEMP_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
 
-                           String tempString = jsonData.getString("TEMP_VAL");
+                            float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
+                            String tempForm = String.format(Locale.UK, "%.1f", ph);
+                            tvTempCurr.setText(tempForm + "°C");
 
-                            if (!tempString.equals("nan") && PhFragment.validateNumber(tempString)) {
-                                float ph = Float.parseFloat(jsonData.getString("TEMP_VAL"));
-                                String tempForm = String.format(Locale.UK, "%.1f", ph);
-                                tvTempCurr.setText(tempForm + "°C");
-
-                                if (ph <= -127.0) {
-                                    tvTempCurr.setText("NA");
-                                }
-
-                            }else {
-                                tvTempCurr.setText("nan");
+                            if (ph <= -127.0) {
+                                tvTempCurr.setText("NA");
                             }
-
                         }
 
                         if (jsonData.has("EC_VAL") && jsonData.getString("DEVICE_ID").equals(PhActivity.DEVICE_ID)) {
@@ -5649,14 +5644,14 @@ boolean connectedWebsocket = false;
                                 phAfterCalib1_3.setText(d);
 
 
-                                CalibDatClass calibDatClass1 = new CalibDatClass(2, ph1_3.getText().toString(),
+                                CalibDatClass calibDatClass1 = new CalibDatClass(1, ph1_3.getText().toString(),
                                         mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
                                         bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                                         dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                                         dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
 
-                                databaseHelper.updateClbOffDataFive(calibDatClass1);
+                                databaseHelper.updateClbOffDataThree(calibDatClass1);
 
 
                                 myEdit.putString("tem1_3", tvTempCurr.getText().toString());
@@ -5670,14 +5665,14 @@ boolean connectedWebsocket = false;
                                 phAfterCalib2_3.setText(d);
 
 
-                                CalibDatClass calibDatClass2 = new CalibDatClass(3, ph2_3.getText().toString(),
+                                CalibDatClass calibDatClass2 = new CalibDatClass(2, ph2_3.getText().toString(),
                                         mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
                                         bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                                         dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                                         dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-                                databaseHelper.updateClbOffDataFive(calibDatClass2);
+                                databaseHelper.updateClbOffDataThree(calibDatClass2);
 
 
                                 myEdit.putString("tem2_3", tvTempCurr.getText().toString());
@@ -5690,13 +5685,13 @@ boolean connectedWebsocket = false;
                                 phAfterCalib3_3.setText(String.valueOf(d));
 
 
-                                CalibDatClass calibDatClass3 = new CalibDatClass(4, ph3_3.getText().toString(),
+                                CalibDatClass calibDatClass3 = new CalibDatClass(3, ph3_3.getText().toString(),
                                         mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
                                         bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                                         dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
                                         dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(11, 16) : "--");
 
-                                databaseHelper.updateClbOffDataFive(calibDatClass3);
+                                databaseHelper.updateClbOffDataThree(calibDatClass3);
 
 
                                 myEdit.putString("tem3_3", tvTempCurr.getText().toString());
@@ -5970,27 +5965,27 @@ boolean connectedWebsocket = false;
         Cursor calibCSV3;
         Cursor calibCSV5;
 
-        calibCSV3 = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
+        calibCSV3 = db.rawQuery("SELECT * FROM CalibOfflineDataThree", null);
         calibCSV5 = db.rawQuery("SELECT * FROM CalibOfflineDataFive", null);
 
         int index = 0;
 
         if (calibCSV3.getCount() == 0) {
 
-            databaseHelper.insertCalibrationOfflineDataFive(2, ph1_3.getText().toString(),
+            databaseHelper.insertCalibrationOfflineDataThree(1, ph1_3.getText().toString(),
                     mv1_3.getText().toString(), slope1_3.getText().toString(), dt1_3.getText().toString(),
                     bufferD1_3.getText().toString(), phAfterCalib1_3.getText().toString(), tvTempCurr.getText().toString(),
                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(0, 10) : "--",
                     dt1_3.getText().toString().length() >= 15 ? dt1_3.getText().toString().substring(11, 16) : "--");
 
-            databaseHelper.insertCalibrationOfflineDataFive(3, ph2_3.getText().toString(),
+            databaseHelper.insertCalibrationOfflineDataThree(2, ph2_3.getText().toString(),
                     mv2_3.getText().toString(), slope2_3.getText().toString(), dt2_3.getText().toString(),
                     bufferD2_3.getText().toString(), phAfterCalib2_3.getText().toString(), tvTempCurr.getText().toString(),
                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(0, 10) : "--",
                     dt2_3.getText().toString().length() >= 15 ? dt2_3.getText().toString().substring(11, 16) : "--");
 
 
-            databaseHelper.insertCalibrationOfflineDataFive(4, ph3_3.getText().toString(),
+            databaseHelper.insertCalibrationOfflineDataThree(3, ph3_3.getText().toString(),
                     mv3_3.getText().toString(), slope3_3.getText().toString(), dt3_3.getText().toString(),
                     bufferD3_3.getText().toString(), phAfterCalib3_3.getText().toString(), tvTempCurr.getText().toString(),
                     dt3_3.getText().toString().length() >= 15 ? dt3_3.getText().toString().substring(0, 10) : "--",
@@ -6142,7 +6137,7 @@ boolean connectedWebsocket = false;
             String pHAC = calibCSV3.getString(calibCSV3.getColumnIndex("pHAC"));
             String temperature1 = calibCSV3.getString(calibCSV3.getColumnIndex("temperature"));
 
-            if (index == 1) {
+            if (index == 0) {
 
                 ph1_3.setText(ph);
                 mv1_3.setText(mv);
@@ -6158,7 +6153,7 @@ boolean connectedWebsocket = false;
                 pHAC1_3 = pHAC;
                 t1_3 = temperature1;
             }
-            if (index == 2) {
+            if (index == 1) {
 
                 ph2_3.setText(ph);
                 mv2_3.setText(mv);
@@ -6175,7 +6170,7 @@ boolean connectedWebsocket = false;
                 pHAC2_3 = pHAC;
                 t2_3 = temperature1;
             }
-            if (index == 3) {
+            if (index == 2) {
 
                 ph3_3.setText(ph);
                 mv3_3.setText(mv);
@@ -6207,7 +6202,7 @@ boolean connectedWebsocket = false;
 
             String[] bufferLabels1 = new String[]{"B_1", "B_2", "B_3", "B_4", "B_5"};
             String[] bufferLabelsThree1 = new String[]{"B_2", "B_3", "B_4"};
-//            String[] coeffLabels1 = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
+            String[] coeffLabels1 = new String[]{"VAL_1", "VAL_2", "VAL_3", "VAL_4", "VAL_5"};
             String[] postCoeffLabels1 = new String[]{"POST_VAL_1", "POST_VAL_2", "POST_VAL_3", "POST_VAL_4", "POST_VAL_5"};
             String[] postCoeffLabelsThree1 = new String[]{"POST_VAL_2", "POST_VAL_3", "POST_VAL_4"};
             String[] coeffLabelsThree1 = new String[]{"VAL_2", "VAL_3", "VAL_4"};
@@ -6252,9 +6247,8 @@ boolean connectedWebsocket = false;
             }
         }
     }
-    JSONObject lastJsonData;
+
     public void receiveDataFromPhActivity(String data, String deviceID, JSONObject lastJsonData) {
-        this.lastJsonData = lastJsonData;
 
         if (data.equals("Connect")) {
             Log.d("SwitchStatusFrag", "Switch Unchecked: Perform other actions if needed");
@@ -6263,7 +6257,7 @@ boolean connectedWebsocket = false;
             }
             if (Constants.OFFLINE_MODE) {
 
-//                webSocket1.send(lastJsonData.toString());
+                webSocket1.send(lastJsonData.toString());
 
             } else {
             }
@@ -6278,14 +6272,12 @@ boolean connectedWebsocket = false;
                 if (timer5 != null) {
 
                     timer5.cancel();
-                    tvTimer.setVisibility(View.GONE);
                 }
                 calibrateBtn.setEnabled(true);
             } else {
                 if (timer3 != null) {
 
                     timer3.cancel();
-                    tvTimerThree.setVisibility(View.GONE);
                 }
                 calibrateBtnThree.setEnabled(true);
             }

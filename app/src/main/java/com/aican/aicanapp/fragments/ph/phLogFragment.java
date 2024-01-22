@@ -159,6 +159,12 @@ public class phLogFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Source.activeFragment = 2;
+        if (handler != null && runnable != null){
+            handler.removeCallbacks(runnable);
+        }
+        if (handler1 != null && runnable1 != null){
+            handler1.removeCallbacks(runnable1);
+        }
         printLifecycle("onResume");
     }
 
@@ -293,7 +299,7 @@ public class phLogFragment extends Fragment {
 
         getFirebaseValue();
         if (checkPermission()) {
-            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
         } else {
             requestPermission();
         }
@@ -392,7 +398,7 @@ public class phLogFragment extends Fragment {
                 time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
                 if (ph == null || temp == null || mv == null) {
-                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                 }
 
                 databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
@@ -408,7 +414,7 @@ public class phLogFragment extends Fragment {
                 fetch_logs();
 
                 if (ph == null || temp == null || mv == null) {
-                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                 } else {
                     databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                     databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
@@ -563,10 +569,12 @@ public class phLogFragment extends Fragment {
                             switchBtnClick.setChecked(false);
                             switchHold.setChecked(false);
                             jsonData = new JSONObject();
+                            enterTime.setEnabled(false);
 
                             jsonData.put("AUTOLOG", "2");
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
+                            Toast.makeText(requireContext(), "C " + Constants.timeInSec, Toast.LENGTH_SHORT).show();
                             if (Constants.timeInSec == 0) {
 
                             } else {
@@ -584,6 +592,7 @@ public class phLogFragment extends Fragment {
                         switchBtnClick.setChecked(false);
                         switchHold.setChecked(false);
                         deviceRef.child("Data").child("AUTOLOG").setValue(2);
+                        enterTime.setEnabled(false);
 
                         if (Constants.timeInSec == 0) {
 
@@ -598,6 +607,7 @@ public class phLogFragment extends Fragment {
                     }
 
                 } else {
+                    enterTime.setEnabled(true);
 
                     Constants.logIntervalActive = false;
                     autoLogggg = 0;
@@ -605,15 +615,18 @@ public class phLogFragment extends Fragment {
                     if (Constants.OFFLINE_MODE) {
                         try {
                             isTimer = false;
-                            Constants.timeInSec = 0;
+//                            Constants.timeInSec = 0;
                             jsonData = new JSONObject();
                             jsonData.put("AUTOLOG", "0");
                             jsonData.put("DEVICE_ID", PhActivity.DEVICE_ID);
                             webSocket1.send(jsonData.toString());
                             isAlertShow = true;
-                            if (handler != null)
+                            if (handler != null) {
                                 handler.removeCallbacks(runnable);
-
+                                if (handler1 != null) {
+                                    handler1.removeCallbacks(runnable1);
+                                }
+                            }
                             if (!switchHold.isChecked() && !switchBtnClick.isChecked()) {
                                 jsonData = new JSONObject();
                                 jsonData.put("AUTOLOG", "0");
@@ -642,12 +655,43 @@ public class phLogFragment extends Fragment {
             }
         });
 
+        if (SharedPref.getSavedData(requireContext(),"LOG_INTERVAL_A") != null && SharedPref.getSavedData(requireContext(),"LOG_INTERVAL_A") != ""){
+
+
+
+            double d = Double.parseDouble(SharedPref.getSavedData(requireContext(),"LOG_INTERVAL_A") ) * 60000;
+            Toast.makeText(requireContext(), "" + SharedPref.getSavedData(requireContext(),"LOG_INTERVAL_A"), Toast.LENGTH_SHORT).show();
+            enterTime.setText(SharedPref.getSavedData(requireContext(),"LOG_INTERVAL_A") );
+            Constants.timeInSec = (int) d;
+
+
+
+        }else{
+            SharedPref.saveData(requireContext(),"LOG_INTERVAL_A","0.1");
+            Constants.timeInSec = 5000;
+        }
+
         saveTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (!enterTime.getText().toString().isEmpty() && switchInterval.isChecked()) {
+                if (!enterTime.getText().toString().isEmpty() ) {
+                    try {
+
+                        double enteredValue = Double.parseDouble(enterTime.getText().toString());
+
+                        SharedPref.saveData(requireContext(),"LOG_INTERVAL_A",String.valueOf(enteredValue));
+                        Double db1 = new Double(enteredValue * 60000);
+                        Constants.timeInSec = db1.intValue();
+                        Toast.makeText(requireContext(), "A " + Constants.timeInSec, Toast.LENGTH_SHORT).show();
+
+                        log_interval_text.setText((Constants.timeInSec / 60000) + "");
+
+                    if( switchInterval.isChecked()){
                     if (Constants.OFFLINE_MODE) {
+                        if (!Constants.logIntervalActive) {
+
+
                         try {
                             double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
                             Double db = new Double(d);
@@ -655,8 +699,9 @@ public class phLogFragment extends Fragment {
                             double a = (double) Constants.timeInSec / 60000;
                             Log.d("TimerVal", "" + a);
 
+                            SharedPref.saveData(requireContext(),"LOG_INTERVAL_A",String.valueOf(enterTime.getText()));
 
-                            deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
+//                            deviceRef.child("Data").child("LOG_INTERVAL").setValue(a);
 
                             jsonData = new JSONObject();
 
@@ -668,10 +713,14 @@ public class phLogFragment extends Fragment {
 
 //                    startTimer();
 
-                            takeLog();
-                            handler();
+//                            takeLog();
+//                            handler();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        }
+                    }
+                        else{
+                            Toast.makeText(requireContext(), "Already running", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         double d = Double.parseDouble(enterTime.getText().toString()) * 60000;
@@ -688,7 +737,12 @@ public class phLogFragment extends Fragment {
                         takeLog();
                         handler();
                     }
+
                 }
+                    } catch (NumberFormatException e) {
+                        // Show an error message for invalid input
+                        Toast.makeText(requireContext(), "Please enter a valid number", Toast.LENGTH_SHORT).show();
+                    }}
             }
         });
 
@@ -708,8 +762,12 @@ public class phLogFragment extends Fragment {
                             if (switchInterval.isChecked()) {
                                 isTimer = false;
                                 handler.removeCallbacks(runnable);
+                                if (handler1 != null) {
+                                    handler1.removeCallbacks(runnable1);
+                                }
                                 switchInterval.setChecked(false);
                             }
+
                             switchHold.setChecked(false);
 
 
@@ -755,11 +813,13 @@ public class phLogFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     double a = snapshot.getValue(Double.class) * 60000;
+                    if (!Constants.OFFLINE_DATA){
                     Constants.timeInSec = (int) a;
                     if (snapshot.getValue(Double.class) != null) {
                         if (switchInterval.isChecked() && !isAlertShow) {
                             Log.d("Timer", "onDataChange: " + Constants.timeInSec);
                         }
+                    }
                     }
                 }
 
@@ -843,7 +903,7 @@ public class phLogFragment extends Fragment {
                 if (curCSV != null && curCSV.getCount() > 0) {
                     deleteAllLogs();
                 } else {
-                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(requireContext(), "Database is empty, please insert values", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -905,7 +965,7 @@ public class phLogFragment extends Fragment {
                     time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
                     fetch_logs();
                     if (ph == null || temp == null || mv == null) {
-                        Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                     } else {
                         databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                         databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
@@ -939,7 +999,7 @@ public class phLogFragment extends Fragment {
                         fetch_logs();
 
                         if (ph == null || temp == null || mv == null) {
-                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                         } else {
                             databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
                             databaseHelper.insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);
@@ -1655,11 +1715,14 @@ public class phLogFragment extends Fragment {
         Log.d("Timer", "doInBackground: in while " + Constants.timeInSec);
 
 
-        Toast.makeText(getContext(), "Background service running ", Toast.LENGTH_SHORT).show();
-        Toast.makeText(getContext(), Constants.timeInSec + "", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "Background service running ", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), Constants.timeInSec + "", Toast.LENGTH_SHORT).show();
 
         if (handler1 != null) {
             handler1.removeCallbacks(runnable1);
+        }
+        if (handler != null){
+            handler.removeCallbacks(runnable);
         }
         startTimer();
 
@@ -1716,7 +1779,7 @@ public class phLogFragment extends Fragment {
 
             if (ph == null || temp == null || mv == null) {
 
-                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d("TakeLog", "takeLog: " + date + " " + time + " " + ph + " " + temp + " " + batchnum + " " + arnum + " " + compound_name + " " + PhActivity.DEVICE_ID);
 
@@ -2056,7 +2119,7 @@ public class phLogFragment extends Fragment {
                             time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 //                        fetch_logs();
                             if (ph == null || temp == null || mv == null) {
-                                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
                             }
 //                        } else {
 //                            databaseHelper.print_insert_log_data(date, time, ph, temp, batchnum, arnum, compound_name, PhActivity.DEVICE_ID);

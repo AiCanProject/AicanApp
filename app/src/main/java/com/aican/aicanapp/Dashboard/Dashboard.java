@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
@@ -550,6 +551,11 @@ public class Dashboard extends AppCompatActivity implements DashboardListsOption
         setUpEc();
 
         Source.showLoading(this, false, false, "Loading Devices....");
+
+        // cancel loading
+        Source.cancelLoading();
+
+
         refresh();
 
         offlineModeSwitch.setVisibility(View.GONE);

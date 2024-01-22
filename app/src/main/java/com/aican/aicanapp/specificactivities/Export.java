@@ -617,6 +617,38 @@ public class Export extends AppCompatActivity {
         document.add(new Paragraph(""));
         document.add(new Paragraph("Calibration Table"));
 
+
+
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Cursor calibCSV = null;
+
+        if (Constants.OFFLINE_DATA){
+
+             calibCSV = db.rawQuery("SELECT * FROM CalibAllDataOffline", null);
+            if (startDateString != null) {
+
+                calibCSV = db.rawQuery("SELECT * FROM CalibAllDataOffline WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+//            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "')", null);
+
+            } else {
+                calibCSV = db.rawQuery("SELECT * FROM CalibAllDataOffline", null);
+            }
+        }else{
+             calibCSV = db.rawQuery("SELECT * FROM CalibAllData", null);
+            if (startDateString != null) {
+
+                calibCSV = db.rawQuery("SELECT * FROM CalibAllData WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
+//            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "')", null);
+
+            } else {
+                calibCSV = db.rawQuery("SELECT * FROM CalibAllData", null);
+            }
+        }
+
+
+
+        int so = 1;
+
         float columnWidth[] = {200f, 210f, 190f, 170f, 340f, 170f, 210f};
         Table table = new Table(columnWidth);
         table.addCell("pH");
@@ -627,19 +659,7 @@ public class Export extends AppCompatActivity {
         table.addCell("Temperature");
         table.addCell("Calibrated by");
 
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-
-        Cursor calibCSV = db.rawQuery("SELECT * FROM CalibAllData", null);
-
-        if (startDateString != null) {
-
-            calibCSV = db.rawQuery("SELECT * FROM CalibAllData WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "') AND (time BETWEEN '" + startTimeString + "' AND '" + endTimeString + "')", null);
-//            curCSV = db.rawQuery("SELECT * FROM LogUserdetails WHERE (DATE(date) BETWEEN '" + startDateString + "' AND '" + endDateString + "')", null);
-
-        } else {
-            calibCSV = db.rawQuery("SELECT * FROM CalibAllData", null);
-        }
-
+        int rowCounter = 0; // To keep track of the number of rows processed
 
         while (calibCSV.moveToNext()) {
             String ph = calibCSV.getString(calibCSV.getColumnIndex("PH"));
@@ -657,14 +677,72 @@ public class Export extends AppCompatActivity {
             table.addCell(temperature1);
             table.addCell(Source.calib_completed_by == null ? "Unknown" : Source.calib_completed_by);
 
+            rowCounter++;
+
+            if (rowCounter % 5 == 0) {
+                // Add the table to the document every 5 rows
+                document.add(table);
+
+                if (Constants.OFFLINE_DATA) {
+                    if (SharedPref.getSavedData(Export.this, "CALIB_STAT" + PhActivity.DEVICE_ID) != null &&
+                            !SharedPref.getSavedData(Export.this, "CALIB_STAT" + PhActivity.DEVICE_ID).isEmpty()) {
+                        String calibSTat = SharedPref.getSavedData(Export.this, "CALIB_STAT" + PhActivity.DEVICE_ID);
+                        document.add(new Paragraph("Calibration : " + calibSTat));
+                    } else {
+                        // document.add(new Paragraph("Calibration : " + calib_stat));
+                    }
+                } else {
+                    document.add(new Paragraph("Calibration : " + calib_stat));
+                }
+
+                document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+                document.add(new Paragraph(""));
+                document.add(new Paragraph(""));
+                document.add(new Paragraph(""));
+                document.add(new Paragraph(""));
+                document.add(new Paragraph(""));
+                document.add(new Paragraph(""));
+
+                // Create a new table for the next set of 5 rows
+                table = new Table(columnWidth);
+                table.addCell("pH");
+                table.addCell("pH Aft Calib");
+                table.addCell("Slope");
+                table.addCell("mV");
+                table.addCell("Date & Time");
+                table.addCell("Temperature");
+                table.addCell("Calibrated by");
+            }
         }
-        document.add(table);
+
+// Add the last table if there are remaining rows
+        if (!table.isEmpty()) {
+            document.add(table);
+        }
 
 
-        document.add(new Paragraph("Calibration : " + calib_stat));
 
 
-        document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
+        if(Constants.OFFLINE_DATA){
+            if( SharedPref.getSavedData(Export.this,"CALIB_STAT" + PhActivity.DEVICE_ID
+            ) != null && SharedPref.getSavedData(Export.this,"CALIB_STAT" + PhActivity.DEVICE_ID
+            ) != ""){
+                String calibSTat = SharedPref.getSavedData(Export.this,"CALIB_STAT" + PhActivity.DEVICE_ID
+                );
+//                document.add(new Paragraph("Calibration : " + calibSTat));
+
+            }else {
+//                document.add(new Paragraph("Calibration : " + calib_stat));
+
+            }
+        }else {
+
+
+                document.add(new Paragraph("Calibration : " + calib_stat));
+
+        }
+
+//        document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
 
         Bitmap imgBit1 = getSignImage();
         if (imgBit1 != null) {

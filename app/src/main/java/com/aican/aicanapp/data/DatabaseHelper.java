@@ -38,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create Table TempUserActiondetails(time TEXT, useraction TEXT, ph TEXT, temperature TEXT, mv TEXT, compound TEXT)");
         sqLiteDatabase.execSQL("create Table CalibData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibAllData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
+        sqLiteDatabase.execSQL("create Table CalibAllDataOffline(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibOfflineData(PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibOfflineDataFive(ID INTEGER, PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
         sqLiteDatabase.execSQL("create Table CalibOfflineDataThree(ID INTEGER, PH TEXT, MV TEXT, SLOPE TEXT, DT TEXT, BFD TEXT, pHAC TEXT, temperature TEXT, date TEXT, time TIME)");
@@ -57,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS LogUserdetailsOffline");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS TempLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetails");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS CalibAllDataOffline");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintLogUserdetailsOffline");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS PrintTempLogUserdetails");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Calibdetails");
@@ -173,7 +175,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insertCalibrationOfflineData(String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
+    public Boolean insertCalibrationOfflineData(String PH, String MV, String slope, String DT, String BFD,
+                                                String pHAC, String temperature, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PH", PH);
@@ -273,7 +276,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean insertCalibrationAllData(String PH, String MV, String slope, String DT, String BFD, String pHAC, String temperature, String date, String time) {
+    public Boolean insertCalibrationAllDataOffline(String PH, String MV, String slope, String DT, String BFD, String pHAC,
+                                            String temperature, String date, String time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("PH", PH);
+        contentValues.put("MV", MV);
+        contentValues.put("SLOPE", slope);
+        contentValues.put("DT", DT);
+        contentValues.put("BFD", BFD);
+        contentValues.put("pHAC", pHAC);
+        contentValues.put("temperature", temperature);
+        contentValues.put("date", date);
+        contentValues.put("time", time);
+        long result = db.insert("CalibAllDataOffline", null, contentValues);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean insertCalibrationAllData(String PH, String MV, String slope, String DT, String BFD, String pHAC,
+                                            String temperature, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("PH", PH);
@@ -340,11 +365,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deletePhBufferMVTable()
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM PHBuffer");
-    }
     public Boolean insert_probe(String data) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -672,6 +692,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String presentDate = dateFormat.format(date);
         return presentDate;
     }
-
+    public void deletePhBufferMVTable()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM PHBuffer");
+    }
 
 }
