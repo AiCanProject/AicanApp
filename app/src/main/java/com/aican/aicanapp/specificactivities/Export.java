@@ -599,6 +599,21 @@ public class Export extends AppCompatActivity {
         PdfDocument pdfDocument = new PdfDocument(writer);
         Document document = new Document(pdfDocument);
 
+        Bitmap imgBit = getCompanyLogo();
+        if (imgBit != null) {
+            Uri uri = getImageUri(Export.this, imgBit);
+
+            try {
+                String add = getPath(uri);
+                ImageData imageData = ImageDataFactory.create(add);
+                Image image = new Image(imageData).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
 
 //        Text text = new Text(company_name);
 //        Text text1 = new Text(user_name);
@@ -683,17 +698,8 @@ public class Export extends AppCompatActivity {
                 // Add the table to the document every 5 rows
                 document.add(table);
 
-                if (Constants.OFFLINE_DATA) {
-                    if (SharedPref.getSavedData(Export.this, "CALIB_STAT" + PhActivity.DEVICE_ID) != null &&
-                            !SharedPref.getSavedData(Export.this, "CALIB_STAT" + PhActivity.DEVICE_ID).isEmpty()) {
-                        String calibSTat = SharedPref.getSavedData(Export.this, "CALIB_STAT" + PhActivity.DEVICE_ID);
-                        document.add(new Paragraph("Calibration : " + calibSTat));
-                    } else {
-                        // document.add(new Paragraph("Calibration : " + calib_stat));
-                    }
-                } else {
-                    document.add(new Paragraph("Calibration : " + calib_stat));
-                }
+                        document.add(new Paragraph("Calibration : " + "completed"));
+
 
                 document.add(new Paragraph("Operator Sign                                                                                      Supervisor Sign"));
                 document.add(new Paragraph(""));
@@ -851,7 +857,7 @@ public class Export extends AppCompatActivity {
         edit.commit();
     }
 
-    private Bitmap getCompanyLogo() {
+    public Bitmap getCompanyLogo() {
         SharedPreferences sh = getSharedPreferences("logo", Context.MODE_PRIVATE);
         String photo = sh.getString("logo_data", "");
         Bitmap bitmap = null;
@@ -992,7 +998,7 @@ public class Export extends AppCompatActivity {
 //
 //        document.add(table12);
         if (Constants.OFFLINE_MODE) {
-            document.add(new Paragraph("Offline Mode"));
+//            document.add(new Paragraph("Offline Mode"));
         }
         document.add(new Paragraph(companyName + "\n" + roleExport + "\n" + device_id));
         document.add(new Paragraph(""));

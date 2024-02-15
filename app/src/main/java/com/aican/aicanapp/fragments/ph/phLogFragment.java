@@ -1127,7 +1127,17 @@ public class phLogFragment extends Fragment {
 
         runnable1.run();
     }
+    public Bitmap getCompanyLogo() {
+        SharedPreferences sh = requireActivity().getSharedPreferences("logo", Context.MODE_PRIVATE);
+        String photo = sh.getString("logo_data", "");
+        Bitmap bitmap = null;
 
+        if (!photo.equalsIgnoreCase("")) {
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        return bitmap;
+    }
     private void generatePDF() throws FileNotFoundException {
 
         String company_name = "Company: " + companyName;
@@ -1213,9 +1223,25 @@ public class phLogFragment extends Fragment {
 
         try {
 
+            Bitmap imgBit = getCompanyLogo();
+            if (imgBit != null) {
+                Uri uri = getImageUri(requireContext(), imgBit);
+
+                try {
+                    String add = getPath(uri);
+                    ImageData imageData = ImageDataFactory.create(add);
+                    Image image = new Image(imageData).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                    // Adding image to the document
+                    document.add(image);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
             if (Constants.OFFLINE_MODE) {
-                document.add(new Paragraph("Offline Mode"));
+//                document.add(new Paragraph("Offline Mode"));
             }
             document.add(new Paragraph(company_name + "\n" + user_name + "\n" + device_id));
             document.add(new Paragraph(""));

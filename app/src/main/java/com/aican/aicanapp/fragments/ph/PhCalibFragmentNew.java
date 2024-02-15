@@ -61,6 +61,7 @@ import com.aican.aicanapp.dialogs.EditPhBufferDialog;
 import com.aican.aicanapp.interfaces.DeviceConnectionInfo;
 import com.aican.aicanapp.interfaces.ResetCalibration;
 import com.aican.aicanapp.ph.PhView;
+import com.aican.aicanapp.specificactivities.Export;
 import com.aican.aicanapp.specificactivities.PHCalibGraph;
 import com.aican.aicanapp.specificactivities.PhActivity;
 import com.aican.aicanapp.specificactivities.PhMvTable;
@@ -902,7 +903,17 @@ public class PhCalibFragmentNew extends Fragment {
             Log.d("csvnw", "Party Bhaiiiii");
         }
     }
+    public Bitmap getCompanyLogo() {
+        SharedPreferences sh = requireActivity().getSharedPreferences("logo", Context.MODE_PRIVATE);
+        String photo = sh.getString("logo_data", "");
+        Bitmap bitmap = null;
 
+        if (!photo.equalsIgnoreCase("")) {
+            byte[] b = Base64.decode(photo, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        return bitmap;
+    }
     private void generatePDF() throws FileNotFoundException {
 
 
@@ -979,8 +990,25 @@ public class PhCalibFragmentNew extends Fragment {
 //
 //
         if (Constants.OFFLINE_MODE || Constants.OFFLINE_DATA) {
-            document.add(new Paragraph("Offline Mode"));
+//            document.add(new Paragraph("Offline Mode"));
         }
+
+        Bitmap imgBit = getCompanyLogo();
+        if (imgBit != null) {
+            Uri uri = getImageUri(requireContext(), imgBit);
+
+            try {
+                String add = getPath(uri);
+                ImageData imageData = ImageDataFactory.create(add);
+                Image image = new Image(imageData).setHeight(80f).setWidth(80f);
+//                table12.addCell(new Cell(2, 1).add(image));
+                // Adding image to the document
+                document.add(image);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+
         document.add(new Paragraph(company_name + "\n" + calib_by + "\n" + user_name + "\n" + device_id));
         document.add(new Paragraph(""));
         document.add(new Paragraph(reportDate
@@ -2856,7 +2884,7 @@ public class PhCalibFragmentNew extends Fragment {
                             dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(0, 10) : "--",
                             dt5.getText().toString().length() >= 15 ? dt5.getText().toString().substring(11, 16) : "--");
 
-                    databaseHelper.insertCalibrationAllDataOffline("-","-","-","-","-","-","-","-","-");
+//                    databaseHelper.insertCalibrationAllDataOffline("-","-","-","-","-","-","-","-","-");
 
                     deviceRef.child("UI").child("PH").child("PH_CAL").child("CAL").setValue(0);
                     tvTimer.setText("00:45");
